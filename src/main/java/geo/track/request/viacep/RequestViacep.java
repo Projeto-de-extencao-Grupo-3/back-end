@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ViacepDTO {
+public class RequestViacep {
     private String cep;
     private String logradouro;
     private String bairro;

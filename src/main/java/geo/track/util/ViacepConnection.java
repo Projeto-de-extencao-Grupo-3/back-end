@@ -1,22 +1,28 @@
 package geo.track.util;
 
 import geo.track.domain.Enderecos;
-import geo.track.request.viacep.ViacepDTO;
+import geo.track.request.viacep.RequestViacep;
+import geo.track.request.viacep.ResponseViacep;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 public class ViacepConnection {
-    public Enderecos consultarCEP(String cep) {
+    public Optional<ResponseViacep> consultarCEP(String cep) {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<ViacepDTO> res = restTemplate.getForEntity("https://viacep.com.br/ws/" + cep + "/json/", ViacepDTO.class);
+        ResponseEntity<RequestViacep> res = restTemplate.getForEntity("https://viacep.com.br/ws/" + cep + "/json/", RequestViacep.class);
 
-        ViacepDTO response_viacep = res.getBody();
+        RequestViacep viacep = res.getBody();
 
-        if (response_viacep.getErro() != null) {
-            return null;
+        System.out.println(viacep);
+
+        if (viacep.getErro() != null) {
+            return Optional.empty();
         }
-        Enderecos enderecos = new Enderecos(response_viacep.getLogradouro(), response_viacep.getBairro(), response_viacep.getLocalidade(), response_viacep.getUf());
 
-        return enderecos;
+        ResponseViacep responseViacep = new ResponseViacep(viacep.getCep() ,viacep.getLogradouro(), viacep.getBairro(), viacep.getLocalidade(), viacep.getUf());
+
+        return Optional.of(responseViacep);
     }
 }

@@ -18,6 +18,7 @@ public class Enderecos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer idEndereco;
+    private String cep;
     private String logradouro;
     private Integer numero;
     private String complemento;
