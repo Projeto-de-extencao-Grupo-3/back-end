@@ -26,12 +26,12 @@ public class EmpresaController {
         return empresasService.listar();
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<Empresas> atualizarEmpresa(@PathVariable Integer id, @RequestBody Empresas empresa){
         return empresasService.atualizar(id, empresa);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Empresas> removerEmpresa(@PathVariable Integer id){
         return empresasService.remover(id);
     }

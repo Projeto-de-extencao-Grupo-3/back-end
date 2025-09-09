@@ -17,9 +17,10 @@ public class EmpresasService {
     }
 
     public ResponseEntity<Empresas> cadastrar(Empresas empresa){
-        if (repository.existsById(empresa.getIdEmpresa())){
-            return ResponseEntity.status(409).build();
-        }
+//        if (repository.existsById(empresa.getIdEmpresa())){
+//            return ResponseEntity.status(409).build();
+//        }
+        empresa.setIdEmpresa(null);
         Empresas emp = repository.save(empresa);
         return ResponseEntity.status(201).body(emp);
     }
@@ -29,7 +30,7 @@ public class EmpresasService {
         if(listaEmpresas.isEmpty()){
             return ResponseEntity.status(204).build();
         }
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(200).body(listaEmpresas);
     }
 
     public ResponseEntity<Empresas> atualizar(Integer id,Empresas empresa){

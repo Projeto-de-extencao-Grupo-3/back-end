@@ -1,5 +1,6 @@
 package geo.track.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +24,8 @@ public class Empresas {
     private String razaoSocial;
     private String cnpj;
     private String email;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dtCriacao;
     private String status;
 
