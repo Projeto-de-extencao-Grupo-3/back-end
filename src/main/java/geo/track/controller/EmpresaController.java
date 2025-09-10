@@ -26,6 +26,21 @@ public class EmpresaController {
         return empresasService.listar();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Empresas> getEmpresaById(@PathVariable Integer id){
+        return empresasService.findEmpresaById(id);
+    }
+
+    @GetMapping("/razao-social")
+    public ResponseEntity<List<Empresas>> getEmpresaByRazaoSocial(@RequestParam String razaoSocial){
+        return empresasService.findEmpresaByRazaoSocial(razaoSocial);
+    }
+
+    @GetMapping("/cnpj/{CNPJ}")
+    public ResponseEntity<Empresas> findEmpresaByCNPJ(@PathVariable String CNPJ){
+        return empresasService.findEmpresaByCNPJ(CNPJ);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Empresas> atualizarEmpresa(@PathVariable Integer id, @RequestBody Empresas empresa){
         return empresasService.atualizar(id, empresa);

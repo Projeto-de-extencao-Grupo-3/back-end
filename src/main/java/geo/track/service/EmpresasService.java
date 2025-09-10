@@ -5,7 +5,6 @@ import geo.track.repository.EmpresasRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.awt.image.RescaleOp;
 import java.util.List;
 
 @Service
@@ -17,10 +16,9 @@ public class EmpresasService {
     }
 
     public ResponseEntity<Empresas> cadastrar(Empresas empresa){
-//        if (repository.existsById(empresa.getIdEmpresa())){
-//            return ResponseEntity.status(409).build();
-//        }
-        empresa.setIdEmpresa(null);
+        if (repository.findBycnpj(empresa.getCnpj()).isPresent()){
+            return ResponseEntity.status(409).build();
+        }
         Empresas emp = repository.save(empresa);
         return ResponseEntity.status(201).body(emp);
     }
@@ -33,11 +31,27 @@ public class EmpresasService {
         return ResponseEntity.status(200).body(listaEmpresas);
     }
 
+    public ResponseEntity<Empresas> findEmpresaById(Integer id){
+        return ResponseEntity.of(repository.findById(id));
+    }
+
+    public ResponseEntity<List<Empresas>> findEmpresaByRazaoSocial(String razaoSocial){
+        List<Empresas> empresasPorRazaoSocial = repository.findByrazaoSocialContainingIgnoreCase(razaoSocial);
+        if (empresasPorRazaoSocial.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(empresasPorRazaoSocial);
+    }
+
+    public ResponseEntity<Empresas> findEmpresaByCNPJ(String CNPJ){
+        return ResponseEntity.of(repository.findBycnpj(CNPJ));
+    }
+
     public ResponseEntity<Empresas> atualizar(Integer id,Empresas empresa){
         if (repository.existsById(id)){
             empresa.setIdEmpresa(id);
             Empresas empSalva = repository.save(empresa);
-            return ResponseEntity.status(204).body(empSalva);
+            return ResponseEntity.status(200).body(empSalva);
         }
         return ResponseEntity.status(404).build();
     }
