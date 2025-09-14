@@ -9,6 +9,7 @@ import geo.track.request.clientes.RequestPutCliente;
 import geo.track.request.enderecos.RequestPatchComplemento;
 import geo.track.request.enderecos.RequestPutEndereco;
 import geo.track.service.ClientesService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ClientesController {
     private final ClientesService clientesService;
 
     @PostMapping
-    public ResponseEntity<Clientes> postCliente(@RequestBody Clientes body){
+    public ResponseEntity<Clientes> postCliente(@Valid @RequestBody Clientes body){
         return clientesService.postCliente(body);
     }
 
