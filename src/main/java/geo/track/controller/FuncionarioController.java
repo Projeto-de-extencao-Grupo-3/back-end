@@ -5,7 +5,6 @@ import geo.track.repository.FuncionariosRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.PrivateKey;
 import java.util.Optional;
 
 @RestController
@@ -27,7 +26,7 @@ public class FuncionarioController {
         return ResponseEntity.status(201).body(funcionarioRegistrado);
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<Funcionarios> buscarPorId(@PathVariable Integer id){
         Optional<Funcionarios> funcionarioOp = repository.findById(id);
 
