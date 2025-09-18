@@ -1,6 +1,6 @@
 package geo.track.util;
 
-import geo.track.domain.Enderecos;
+import geo.track.exception.DataNotFoundException;
 import geo.track.request.viacep.RequestViacep;
 import geo.track.request.viacep.ResponseViacep;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class ViacepConnection {
         System.out.println(viacep);
 
         if (viacep.getErro() != null) {
-            return Optional.empty();
+            throw new DataNotFoundException("%s não foi encontrado".formatted(cep), "Viacep");
         }
 
         ResponseViacep responseViacep = new ResponseViacep(viacep.getCep() ,viacep.getLogradouro(), viacep.getBairro(), viacep.getLocalidade(), viacep.getUf());

@@ -1,6 +1,8 @@
 package geo.track.service;
 
 import geo.track.domain.Enderecos;
+import geo.track.exception.BadRequestException;
+import geo.track.exception.DataNotFoundException;
 import geo.track.repository.EnderecosRepository;
 import geo.track.request.enderecos.RequestPatchComplemento;
 import geo.track.request.enderecos.RequestPatchNumero;
@@ -25,19 +27,15 @@ public class EnderecosService {
         if (endereco.isPresent()) {
             return ResponseEntity.status(200).body(endereco.get());
         }
-        return ResponseEntity.status(404).body(null);
+        throw new DataNotFoundException("ID %d não foi encontrado".formatted(id), "Endereços");
     }
 
     public ResponseEntity<ResponseViacep> findEnderecoByVIACEP(String cep) {
-        if (cep.length() > 8 || cep.length() < 7) {
-            return ResponseEntity.status(400).body(null);
+        if (cep.length() != 8) {
+            throw new BadRequestException("Endereços", "Envie um CEP que possua 8 caracteres");
         }
 
         Optional<ResponseViacep> endereco = viacepConnection.consultarCEP(cep);
-
-        if (endereco.isEmpty()) {
-            return ResponseEntity.status(404).body(null);
-        }
 
         return ResponseEntity.status(200).body(endereco.get());
     }
