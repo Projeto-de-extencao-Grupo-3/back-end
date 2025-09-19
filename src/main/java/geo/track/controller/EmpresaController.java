@@ -18,37 +18,44 @@ public class EmpresaController {
 
     @PostMapping
     public ResponseEntity<Empresas> cadastrarEmpresa(@RequestBody Empresas empresa){
-        return empresasService.cadastrar(empresa);
+        Empresas emp = empresasService.cadastrar(empresa);
+        return ResponseEntity.status(201).body(emp);
     }
 
     @GetMapping
     public ResponseEntity<List<Empresas>> listarEmpresas(){
-        return empresasService.listar();
+        List<Empresas> lista = empresasService.listar();
+        return ResponseEntity.status(200).body(lista);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Empresas> getEmpresaById(@PathVariable Integer id){
-        return empresasService.findEmpresaById(id);
+        Empresas emp = empresasService.findEmpresaById(id);
+        return ResponseEntity.status(200).body(emp);
     }
 
     @GetMapping("/razao-social")
     public ResponseEntity<List<Empresas>> getEmpresaByRazaoSocial(@RequestParam String razaoSocial){
-        return empresasService.findEmpresaByRazaoSocial(razaoSocial);
+        List<Empresas> lista = empresasService.findEmpresaByRazaoSocial(razaoSocial);
+        return ResponseEntity.status(200).body(lista);
     }
 
-    @GetMapping("/cnpj/{CNPJ}")
-    public ResponseEntity<Empresas> findEmpresaByCNPJ(@PathVariable String CNPJ){
-        return empresasService.findEmpresaByCNPJ(CNPJ);
+    @GetMapping("/cnpj")
+    public ResponseEntity<Empresas> findEmpresaByCNPJ(@RequestParam String cnpj){
+        Empresas emp = empresasService.findEmpresaByCnpj(cnpj);
+        return ResponseEntity.status(200).body(emp);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Empresas> atualizarEmpresa(@PathVariable Integer id, @RequestBody Empresas empresa){
-        return empresasService.atualizar(id, empresa);
+        Empresas emp = empresasService.atualizar(id, empresa);
+        return ResponseEntity.status(200).body(emp);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Empresas> removerEmpresa(@PathVariable Integer id){
-        return empresasService.remover(id);
+        empresasService.remover(id);
+        return ResponseEntity.status(204).build();
     }
 
 }
