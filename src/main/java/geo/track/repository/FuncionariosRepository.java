@@ -8,4 +8,6 @@ import java.util.List;
 public interface FuncionariosRepository extends JpaRepository<Funcionarios, Integer> {
     List<Funcionarios> findByNomeContainingIgnoreCase(String valor);
     Boolean existsByNome (String nome);
+    Boolean existsByIdFuncionario (Integer id);
+    Funcionarios getByIdFuncionario (Integer id);
 }
