@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface EmpresasRepository extends JpaRepository<Empresas, Integer> {
     List<Empresas> findByrazaoSocialContainingIgnoreCase(String valor);
-    Optional<Empresas> findBycnpj(String valor);
+    Optional<Empresas> findByCnpj(String cnpj);
 
 }
