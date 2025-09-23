@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 
 public class ViacepConnection {
-    public Optional<ResponseViacep> consultarCEP(String cep) {
+    public ResponseViacep consultarCEP(String cep) {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<RequestViacep> res = restTemplate.getForEntity("https://viacep.com.br/ws/" + cep + "/json/", RequestViacep.class);
 
@@ -18,11 +18,11 @@ public class ViacepConnection {
         System.out.println(viacep);
 
         if (viacep.getErro() != null) {
-            throw new DataNotFoundException("%s não foi encontrado".formatted(cep), "Viacep");
+            throw new DataNotFoundException("CEP: %s não foi encontrado".formatted(cep), "Endereços");
         }
 
         ResponseViacep responseViacep = new ResponseViacep(viacep.getCep() ,viacep.getLogradouro(), viacep.getBairro(), viacep.getLocalidade(), viacep.getUf());
 
-        return Optional.of(responseViacep);
+        return responseViacep;
     }
 }

@@ -3,6 +3,7 @@ package geo.track.service;
 import geo.track.domain.Enderecos;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.NotAcepptableException;
 import geo.track.repository.EnderecosRepository;
 import geo.track.request.enderecos.RequestPatchComplemento;
 import geo.track.request.enderecos.RequestPatchNumero;
@@ -21,46 +22,46 @@ public class EnderecosService {
     final ViacepConnection viacepConnection = new ViacepConnection();
     final EnderecosRepository enderecosRepository;
 
-    public ResponseEntity<Enderecos> findEnderecoById(Integer id) {
+    public Enderecos findEnderecoById(Integer id) {
         Optional<Enderecos> endereco = enderecosRepository.findById(id);
 
-        if (endereco.isPresent()) {
-            return ResponseEntity.status(200).body(endereco.get());
+        if (endereco.isEmpty()) {
+            throw new DataNotFoundException("ID %d não foi encontrado".formatted(id), "Endereços");
         }
-        throw new DataNotFoundException("ID %d não foi encontrado".formatted(id), "Endereços");
+
+        return endereco.get();
     }
 
-    public ResponseEntity<ResponseViacep> findEnderecoByVIACEP(String cep) {
+    public ResponseViacep findEnderecoByVIACEP(String cep) {
         if (cep.length() != 8) {
-            throw new BadRequestException("Endereços", "Envie um CEP que possua 8 caracteres");
+            throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
         }
 
-        Optional<ResponseViacep> endereco = viacepConnection.consultarCEP(cep);
-
-        return ResponseEntity.status(200).body(endereco.get());
+        return viacepConnection.consultarCEP(cep);
     }
 
-    public ResponseEntity<Enderecos> postEndereco(Enderecos endereco) {
-        return ResponseEntity.status(201).body(enderecosRepository.save(endereco));
+    public Enderecos postEndereco(Enderecos endereco) {
+        if (endereco.getCep().length() != 8) {
+            throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
+        }
+
+        return enderecosRepository.save(endereco);
     }
 
-    public ResponseEntity<Enderecos> patchComplementoEndereco(RequestPatchComplemento enderecoDTO) {
+    public Enderecos patchComplementoEndereco(RequestPatchComplemento enderecoDTO) {
         Optional<Enderecos> enderecos = enderecosRepository.findById(enderecoDTO.getId());
 
-        if (enderecos.isPresent()) {
-            Enderecos endereco = enderecos.get();
-
-            endereco.setComplemento(enderecoDTO.getComplemento());
-
-            enderecosRepository.save(endereco);
-
-            return ResponseEntity.status(200).body(endereco);
-        } else {
-            return ResponseEntity.status(404).body(null);
+        if (enderecos.isEmpty()) {
+            return null;
         }
+
+        Enderecos endereco = enderecos.get();
+        endereco.setComplemento(enderecoDTO.getComplemento());
+
+        return enderecosRepository.save(endereco);
     }
 
-    public ResponseEntity<Enderecos> patchNumeroEndereco(RequestPatchNumero enderecoDTO) {
+    public Enderecos patchNumeroEndereco(RequestPatchNumero enderecoDTO) {
         Optional<Enderecos> enderecos = enderecosRepository.findById(enderecoDTO.getId());
 
         if (enderecos.isPresent()) {
@@ -70,14 +71,18 @@ public class EnderecosService {
 
             enderecosRepository.save(endereco);
 
-            return ResponseEntity.status(200).body(endereco);
+            return endereco;
         } else {
-            return ResponseEntity.status(404).body(null);
+            return null;
         }
     }
 
-    public ResponseEntity<Enderecos> putEndereco(RequestPutEndereco enderecoDTO) {
+    public Enderecos putEndereco(RequestPutEndereco enderecoDTO) {
         Optional<Enderecos> enderecos = enderecosRepository.findById(enderecoDTO.getId());
+
+        if (enderecoDTO.getCep().length() != 8) {
+             throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
+        }
 
         if (enderecos.isPresent()) {
             Enderecos endereco = enderecos.get();
@@ -92,9 +97,9 @@ public class EnderecosService {
 
             enderecosRepository.save(endereco);
 
-            return ResponseEntity.status(200).body(endereco);
+            return endereco;
         } else {
-            return ResponseEntity.status(404).body(null);
+            return null;
         }
     }
 

@@ -1,9 +1,6 @@
 package geo.track.exception.handler;
 
-import geo.track.exception.ConflictException;
-import geo.track.exception.ExceptionBody;
-import geo.track.exception.BadRequestException;
-import geo.track.exception.DataNotFoundException;
+import geo.track.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,5 +23,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ExceptionBody> ConflictException(ConflictException ex){
         return new ResponseEntity<>(new ExceptionBody(ex.getDomain(), ex.getMessage(), LocalDateTime.now(), ConflictException.class.getSimpleName(), HttpStatus.CONFLICT.value()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NotAcepptableException.class)
+    public ResponseEntity<ExceptionBody> NotAcceptableException(NotAcepptableException ex){
+        return new ResponseEntity<>(new ExceptionBody(ex.getDomain(), ex.getMessage(), LocalDateTime.now(), NotAcepptableException.class.getSimpleName(), HttpStatus.NOT_ACCEPTABLE.value()), HttpStatus.NOT_ACCEPTABLE);
     }
 }

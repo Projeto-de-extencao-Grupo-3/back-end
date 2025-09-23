@@ -18,32 +18,62 @@ public class EnderecosController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Enderecos> getEnderecoById(@PathVariable Integer id) {
-        return enderecosService.findEnderecoById(id);
+        Enderecos enderecos = enderecosService.findEnderecoById(id);
+
+        if (enderecos == null) {
+            return ResponseEntity.status(404).build();
+        }
+
+        return ResponseEntity.status(200).body(enderecos);
     }
 
     @GetMapping("/viacep/{cep}")
     public ResponseEntity<ResponseViacep> findEnderecoByVIACEP(@PathVariable String cep) {
-        return enderecosService.findEnderecoByVIACEP(cep);
+        ResponseViacep responseCep = enderecosService.findEnderecoByVIACEP(cep);
+
+        if (responseCep == null) {
+            return ResponseEntity.status(404).build();
+        }
+
+        return ResponseEntity.status(200).body(responseCep);
     }
 
     @PostMapping()
     public ResponseEntity<Enderecos> postEndereco(@RequestBody Enderecos endereco) {
-        return enderecosService.postEndereco(endereco);
+        return ResponseEntity.status(201).body(enderecosService.postEndereco(endereco));
     }
 
     @PatchMapping("/complemento")
     public ResponseEntity<Enderecos> patchComplementoEndereco(@RequestBody RequestPatchComplemento enderecoDTO) {
-        return enderecosService.patchComplementoEndereco(enderecoDTO);
+        Enderecos enderecos = enderecosService.patchComplementoEndereco(enderecoDTO);
+
+        if (enderecos == null) {
+            return ResponseEntity.status(404).build();
+        }
+
+        return ResponseEntity.status(200).body(enderecos);
     }
 
     @PatchMapping("/numero")
     public ResponseEntity<Enderecos> patchNumeroEndereco(@RequestBody RequestPatchNumero enderecoDTO) {
-        return enderecosService.patchNumeroEndereco(enderecoDTO);
+        Enderecos enderecos = enderecosService.patchNumeroEndereco(enderecoDTO);
+
+        if (enderecos == null) {
+            return ResponseEntity.status(404).build();
+        }
+
+        return ResponseEntity.status(200).body(enderecos);
     }
 
     @PutMapping()
     public ResponseEntity<Enderecos> putEndereco(@RequestBody RequestPutEndereco enderecoDTO) {
-        return enderecosService.putEndereco(enderecoDTO);
+        Enderecos enderecos = enderecosService.putEndereco(enderecoDTO);
+
+        if (enderecos == null) {
+            return ResponseEntity.status(404).build();
+        }
+
+        return ResponseEntity.status(200).body(enderecos);
     }
 
 }
