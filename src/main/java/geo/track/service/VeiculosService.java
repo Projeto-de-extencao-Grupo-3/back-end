@@ -2,6 +2,8 @@ package geo.track.service;
 
 import geo.track.domain.Enderecos;
 import geo.track.domain.Veiculos;
+import geo.track.exception.ConflictException;
+import geo.track.exception.DataNotFoundException;
 import geo.track.repository.VeiculosRepository;
 import geo.track.request.veiculos.RequestPatchCor;
 import geo.track.request.veiculos.RequestPatchPlaca;
@@ -24,51 +26,41 @@ public class VeiculosService {
         this.repository = repository;
     }
 
-    public ResponseEntity<Veiculos>cadastrar(@RequestBody Veiculos veiculo){
+    public Veiculos cadastrar(@RequestBody Veiculos veiculo){
         veiculo.setIdVeiculo(null);
 
         if(repository.existsByPlacaIgnoreCase(veiculo.getPlaca())){
-            return ResponseEntity.status(409).build();
+            throw new ConflictException("A placa do veículo informada já existe", "Veiculo");
         }
 
-        return ResponseEntity.status(201).body(repository.save(veiculo));
+        return repository.save(veiculo);
     }
 
-    public ResponseEntity<List<Veiculos>>listar(){
+    public List<Veiculos>listar(){
         List<Veiculos>veiculosEncontrados = repository.findAll();
 
         if(veiculosEncontrados.isEmpty()){
-            return ResponseEntity.status(204).build();
+            throw new DataNotFoundException("A lista de Veículos está vazia", "Veiculo");
         }
 
-        return ResponseEntity.status(200).body(veiculosEncontrados);
+        return veiculosEncontrados;
     }
 
-    public ResponseEntity<Veiculos> findVeiculoById(@PathVariable Integer id){
-        Optional<Veiculos> veiculo = repository.findById(id);
-
-        if(veiculo.isEmpty()){
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(veiculo.get());
+    public Veiculos findVeiculoById(@PathVariable Integer id){
+        return repository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo")
+        );
     }
 
-    public ResponseEntity<List<Veiculos>> findVeiculoByPlaca(@PathVariable String placa){
-        List<Veiculos>veiculosEncontrados = repository.findAllByPlacaStartsWithIgnoreCase(placa);
-
-        if(veiculosEncontrados.isEmpty()){
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(veiculosEncontrados);
+    public List<Veiculos> findVeiculoByPlaca(@PathVariable String placa){
+        return repository.findAllByPlacaStartsWithIgnoreCase(placa);
     }
 
-    public ResponseEntity<Veiculos> putEndereco(RequestPutVeiculos veiculoDTO){
+    public Veiculos putEndereco(RequestPutVeiculos veiculoDTO){
         Optional<Veiculos> veiculoOpt = repository.findById(veiculoDTO.getIdVeiculo());
 
         if(veiculoOpt.isEmpty()){
-            return ResponseEntity.status(404).build();
+            throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
         }
 
         Veiculos veiculo = veiculoOpt.get();
@@ -80,16 +72,15 @@ public class VeiculosService {
         veiculo.setAnoFabricacao(veiculoDTO.getAnoFabricacao());
         veiculo.setCor(veiculoDTO.getCor());
 
-        repository.save(veiculo);
 
-        return ResponseEntity.status(200).body(veiculo);
+        return repository.save(veiculo);
     }
 
-    public ResponseEntity<Veiculos> patchPlaca(RequestPatchPlaca veiculoDTO){
+    public Veiculos patchPlaca(RequestPatchPlaca veiculoDTO){
         Optional<Veiculos> veiculoOpt = repository.findById(veiculoDTO.getIdVeiculo());
 
         if(veiculoOpt.isEmpty()){
-            return ResponseEntity.status(404).build();
+            throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
         }
 
         Veiculos veiculo = veiculoOpt.get();
@@ -97,16 +88,14 @@ public class VeiculosService {
         veiculo.setIdVeiculo(veiculoDTO.getIdVeiculo());
         veiculo.setPlaca(veiculoDTO.getPlaca());
 
-        repository.save(veiculo);
-
-        return ResponseEntity.status(200).body(veiculo);
+        return repository.save(veiculo);
     }
 
-    public ResponseEntity<Veiculos> patchCor(RequestPatchCor veiculoDTO){
+    public Veiculos patchCor(RequestPatchCor veiculoDTO){
         Optional<Veiculos> veiculoOpt = repository.findById(veiculoDTO.getIdVeiculo());
 
         if(veiculoOpt.isEmpty()){
-            return ResponseEntity.status(404).build();
+            throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
         }
 
         Veiculos veiculo = veiculoOpt.get();
@@ -114,9 +103,9 @@ public class VeiculosService {
         veiculo.setIdVeiculo(veiculoDTO.getIdVeiculo());
         veiculo.setCor(veiculoDTO.getCor());
 
-        repository.save(veiculo);
 
-        return ResponseEntity.status(200).body(veiculo);
+
+        return repository.save(veiculo);
     }
 
      public ResponseEntity<Void>deleteVeiculoById(@PathVariable Integer id){
@@ -129,12 +118,10 @@ public class VeiculosService {
 
      }
 
-    public ResponseEntity<Void>deleteVeiculoByPlaca(@PathVariable String placa){
-        if(repository.existsByPlacaIgnoreCase(placa)){
-            repository.deleteByPlacaIgnoreCase(placa);
-            return ResponseEntity.status(204).build();
+    public void deleteVeiculoByPlaca(@PathVariable String placa){
+        if(!repository.existsByPlacaIgnoreCase(placa)){
+            throw new DataNotFoundException("Não existe um veículo com essa Placa!", "Veiculo");
         }
-            return ResponseEntity.status(404).build();
-
+            repository.deleteByPlacaIgnoreCase(placa);
     }
 }
