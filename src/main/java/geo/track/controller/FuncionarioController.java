@@ -17,21 +17,25 @@ public class FuncionarioController {
 
     @PostMapping
     public ResponseEntity<Funcionarios> cadastrar(@RequestBody Funcionarios funcionario){
-        return service.cadastrar(funcionario);
+        Funcionarios funcionarioResposta = service.cadastrar(funcionario);
+        return ResponseEntity.status(201).body(funcionarioResposta);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Funcionarios> buscarPorId(@PathVariable Integer id){
-        return service.buscarPorId(id);
+        Funcionarios funcionarioResposta = service.buscarPorId(id);
+        return ResponseEntity.status(200).body(funcionarioResposta);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Funcionarios> atualizar(@PathVariable Integer id, @RequestBody Funcionarios funcionario){
-        return service.atualizar(id, funcionario);
+        Funcionarios funcionarioResposta = service.atualizar(id, funcionario);
+        return ResponseEntity.status(200).body(funcionarioResposta);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
-        return service.deletar(id);
+        service.deletar(id);
+        return ResponseEntity.status(204).build();
     }
 }

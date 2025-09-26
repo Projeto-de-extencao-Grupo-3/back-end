@@ -15,37 +15,36 @@ public class FuncionariosService {
         this.repository = repository;
     }
 
-    public ResponseEntity<Funcionarios> cadastrar(Funcionarios funcionarios){
+    public Funcionarios cadastrar(Funcionarios funcionarios){
         if (repository.existsByNome(funcionarios.getNome())){
-            throw new ConflictException("Conflito de Nome","");
+            throw new ConflictException("Nome já existe","Funcionario");
         }
         Funcionarios funcionarioRegistrado = repository.save(funcionarios);
-        return ResponseEntity.status(201).body(funcionarioRegistrado);
+        return funcionarioRegistrado;
     }
 
-    public ResponseEntity<Funcionarios> buscarPorId(Integer id){
+    public Funcionarios buscarPorId(Integer id){
         if (!repository.existsByIdFuncionario(id)){
-            throw new DataNotFoundException("Funcionario Não encontrado","");
+            throw new DataNotFoundException("Funcionario Não encontrado","Funcionario");
         }
         Funcionarios getFuncionario = repository.getByIdFuncionario(id);
-        return ResponseEntity.status(200).body(getFuncionario);
+        return getFuncionario;
     }
 
-    public ResponseEntity<Funcionarios> atualizar(Integer id, Funcionarios funcionario){
+    public Funcionarios atualizar(Integer id, Funcionarios funcionario){
         funcionario.setIdFuncionario(id);
         if (!repository.existsById(id)){
-            throw new DataNotFoundException("Funcionario não encontrado","");
+            throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
         }
         Funcionarios save = repository.save(funcionario);
-        return ResponseEntity.status(200).body(save);
+        return save;
     }
 
-    public ResponseEntity<Void> deletar(Integer id){
+    public void deletar(Integer id){
         if (!repository.existsById(id)){
-            throw new DataNotFoundException("Funcionario não encontrado","");
+            throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
         }
         repository.deleteById(id);
-        return ResponseEntity.status(204).build();
     }
 
 
