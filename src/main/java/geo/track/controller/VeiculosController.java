@@ -5,6 +5,7 @@ import geo.track.request.veiculos.RequestPatchCor;
 import geo.track.request.veiculos.RequestPatchPlaca;
 import geo.track.request.veiculos.RequestPutVeiculos;
 import geo.track.service.VeiculosService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class VeiculosController {
 
 
     @PostMapping
-    public ResponseEntity<Veiculos>cadastrar(@RequestBody Veiculos veiculo){
+    public ResponseEntity<Veiculos>cadastrar(@Valid @RequestBody Veiculos veiculo){
         Veiculos veicCadastrado = service.cadastrar(veiculo);
         return ResponseEntity.status(201).body(veiculo);
     }
@@ -30,6 +31,11 @@ public class VeiculosController {
     @GetMapping
     public ResponseEntity<List<Veiculos>>listar(){
         List<Veiculos>listaVeiculos = service.listar();
+
+        if(listaVeiculos.isEmpty()){
+            return ResponseEntity.status(204).body(listaVeiculos);
+        }
+
         return ResponseEntity.status(200).body(listaVeiculos);
     }
 

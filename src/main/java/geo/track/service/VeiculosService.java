@@ -37,13 +37,7 @@ public class VeiculosService {
     }
 
     public List<Veiculos>listar(){
-        List<Veiculos>veiculosEncontrados = repository.findAll();
-
-        if(veiculosEncontrados.isEmpty()){
-            throw new DataNotFoundException("A lista de Veículos está vazia", "Veiculo");
-        }
-
-        return veiculosEncontrados;
+        return repository.findAll();
     }
 
     public Veiculos findVeiculoById(@PathVariable Integer id){
