@@ -1,12 +1,10 @@
 package geo.track.util;
 
 import geo.track.exception.DataNotFoundException;
-import geo.track.request.viacep.RequestViacep;
-import geo.track.request.viacep.ResponseViacep;
+import geo.track.dto.viacep.request.RequestViacep;
+import geo.track.dto.viacep.response.ResponseViacep;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Optional;
 
 public class ViacepConnection {
     public ResponseViacep consultarCEP(String cep) {

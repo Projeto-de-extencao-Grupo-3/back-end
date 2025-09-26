@@ -1,17 +1,15 @@
 package geo.track.service;
 
 import geo.track.domain.Enderecos;
-import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.NotAcepptableException;
 import geo.track.repository.EnderecosRepository;
-import geo.track.request.enderecos.RequestPatchComplemento;
-import geo.track.request.enderecos.RequestPatchNumero;
-import geo.track.request.enderecos.RequestPutEndereco;
-import geo.track.request.viacep.ResponseViacep;
+import geo.track.dto.enderecos.request.RequestPatchComplemento;
+import geo.track.dto.enderecos.request.RequestPatchNumero;
+import geo.track.dto.enderecos.request.RequestPutEndereco;
+import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.util.ViacepConnection;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

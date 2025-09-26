@@ -1,4 +1,4 @@
-package geo.track.request.enderecos;
+package geo.track.dto.enderecos.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package geo.track.request.viacep;
+package geo.track.dto.viacep.request;
 
 import lombok.Getter;
 import lombok.Setter;

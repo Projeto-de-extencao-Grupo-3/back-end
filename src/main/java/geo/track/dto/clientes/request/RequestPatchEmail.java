@@ -1,4 +1,4 @@
-package geo.track.request.clientes;
+package geo.track.dto.clientes.request;
 
 public class RequestPatchEmail {
     Integer id;

@@ -1,13 +1,9 @@
 package geo.track.controller;
 
 import geo.track.domain.Clientes;
-import geo.track.domain.Empresas;
-import geo.track.domain.Enderecos;
-import geo.track.request.clientes.RequestPatchEmail;
-import geo.track.request.clientes.RequestPatchTelefone;
-import geo.track.request.clientes.RequestPutCliente;
-import geo.track.request.enderecos.RequestPatchComplemento;
-import geo.track.request.enderecos.RequestPutEndereco;
+import geo.track.dto.clientes.request.RequestPatchEmail;
+import geo.track.dto.clientes.request.RequestPatchTelefone;
+import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.service.ClientesService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

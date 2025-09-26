@@ -1,20 +1,12 @@
 package geo.track.service;
 
 import geo.track.domain.Clientes;
-import geo.track.domain.Empresas;
-import geo.track.domain.Enderecos;
 import geo.track.repository.ClientesRepository;
-import geo.track.request.clientes.RequestPatchEmail;
-import geo.track.request.clientes.RequestPatchTelefone;
-import geo.track.request.clientes.RequestPutCliente;
-import geo.track.request.enderecos.RequestPatchComplemento;
-import geo.track.request.enderecos.RequestPutEndereco;
-import geo.track.request.viacep.ResponseViacep;
-import geo.track.util.ViacepConnection;
-import lombok.RequiredArgsConstructor;
+import geo.track.dto.clientes.request.RequestPatchEmail;
+import geo.track.dto.clientes.request.RequestPatchTelefone;
+import geo.track.dto.clientes.request.RequestPutCliente;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;

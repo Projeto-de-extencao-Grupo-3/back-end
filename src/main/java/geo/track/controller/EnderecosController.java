@@ -1,10 +1,10 @@
 package geo.track.controller;
 
 import geo.track.domain.Enderecos;
-import geo.track.request.enderecos.RequestPatchComplemento;
-import geo.track.request.enderecos.RequestPatchNumero;
-import geo.track.request.enderecos.RequestPutEndereco;
-import geo.track.request.viacep.ResponseViacep;
+import geo.track.dto.enderecos.request.RequestPatchComplemento;
+import geo.track.dto.enderecos.request.RequestPatchNumero;
+import geo.track.dto.enderecos.request.RequestPutEndereco;
+import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.service.EnderecosService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

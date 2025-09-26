@@ -1,6 +1,5 @@
-package geo.track.request.viacep;
+package geo.track.dto.viacep.response;
 
-import geo.track.domain.Enderecos;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

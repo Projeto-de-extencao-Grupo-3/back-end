@@ -1,4 +1,4 @@
-package geo.track.request.veiculos;
+package geo.track.dto.veiculos.request;
 
 
 import lombok.Getter;

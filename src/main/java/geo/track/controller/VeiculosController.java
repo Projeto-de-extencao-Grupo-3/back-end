@@ -1,9 +1,9 @@
 package geo.track.controller;
 
 import geo.track.domain.Veiculos;
-import geo.track.request.veiculos.RequestPatchCor;
-import geo.track.request.veiculos.RequestPatchPlaca;
-import geo.track.request.veiculos.RequestPutVeiculos;
+import geo.track.dto.veiculos.request.RequestPatchCor;
+import geo.track.dto.veiculos.request.RequestPatchPlaca;
+import geo.track.dto.veiculos.request.RequestPutVeiculos;
 import geo.track.service.VeiculosService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
