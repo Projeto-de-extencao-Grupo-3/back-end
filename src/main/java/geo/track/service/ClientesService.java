@@ -1,13 +1,13 @@
 package geo.track.service;
 
 import geo.track.domain.Clientes;
+import geo.track.exception.ConflictException;
+import geo.track.exception.DataNotFoundException;
 import geo.track.repository.ClientesRepository;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPutCliente;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -20,72 +20,76 @@ public class ClientesService {
         this.clientesRepository = clientesRepository;
     }
 
-    public ResponseEntity<Clientes> postCliente(Clientes body){
-        Clientes cliente = clientesRepository.save(body);
-
-        return ResponseEntity.status(201).body(cliente);
+    public Clientes postCliente(Clientes cliente){
+        if(clientesRepository.existsByCpfCnpj(cliente.getCpfCnpj())){
+            throw new ConflictException("O CPF do cliente informado já existe", "Clientes");
+        }
+        return clientesRepository.save(cliente);
     }
 
-    public ResponseEntity<Clientes> findClienteById(Integer id){
+    public Clientes findClienteById(Integer id){
         Optional<Clientes> cliente = clientesRepository.findById(id);
 
-        if (cliente.isPresent()) {
-            return ResponseEntity.status(200).body(cliente.get());
+        if (cliente.isEmpty()) {
+            throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Clientes");
         }
-        return ResponseEntity.status(404).body(null);
+        return cliente.get();
     }
 
 
-    public ResponseEntity<List<Clientes>> findClienteByNome(String nome) {
-        List<Clientes> clientes = clientesRepository.findByNome(nome);
+    public List<Clientes> findClienteByNome(String nome) {
+        List<Clientes> cliente = clientesRepository.findByNome(nome);
 
-        if (!clientes.isEmpty()) {
-            return ResponseEntity.status(200).body(clientes);
-        } else {
-            return ResponseEntity.status(404).body(null);
+        if (cliente.isEmpty()) {
+            throw new DataNotFoundException("O nome %d não foi encontrado".formatted(nome), "Clientes");
         }
+        return cliente;
     }
 
-    public ResponseEntity<Clientes> findClienteByCpfCnpj(String cpfCnpj) {
+    public Clientes findClienteByCpfCnpj(String cpfCnpj) {
         Optional<Clientes> cliente = clientesRepository.findByCpfCnpj(cpfCnpj);
 
-        if (cliente.isPresent()) {
-            return ResponseEntity.status(200).body(cliente.get());
-        } else {
-            return ResponseEntity.status(404).body(null);
+        if (cliente.isEmpty()) {
+            throw new DataNotFoundException("CPF %d não foi encontrado".formatted(cpfCnpj), "Clientes");
         }
+        return cliente.get();
     }
 
-    public ResponseEntity<Clientes> patchEmailCliente(RequestPatchEmail clienteDTO) {
+    public Clientes patchEmailCliente(RequestPatchEmail clienteDTO) {
         Optional<Clientes> clientes = clientesRepository.findById(clienteDTO.getId());
 
-        if (clientes.isPresent()) {
-            Clientes cliente = clientes.get();
-            cliente.setEmail(clienteDTO.getEmail());
-            clientesRepository.save(cliente);
-            return ResponseEntity.status(200).body(cliente);
-        } else {
-            return ResponseEntity.status(404).body(null);
+        if(clientes.isEmpty()){
+            throw new DataNotFoundException("Não existe cliente com esse ID", "Veiculo");
         }
+        Clientes cliente = clientes.get();
+        cliente.setIdCliente(clienteDTO.getId());
+        cliente.setEmail(clienteDTO.getEmail());
+
+        return clientesRepository.save(cliente);
     }
 
-    public ResponseEntity<Clientes> patchTelefoneCliente(RequestPatchTelefone clienteDTO) {
+    public Clientes patchTelefoneCliente(RequestPatchTelefone clienteDTO) {
         Optional<Clientes> clientes = clientesRepository.findById(clienteDTO.getId());
 
-        if (clientes.isPresent()) {
-            Clientes cliente = clientes.get();
-            cliente.setTelefone(clienteDTO.getTelefone());
-            clientesRepository.save(cliente);
-            return ResponseEntity.status(200).body(cliente);
-        } else {
-            return ResponseEntity.status(404).body(null);
+        if(clientes.isEmpty()){
+            throw new DataNotFoundException("Não existe cliente com esse ID", "Clientes");
         }
+
+        Clientes cliente = clientes.get();
+        cliente.setIdCliente(clienteDTO.getId());
+        cliente.setTelefone(clienteDTO.getTelefone());
+
+        return clientesRepository.save(cliente);
     }
 
-    public ResponseEntity<Clientes> putCliente(RequestPutCliente clienteDTO) {
+    public Clientes putCliente(RequestPutCliente clienteDTO) {
         Optional<Clientes> clientes = clientesRepository.findById(clienteDTO.getIdCliente());
 
-        if (clientes.isPresent()) {
+
+        if(clientes.isEmpty()){
+            throw new DataNotFoundException("Não existe cliente com esse ID", "Clientes");
+        }
+
             Clientes cliente = clientes.get();
 
             cliente.setIdCliente(clienteDTO.getIdCliente());
@@ -94,20 +98,19 @@ public class ClientesService {
             cliente.setTelefone(clienteDTO.getTelefone());
             cliente.setEmail(clienteDTO.getEmail());
 
-            clientesRepository.save(cliente);
+          return clientesRepository.save(cliente);
 
-            return ResponseEntity.status(200).body(cliente);
-        } else {
-            return ResponseEntity.status(404).body(null);
-        }
+
     }
 
-    public ResponseEntity<Clientes> deletar(Integer id){
+    public Clientes deletar(Integer id){
         if (clientesRepository.existsById(id)){
             clientesRepository.deleteById(id);
-            return ResponseEntity.status(204).build();
+
         }
-        return ResponseEntity.status(404).build();
+        throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Clientes");
+
+
     }
 }
 

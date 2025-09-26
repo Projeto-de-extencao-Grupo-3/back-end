@@ -16,43 +16,56 @@ public class ClientesController {
     private final ClientesService clientesService;
 
     @PostMapping
-    public ResponseEntity<Clientes> postCliente(@Valid @RequestBody Clientes body){
-        return clientesService.postCliente(body);
+    public ResponseEntity<Clientes> postCliente(@Valid @RequestBody Clientes cliente) {
+        Clientes clientes = clientesService.postCliente(cliente);
+        return ResponseEntity.status(201).body(clientes);
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<Clientes> getClienteById(@PathVariable Integer id){
-        return clientesService.findClienteById(id);
+    public ResponseEntity<Clientes> getClienteById(@PathVariable Integer id) {
+        Clientes cliente = clientesService.findClienteById(id);
+        return ResponseEntity.status(200).body(cliente);
     }
 
     @GetMapping("/nome")
     public ResponseEntity<List<Clientes>> getClienteByNome(@RequestParam String nome) {
-        return clientesService.findClienteByNome(nome);
+        List<Clientes> cliente = clientesService.findClienteByNome(nome);
+        if(cliente.isEmpty()){
+            return ResponseEntity.status(204).body(cliente);
+        }
+        return ResponseEntity.status(200).body(cliente);
     }
 
     @GetMapping("/cpfCnpj")
     public ResponseEntity<Clientes> getClienteByCpfCnpj(@RequestParam String cpfCnpj) {
-        return clientesService.findClienteByCpfCnpj(cpfCnpj);
+        Clientes cliente = clientesService.findClienteByCpfCnpj(cpfCnpj);
+        return ResponseEntity.status(200).body(cliente);
     }
 
     @PatchMapping("/email")
     public ResponseEntity<Clientes> patchEmailCliente(@RequestBody RequestPatchEmail clienteDTO) {
-        return clientesService.patchEmailCliente(clienteDTO);
+        Clientes cliente = clientesService.patchEmailCliente(clienteDTO);
+        return ResponseEntity.status(200).body(cliente);
     }
 
     @PatchMapping("/telefone")
     public ResponseEntity<Clientes> patchTelefoneCliente(@RequestBody RequestPatchTelefone clienteDTO) {
-        return clientesService.patchTelefoneCliente(clienteDTO);
+        Clientes cliente = clientesService.patchTelefoneCliente(clienteDTO);
+        return ResponseEntity.status(200).body(cliente);
     }
 
     @PutMapping()
     public ResponseEntity<Clientes> putCliente(@RequestBody RequestPutCliente clienteDTO) {
-        return clientesService.putCliente(clienteDTO);
+        Clientes cliente = clientesService.putCliente(clienteDTO);
+        return ResponseEntity.status(200).body(cliente);
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Clientes> removerCliente(@PathVariable Integer id){
-        return clientesService.deletar(id);
+         clientesService.deletar(id);
+        return ResponseEntity.status(204).build();
     }
 
     public ClientesController(ClientesService clientesService) {
