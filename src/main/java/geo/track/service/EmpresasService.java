@@ -1,12 +1,15 @@
 package geo.track.service;
 
 import geo.track.domain.Empresas;
+import geo.track.dto.empresas.request.EmpresaPatchEmailDTO;
+import geo.track.dto.empresas.request.EmpresaPatchStatusDTO;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.EmpresasRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmpresasService {
@@ -24,11 +27,7 @@ public class EmpresasService {
     }
 
     public List<Empresas> listar(){
-        List<Empresas> listaEmpresas = repository.findAll();
-        if(listaEmpresas.isEmpty()){
-            throw new DataNotFoundException("A lista de empresas está vazia!", "Empresas");
-        }
-        return listaEmpresas;
+        return repository.findAll();
     }
 
     public Empresas findEmpresaById(Integer id){
@@ -36,11 +35,7 @@ public class EmpresasService {
     }
 
     public List<Empresas> findEmpresaByRazaoSocial(String razaoSocial){
-        List<Empresas> empresasPorRazaoSocial = repository.findByrazaoSocialContainingIgnoreCase(razaoSocial);
-        if (empresasPorRazaoSocial.isEmpty()){
-            throw new DataNotFoundException("A Empresa %s não existe".formatted(razaoSocial), "Empresas");
-        }
-        return empresasPorRazaoSocial;
+        return repository.findByrazaoSocialContainingIgnoreCase(razaoSocial);
     }
 
     public Empresas findEmpresaByCnpj(String cnpj){
@@ -56,10 +51,37 @@ public class EmpresasService {
          throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Empresas");
     }
 
-    public void remover(Integer id){
-        if (repository.existsById(id)){
-            repository.deleteById(id);
+    public Empresas patchEmail(EmpresaPatchEmailDTO dto){
+        Optional<Empresas> empresa = repository.findById(dto.getId());
+
+        if(empresa.isEmpty()){
+            throw new DataNotFoundException("Não existe uma empresa com esse ID", "Empresas");
         }
-        throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Empresas");
+        Empresas emp = empresa.get();
+
+        emp.setIdEmpresa(dto.getId());
+        emp.setEmail(dto.getEmail());
+        return repository.save(emp);
+    }
+
+
+    public Empresas patchStatus(EmpresaPatchStatusDTO dto){
+        Optional<Empresas> empresa = repository.findById(dto.getId());
+
+        if(empresa.isEmpty()){
+            throw new DataNotFoundException("Não existe uma empresa com esse ID", "Empresas");
+        }
+        Empresas emp = empresa.get();
+
+        emp.setIdEmpresa(dto.getId());
+        emp.setStatus(dto.getStatus());
+        return repository.save(emp);
+    }
+
+    public void remover(Integer id){
+        if (!repository.existsById(id)){
+            throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Empresas");
+        }
+        repository.deleteById(id);
     }
 }

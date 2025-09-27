@@ -1,6 +1,11 @@
 package geo.track.controller;
 
 import geo.track.domain.Empresas;
+import geo.track.domain.Veiculos;
+import geo.track.dto.empresas.request.EmpresaPatchEmailDTO;
+import geo.track.dto.empresas.request.EmpresaPatchStatusDTO;
+import geo.track.dto.veiculos.request.RequestPatchCor;
+import geo.track.dto.veiculos.request.RequestPatchPlaca;
 import geo.track.service.EmpresasService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +54,18 @@ public class EmpresaController {
     @PutMapping("/{id}")
     public ResponseEntity<Empresas> atualizarEmpresa(@PathVariable Integer id, @RequestBody Empresas empresa){
         Empresas emp = empresasService.atualizar(id, empresa);
+        return ResponseEntity.status(200).body(emp);
+    }
+
+    @PatchMapping("/email")
+    public ResponseEntity<Empresas> patchEmail(@RequestBody EmpresaPatchEmailDTO dto){
+        Empresas emp = empresasService.patchEmail(dto);
+        return ResponseEntity.status(200).body(emp);
+    }
+
+    @PatchMapping("/status")
+    public ResponseEntity<Empresas> patchStatus(@RequestBody EmpresaPatchStatusDTO dto){
+        Empresas emp = empresasService.patchStatus(dto);
         return ResponseEntity.status(200).body(emp);
     }
 
