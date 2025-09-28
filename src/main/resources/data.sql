@@ -5,12 +5,11 @@ INSERT INTO clientes (nome, cpf_cnpj, telefone, email) VALUES
 ('Diego Rafael Lima', '555.666.777-88', '3199998888', 'diego.lima@example.com'),
 ('Eduarda Silva Costa', '222.333.444-55', '41987651234', 'eduarda.costa@example.com');
 
-INSERT INTO empresas (razao_social, cnpj, email, dt_criacao, status) VALUES
-('Tech Solutions LTDA', '11.444.777/0001-61', 'contato@techsolutions.com', '2025-09-27 14:30', 'ATIVA'),
-('Geo Track Brasil', '12.345.678/0001-95', 'suporte@geotrack.com', '2025-09-20 09:15', 'ATIVA'),
-('Smart Logistics S.A.', '45.987.321/0001-50', 'logistica@smart.com', '2025-09-18 16:45', 'INATIVA'),
-('Data Vision LTDA', '22.333.444/0001-64', 'info@datavision.com', '2025-09-10 11:00', 'ATIVA'),
-('NextGen Tecnologia', '55.666.777/0001-32', 'contato@nextgen.com', '2025-09-01 08:20', 'SUSPENSA');
+--INSERT INTO empresas (razao_social, cnpj, email, dt_criacao, status) VALUES
+--('GRO Track Brasil', '12.345.678/0001-95', 'suporte@grotrack.com', '2025-09-20 09:15', 'ATIVA');
+
+INSERT INTO Empresas (razao_social, email, cnpj, dt_criacao, status, senha)
+VALUES ('GRO Track', 'geosmar@grotrack.com', '12.345.678/0001-97', '2025-09-20 09:15', 'ATIVA', '123456');
 
 
 INSERT INTO veiculos (placa, marca, ano_modelo, ano_fabricacao, cor) VALUES

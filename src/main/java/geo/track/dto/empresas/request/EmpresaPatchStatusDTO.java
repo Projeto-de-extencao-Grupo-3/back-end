@@ -13,5 +13,4 @@ public class EmpresaPatchStatusDTO {
     private Integer id;
     @NotBlank
     private String status;
-
 }

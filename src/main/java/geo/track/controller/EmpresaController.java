@@ -2,11 +2,17 @@ package geo.track.controller;
 
 import geo.track.domain.Empresas;
 import geo.track.domain.Veiculos;
+import geo.track.dto.autenticacao.UsuarioCriacaoDto;
+import geo.track.dto.autenticacao.UsuarioLoginDto;
+import geo.track.dto.autenticacao.UsuarioMapper;
+import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.empresas.request.EmpresaPatchEmailDTO;
 import geo.track.dto.empresas.request.EmpresaPatchStatusDTO;
 import geo.track.dto.veiculos.request.RequestPatchCor;
 import geo.track.dto.veiculos.request.RequestPatchPlaca;
 import geo.track.service.EmpresasService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +28,26 @@ public class EmpresaController {
     }
 
     @PostMapping
-    public ResponseEntity<Empresas> cadastrarEmpresa(@RequestBody Empresas empresa){
-        Empresas emp = empresasService.cadastrar(empresa);
-        return ResponseEntity.status(201).body(emp);
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Empresas> cadastrarEmpresa(@RequestBody @Valid UsuarioCriacaoDto empresa){
+//        Empresas emp = empresasService.cadastrar(empresa);
+//        return ResponseEntity.status(201).body(emp);
+
+        final Empresas novaEmpresa = UsuarioMapper.of(empresa);
+        this.empresasService.cadastrar(novaEmpresa);
+        return ResponseEntity.status(201).build();
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioTokenDto> login(@RequestBody UsuarioLoginDto usuarioLoginDto) {
+
+        final Empresas empresa = UsuarioMapper.of(usuarioLoginDto);
+        UsuarioTokenDto usuarioTokenDto = this.empresasService.autenticar(empresa);
+
+        return ResponseEntity.status(200).body(usuarioTokenDto);
+    }
+
+
 
     @GetMapping
     public ResponseEntity<List<Empresas>> listarEmpresas(){

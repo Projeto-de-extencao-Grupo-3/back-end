@@ -26,7 +26,6 @@ public class Empresas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idEmpresa;
 
-    @NotBlank
     private String razaoSocial;
 
     @CNPJ
@@ -41,6 +40,5 @@ public class Empresas {
     @NotBlank
     private String status;
 
-
-
+    private String senha;
 }
