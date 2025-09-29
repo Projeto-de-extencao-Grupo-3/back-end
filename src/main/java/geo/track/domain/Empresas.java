@@ -28,16 +28,12 @@ public class Empresas {
 
     private String razaoSocial;
 
-    @CNPJ
     private String cnpj;
 
-    @Email
     private String email;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime dtCriacao;
+    private LocalDateTime dt_criacao;
 
-    @NotBlank
     private String status;
 
     private String senha;

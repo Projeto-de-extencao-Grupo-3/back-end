@@ -5,10 +5,10 @@ import geo.track.domain.Empresas;
 public class UsuarioMapper {
     public static Empresas of(UsuarioCriacaoDto usuarioCriacaoDto) {
         Empresas usuario = new Empresas();
-        usuario.setRazaoSocial(usuarioCriacaoDto.getNome());
+        usuario.setRazaoSocial(usuarioCriacaoDto.getRazaoSocial());
         usuario.setCnpj(usuarioCriacaoDto.getCnpj());
         usuario.setEmail(usuarioCriacaoDto.getEmail());
-        usuario.setDtCriacao(usuarioCriacaoDto.getDtCriacao());
+        usuario.setDt_criacao(usuarioCriacaoDto.getDt_criacao());
         usuario.setStatus(usuarioCriacaoDto.getStatus());
         usuario.setSenha(usuarioCriacaoDto.getSenha());
 
