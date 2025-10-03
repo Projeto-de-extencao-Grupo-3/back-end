@@ -49,21 +49,14 @@ public class VeiculosService {
         return repository.findAllByPlacaStartsWithIgnoreCase(placa);
     }
 
-    public Veiculos putEndereco(RequestPutVeiculos veiculoDTO){
-        Optional<Veiculos> veiculoOpt = repository.findById(veiculoDTO.getIdVeiculo());
+    public Veiculos putEndereco(Integer id,Veiculos veiculoAtt){
+        Optional<Veiculos> veiculoOpt = repository.findById(id);
 
         if(veiculoOpt.isEmpty()){
             throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
         }
 
         Veiculos veiculo = veiculoOpt.get();
-
-        veiculo.setIdVeiculo(veiculoDTO.getIdVeiculo());
-        veiculo.setPlaca(veiculoDTO.getPlaca());
-        veiculo.setMarca(veiculoDTO.getMarca());
-        veiculo.setAnoModelo(veiculoDTO.getAnoModelo());
-        veiculo.setAnoFabricacao(veiculoDTO.getAnoFabricacao());
-        veiculo.setCor(veiculoDTO.getCor());
 
 
         return repository.save(veiculo);

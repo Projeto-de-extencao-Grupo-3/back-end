@@ -3,7 +3,6 @@ package geo.track.controller;
 import geo.track.domain.Veiculos;
 import geo.track.dto.veiculos.request.RequestPatchCor;
 import geo.track.dto.veiculos.request.RequestPatchPlaca;
-import geo.track.dto.veiculos.request.RequestPutVeiculos;
 import geo.track.service.VeiculosService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -56,9 +55,9 @@ public class VeiculosController {
         return ResponseEntity.status(200).body(veic);
     }
 
-    @PutMapping()
-    public ResponseEntity<Veiculos>putVeiculo(@RequestBody RequestPutVeiculos veiculoDTO){
-        Veiculos veic = service.putEndereco(veiculoDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<Veiculos>putVeiculo(@PathVariable Integer id, @RequestBody Veiculos veiculoAtt){
+        Veiculos veic = service.putEndereco(id, veiculoAtt);
         return ResponseEntity.status(200).body(veic);
     }
 
