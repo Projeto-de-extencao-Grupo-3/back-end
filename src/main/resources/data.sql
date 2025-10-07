@@ -9,10 +9,3 @@ INSERT INTO Oficinas (razao_social, cnpj, email, dt_criacao, status, senha)
 VALUES ('GRO Track', '14.820.390/0001-50', 'geosmar@grotrack.com', '2025-09-20 09:15:00', 'ATIVA',
 '$2a$10$jK9yW8hs15vmta/TyTRTZOAlXi8UGn0KQYtzqI5WY0WL7ek8RU0xu');
 --Senha:123456
-
-INSERT INTO veiculos (placa, marca, ano_modelo, ano_fabricacao, cor) VALUES
-('ABC1D23', 'Toyota', 2023, 2022, 'Prata'),
-('XYZ9K87', 'Honda', 2024, 2023, 'Preto'),
-('JKL4M56', 'Ford', 2022, 2021, 'Branco'),
-('QWE8R12', 'Chevrolet', 2025, 2024, 'Vermelho'),
-('MNO7P34', 'Volkswagen', 2023, 2022, 'Azul');
