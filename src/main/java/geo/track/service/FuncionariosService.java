@@ -4,7 +4,6 @@ import geo.track.domain.Funcionarios;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.FuncionariosRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,6 +45,5 @@ public class FuncionariosService {
         }
         repository.deleteById(id);
     }
-
 
 }
