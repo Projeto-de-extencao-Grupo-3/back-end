@@ -1,6 +1,9 @@
 package geo.track.service;
 
 import geo.track.domain.Produtos;
+import geo.track.dto.produtos.RequestPatchPrecoCompra;
+import geo.track.dto.produtos.RequestPatchPrecoVenda;
+import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.ProdutosRepository;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,53 @@ public class ProdutosService {
 
         return repository.save(prod);
     }
+
+    public Produtos patchQtdEstoque(RequestPatchQtdEstoque produtoAtt){
+        Optional<Produtos> produtoOpt = repository.findById(produtoAtt.getId());
+
+        if(produtoOpt.isEmpty()){
+            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+        }
+
+        Produtos prod = produtoOpt.get();
+        prod.setQuantidadeEstoque(prod.getQuantidadeEstoque());
+        return repository.save(prod);
+    }
+
+    public Produtos patchPrecoCompra(RequestPatchPrecoCompra produtoAtt){
+        Optional<Produtos> produtoOpt = repository.findById(produtoAtt.getId());
+
+        if(produtoOpt.isEmpty()){
+            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+        }
+
+        Produtos prod = produtoOpt.get();
+        prod.setPrecoCompra(prod.getPrecoCompra());
+        return repository.save(prod);
+    }
+
+    public Produtos patchPrecoVenda(RequestPatchPrecoVenda produtoAtt){
+        Optional<Produtos> produtoOpt = repository.findById(produtoAtt.getId());
+
+        if(produtoOpt.isEmpty()){
+            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+        }
+
+        Produtos prod = produtoOpt.get();
+        prod.setPrecoVenda(prod.getPrecoVenda());
+        return repository.save(prod);
+    }
+
+    public void excluir(Integer id){
+
+        if(!repository.existsById(id)){
+            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+        }
+
+        repository.deleteById(id);
+    }
+
+
 
 
 }
