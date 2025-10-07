@@ -8,18 +8,17 @@ import geo.track.exception.ForbiddenException;
 import geo.track.repository.OrdemDeServicosRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
+@RequiredArgsConstructor
 public class OrdemDeServicosService {
     private final OrdemDeServicosRepository ordemRepository;
-
-
-    public OrdemDeServicosService(OrdemDeServicosRepository ordemRepository) {
-        this.ordemRepository = ordemRepository;
-    }
 
     public OrdemDeServicos postOrdem(@Valid @RequestBody PostEntradaVeiculo ordemDTO){
         OrdemDeServicos ordem = new OrdemDeServicos();

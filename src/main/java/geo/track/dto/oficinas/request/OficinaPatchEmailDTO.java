@@ -1,4 +1,4 @@
-package geo.track.dto.empresas.request;
+package geo.track.dto.oficinas.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,10 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmpresaPatchStatusDTO {
-
+public class OficinaPatchEmailDTO {
     @NotNull
     private Integer id;
     @NotBlank
-    private String status;
+    private String email;
 }

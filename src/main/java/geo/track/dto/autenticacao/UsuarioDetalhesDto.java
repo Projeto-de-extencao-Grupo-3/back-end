@@ -1,6 +1,6 @@
 package geo.track.dto.autenticacao;
 
-import geo.track.domain.Empresas;
+import geo.track.domain.Oficinas;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,7 +16,7 @@ public class UsuarioDetalhesDto implements UserDetails {
 
     private final String senha;
 
-    public UsuarioDetalhesDto(Empresas beneficiario) {
+    public UsuarioDetalhesDto(Oficinas beneficiario) {
         this.nome = beneficiario.getRazaoSocial();
         this.email = beneficiario.getEmail();
         this.cnpj = beneficiario.getCnpj();

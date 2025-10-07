@@ -1,10 +1,10 @@
 package geo.track.dto.autenticacao;
 
-import geo.track.domain.Empresas;
+import geo.track.domain.Oficinas;
 
 public class UsuarioMapper {
-    public static Empresas of(UsuarioCriacaoDto usuarioCriacaoDto) {
-        Empresas usuario = new Empresas();
+    public static Oficinas of(UsuarioCriacaoDto usuarioCriacaoDto) {
+        Oficinas usuario = new Oficinas();
         usuario.setRazaoSocial(usuarioCriacaoDto.getRazaoSocial());
         usuario.setCnpj(usuarioCriacaoDto.getCnpj());
         usuario.setEmail(usuarioCriacaoDto.getEmail());
@@ -15,8 +15,8 @@ public class UsuarioMapper {
         return usuario;
     }
 
-    public static Empresas of(UsuarioLoginDto usuarioLoginDto) {
-        Empresas usuario = new Empresas();
+    public static Oficinas of(UsuarioLoginDto usuarioLoginDto) {
+        Oficinas usuario = new Oficinas();
 
         usuario.setCnpj(usuarioLoginDto.getCnpj());
         usuario.setSenha(usuarioLoginDto.getSenha());
@@ -24,7 +24,7 @@ public class UsuarioMapper {
         return usuario;
     }
 
-    public static UsuarioTokenDto of(Empresas beneficiario, String token) {
+    public static UsuarioTokenDto of(Oficinas beneficiario, String token) {
         UsuarioTokenDto usuarioTokenDto = new UsuarioTokenDto();
 
         usuarioTokenDto.setIdCliente(beneficiario.getIdEmpresa());
@@ -35,7 +35,7 @@ public class UsuarioMapper {
         return usuarioTokenDto;
     }
 
-    public static UsuarioListarDto of(Empresas beneficiario) {
+    public static UsuarioListarDto of(Oficinas beneficiario) {
         UsuarioListarDto usuarioListarDto = new UsuarioListarDto();
 
         usuarioListarDto.setIdCliente(beneficiario.getIdEmpresa());

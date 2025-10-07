@@ -1,8 +1,8 @@
 package geo.track.service;
 
-import geo.track.domain.Empresas;
+import geo.track.domain.Oficinas;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
-import geo.track.repository.EmpresasRepository;
+import geo.track.repository.OficinaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AutenticacaoService implements UserDetailsService {
+public class          AutenticacaoService implements UserDetailsService {
     @Autowired
-    private EmpresasRepository empresasRepository;
+    private OficinaRepository oficinaRepository;
 
     @Override
     public UserDetails loadUserByUsername(String cnpj) throws UsernameNotFoundException {
-        Optional<Empresas> empresaOpt = empresasRepository.findByCnpj(cnpj);
+        Optional<Oficinas> empresaOpt = oficinaRepository.findByCnpj(cnpj);
 
         if (empresaOpt.isEmpty()) {
             throw new UsernameNotFoundException(String.format("usuario: %s nao encontrado", cnpj));

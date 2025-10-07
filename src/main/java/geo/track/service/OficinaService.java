@@ -1,14 +1,14 @@
 package geo.track.service;
 
 import geo.track.config.GerenciadorTokenJwt;
-import geo.track.domain.Empresas;
+import geo.track.domain.Oficinas;
 import geo.track.dto.autenticacao.UsuarioMapper;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
-import geo.track.dto.empresas.request.EmpresaPatchEmailDTO;
-import geo.track.dto.empresas.request.EmpresaPatchStatusDTO;
+import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
+import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.repository.EmpresasRepository;
+import geo.track.repository.OficinaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,14 +22,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmpresasService {
-    private final EmpresasRepository repository;
+public class OficinaService {
+    private final OficinaRepository repository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmpresasRepository empresasRepository;
+    private OficinaRepository oficinaRepository;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -37,11 +37,11 @@ public class EmpresasService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public EmpresasService(EmpresasRepository repository) {
+    public OficinaService(OficinaRepository repository) {
         this.repository = repository;
     }
 
-    public Empresas cadastrar(Empresas empresa){
+    public Oficinas cadastrar(Oficinas empresa){
         if (repository.findByCnpj(empresa.getCnpj()).isPresent()){
             throw new ConflictException("O CNPJ %s já está cadastrado!".formatted(empresa.getCnpj()), "Empresas");
         }
@@ -50,15 +50,15 @@ public class EmpresasService {
         return repository.save(empresa);
     }
 
-    public UsuarioTokenDto autenticar(Empresas empresa) {
+    public UsuarioTokenDto autenticar(Oficinas empresa) {
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 empresa.getCnpj(), empresa.getSenha());
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        Empresas usuarioAutenticado =
-                empresasRepository.findByCnpj(empresa.getCnpj())
+        Oficinas usuarioAutenticado =
+                oficinaRepository.findByCnpj(empresa.getCnpj())
                         .orElseThrow(
                                 () -> new ResponseStatusException(404, "CNPJ do usuário não cadastrado", null)
                         );
@@ -70,38 +70,38 @@ public class EmpresasService {
         return UsuarioMapper.of(usuarioAutenticado, token);
     }
 
-    public List<Empresas> listar(){
+    public List<Oficinas> listar(){
         return repository.findAll();
     }
 
-    public Empresas findEmpresaById(Integer id){
+    public Oficinas findEmpresaById(Integer id){
         return repository.findById(id).orElseThrow(() -> new DataNotFoundException("Empresa com ID %d não encontrado".formatted(id), "Empresas"));
     }
 
-    public List<Empresas> findEmpresaByRazaoSocial(String razaoSocial){
+    public List<Oficinas> findEmpresaByRazaoSocial(String razaoSocial){
         return repository.findByrazaoSocialContainingIgnoreCase(razaoSocial);
     }
 
-    public Empresas findEmpresaByCnpj(String cnpj){
+    public Oficinas findEmpresaByCnpj(String cnpj){
         return repository.findByCnpj(cnpj).orElseThrow(() -> new DataNotFoundException("Empresa com CNPJ %s não foi encontrado".formatted(cnpj), "Empresas"));
     }
 
-    public Empresas atualizar(Integer id,Empresas empresa){
+    public Oficinas atualizar(Integer id, Oficinas empresa){
         if (repository.existsById(id)){
             empresa.setIdEmpresa(id);
-            Empresas empSalva = repository.save(empresa);
+            Oficinas empSalva = repository.save(empresa);
             return empSalva;
         }
          throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Empresas");
     }
 
-    public Empresas patchEmail(EmpresaPatchEmailDTO dto){
-        Optional<Empresas> empresa = repository.findById(dto.getId());
+    public Oficinas patchEmail(OficinaPatchEmailDTO dto){
+        Optional<Oficinas> empresa = repository.findById(dto.getId());
 
         if(empresa.isEmpty()){
             throw new DataNotFoundException("Não existe uma empresa com esse ID", "Empresas");
         }
-        Empresas emp = empresa.get();
+        Oficinas emp = empresa.get();
 
         emp.setIdEmpresa(dto.getId());
         emp.setEmail(dto.getEmail());
@@ -109,13 +109,13 @@ public class EmpresasService {
     }
 
 
-    public Empresas patchStatus(EmpresaPatchStatusDTO dto){
-        Optional<Empresas> empresa = repository.findById(dto.getId());
+    public Oficinas patchStatus(OficinaPatchStatusDTO dto){
+        Optional<Oficinas> empresa = repository.findById(dto.getId());
 
         if(empresa.isEmpty()){
             throw new DataNotFoundException("Não existe uma empresa com esse ID", "Empresas");
         }
-        Empresas emp = empresa.get();
+        Oficinas emp = empresa.get();
 
         emp.setIdEmpresa(dto.getId());
         emp.setStatus(dto.getStatus());

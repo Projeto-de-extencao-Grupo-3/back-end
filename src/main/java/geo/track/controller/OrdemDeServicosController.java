@@ -1,6 +1,5 @@
 package geo.track.controller;
 
-import geo.track.domain.Clientes;
 import geo.track.domain.OrdemDeServicos;
 import geo.track.dto.os.request.*;
 import geo.track.service.OrdemDeServicosService;
@@ -8,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/ordens")
