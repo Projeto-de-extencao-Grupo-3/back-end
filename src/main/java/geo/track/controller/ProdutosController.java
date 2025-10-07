@@ -1,6 +1,9 @@
 package geo.track.controller;
 
 import geo.track.domain.Produtos;
+import geo.track.dto.produtos.RequestPatchPrecoCompra;
+import geo.track.dto.produtos.RequestPatchPrecoVenda;
+import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.service.ProdutosService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +46,32 @@ public class ProdutosController {
         Produtos prod = service.putProdutos(id,produtoAtt);
         return ResponseEntity.status(200).body(prod);
     }
+
+    @PatchMapping("/quantidadeEstoque")
+    public ResponseEntity<Produtos>patchQtdEstoque(@RequestBody RequestPatchQtdEstoque produtoAtt){
+        Produtos prod = service.patchQtdEstoque(produtoAtt);
+        return ResponseEntity.status(200).body(prod);
+    }
+
+    @PatchMapping("/precoCompra")
+    public ResponseEntity<Produtos>patchPrecoCompra(@RequestBody RequestPatchPrecoCompra produtoAtt){
+        Produtos prod = service.patchPrecoCompra(produtoAtt);
+        return ResponseEntity.status(200).body(prod);
+    }
+
+    @PatchMapping("/precoVenda")
+    public ResponseEntity<Produtos>patchPrecoVenda(@RequestBody RequestPatchPrecoVenda produtoAtt){
+        Produtos prod = service.patchPrecoVenda(produtoAtt);
+        return ResponseEntity.status(200).body(prod);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void>excluir(@PathVariable Integer id){
+        service.excluir(id);
+        return ResponseEntity.status(204).build();
+    }
+
+
 
 
 
