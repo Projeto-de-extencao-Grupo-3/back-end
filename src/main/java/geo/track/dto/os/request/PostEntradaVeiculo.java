@@ -4,13 +4,11 @@ import geo.track.enums.os.StatusVeiculo;
 
 
 public class PostEntradaVeiculo {
-    private Integer idOrdem;
     private StatusVeiculo status;
     private Double valorTotal = 0.0;
     private Integer fkEntrada;
 
-    public PostEntradaVeiculo(Integer idOrdem, StatusVeiculo status, Double valorTotal, Integer fkEntrada) {
-        this.idOrdem = idOrdem;
+    public PostEntradaVeiculo(StatusVeiculo status, Double valorTotal, Integer fkEntrada) {
         this.status = status;
         this.valorTotal = valorTotal;
         this.fkEntrada = fkEntrada;
@@ -19,13 +17,6 @@ public class PostEntradaVeiculo {
     public PostEntradaVeiculo() {
     }
 
-    public Integer getIdOrdem() {
-        return idOrdem;
-    }
-
-    public void setIdOrdem(Integer idOrdem) {
-        this.idOrdem = idOrdem;
-    }
 
     public StatusVeiculo getStatus() {
         return status;

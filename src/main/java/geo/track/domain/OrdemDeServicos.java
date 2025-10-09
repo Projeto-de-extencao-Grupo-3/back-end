@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -13,9 +15,11 @@ public class OrdemDeServicos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_ordem_servico;
+    @NotNull
     private Double valor_total;
     private LocalDate dt_saida_prevista;
     private LocalDate dt_saida_efetiva;
+    @NotNull
     private StatusVeiculo status;
     private Boolean seguradora;
     private Boolean nf_realizada;
