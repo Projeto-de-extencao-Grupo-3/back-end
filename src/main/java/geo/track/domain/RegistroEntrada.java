@@ -1,5 +1,6 @@
 package geo.track.domain;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,6 +13,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,5 +34,4 @@ public class RegistroEntrada {
     private Integer geladeira;
     private Integer monitor;
     private Integer fk_veiculo;
-
 }

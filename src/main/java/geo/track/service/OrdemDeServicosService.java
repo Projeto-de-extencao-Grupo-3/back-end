@@ -22,7 +22,6 @@ public class OrdemDeServicosService {
 
     public OrdemDeServicos postOrdem(@Valid @RequestBody PostEntradaVeiculo ordemDTO){
         OrdemDeServicos ordem = new OrdemDeServicos();
-        ordem.setId_ordem_servico(ordemDTO.getIdOrdem());
 
         ordem.setStatus(ordemDTO.getStatus());
         ordem.setValor_total(ordemDTO.getValorTotal());

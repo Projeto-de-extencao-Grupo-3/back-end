@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class RegistroEntradaService {
-
     private final RegistroEntradaRepository registroRepository;
 
     public RegistroEntradaService(RegistroEntradaRepository registroRepository) {
