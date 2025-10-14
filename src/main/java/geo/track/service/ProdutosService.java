@@ -6,18 +6,16 @@ import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.ProdutosRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProdutosService {
-    final ProdutosRepository repository;
-
-    public ProdutosService(ProdutosRepository repository) {
-        this.repository = repository;
-    }
+    private final ProdutosRepository repository;
 
     public Produtos cadastrar(Produtos prod){
         return repository.save(prod);

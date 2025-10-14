@@ -4,16 +4,14 @@ import geo.track.domain.Servicos;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.ServicosRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ServicosService {
 
     private final ServicosRepository repository;
-
-    public ServicosService(ServicosRepository repository) {
-        this.repository = repository;
-    }
 
     public Servicos cadastrar(Servicos servicoss){
         if (repository.existsByTituloServico(servicoss.getTituloServico())){

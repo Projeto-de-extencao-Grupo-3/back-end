@@ -1,11 +1,11 @@
 package geo.track.dto.veiculos.request;
 
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class RequestPutVeiculos {
     private Integer idVeiculo;
     private String placa;

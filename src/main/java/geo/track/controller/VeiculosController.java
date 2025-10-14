@@ -5,6 +5,7 @@ import geo.track.dto.veiculos.request.RequestPatchCor;
 import geo.track.dto.veiculos.request.RequestPatchPlaca;
 import geo.track.service.VeiculosService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,14 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/veiculos")
+@RequiredArgsConstructor
 public class VeiculosController {
 
-    public final VeiculosService service;
-
-    public VeiculosController(VeiculosService service) {
-        this.service = service;
-    }
-
+    private final VeiculosService service;
 
     @PostMapping
     public ResponseEntity<Veiculos>cadastrar(@Valid @RequestBody Veiculos veiculo){

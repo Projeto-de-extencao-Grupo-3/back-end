@@ -9,6 +9,7 @@ import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.OficinaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class OficinaService {
     private final OficinaRepository repository;
 
@@ -36,10 +38,6 @@ public class OficinaService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    public OficinaService(OficinaRepository repository) {
-        this.repository = repository;
-    }
 
     public Oficinas cadastrar(Oficinas empresa){
         if (repository.findByCnpj(empresa.getCnpj()).isPresent()){

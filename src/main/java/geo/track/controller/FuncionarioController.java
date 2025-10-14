@@ -2,18 +2,16 @@ package geo.track.controller;
 
 import geo.track.domain.Funcionarios;
 import geo.track.service.FuncionariosService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/funcionarios")
+@RequiredArgsConstructor
 public class FuncionarioController {
 
     private final FuncionariosService service;
-
-    public FuncionarioController(FuncionariosService service) {
-        this.service = service;
-    }
 
     @PostMapping
     public ResponseEntity<Funcionarios> cadastrar(@RequestBody Funcionarios funcionario){

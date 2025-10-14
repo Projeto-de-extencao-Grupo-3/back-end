@@ -4,17 +4,17 @@ import geo.track.domain.RegistroEntrada;
 import geo.track.dto.registroEntrada.request.PostRegistroEntrada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.service.RegistroEntradaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/entrada")
+@RequiredArgsConstructor
 public class RegistroEntradaController {
     private final RegistroEntradaService registroService;
-
-    public RegistroEntradaController(RegistroEntradaService registroService) {
-        this.registroService = registroService;
-    }
 
     @PostMapping
     public ResponseEntity<RegistroEntrada> postRegistro(PostRegistroEntrada registroDTO){

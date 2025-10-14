@@ -7,18 +7,15 @@ import geo.track.repository.ClientesRepository;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPutCliente;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-
+@RequiredArgsConstructor
 public class ClientesService {
     private final ClientesRepository clientesRepository;
-
-    public ClientesService(ClientesRepository clientesRepository) {
-        this.clientesRepository = clientesRepository;
-    }
 
     public Clientes postCliente(Clientes cliente){
         if(clientesRepository.existsByCpfCnpj(cliente.getCpfCnpj())){

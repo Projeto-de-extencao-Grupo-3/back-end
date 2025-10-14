@@ -10,6 +10,8 @@ import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.service.OficinaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +19,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/oficinas")
+@RequiredArgsConstructor
 public class OficinaController {
-    public final OficinaService oficinaService;
-
-    public OficinaController(OficinaService service) {
-        this.oficinaService = service;
-    }
+    private final OficinaService oficinaService;
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")

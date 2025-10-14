@@ -7,17 +7,17 @@ import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
 import geo.track.repository.RegistroEntradaRepository;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
+@RequiredArgsConstructor
 public class RegistroEntradaService {
     private final RegistroEntradaRepository registroRepository;
-
-    public RegistroEntradaService(RegistroEntradaRepository registroRepository) {
-        this.registroRepository = registroRepository;
-    }
 
     public RegistroEntrada postRegistro(@Valid @RequestBody PostRegistroEntrada registroDTO){
         RegistroEntrada registro = new RegistroEntrada();

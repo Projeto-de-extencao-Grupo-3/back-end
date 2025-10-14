@@ -6,6 +6,7 @@ import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.service.ProdutosService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +14,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
+@RequiredArgsConstructor
 public class ProdutosController {
-    final ProdutosService service;
-
-    public ProdutosController(ProdutosService service) {
-        this.service = service;
-    }
+    private final ProdutosService service;
 
     @PostMapping
     public ResponseEntity<Produtos>cadastrar(@Valid @RequestBody Produtos prod){

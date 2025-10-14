@@ -3,6 +3,7 @@ package geo.track.controller;
 import geo.track.domain.OrdemDeServicos;
 import geo.track.dto.os.request.*;
 import geo.track.service.OrdemDeServicosService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,12 +11,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ordens")
+@RequiredArgsConstructor
 public class OrdemDeServicosController {
     private final OrdemDeServicosService ordemService;
-
-    public OrdemDeServicosController(OrdemDeServicosService ordemService) {
-        this.ordemService = ordemService;
-    }
 
     @PostMapping
     public ResponseEntity<OrdemDeServicos> postOrdem(PostEntradaVeiculo ordemDTO){

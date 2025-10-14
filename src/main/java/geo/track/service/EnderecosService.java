@@ -17,8 +17,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EnderecosService {
-    final ViacepConnection viacepConnection = new ViacepConnection();
-    final EnderecosRepository enderecosRepository;
+    private final ViacepConnection viacepConnection = new ViacepConnection();
+    private final EnderecosRepository enderecosRepository;
 
     public Enderecos findEnderecoById(Integer id) {
         Optional<Enderecos> endereco = enderecosRepository.findById(id);

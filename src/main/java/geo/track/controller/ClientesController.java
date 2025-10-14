@@ -6,12 +6,14 @@ import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.service.ClientesService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/clientes")
+@RequiredArgsConstructor
 public class ClientesController {
     private final ClientesService clientesService;
 
@@ -66,9 +68,5 @@ public class ClientesController {
     public ResponseEntity<Clientes> removerCliente(@PathVariable Integer id){
          clientesService.deletar(id);
         return ResponseEntity.status(204).build();
-    }
-
-    public ClientesController(ClientesService clientesService) {
-        this.clientesService = clientesService;
     }
 }

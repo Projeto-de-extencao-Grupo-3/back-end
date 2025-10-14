@@ -4,15 +4,13 @@ import geo.track.domain.Funcionarios;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.FuncionariosRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class FuncionariosService {
     private final FuncionariosRepository repository;
-
-    public FuncionariosService(FuncionariosRepository repository) {
-        this.repository = repository;
-    }
 
     public Funcionarios cadastrar(Funcionarios funcionarios){
         if (repository.existsByNome(funcionarios.getNome())){

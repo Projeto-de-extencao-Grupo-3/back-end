@@ -14,6 +14,9 @@ import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class Clientes {
     @Id
@@ -34,51 +37,4 @@ public class Clientes {
     @NotBlank
     private String email;
 
-    public Clientes(Integer idCliente, String nome, String cpfCnpj, String telefone, String email) {
-        this.idCliente = idCliente;
-        this.nome = nome;
-        this.cpfCnpj = cpfCnpj;
-        this.telefone = telefone;
-        this.email = email;
-    }
-
-    public Integer getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Integer idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpfCnpj() {
-        return cpfCnpj;
-    }
-
-    public void setCpfCnpj(String cpfCnpj) {
-        this.cpfCnpj = cpfCnpj;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

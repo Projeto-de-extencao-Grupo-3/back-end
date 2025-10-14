@@ -1,12 +1,12 @@
 package geo.track.dto.registroEntrada.request;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 public class RequestPutRegistroEntrada {
     private Integer idRegistro;
     private LocalDate dtEntradaEfetiva;

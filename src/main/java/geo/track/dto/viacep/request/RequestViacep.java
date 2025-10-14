@@ -1,10 +1,10 @@
 package geo.track.dto.viacep.request;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class RequestViacep {
     private String cep;
     private String logradouro;

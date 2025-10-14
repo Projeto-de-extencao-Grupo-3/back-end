@@ -8,6 +8,7 @@ import geo.track.dto.veiculos.request.RequestPatchCor;
 import geo.track.dto.veiculos.request.RequestPatchPlaca;
 import geo.track.dto.veiculos.request.RequestPutVeiculos;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +19,9 @@ import java.util.Optional;
 
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class VeiculosService {
-    public final VeiculosRepository repository;
-
-    public VeiculosService(VeiculosRepository repository) {
-        this.repository = repository;
-    }
+    private final VeiculosRepository repository;
 
     public Veiculos cadastrar(@RequestBody Veiculos veiculo){
         veiculo.setIdVeiculo(null);

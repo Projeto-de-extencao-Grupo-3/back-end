@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class EnderecosController {
-    public final EnderecosService enderecosService;
+    private final EnderecosService enderecosService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Enderecos> getEnderecoById(@PathVariable Integer id) {
