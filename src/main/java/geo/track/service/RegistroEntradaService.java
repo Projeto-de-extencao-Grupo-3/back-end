@@ -22,8 +22,8 @@ public class RegistroEntradaService {
     public RegistroEntrada postRegistro(@Valid @RequestBody PostRegistroEntrada registroDTO){
         RegistroEntrada registro = new RegistroEntrada();
 
-        registro.setData_entrada_prevista(registroDTO.getDtEntradaPrevista());
-        registro.setFk_veiculo(registroDTO.getFkVeiculo());
+        registro.setDataEntradaPrevista(registroDTO.getDtEntradaPrevista());
+        registro.setFkVeiculo(registroDTO.getFkVeiculo());
 
         return registroRepository.save(registro);
     }
@@ -51,7 +51,7 @@ public class RegistroEntradaService {
 
         RegistroEntrada registro = registroOPT.get();
 
-        registro.setData_entrada_efetiva(registroDTO.getDtEntradaEfetiva());
+        registro.setDataEntradaEfetiva(registroDTO.getDtEntradaEfetiva());
         registro.setResponsavel(registroDTO.getResponsavel());
         registro.setCpf(registroDTO.getCpf());
         registro.setExtintor(registroDTO.getExtintor());
@@ -71,7 +71,7 @@ public class RegistroEntradaService {
         }
 
         RegistroEntrada registro = registroOPT.get();
-        if (registro.getFk_veiculo() == null){
+        if (registro.getFkVeiculo() == null){
             throw new ForbiddenException("Solicitação recusada", "Registro de Entrada");
 
         }

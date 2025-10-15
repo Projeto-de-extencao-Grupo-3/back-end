@@ -22,16 +22,16 @@ import java.time.LocalDate;
 public class OrdemDeServicos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_ordem_servico;
+    private Integer idOrdemServico;
     @NotNull
-    private Double valor_total;
-    private LocalDate dt_saida_prevista;
-    private LocalDate dt_saida_efetiva;
+    private Double valorTotal;
+    private LocalDate dtSaidaPrevista;
+    private LocalDate dtSaidaEfetiva;
     @NotNull
     private StatusVeiculo status;
     private Boolean seguradora;
-    private Boolean nf_realizada;
-    private Boolean pagt_realizado;
-    private Integer fk_entrada;
+    private Boolean nfRealizada;
+    private Boolean pagtRealizado;
+    private Integer fkEntrada;
 
 }

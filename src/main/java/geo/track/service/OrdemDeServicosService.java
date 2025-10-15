@@ -24,8 +24,8 @@ public class OrdemDeServicosService {
         OrdemDeServicos ordem = new OrdemDeServicos();
 
         ordem.setStatus(ordemDTO.getStatus());
-        ordem.setValor_total(ordemDTO.getValorTotal());
-        ordem.setFk_entrada(ordemDTO.getFkEntrada());
+        ordem.setValorTotal(ordemDTO.getValorTotal());
+        ordem.setFkEntrada(ordemDTO.getFkEntrada());
 
         return ordemRepository.save(ordem);
     }
@@ -52,8 +52,8 @@ public class OrdemDeServicosService {
 
         OrdemDeServicos ordem = ordemOPT.get();
 
-        ordem.setValor_total(ordemDTO.getValorTotal());
-        ordem.setDt_saida_prevista(ordemDTO.getSaidaPrevista());
+        ordem.setValorTotal(ordemDTO.getValorTotal());
+        ordem.setDtSaidaPrevista(ordemDTO.getSaidaPrevista());
 
         return ordemRepository.save(ordem);
     }
@@ -67,7 +67,7 @@ public class OrdemDeServicosService {
         
         OrdemDeServicos ordem = ordemOPT.get();
         
-        ordem.setDt_saida_efetiva(ordemDTO.getDtSaidaEfeiva());
+        ordem.setDtSaidaEfetiva(ordemDTO.getDtSaidaEfeiva());
         
         return ordemRepository.save(ordem);
     }
@@ -123,7 +123,7 @@ public class OrdemDeServicosService {
 
         OrdemDeServicos ordem = ordemOPT.get();
 
-        ordem.setPagt_realizado(ordemDTO.getPagtoRealizado());
+        ordem.setPagtRealizado(ordemDTO.getPagtoRealizado());
         return ordemRepository.save(ordem);
     }
 
@@ -136,7 +136,7 @@ public class OrdemDeServicosService {
 
         OrdemDeServicos ordem = ordemOPT.get();
 
-        if (ordem.getFk_entrada() == null){
+        if (ordem.getFkEntrada() == null){
             throw new ForbiddenException("Solicitação recusada", "Ordem de Serviço");
         }
 

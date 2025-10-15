@@ -21,10 +21,10 @@ import java.time.LocalDate;
 public class RegistroEntrada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_registro_entrada;
+    private Integer idRegistroEntrada;
     @NotNull
-    private LocalDate data_entrada_prevista;
-    private LocalDate data_entrada_efetiva;
+    private LocalDate dataEntradaPrevista;
+    private LocalDate dataEntradaEfetiva;
     private String responsavel;
     @CPF
     private String cpf;
@@ -33,5 +33,5 @@ public class RegistroEntrada {
     private Boolean chave_roda;
     private Integer geladeira;
     private Integer monitor;
-    private Integer fk_veiculo;
+    private Integer fkVeiculo;
 }
