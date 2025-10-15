@@ -73,11 +73,13 @@ public class VeiculosController {
 
    @DeleteMapping("/{id}")
     public ResponseEntity<Void>deleteVeiculoById(@PathVariable Integer id){
-        return service.deleteVeiculoById(id);
+        service.deleteVeiculoById(id);
+        return ResponseEntity.status(204).build();
    }
 
     @DeleteMapping("/placa/{placa}")
     public ResponseEntity<Void>deleteVeiculoByPlaca(@PathVariable String placa){
+        service.deleteVeiculoByPlaca(placa);
         return ResponseEntity.status(204).build();
     }
 

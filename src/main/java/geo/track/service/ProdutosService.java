@@ -1,5 +1,6 @@
 package geo.track.service;
 
+import geo.track.domain.Oficinas;
 import geo.track.domain.Produtos;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
@@ -32,15 +33,13 @@ public class ProdutosService {
     }
 
     public Produtos putProdutos(Integer id, Produtos produtoAtt) {
-        Optional<Produtos> produtoOpt = repository.findById(id);
-
-        if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+        if(repository.existsById(id)){
+            produtoAtt.setIdPeca(id);
+            Produtos prod = repository.save(produtoAtt);
+            return prod;
         }
 
-        Produtos prod = produtoOpt.get();
-
-        return repository.save(prod);
+        throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
     }
 
     public Produtos patchQtdEstoque(RequestPatchQtdEstoque produtoAtt){
@@ -80,7 +79,6 @@ public class ProdutosService {
     }
 
     public void excluir(Integer id){
-
         if(!repository.existsById(id)){
             throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
         }

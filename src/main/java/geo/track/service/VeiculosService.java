@@ -1,5 +1,6 @@
 package geo.track.service;
 
+import geo.track.domain.Produtos;
 import geo.track.domain.Veiculos;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
@@ -48,16 +49,13 @@ public class VeiculosService {
     }
 
     public Veiculos putEndereco(Integer id,Veiculos veiculoAtt){
-        Optional<Veiculos> veiculoOpt = repository.findById(id);
-
-        if(veiculoOpt.isEmpty()){
-            throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
+        if(repository.existsById(id)){
+            veiculoAtt.setIdVeiculo(id);
+            Veiculos veic = repository.save(veiculoAtt);
+            return veic;
         }
 
-        Veiculos veiculo = veiculoOpt.get();
-
-
-        return repository.save(veiculo);
+        throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
     }
 
     public Veiculos patchPlaca(RequestPatchPlaca veiculoDTO){
@@ -92,13 +90,12 @@ public class VeiculosService {
         return repository.save(veiculo);
     }
 
-     public ResponseEntity<Void>deleteVeiculoById(@PathVariable Integer id){
-         if(repository.existsById(id)){
-            repository.deleteById(id);
-            return ResponseEntity.status(204).build();
+     public void deleteVeiculoById(@PathVariable Integer id){
+         if(!repository.existsById(id)){
+             throw new DataNotFoundException("Não existe um veículo com esse ID!", "Veiculo");
          }
 
-         return ResponseEntity.status(404).build();
+         repository.deleteById(id);
 
      }
 
@@ -106,6 +103,7 @@ public class VeiculosService {
         if(!repository.existsByPlacaIgnoreCase(placa)){
             throw new DataNotFoundException("Não existe um veículo com essa Placa!", "Veiculo");
         }
-            repository.deleteByPlacaIgnoreCase(placa);
+
+        repository.deleteByPlacaIgnoreCase(placa);
     }
 }
