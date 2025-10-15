@@ -8,7 +8,7 @@ public class UsuarioMapper {
         usuario.setRazaoSocial(usuarioCriacaoDto.getRazaoSocial());
         usuario.setCnpj(usuarioCriacaoDto.getCnpj());
         usuario.setEmail(usuarioCriacaoDto.getEmail());
-        usuario.setDt_criacao(usuarioCriacaoDto.getDt_criacao());
+        usuario.setDtCriacao(usuarioCriacaoDto.getDt_criacao());
         usuario.setStatus(usuarioCriacaoDto.getStatus());
         usuario.setSenha(usuarioCriacaoDto.getSenha());
 

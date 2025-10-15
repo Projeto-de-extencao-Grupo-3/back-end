@@ -1,9 +1,6 @@
 package geo.track.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +19,8 @@ public class Funcionarios {
     private String cargo;
     private String especialidade;
     private String telefone;
-    private Integer empresa;
 
+        @ManyToOne
+    @JoinColumn(name = "oficina_id")
+    private Oficinas oficina;
 }
