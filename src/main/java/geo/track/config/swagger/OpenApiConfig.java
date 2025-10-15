@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Projeto GROTrack",
-                description = "Sistema para gestão de uma oficina de ônibus",
+                title = "GROTrack: Back-end",
+                description = "API RESTful utilizada para gerenciar as entidades que envolvem o contexto da Geosmar Reformadora de Ônibus",
                 contact = @Contact(
                         name = "GROTrack",
                         url = "https://github.com/Projeto-de-extencao-Grupo-3/back-end",
