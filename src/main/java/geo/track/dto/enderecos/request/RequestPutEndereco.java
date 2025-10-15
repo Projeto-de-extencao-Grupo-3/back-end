@@ -1,5 +1,7 @@
 package geo.track.dto.enderecos.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,21 +13,33 @@ import lombok.Setter;
 @Data
 public class RequestPutEndereco {
     @NotNull
+    @Schema(description = "ID do Endereço", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // 2. Detalhes do campo
     private Integer id;
     @NotBlank
-    @Size(max = 8, min = 8)
+    @Schema(description = "CEP do Endereço", example = "01414001", requiredMode = Schema.RequiredMode.REQUIRED)
     private String cep;
-    @NotBlank
-    private String logradouro;
-    @NotNull
-    private Integer numero;
-    @NotBlank
-    private String complemento;
-    @NotBlank
-    private String bairro;
-    @NotBlank
-    private String cidade;
-    @NotBlank
-    private String estado;
 
+    @NotBlank
+    @Schema(description = "Logradouro do Endereço", example = "Rua Haddock Lobo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String logradouro;
+
+    @NotNull
+    @Schema(description = "Número do Endereço", example = "595", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer numero;
+
+    @NotBlank
+    @Schema(description = "Complemento do Endereço", example = "Melhor faculdade de Tecnologia do Brasil", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String complemento;
+
+    @NotBlank
+    @Schema(description = "Bairro do Endereço", example = "Cerqueira César", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String bairro;
+
+    @NotBlank
+    @Schema(description = "Cidade do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String cidade;
+
+    @NotBlank
+    @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String estado;
 }

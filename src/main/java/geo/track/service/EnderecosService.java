@@ -1,8 +1,10 @@
 package geo.track.service;
 
 import geo.track.domain.Enderecos;
+import geo.track.dto.enderecos.request.RequestPostEndereco;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.NotAcepptableException;
+import geo.track.mapper.EnderecosMapper;
 import geo.track.repository.EnderecosRepository;
 import geo.track.dto.enderecos.request.RequestPatchComplemento;
 import geo.track.dto.enderecos.request.RequestPatchNumero;
@@ -38,7 +40,9 @@ public class EnderecosService {
         return viacepConnection.consultarCEP(cep);
     }
 
-    public Enderecos postEndereco(Enderecos endereco) {
+    public Enderecos postEndereco(RequestPostEndereco dtoEndereco) {
+        Enderecos endereco = EnderecosMapper.RequestToEndereco(dtoEndereco);
+
         if (endereco.getCep().length() != 8) {
             throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
         }
@@ -50,7 +54,7 @@ public class EnderecosService {
         Optional<Enderecos> enderecos = enderecosRepository.findById(enderecoDTO.getId());
 
         if (enderecos.isEmpty()) {
-            return null;
+            throw new DataNotFoundException("Endereço com o ID %d não foi encontrado".formatted(enderecoDTO.getId()), "Endereços");
         }
 
         Enderecos endereco = enderecos.get();
@@ -97,7 +101,7 @@ public class EnderecosService {
 
             return endereco;
         } else {
-            return null;
+            throw new DataNotFoundException("Endereço com o ID %d não foi encontrado".formatted(enderecoDTO.getId()), "Endereços");
         }
     }
 
