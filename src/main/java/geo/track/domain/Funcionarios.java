@@ -1,5 +1,8 @@
 package geo.track.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +14,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idFuncionario")
 public class Funcionarios {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -20,7 +26,8 @@ public class Funcionarios {
     private String especialidade;
     private String telefone;
 
-        @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "oficina_id")
     private Oficinas oficina;
+
 }

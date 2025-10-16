@@ -1,11 +1,18 @@
-INSERT INTO clientes (nome, cpf_cnpj, telefone, email) VALUES
-('Ana Paula Martins', '123.456.789-09', '11987654321', 'ana.martins@example.com'),
-('Bruno Henrique Souza', '987.654.321-00', '11991234567', 'bruno.souza@example.com'),
-('Carla Fernanda Dias', '111.222.333-44', '21988776655', 'carla.dias@example.com'),
-('Diego Rafael Lima', '555.666.777-88', '3199998888', 'diego.lima@example.com'),
-('Eduarda Silva Costa', '222.333.444-55', '41987651234', 'eduarda.costa@example.com');
-
 INSERT INTO Oficinas (razao_social, cnpj, email, dt_criacao, status, senha)
 VALUES ('GRO Track', '14.820.390/0001-50', 'geosmar@grotrack.com', '2025-09-20 09:15:00', 'ATIVA',
 '$2a$10$jK9yW8hs15vmta/TyTRTZOAlXi8UGn0KQYtzqI5WY0WL7ek8RU0xu');
 --Senha:123456
+
+INSERT INTO funcionarios ( nome, cargo, especialidade, telefone, oficina_id ) VALUES
+('Diego Rafael Lima', 'Mecânico Chefe', 'Sistemas de Freios e Transmissão', '31999988888', 1),
+('Luiz Fernando Rocha', 'Eletricista de Veículos', 'Elétrica e Eletrônica de Ônibus', '31988887777', 1);
+
+INSERT INTO enderecos (cep, logradouro, numero, complemento, bairro, cidade, estado ) VALUES
+('01001-000', 'Praça da Sé', 45, 'Apto 101', 'Centro', 'São Paulo', 'SP' ),
+('70070-000', 'Eixo Monumental', 100, 'Torre B', 'Asa Sul', 'Brasília', 'DF');
+
+INSERT INTO clientes (nome, cpf_cnpj, telefone, email, oficina_id, endereco_id) VALUES
+('Ana Paula Martins', '123.456.789-09', '11987654321', 'ana.martins@example.com', 1, 1),
+('Bruno Henrique Souza', '987.654.321-00', '11991234567', 'bruno.souza@example.com', 1, 2);
+
+

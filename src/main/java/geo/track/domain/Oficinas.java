@@ -1,6 +1,9 @@
 package geo.track.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +18,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idEmpresa")
 public class Oficinas {
 
     @Id
@@ -33,6 +39,9 @@ public class Oficinas {
 
     private String senha;
 
-    @OneToMany(mappedBy = "oficina")
+    @OneToMany(mappedBy = "oficina", cascade = CascadeType.ALL)
     private List<Funcionarios> funcionario;
+
+    @OneToMany(mappedBy = "oficina", cascade = CascadeType.ALL)
+    private List<Clientes> cliente;
 }

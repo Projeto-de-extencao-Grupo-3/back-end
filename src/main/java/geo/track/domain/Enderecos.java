@@ -1,10 +1,9 @@
 package geo.track.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +19,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Objeto utilizado para enviar ou receber") // 1. Descrição do objeto
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idEndereco")
 public class Enderecos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -52,6 +54,9 @@ public class Enderecos {
     @NotBlank
     @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String estado;
+
+    @OneToOne(mappedBy = "endereco")
+    private Clientes cliente;
 
     public Enderecos(String logradouro, String bairro, String cidade, String estado) {
         this.logradouro = logradouro;
