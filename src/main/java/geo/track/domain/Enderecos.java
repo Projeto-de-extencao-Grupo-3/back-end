@@ -57,11 +57,4 @@ public class Enderecos {
 
     @OneToOne(mappedBy = "endereco")
     private Clientes cliente;
-
-    public Enderecos(String logradouro, String bairro, String cidade, String estado) {
-        this.logradouro = logradouro;
-        this.bairro = bairro;
-        this.cidade = cidade;
-        this.estado = estado;
-    }
 }
