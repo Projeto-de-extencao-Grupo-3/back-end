@@ -39,9 +39,9 @@ public class Oficinas {
 
     private String senha;
 
-    @OneToMany(mappedBy = "oficina", cascade = CascadeType.ALL)
-    private List<Funcionarios> funcionario;
+    @OneToMany(mappedBy = "fkOficina", cascade = CascadeType.ALL)
+    private List<Funcionarios> funcionarios;
 
-    @OneToMany(mappedBy = "oficina", cascade = CascadeType.ALL)
-    private List<Clientes> cliente;
+    @OneToMany(mappedBy = "fkOficina", cascade = CascadeType.ALL)
+    private List<Clientes> clientes;
 }

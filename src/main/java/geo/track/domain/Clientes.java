@@ -42,10 +42,13 @@ public class Clientes {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "oficina_id")
-    private Oficinas oficina;
+    @JoinColumn(name = "fk_oficina")
+    private Oficinas fkOficina;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "endereco_id")
-    private Enderecos endereco;
+    @JoinColumn(name = "fk_endereco")
+    private Enderecos fkEndereco;
+
+    @OneToMany(mappedBy = "fkCliente", cascade = CascadeType.ALL)
+    private List<Veiculos> veiculos;
 }

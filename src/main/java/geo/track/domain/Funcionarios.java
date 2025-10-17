@@ -27,7 +27,6 @@ public class Funcionarios {
     private String telefone;
 
     @ManyToOne
-    @JoinColumn(name = "oficina_id")
-    private Oficinas oficina;
-
+    @JoinColumn(name = "fk_oficina")
+    private Oficinas fkOficina;
 }

@@ -1,6 +1,7 @@
 package geo.track.service;
 
 import geo.track.domain.Clientes;
+import geo.track.domain.Oficinas;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.ClientesRepository;
@@ -22,6 +23,10 @@ public class ClientesService {
             throw new ConflictException("O CPF do cliente informado já existe", "Clientes");
         }
         return clientesRepository.save(cliente);
+    }
+
+    public List<Clientes> findClientes(){
+        return clientesRepository.findAll();
     }
 
     public Clientes findClienteById(Integer id){

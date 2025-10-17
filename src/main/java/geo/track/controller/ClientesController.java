@@ -1,6 +1,7 @@
 package geo.track.controller;
 
 import geo.track.domain.Clientes;
+import geo.track.domain.Oficinas;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPutCliente;
@@ -23,6 +24,11 @@ public class ClientesController {
         return ResponseEntity.status(201).body(clientes);
     }
 
+    @GetMapping
+    public ResponseEntity<List<Clientes>> getClienteById() {
+        List<Clientes> clientes = clientesService.findClientes();
+        return ResponseEntity.status(200).body(clientes);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Clientes> getClienteById(@PathVariable Integer id) {

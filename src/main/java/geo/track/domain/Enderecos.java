@@ -55,6 +55,6 @@ public class Enderecos {
     @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String estado;
 
-    @OneToOne(mappedBy = "endereco")
-    private Clientes cliente;
+    @OneToOne(mappedBy = "fkEndereco")
+    private Clientes clientes;
 }
