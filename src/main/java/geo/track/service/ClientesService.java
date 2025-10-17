@@ -2,8 +2,10 @@ package geo.track.service;
 
 import geo.track.domain.Clientes;
 import geo.track.domain.Oficinas;
+import geo.track.dto.clientes.response.ResponseGetCliente;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.mapper.ClientesMapper;
 import geo.track.repository.ClientesRepository;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
@@ -29,13 +31,15 @@ public class ClientesService {
         return clientesRepository.findAll();
     }
 
-    public Clientes findClienteById(Integer id){
+    public ResponseGetCliente findClienteById(Integer id){
         Optional<Clientes> cliente = clientesRepository.findById(id);
+
 
         if (cliente.isEmpty()) {
             throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Clientes");
         }
-        return cliente.get();
+
+        return ClientesMapper.toDTO(cliente.get());
     }
 
 
