@@ -39,6 +39,11 @@ public class Oficinas {
 
     private String senha;
 
+//    @OneToMany
+//    @OneToOne
+//    @ManyToOne
+//    @ManyToMany
+
     @OneToMany(mappedBy = "fkOficina", cascade = CascadeType.ALL)
     private List<Funcionarios> funcionarios;
 
