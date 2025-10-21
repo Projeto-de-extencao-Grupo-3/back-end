@@ -23,7 +23,7 @@ public class RegistroEntradaService {
         RegistroEntrada registro = new RegistroEntrada();
 
         registro.setDataEntradaPrevista(registroDTO.getDtEntradaPrevista());
-        registro.setFkVeiculo(registroDTO.getFkVeiculo());
+//        registro.setFkVeiculo(registroDTO.getFkVeiculo());
 
         return registroRepository.save(registro);
     }
@@ -71,7 +71,7 @@ public class RegistroEntradaService {
         }
 
         RegistroEntrada registro = registroOPT.get();
-        if (registro.getFkVeiculo() == null){
+        if (registro.getFk_veiculo() == null){
             throw new ForbiddenException("Solicitação recusada", "Registro de Entrada");
 
         }

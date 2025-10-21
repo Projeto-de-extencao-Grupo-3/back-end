@@ -25,7 +25,7 @@ public class OrdemDeServicosService {
 
         ordem.setStatus(ordemDTO.getStatus());
         ordem.setValorTotal(ordemDTO.getValorTotal());
-        ordem.setFkEntrada(ordemDTO.getFkEntrada());
+//        ordem.setFk_entrada(ordemDTO.getFkEntrada());
 
         return ordemRepository.save(ordem);
     }
@@ -136,7 +136,7 @@ public class OrdemDeServicosService {
 
         OrdemDeServicos ordem = ordemOPT.get();
 
-        if (ordem.getFkEntrada() == null){
+        if (ordem.getFk_entrada() == null){
             throw new ForbiddenException("Solicitação recusada", "Ordem de Serviço");
         }
 
