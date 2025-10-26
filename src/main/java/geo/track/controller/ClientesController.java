@@ -9,6 +9,7 @@ import geo.track.dto.clientes.response.ResponseGetCliente;
 import geo.track.exception.ExceptionBody;
 import geo.track.service.ClientesService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema; // Import adicionado
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,11 +39,15 @@ public class ClientesController {
                     content = {@Content(schema = @Schema(implementation = Clientes.class))}
             ),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos fornecidos para o cliente",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
                     responseCode = "409",
                     description = "Cliente já existente com este CPF.",
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
-            ),
-                // Adicionar aqui outras respostas de erro, como 400 (Bad Request) para falha na validação, se aplicável
+            )
     })
     @PostMapping
     public ResponseEntity<Clientes> postCliente(@Valid @RequestBody Clientes cliente) {
@@ -55,13 +60,13 @@ public class ClientesController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Cliente encontrado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = Clientes.class))}
+                    // Corrigido para ResponseGetCliente.class
+                    content = {@Content(schema = @Schema(implementation = ResponseGetCliente.class))}
             ),
             @ApiResponse(
                     responseCode = "404",
                     description = "Cliente não encontrado",
-                    // Assumindo que haja uma ExceptionBody para erros não encontrados, como na EnderecosController
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))} // Substituir Object.class por ExceptionBody.class se estiver disponível.
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
     })
     @GetMapping("/{id}")
@@ -75,7 +80,9 @@ public class ClientesController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Clientes encontrados com sucesso",
-                    content = {@Content(schema = @Schema(implementation = List.class))}
+                    // Corrigido para documentar uma lista de Clientes
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Clientes.class)))}
             ),
             @ApiResponse(
                     responseCode = "204",
@@ -102,10 +109,8 @@ public class ClientesController {
             @ApiResponse(
                     responseCode = "404",
                     description = "Cliente não encontrado para o CPF/CNPJ",
-                    // Assumindo que haja uma ExceptionBody para erros não encontrados.
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))} // Substituir Object.class por ExceptionBody.class se estiver disponível.
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
-            // Adicionar 400 (Bad Request) se a validação/formato do CPF/CNPJ puder falhar
     })
     @GetMapping("/cpfCnpj")
     public ResponseEntity<Clientes> getClienteByCpfCnpj(@RequestParam String cpfCnpj) {
@@ -124,12 +129,15 @@ public class ClientesController {
                     content = {@Content(schema = @Schema(implementation = Clientes.class))}
             ),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "Formato de e-mail inválido ou dados ausentes",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
                     responseCode = "404",
                     description = "Cliente não encontrado",
-                    // Assumindo que haja uma ExceptionBody para erros não encontrados.
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))} // Substituir Object.class por ExceptionBody.class se estiver disponível.
-            ),
-            // Adicionar 400 (Bad Request) se a validação do e-mail puder falhar
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            )
     })
     @PatchMapping("/email")
     public ResponseEntity<Clientes> patchEmailCliente(@RequestBody RequestPatchEmail clienteDTO) {
@@ -148,12 +156,15 @@ public class ClientesController {
                     content = {@Content(schema = @Schema(implementation = Clientes.class))}
             ),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "Formato de telefone inválido ou dados ausentes",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
                     responseCode = "404",
                     description = "Cliente não encontrado",
-                    // Assumindo que haja uma ExceptionBody para erros não encontrados.
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))} // Substituir Object.class por ExceptionBody.class se estiver disponível.
-            ),
-            // Adicionar 400 (Bad Request) se a validação do telefone puder falhar
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            )
     })
     @PatchMapping("/telefone")
     public ResponseEntity<Clientes> patchTelefoneCliente(@RequestBody RequestPatchTelefone clienteDTO) {
@@ -172,18 +183,20 @@ public class ClientesController {
                     content = {@Content(schema = @Schema(implementation = Clientes.class))}
             ),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos fornecidos para a atualização",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
                     responseCode = "404",
                     description = "Cliente não encontrado",
-                    // Assumindo que haja uma ExceptionBody para erros não encontrados.
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))} // Substituir Object.class por ExceptionBody.class se estiver disponível.
-            ),
-            // Adicionar 400 (Bad Request) se a validação dos dados puder falhar
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            )
     })
     @PutMapping()
     public ResponseEntity<Clientes> putCliente(@RequestBody RequestPutCliente clienteDTO) {
         Clientes cliente = clientesService.putCliente(clienteDTO);
         return ResponseEntity.status(200).body(cliente);
-
     }
 
     @Operation(
@@ -199,14 +212,12 @@ public class ClientesController {
             @ApiResponse(
                     responseCode = "404",
                     description = "Cliente não encontrado",
-                    // Assumindo que haja uma ExceptionBody para erros não encontrados.
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))} // Substituir Object.class por ExceptionBody.class se estiver disponível.
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
-            // Adicionar 400 (Bad Request) se o ID for inválido
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Clientes> removerCliente(@PathVariable Integer id){
-         clientesService.deletar(id);
+        clientesService.deletar(id);
         return ResponseEntity.status(204).build();
     }
 }
