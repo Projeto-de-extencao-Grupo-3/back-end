@@ -11,7 +11,7 @@ public class ClientesMapper {
                 entity.getCpfCnpj(),
                 entity.getTelefone(),
                 entity.getEmail(),
-                entity.getFkOficina().getIdEmpresa(),
+                entity.getFkOficina().getIdOficina(),
                 entity.getFkEndereco(),
                 entity.getVeiculos()
                 );

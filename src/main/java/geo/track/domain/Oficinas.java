@@ -25,7 +25,7 @@ public class Oficinas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idEmpresa;
+    private Integer idOficina;
 
     private String razaoSocial;
 

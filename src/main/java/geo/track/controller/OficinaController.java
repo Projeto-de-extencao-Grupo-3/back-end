@@ -79,7 +79,7 @@ public class OficinaController {
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/{id}")
     public ResponseEntity<Oficinas> getEmpresaById(@PathVariable Integer id){
-        Oficinas emp = oficinaService.findEmpresaById(id);
+        Oficinas emp = oficinaService.findOficinasById(id);
         return ResponseEntity.status(200).body(emp);
     }
 
@@ -91,7 +91,7 @@ public class OficinaController {
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/razao-social")
     public ResponseEntity<List<Oficinas>> getEmpresaByRazaoSocial(@RequestParam String razaoSocial){
-        List<Oficinas> lista = oficinaService.findEmpresaByRazaoSocial(razaoSocial);
+        List<Oficinas> lista = oficinaService.findOficinasByRazaoSocial(razaoSocial);
         return ResponseEntity.status(200).body(lista);
     }
 
@@ -104,7 +104,7 @@ public class OficinaController {
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/cnpj")
     public ResponseEntity<Oficinas> findEmpresaByCNPJ(@RequestParam String cnpj){
-        Oficinas emp = oficinaService.findEmpresaByCnpj(cnpj);
+        Oficinas emp = oficinaService.findOficinasByCnpj(cnpj);
         return ResponseEntity.status(200).body(emp);
     }
 

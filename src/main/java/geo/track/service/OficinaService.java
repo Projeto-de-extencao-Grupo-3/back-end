@@ -39,24 +39,24 @@ public class OficinaService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public Oficinas cadastrar(Oficinas empresa){
-        if (repository.findByCnpj(empresa.getCnpj()).isPresent()){
-            throw new ConflictException("O CNPJ %s já está cadastrado!".formatted(empresa.getCnpj()), "Empresas");
+    public Oficinas cadastrar(Oficinas Oficinas){
+        if (repository.findByCnpj(Oficinas.getCnpj()).isPresent()){
+            throw new ConflictException("O CNPJ %s já está cadastrado!".formatted(Oficinas.getCnpj()), "Oficinas");
         }
-        String senhaCriptografada = passwordEncoder.encode(empresa.getSenha());
-        empresa.setSenha(senhaCriptografada);
-        return repository.save(empresa);
+        String senhaCriptografada = passwordEncoder.encode(Oficinas.getSenha());
+        Oficinas.setSenha(senhaCriptografada);
+        return repository.save(Oficinas);
     }
 
-    public UsuarioTokenDto autenticar(Oficinas empresa) {
+    public UsuarioTokenDto autenticar(Oficinas Oficinas) {
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
-                empresa.getCnpj(), empresa.getSenha());
+                Oficinas.getCnpj(), Oficinas.getSenha());
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
         Oficinas usuarioAutenticado =
-                oficinaRepository.findByCnpj(empresa.getCnpj())
+                oficinaRepository.findByCnpj(Oficinas.getCnpj())
                         .orElseThrow(
                                 () -> new ResponseStatusException(404, "CNPJ do usuário não cadastrado", null)
                         );
@@ -72,57 +72,57 @@ public class OficinaService {
         return repository.findAll();
     }
 
-    public Oficinas findEmpresaById(Integer id){
-        return repository.findById(id).orElseThrow(() -> new DataNotFoundException("Empresa com ID %d não encontrado".formatted(id), "Empresas"));
+    public Oficinas findOficinasById(Integer id){
+        return repository.findById(id).orElseThrow(() -> new DataNotFoundException("Oficina com ID %d não encontrado".formatted(id), "Oficinas"));
     }
 
-    public List<Oficinas> findEmpresaByRazaoSocial(String razaoSocial){
+    public List<Oficinas> findOficinasByRazaoSocial(String razaoSocial){
         return repository.findByrazaoSocialContainingIgnoreCase(razaoSocial);
     }
 
-    public Oficinas findEmpresaByCnpj(String cnpj){
-        return repository.findByCnpj(cnpj).orElseThrow(() -> new DataNotFoundException("Empresa com CNPJ %s não foi encontrado".formatted(cnpj), "Empresas"));
+    public Oficinas findOficinasByCnpj(String cnpj){
+        return repository.findByCnpj(cnpj).orElseThrow(() -> new DataNotFoundException("Oficina com CNPJ %s não foi encontrado".formatted(cnpj), "Oficinas"));
     }
 
-    public Oficinas atualizar(Integer id, Oficinas empresa){
+    public Oficinas atualizar(Integer id, Oficinas oficinas){
         if (repository.existsById(id)){
-            empresa.setIdEmpresa(id);
-            Oficinas empSalva = repository.save(empresa);
+            oficinas.setIdOficina(id);
+            Oficinas empSalva = repository.save(oficinas);
             return empSalva;
         }
-         throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Empresas");
+         throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Oficinas");
     }
 
     public Oficinas patchEmail(OficinaPatchEmailDTO dto){
-        Optional<Oficinas> empresa = repository.findById(dto.getId());
+        Optional<Oficinas> Oficinas = repository.findById(dto.getId());
 
-        if(empresa.isEmpty()){
-            throw new DataNotFoundException("Não existe uma empresa com esse ID", "Empresas");
+        if(Oficinas.isEmpty()){
+            throw new DataNotFoundException("Não existe uma oficina com esse ID", "Oficinas");
         }
-        Oficinas emp = empresa.get();
+        Oficinas emp = Oficinas.get();
 
-        emp.setIdEmpresa(dto.getId());
+        emp.setIdOficina(dto.getId());
         emp.setEmail(dto.getEmail());
         return repository.save(emp);
     }
 
 
     public Oficinas patchStatus(OficinaPatchStatusDTO dto){
-        Optional<Oficinas> empresa = repository.findById(dto.getId());
+        Optional<Oficinas> Oficinas = repository.findById(dto.getId());
 
-        if(empresa.isEmpty()){
-            throw new DataNotFoundException("Não existe uma empresa com esse ID", "Empresas");
+        if(Oficinas.isEmpty()){
+            throw new DataNotFoundException("Não existe uma oficina com esse ID", "Oficinas");
         }
-        Oficinas emp = empresa.get();
+        Oficinas emp = Oficinas.get();
 
-        emp.setIdEmpresa(dto.getId());
+        emp.setIdOficina(dto.getId());
         emp.setStatus(dto.getStatus());
         return repository.save(emp);
     }
 
     public void remover(Integer id){
         if (!repository.existsById(id)){
-            throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Empresas");
+            throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Oficinas");
         }
         repository.deleteById(id);
     }

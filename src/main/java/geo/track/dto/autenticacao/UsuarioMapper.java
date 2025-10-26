@@ -27,7 +27,7 @@ public class UsuarioMapper {
     public static UsuarioTokenDto of(Oficinas beneficiario, String token) {
         UsuarioTokenDto usuarioTokenDto = new UsuarioTokenDto();
 
-        usuarioTokenDto.setIdCliente(beneficiario.getIdEmpresa());
+        usuarioTokenDto.setIdCliente(beneficiario.getIdOficina());
         usuarioTokenDto.setCnpj(beneficiario.getCnpj());
         usuarioTokenDto.setNome(beneficiario.getRazaoSocial());
         usuarioTokenDto.setToken(token);
@@ -38,7 +38,7 @@ public class UsuarioMapper {
     public static UsuarioListarDto of(Oficinas beneficiario) {
         UsuarioListarDto usuarioListarDto = new UsuarioListarDto();
 
-        usuarioListarDto.setIdCliente(beneficiario.getIdEmpresa());
+        usuarioListarDto.setIdCliente(beneficiario.getIdOficina());
         usuarioListarDto.setCnpj(beneficiario.getCnpj());
         usuarioListarDto.setNome(beneficiario.getRazaoSocial());
 
