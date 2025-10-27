@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,18 +26,25 @@ public class Oficinas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identificador único da oficina", example = "1")
     private Integer idOficina;
 
+    @Schema(description = "Razão social da oficina", example = "Auto Center São Lucas LTDA")
     private String razaoSocial;
 
+    @Schema(description = "CNPJ da oficina", example = "12.345.678/0001-99")
     private String cnpj;
 
+    @Schema(description = "Email de contato da oficina", example = "contato@autocenter.com")
     private String email;
 
+    @Schema(description = "Data e hora de criação do cadastro", example = "2025-10-25T14:30:00")
     private LocalDateTime dtCriacao;
 
+    @Schema(description = "Status atual da oficina", example = "Ativa")
     private String status;
 
+    @Schema(description = "Senha de acesso ao sistema (armazenada de forma segura)", example = "••••••••")
     private String senha;
 
 //    @OneToMany
@@ -45,8 +53,10 @@ public class Oficinas {
 //    @ManyToMany
 
     @OneToMany(mappedBy = "fkOficina", cascade = CascadeType.ALL)
+    @Schema(description = "Lista de funcionários associados à oficina")
     private List<Funcionarios> funcionarios;
 
     @OneToMany(mappedBy = "fkOficina", cascade = CascadeType.ALL)
+    @Schema(description = "Lista de clientes associados à oficina")
     private List<Clientes> clientes;
 }

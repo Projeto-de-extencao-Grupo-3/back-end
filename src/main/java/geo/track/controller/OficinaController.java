@@ -8,7 +8,6 @@ import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.service.OficinaService;
-// Importações do Swagger/OpenAPI 3
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -17,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-// Outras importações
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/oficinas")
 @RequiredArgsConstructor
-@Tag(name = "Oficinas (Empresas)", description = "Gerenciamento e autenticação de Oficinas/Empresas.")
+@Tag(name = "Oficinas (Empresas)", description = "Endpoints utilizados para gerenciar Oficinas/Empresas.")
 public class OficinaController {
     private final OficinaService oficinaService;
     static class ExceptionBody { public int status; public String title; }

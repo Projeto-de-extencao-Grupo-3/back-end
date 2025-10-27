@@ -1,5 +1,6 @@
 package geo.track.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,22 +22,30 @@ public class Produtos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identificador único da peça", example = "1")
     private Integer idPeca;
+
     @NotBlank
+    @Schema(description = "Nome da peça ou produto", example = "Filtro de óleo")
     private String nome;
+
     @NotBlank
+    @Schema(description = "Número da nota fiscal do fornecedor", example = "NF-987654")
     private String fornecedorNf;
 
     @NotNull
     @Positive
+    @Schema(description = "Preço de compra do produto", example = "120.50")
     private Double precoCompra;
 
     @NotNull
     @Positive
+    @Schema(description = "Preço de venda do produto", example = "180.00")
     private Double precoVenda;
 
     @NotNull
     @Positive
+    @Schema(description = "Quantidade disponível em estoque", example = "45")
     private Integer quantidadeEstoque;
 }
 
