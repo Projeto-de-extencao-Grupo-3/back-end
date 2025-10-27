@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "idFuncionário")
+        property = "idFuncionario")
 @Schema(description = "Representa um Funcionário do sistema.")
 public class Funcionarios {
     @Id

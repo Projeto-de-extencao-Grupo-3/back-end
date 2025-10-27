@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "idEmpresa")
+        property = "idOficina")
 public class Oficinas {
 
     @Id

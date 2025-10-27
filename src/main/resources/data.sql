@@ -18,3 +18,13 @@ INSERT INTO clientes (nome, cpf_cnpj, telefone, email, fk_oficina, fk_endereco) 
 INSERT INTO veiculos (placa, marca, modelo, ano_modelo, cor, fk_cliente) VALUES
 ('FRO1C23', 'Caio', 'Apache Vip V', 2024, 'Vermelho', 1),
 ('TUR7E89', 'Marcopolo', 'Paradiso G8 1800 DD', 2022, 'Cinza', 2);
+
+INSERT INTO registro_entrada (data_entrada_prevista, data_entrada_efetiva, responsavel, cpf, extintor, macaco, chave_roda, geladeira, monitor, fk_veiculo) VALUES
+('2025-10-25', '2025-10-25', 'Carlos Souza', '98765432109', TRUE, TRUE, TRUE, 0, 0, 1),
+('2025-10-20', '2025-10-21', 'Mariana Alves', '12345678909', TRUE, TRUE, TRUE, 1, 1, 2);
+
+INSERT INTO ordem_de_servicos (valor_total, dt_saida_prevista, dt_saida_efetiva, status, seguradora, nf_realizada, pagt_realizado, fk_entrada)
+VALUES
+(1850.00, '2025-10-28', NULL, 2, FALSE, FALSE, FALSE, 1),
+(4500.00, '2025-10-27', '2025-10-27', 4, TRUE, TRUE, TRUE, 2);
+
