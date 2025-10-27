@@ -47,11 +47,6 @@ public class Oficinas {
     @Schema(description = "Senha de acesso ao sistema (armazenada de forma segura)", example = "••••••••")
     private String senha;
 
-//    @OneToMany
-//    @OneToOne
-//    @ManyToOne
-//    @ManyToMany
-
     @OneToMany(mappedBy = "fkOficina", cascade = CascadeType.ALL)
     @Schema(description = "Lista de funcionários associados à oficina")
     private List<Funcionarios> funcionarios;
