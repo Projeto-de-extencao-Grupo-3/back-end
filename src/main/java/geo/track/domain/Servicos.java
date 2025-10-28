@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -16,7 +18,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Schema(description = "Representa um tipo de serviço oferecido pela oficina") // Adicionado
 public class Servicos {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "ID único do serviço", example = "1") // Adicionado
@@ -37,4 +38,7 @@ public class Servicos {
     @Schema(description = "Indica se o serviço está ativo e disponível para novas O.S.", example = "true") // Adicionado
     private boolean ativo;
 
+    @OneToMany(mappedBy = "fkServico", cascade = CascadeType.ALL)
+    @Schema(description = "Lista de servicos associados à uma lista de produtos")
+    private List<ItensServicos> servicos;
 }

@@ -1,15 +1,14 @@
 package geo.track.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,10 +42,21 @@ public class ItensServicos {
     @Schema(description = "Descrição detalahada do serviço", example = "Troca do parabrisa trincado por um novo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String especificacaoServico;
 
-    @Schema(description = "Campo para colocar alguma observação se necessário", example = "Não sei", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Campo para colocar alguma observação se necessário", example = "Desconto de 10%, pois a peça nova X foi danificada", requiredMode = Schema.RequiredMode.REQUIRED)
     private String observacoesItem;
 
-    private Integer fkOrderServico;
-    private Integer fkServico;
+    @ManyToOne
+    @JoinColumn(name = "fk_servico")
+    @Schema(description = "FK do serviço ")
+    private Servicos fkServico;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_order_de_servico")
+    @Schema(description = "FK da ordem de serviço ")
+    private OrdemDeServicos fkOrdemServico;
+
+    @OneToMany(mappedBy = "fkServicoFunc", cascade = CascadeType.ALL)
+    @Schema(description = "Lista de funcionarios associados à uma lista de serviços")
+    private List<FuncionariosServico> listaFuncionario;
 
 }

@@ -57,4 +57,7 @@ public class OrdemDeServicos {
     @Schema(description = "Lista de produtos associados à ordem de serviço")
     private List<ItensProdutos> produtos;
 
+    @OneToMany(mappedBy = "fkOrdemServico", cascade = CascadeType.ALL)
+    @Schema(description = "Lista de serviços associados à ordem de serviço")
+    private List<ItensServicos> servicos;
 }

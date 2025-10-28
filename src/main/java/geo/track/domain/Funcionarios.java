@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -35,4 +37,9 @@ public class Funcionarios {
     @ManyToOne
     @JoinColumn(name = "fk_oficina")
     private Oficinas fkOficina;
+
+    @OneToMany(mappedBy = "fkFuncionarioLista", cascade = CascadeType.ALL)
+    @Schema(description = "Lista de serviços associados à ordem de serviço")
+    private List<FuncionariosServico> funcionarioLista;
+
 }

@@ -32,12 +32,12 @@ public class ItensProdutos {
 
     @ManyToOne
     @JoinColumn(name = "fk_produto")
-    @Schema(description = " ")
+    @Schema(description = "FK do produto ")
     private Produtos fkPeca;
 
     @ManyToOne
     @JoinColumn(name = "fk_order_de_servico")
-    @Schema(description = " ")
+    @Schema(description = "FK da ordem de serviço ")
     private OrdemDeServicos fkOrdemServico;
 
 }

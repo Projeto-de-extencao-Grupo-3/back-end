@@ -36,5 +36,17 @@ INSERT INTO produtos (nome, fornecedor_nf, preco_compra, preco_venda, quantidade
 ('Correia dentada', 'NF-441122', 70.00, 120.00, 50);
 
 INSERT INTO itens_produtos (quantidade, preco_peca, fk_produto,fk_order_de_servico) VALUES
-(2, 180.00, 1, 1), -- 2 Filtros de óleo na OS 1
-(4, 150.00, 2, 1); -- 4 Pastilhas de freio na OS 1
+(2, 180.00, 1, 1),
+(4, 150.00, 2, 1);
+
+INSERT INTO servicos (tipo_servico, titulo_servico, tempo_base, ativo) VALUES
+(3, 'Troca de óleo e filtro', 60, TRUE),
+(3, 'Revisão do sistema de freios', 120, TRUE),
+(1, 'Reparo em parachoque dianteiro', 180, TRUE),
+(2, 'Repintura completa da lateral direita', 240, TRUE);
+
+INSERT INTO itens_servicos
+(preco_cobrado, parte_veiculo, lado_veiculo, cor, especificacao_servico, observacoes_item, fk_servico, fk_order_de_servico)
+VALUES
+(350.00, 1, 1, 'Vermelho', 'Reparo no parachoque dianteiro após colisão leve', 'Necessário retoque de pintura', 3, 1),
+(420.00, 3, 4, 'Vermelho', 'Repintura completa da lateral direita devido a riscos', 'Usar tinta metálica original', 4, 1);
