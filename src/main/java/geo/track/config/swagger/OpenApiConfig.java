@@ -12,7 +12,9 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 title = "GROTrack: Back-end",
-                description = "API RESTful utilizada para gerenciar as entidades que envolvem o contexto da Geosmar Reformadora de Ônibus",
+                description = "API RESTful utilizada para gerenciar as entidades que envolvem o contexto da Geosmar Reformadora de Ônibus " +
+                        "<br>Verificar token: https://www.jwt.io/" +
+                        "<br>Manual JWT: https://moodle.sptech.school/mod/book/view.php?id=14233&chapterid=1585",
                 contact = @Contact(
                         name = "GROTrack",
                         url = "https://github.com/Projeto-de-extencao-Grupo-3/back-end",

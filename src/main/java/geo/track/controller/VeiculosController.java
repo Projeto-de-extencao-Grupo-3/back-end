@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content; // Import necessário
 import io.swagger.v3.oas.annotations.media.Schema; // Import necessário
 import io.swagger.v3.oas.annotations.responses.ApiResponse; // Import necessário
 import io.swagger.v3.oas.annotations.responses.ApiResponses; // Import necessário
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag; // Import necessário
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping("/veiculos")
 @RequiredArgsConstructor
 @Tag(name = "Veículos", description = "Endpoints utilizados para gerenciar os veículos") // Adicionado
+@SecurityRequirement(name = "Bearer")
 public class VeiculosController {
 
     private final VeiculosService service;

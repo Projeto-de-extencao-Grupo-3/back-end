@@ -5,6 +5,7 @@ import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.service.ProdutosService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @RequestMapping("/produtos")
 @RequiredArgsConstructor
 @Tag(name = "Produtos", description = "Endpoints ultilizados para gerenciar os produtos da oficina.")
+@SecurityRequirement(name = "Bearer")
 public class ProdutosController {
     private final ProdutosService service;
 

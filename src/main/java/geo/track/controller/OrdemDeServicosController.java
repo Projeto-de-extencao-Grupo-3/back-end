@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/ordens")
 @RequiredArgsConstructor
 @Tag(name = "Ordem de Serviço", description = "Endpoints ultilizados para gerenciar as Ordens de Serviço e peças da oficina.")
+@SecurityRequirement(name = "Bearer")
 public class OrdemDeServicosController {
     private final OrdemDeServicosService ordemService;
 

@@ -62,7 +62,7 @@ public class OficinaController {
             @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @SecurityRequirement(name = "Bearer")
-    @GetMapping
+    @GetMapping("/listar")
     public ResponseEntity<List<Oficinas>> listarEmpresas(){
         List<Oficinas> lista = oficinaService.listar();
         return ResponseEntity.status(200).body(lista);
