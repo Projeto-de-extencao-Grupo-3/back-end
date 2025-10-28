@@ -28,3 +28,13 @@ VALUES
 (1850.00, '2025-10-28', NULL, 2, FALSE, FALSE, FALSE, 1),
 (4500.00, '2025-10-27', '2025-10-27', 4, TRUE, TRUE, TRUE, 2);
 
+INSERT INTO produtos (nome, fornecedor_nf, preco_compra, preco_venda, quantidade_estoque) VALUES
+('Filtro de óleo', 'NF-987654', 120.50, 180.00, 45),
+('Pastilha de freio', 'NF-123456', 90.00, 150.00, 60),
+('Bateria 150Ah', 'NF-555222', 400.00, 650.00, 20),
+('Amortecedor traseiro', 'NF-998877', 250.00, 390.00, 30),
+('Correia dentada', 'NF-441122', 70.00, 120.00, 50);
+
+INSERT INTO itens_produtos (quantidade, preco_peca, fk_produto,fk_order_de_servico) VALUES
+(2, 180.00, 1, 1), -- 2 Filtros de óleo na OS 1
+(4, 150.00, 2, 1); -- 4 Pastilhas de freio na OS 1

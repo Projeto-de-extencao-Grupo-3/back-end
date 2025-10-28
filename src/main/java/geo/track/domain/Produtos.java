@@ -1,10 +1,7 @@
 package geo.track.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -12,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -47,5 +46,9 @@ public class Produtos {
     @Positive
     @Schema(description = "Quantidade disponível em estoque", example = "45")
     private Integer quantidadeEstoque;
+
+    @OneToMany(mappedBy = "fkPeca", cascade = CascadeType.ALL)
+    @Schema(description = "Lista de produtos associados à uma lista de produtos")
+    private List<ItensProdutos> produtos;
 }
 

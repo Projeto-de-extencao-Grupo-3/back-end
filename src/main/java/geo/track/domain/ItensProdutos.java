@@ -1,15 +1,14 @@
 package geo.track.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +30,14 @@ public class ItensProdutos {
     @Schema(description = "Preço da peça selecionada", example = "29.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double precoPeca;
 
-    private Integer fkOrdemServico;
-    private Integer fkPeca;
+    @ManyToOne
+    @JoinColumn(name = "fk_produto")
+    @Schema(description = " ")
+    private Produtos fkPeca;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_order_de_servico")
+    @Schema(description = " ")
+    private OrdemDeServicos fkOrdemServico;
+
 }

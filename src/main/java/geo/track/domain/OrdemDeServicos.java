@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -51,5 +52,9 @@ public class OrdemDeServicos {
     @JoinColumn(name = "fk_entrada")
     @Schema(description = "Registro de entrada relacionado á ordem de serviço.")
     private RegistroEntrada fk_entrada;
+
+    @OneToMany(mappedBy = "fkOrdemServico", cascade = CascadeType.ALL)
+    @Schema(description = "Lista de produtos associados à ordem de serviço")
+    private List<ItensProdutos> produtos;
 
 }
