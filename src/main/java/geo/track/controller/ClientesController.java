@@ -8,6 +8,7 @@ import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.dto.clientes.response.ResponseGetCliente;
 import geo.track.exception.ExceptionBody;
+import geo.track.mapper.ClientesMapper;
 import geo.track.service.ClientesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema; // Import adicionado
@@ -28,8 +29,20 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Clientes", description = "Endpoints utilizados para gerenciar os clientes")
 @SecurityRequirement(name = "Bearer")
-public class git git ClientesController {
+public class ClientesController {
     private final ClientesService clientesService;
+
+    @GetMapping
+    public ResponseEntity<List<ResponseGetCliente>> findAllClientes() {
+        List<Clientes> clientes = clientesService.findClientes();
+
+        if (clientes.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        List<ResponseGetCliente> response = clientes.stream().map(ClientesMapper::toDTO).toList();
+
+        return ResponseEntity.status(204).body(response);
+    }
 
     @Operation(
             summary = "Cadastrar novo cliente",
