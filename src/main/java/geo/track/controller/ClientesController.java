@@ -28,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Clientes", description = "Endpoints utilizados para gerenciar os clientes")
 @SecurityRequirement(name = "Bearer")
-public class ClientesController {
+public class git git ClientesController {
     private final ClientesService clientesService;
 
     @Operation(
