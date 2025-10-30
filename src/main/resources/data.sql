@@ -11,9 +11,9 @@ INSERT INTO enderecos (cep, logradouro, numero, complemento, bairro, cidade, est
 ('01001-000', 'Praça da Sé', 45, 'Apto 101', 'Centro', 'São Paulo', 'SP' ),
 ('70070-000', 'Eixo Monumental', 100, 'Torre B', 'Asa Sul', 'Brasília', 'DF');
 
-INSERT INTO clientes (nome, cpf_cnpj, telefone, email, fk_oficina, fk_endereco) VALUES
-('Ana Paula Martins', '123.456.789-09', '11987654321', 'ana.martins@example.com', 1, 1),
-('Bruno Henrique Souza', '987.654.321-00', '11991234567', 'bruno.souza@example.com', 1, 2);
+INSERT INTO clientes (nome, cpf_cnpj, telefone, email, tipo_cliente, fk_oficina, fk_endereco) VALUES
+('Ana Paula Martins', '123.456.789-09', '11987654321', 'ana.martins@example.com', 1, 1, 1),
+('Bruno Henrique Souza', '987.654.321-00', '11991234567', 'bruno.souza@example.com', 1, 1, 2);
 
 INSERT INTO veiculos (placa, marca, modelo, ano_modelo, cor, fk_cliente) VALUES
 ('FRO1C23', 'Caio', 'Apache Vip V', 2024, 'Vermelho', 1),

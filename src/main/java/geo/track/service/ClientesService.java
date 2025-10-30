@@ -1,7 +1,9 @@
 package geo.track.service;
 
 import geo.track.domain.Clientes;
+import geo.track.domain.Enderecos;
 import geo.track.domain.Oficinas;
+import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.response.ResponseGetCliente;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
@@ -19,11 +21,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClientesService {
     private final ClientesRepository clientesRepository;
+    private final OficinaService oficinaService;
+    private final EnderecosService enderecosService;
 
-    public Clientes postCliente(Clientes cliente){
-        if(clientesRepository.existsByCpfCnpj(cliente.getCpfCnpj())){
-            throw new ConflictException("O CPF do cliente informado já existe", "Clientes");
-        }
+    public Clientes postCliente(RequestPostCliente body){
+        if(clientesRepository.existsByCpfCnpj(body.getCpfCnpj())){throw new ConflictException("O CPF do cliente informado já existe", "Clientes");}
+        Oficinas oficina = oficinaService.findOficinasById(body.getFkOficina());
+        Enderecos enderecos = enderecosService.findEnderecoById(body.getFkEndereco());
+
+        Clientes cliente = ClientesMapper.toEntity(body,oficina, enderecos);
         return clientesRepository.save(cliente);
     }
 

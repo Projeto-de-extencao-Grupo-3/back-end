@@ -9,5 +9,5 @@ import lombok.Data;
 public class PostEntradaVeiculo {
     private StatusVeiculo status;
     private Double valorTotal = 0.0;
-    private OrdemDeServicos fkEntrada;
+    private Integer fkEntrada;
 }

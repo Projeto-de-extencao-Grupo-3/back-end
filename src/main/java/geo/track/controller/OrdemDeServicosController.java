@@ -147,9 +147,10 @@ public class OrdemDeServicosController {
             @ApiResponse(responseCode = "404", description = "Ordem de Serviço não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrdem(@PathVariable Integer idOrdem){
-        ordemService.deleteOrdem(idOrdem);
+    public ResponseEntity<Void> deleteOrdem(@PathVariable Integer id){
+        ordemService.deleteOrdem(id);
         return ResponseEntity.status(204).build();
     }
 }

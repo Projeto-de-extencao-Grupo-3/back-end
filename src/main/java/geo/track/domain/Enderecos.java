@@ -1,6 +1,7 @@
 package geo.track.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -55,6 +56,7 @@ public class Enderecos {
     @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String estado;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "fkEndereco")
     private Clientes clientes;
 }

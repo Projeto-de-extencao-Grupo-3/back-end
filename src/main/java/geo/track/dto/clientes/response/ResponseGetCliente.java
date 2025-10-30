@@ -1,5 +1,6 @@
 package geo.track.dto.clientes.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import geo.track.domain.Enderecos;
 import geo.track.domain.Oficinas;
 import geo.track.domain.Veiculos;
@@ -39,6 +40,7 @@ public class ResponseGetCliente {
     @JoinColumn(name = "fk_endereco")
     private Enderecos fkEndereco;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "fkCliente", cascade = CascadeType.ALL)
     private List<Veiculos> veiculos;
 

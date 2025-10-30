@@ -1,7 +1,10 @@
 package geo.track.service;
 
+import geo.track.domain.ItensServicos;
 import geo.track.domain.OrdemDeServicos;
+import geo.track.domain.RegistroEntrada;
 import geo.track.dto.os.request.*;
+import geo.track.exception.BadRequestException;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
@@ -19,13 +22,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrdemDeServicosService {
     private final OrdemDeServicosRepository ordemRepository;
+    private final ItensServicosService itensServicosService;
+    private final RegistroEntradaService registroEntradaService;
 
     public OrdemDeServicos postOrdem(@Valid @RequestBody PostEntradaVeiculo ordemDTO){
         OrdemDeServicos ordem = new OrdemDeServicos();
+        RegistroEntrada entrada = registroEntradaService.findRegistroById(ordemDTO.getFkEntrada());
 
         ordem.setStatus(ordemDTO.getStatus());
         ordem.setValorTotal(ordemDTO.getValorTotal());
-//        ordem.setFk_entrada(ordemDTO.getFkEntrada());
+        ordem.setFk_entrada(entrada);
 
         return ordemRepository.save(ordem);
     }
@@ -135,12 +141,20 @@ public class OrdemDeServicosService {
         }
 
         OrdemDeServicos ordem = ordemOPT.get();
+        RegistroEntrada entrada = ordem.getFk_entrada();
 
-        if (ordem.getFk_entrada() == null){
+        List<ItensServicos> servicos = itensServicosService.listarPelaOrdemServico(ordem);
+
+        if (!servicos.isEmpty()) {
+            throw new BadRequestException("Não é possível deletar ordem de serviço que possui serviços anexados", "Ordem de Serviço");
+        }
+
+        if (entrada == null){
             throw new ForbiddenException("Solicitação recusada", "Ordem de Serviço");
         }
 
+        // verificar se tem serviços atrelado
+        ordemRepository.delete(ordem);
     }
-
 }
 

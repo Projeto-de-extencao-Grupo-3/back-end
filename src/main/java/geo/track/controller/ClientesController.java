@@ -4,6 +4,7 @@ import geo.track.domain.Clientes;
 import geo.track.domain.Oficinas;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
+import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.dto.clientes.response.ResponseGetCliente;
 import geo.track.exception.ExceptionBody;
@@ -52,7 +53,7 @@ public class ClientesController {
             )
     })
     @PostMapping
-    public ResponseEntity<Clientes> postCliente(@Valid @RequestBody Clientes cliente) {
+    public ResponseEntity<Clientes> postCliente(@Valid @RequestBody RequestPostCliente cliente) {
         Clientes clientes = clientesService.postCliente(cliente);
         return ResponseEntity.status(201).body(clientes);
     }

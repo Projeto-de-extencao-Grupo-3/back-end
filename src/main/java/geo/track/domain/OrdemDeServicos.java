@@ -48,6 +48,9 @@ public class OrdemDeServicos {
     @Schema(description = "Indica se o pagamento foi realizado", example = "true")
     private Boolean pagtRealizado;
 
+    @Schema(description = "Indica se a ordem de serviço está ativa ou não", example = "true")
+    private Boolean ativo;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_entrada")
     @Schema(description = "Registro de entrada relacionado á ordem de serviço.")

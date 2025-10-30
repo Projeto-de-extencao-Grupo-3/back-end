@@ -1,7 +1,9 @@
 package geo.track.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import geo.track.enums.cliente.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema; // Import adicionado
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -47,6 +49,10 @@ public class Clientes {
     @Schema(description = "Endereço de e-mail do cliente", example = "joao.silva@email.com", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private String email;
 
+    @NotBlank
+    @Schema(description = "Tipo de cliente", example = "PESSOA_FISICA", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    private TipoCliente tipoCliente;
+
     @ManyToOne
     @JoinColumn(name = "fk_oficina")
     @Schema(description = "Oficina associada a este cliente") // Adicionado
@@ -57,7 +63,19 @@ public class Clientes {
     @Schema(description = "Endereço associado a este cliente") // Adicionado
     private Enderecos fkEndereco;
 
+    @Getter()
     @OneToMany(mappedBy = "fkCliente", cascade = CascadeType.ALL)
     @Schema(description = "Lista de veículos pertencentes a este cliente") // Adicionado
     private List<Veiculos> veiculos;
+
+    public Clientes(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, TipoCliente tipoCliente, Oficinas fkOficina, Enderecos fkEndereco) {
+        this.idCliente = idCliente;
+        this.nome = nome;
+        this.cpfCnpj = cpfCnpj;
+        this.telefone = telefone;
+        this.email = email;
+        this.tipoCliente = tipoCliente;
+        this.fkOficina = fkOficina;
+        this.fkEndereco = fkEndereco;
+    }
 }
