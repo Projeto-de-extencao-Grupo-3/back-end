@@ -4,6 +4,7 @@ import geo.track.domain.ItensServicos;
 import geo.track.domain.OrdemDeServicos;
 import geo.track.domain.RegistroEntrada;
 import geo.track.dto.os.request.*;
+import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +30,16 @@ public class OrdemDeServicosService {
     public OrdemDeServicos postOrdem(@Valid @RequestBody PostEntradaVeiculo ordemDTO) {
         RegistroEntrada entrada = registroEntradaService.findRegistroById(ordemDTO.getFkEntrada());
 
-        OrdemDeServicos ordem = new OrdemDeServicos();
-        ordem.setStatus(ordemDTO.getStatus());
-        ordem.setValorTotal(ordemDTO.getValorTotal());
-        ordem.setFk_entrada(entrada);
+        OrdemDeServicos ordem = OrdemDeServicos.builder()
+                .valorTotal(1200.50)
+                .status(StatusVeiculo.AGUARDANDO_ENTRADA)
+                .dtSaidaPrevista(LocalDate.of(2025, 11, 10))
+                .seguradora(false)
+                .nfRealizada(false)
+                .pagtRealizado(false)
+                .ativo(true)
+                .fk_entrada(entrada)
+                .build();
 
         return ordemRepository.save(ordem);
     }

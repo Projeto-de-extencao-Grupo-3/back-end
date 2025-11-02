@@ -19,7 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrdemDeServicos {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Identificador único da ordem de serviço", example = "101")
@@ -63,4 +62,102 @@ public class OrdemDeServicos {
     @OneToMany(mappedBy = "fkOrdemServico", cascade = CascadeType.ALL)
     @Schema(description = "Lista de serviços associados à ordem de serviço")
     private List<ItensServicos> servicos;
+
+    private OrdemDeServicos(Builder builder) {
+        this.idOrdemServico = builder.idOrdemServico;
+        this.valorTotal = builder.valorTotal;
+        this.dtSaidaPrevista = builder.dtSaidaPrevista;
+        this.dtSaidaEfetiva = builder.dtSaidaEfetiva;
+        this.status = builder.status;
+        this.seguradora = builder.seguradora;
+        this.nfRealizada = builder.nfRealizada;
+        this.pagtRealizado = builder.pagtRealizado;
+        this.ativo = builder.ativo;
+        this.fk_entrada = builder.fk_entrada;
+        this.produtos = builder.produtos;
+        this.servicos = builder.servicos;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Integer idOrdemServico;
+        private Double valorTotal;
+        private LocalDate dtSaidaPrevista;
+        private LocalDate dtSaidaEfetiva;
+        private StatusVeiculo status;
+        private Boolean seguradora;
+        private Boolean nfRealizada;
+        private Boolean pagtRealizado;
+        private Boolean ativo;
+        private RegistroEntrada fk_entrada;
+        private List<ItensProdutos> produtos;
+        private List<ItensServicos> servicos;
+
+        public Builder idOrdemServico(Integer idOrdemServico) {
+            this.idOrdemServico = idOrdemServico;
+            return this;
+        }
+
+        public Builder valorTotal(Double valorTotal) {
+            this.valorTotal = valorTotal;
+            return this;
+        }
+
+        public Builder dtSaidaPrevista(LocalDate dtSaidaPrevista) {
+            this.dtSaidaPrevista = dtSaidaPrevista;
+            return this;
+        }
+
+        public Builder dtSaidaEfetiva(LocalDate dtSaidaEfetiva) {
+            this.dtSaidaEfetiva = dtSaidaEfetiva;
+            return this;
+        }
+
+        public Builder status(StatusVeiculo status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder seguradora(Boolean seguradora) {
+            this.seguradora = seguradora;
+            return this;
+        }
+
+        public Builder nfRealizada(Boolean nfRealizada) {
+            this.nfRealizada = nfRealizada;
+            return this;
+        }
+
+        public Builder pagtRealizado(Boolean pagtRealizado) {
+            this.pagtRealizado = pagtRealizado;
+            return this;
+        }
+
+        public Builder ativo(Boolean ativo) {
+            this.ativo = ativo;
+            return this;
+        }
+
+        public Builder fk_entrada(RegistroEntrada fk_entrada) {
+            this.fk_entrada = fk_entrada;
+            return this;
+        }
+
+        public Builder produtos(List<ItensProdutos> produtos) {
+            this.produtos = produtos;
+            return this;
+        }
+
+        public Builder servicos(List<ItensServicos> servicos) {
+            this.servicos = servicos;
+            return this;
+        }
+
+        public OrdemDeServicos build() {
+            return new OrdemDeServicos(this);
+        }
+    }
 }
