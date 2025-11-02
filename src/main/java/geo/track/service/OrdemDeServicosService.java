@@ -30,10 +30,14 @@ public class OrdemDeServicosService {
     public OrdemDeServicos postOrdem(@Valid @RequestBody PostEntradaVeiculo ordemDTO) {
         RegistroEntrada entrada = registroEntradaService.findRegistroById(ordemDTO.getFkEntrada());
 
+//        Coloquei para a data prevista ser da seguinte forma : Data atual(HOJE) + 1 Mês para frente
+        LocalDate dataPrevista = LocalDate.now().plusMonths(1);
+
         OrdemDeServicos ordem = OrdemDeServicos.builder()
-                .valorTotal(1200.50)
-                .status(StatusVeiculo.AGUARDANDO_ENTRADA)
-                .dtSaidaPrevista(LocalDate.of(2025, 11, 10))
+                .valorTotal(ordemDTO.getValorTotal())
+                .status(ordemDTO.getStatus())
+                .dtSaidaPrevista(dataPrevista)
+                .dtSaidaEfetiva(null)
                 .seguradora(false)
                 .nfRealizada(false)
                 .pagtRealizado(false)
