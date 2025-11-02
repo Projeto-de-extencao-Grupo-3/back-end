@@ -10,4 +10,31 @@ public class PostEntradaVeiculo {
     private StatusVeiculo status;
     private Double valorTotal = 0.0;
     private Integer fkEntrada;
+
+    public static class Builder {
+        private final PostEntradaVeiculo instance;
+
+        public Builder() {
+            this.instance = new PostEntradaVeiculo();
+        }
+
+        public Builder status(StatusVeiculo status) {
+            instance.setStatus(status);
+            return this;
+        }
+
+        public Builder valorTotal(Double valorTotal) {
+            instance.setValorTotal(valorTotal);
+            return this;
+        }
+
+        public Builder fkEntrada(Integer fkEntrada) {
+            instance.setFkEntrada(fkEntrada);
+            return this;
+        }
+
+        public PostEntradaVeiculo build() {
+            return instance;
+        }
+    }
 }

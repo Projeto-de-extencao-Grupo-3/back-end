@@ -25,10 +25,10 @@ public class OrdemDeServicosService {
     private final ItensServicosService itensServicosService;
     private final RegistroEntradaService registroEntradaService;
 
-    public OrdemDeServicos postOrdem(@Valid @RequestBody PostEntradaVeiculo ordemDTO){
-        OrdemDeServicos ordem = new OrdemDeServicos();
+    public OrdemDeServicos postOrdem(@Valid @RequestBody PostEntradaVeiculo ordemDTO) {
         RegistroEntrada entrada = registroEntradaService.findRegistroById(ordemDTO.getFkEntrada());
 
+        OrdemDeServicos ordem = new OrdemDeServicos();
         ordem.setStatus(ordemDTO.getStatus());
         ordem.setValorTotal(ordemDTO.getValorTotal());
         ordem.setFk_entrada(entrada);
