@@ -27,17 +27,11 @@ import java.util.Optional;
 public class OficinaService {
     private final OficinaRepository repository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private OficinaRepository oficinaRepository;
+    private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
-    @Autowired
-    private GerenciadorTokenJwt gerenciadorTokenJwt;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     public Oficinas cadastrar(Oficinas Oficinas){
         if (repository.findByCnpj(Oficinas.getCnpj()).isPresent()){
@@ -56,7 +50,7 @@ public class OficinaService {
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
         Oficinas usuarioAutenticado =
-                oficinaRepository.findByCnpj(Oficinas.getCnpj())
+                repository.findByCnpj(Oficinas.getCnpj())
                         .orElseThrow(
                                 () -> new ResponseStatusException(404, "CNPJ do usuário não cadastrado", null)
                         );
