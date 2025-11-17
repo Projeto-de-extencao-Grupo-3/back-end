@@ -30,16 +30,16 @@ public class Oficinas {
     @Schema(description = "Razão social da oficina", example = "Auto Center São Lucas LTDA")
     private String razaoSocial;
 
-    @Schema(description = "CNPJ da oficina", example = "12.345.678/0001-99")
+    @Schema(description = "CNPJ da oficina")
     private String cnpj;
 
     @Schema(description = "Email de contato da oficina", example = "contato@autocenter.com")
     private String email;
 
-    @Schema(description = "Data e hora de criação do cadastro", example = "2025-10-25T14:30:00")
+    @Schema(description = "Data e hora de criação do cadastro")
     private LocalDateTime dtCriacao;
 
-    @Schema(description = "Status atual da oficina", example = "Ativa")
+    @Schema(description = "Status atual da oficina", example = "ATIVO")
     private String status;
 
     @Schema(description = "Senha de acesso ao sistema (armazenada de forma segura)", example = "••••••••")

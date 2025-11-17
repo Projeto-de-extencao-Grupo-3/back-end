@@ -4,7 +4,6 @@ import geo.track.domain.Oficinas;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.repository.OficinaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

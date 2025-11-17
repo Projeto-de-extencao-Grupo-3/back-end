@@ -16,23 +16,22 @@ import java.time.LocalDateTime;
 public class UsuarioCriacaoDto {
     @NotBlank
     @Size(min = 3, max = 20)
-    @Schema(description = "Razao Social", example = "John Doe")
+    @Schema(description = "Razao Social", example = "Geosmar Reformadora")
     private String razaoSocial;
 
     @Email
-    @Schema(description = "Email do usuário", example = "john@doe.com")
+    @Schema(description = "Email do usuário", example = "adm@geosmareformadora.com")
     private String email;
 
     @CNPJ
-    @Schema(description = "CNPJ do usuário", example = "12.345.678/0001-10")
+    @Schema(description = "CNPJ do usuário", example = "68.496.284/0001-92")
     private String cnpj;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    @Schema(description = "Data de criação do usuário", example = "yyyy-MM-dd HH:mm")
+    @Schema(description = "Data de criação do usuário", example = "2025-11-16T20:45:00")
     private LocalDateTime dt_criacao;
 
     @NotBlank
-    @Schema(description = "Status do usuário", example = "ATIVO ou INATIVO")
+    @Schema(description = "Status do usuário", example = "ATIVO")
     private String status;
 
     @Size(min = 6, max = 20)
