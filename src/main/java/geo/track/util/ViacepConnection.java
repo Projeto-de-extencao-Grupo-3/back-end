@@ -5,8 +5,10 @@ import geo.track.dto.viacep.request.RequestViacep;
 import geo.track.dto.viacep.response.ResponseViacep;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Service
 public class ViacepConnection {
     public ResponseViacep consultarCEP(String cep) {
         RestTemplate restTemplate = new RestTemplate();
