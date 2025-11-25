@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
+@AllArgsConstructor
 public class RequestPutEndereco {
     @NotNull
     @Schema(description = "ID do Endereço", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // 2. Detalhes do campo

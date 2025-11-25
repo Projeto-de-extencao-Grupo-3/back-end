@@ -19,7 +19,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EnderecosService {
-    private final ViacepConnection viacepConnection = new ViacepConnection();
+    private final ViacepConnection viacepConnection;
     private final EnderecosRepository enderecosRepository;
 
     public Enderecos findEnderecoById(Integer id) {
@@ -75,16 +75,17 @@ public class EnderecosService {
 
             return endereco;
         } else {
-            return null;
+            throw new DataNotFoundException("Endereço com o ID %d não foi encontrado".formatted(enderecoDTO.getId()), "Endereços");
         }
     }
 
     public Enderecos putEndereco(RequestPutEndereco enderecoDTO) {
-        Optional<Enderecos> enderecos = enderecosRepository.findById(enderecoDTO.getId());
 
         if (enderecoDTO.getCep().length() != 8) {
              throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
         }
+
+        Optional<Enderecos> enderecos = enderecosRepository.findById(enderecoDTO.getId());
 
         if (enderecos.isPresent()) {
             Enderecos endereco = enderecos.get();

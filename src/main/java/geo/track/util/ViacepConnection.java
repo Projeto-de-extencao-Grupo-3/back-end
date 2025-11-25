@@ -4,6 +4,7 @@ import geo.track.exception.DataNotFoundException;
 import geo.track.dto.viacep.request.RequestViacep;
 import geo.track.dto.viacep.response.ResponseViacep;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 public class ViacepConnection {
