@@ -37,20 +37,29 @@ public class RegistroEntrada {
     @Schema(description = "CPF do responsável", example = "98765432109") // Adicionado
     private String cpf;
 
-    @Schema(description = "Indica se o veículo possui extintor", example = "true") // Adicionado
+    @Schema(description = "Quantidade de extintor no veículo", example = "1") // Adicionado
     private Boolean extintor;
 
-    @Schema(description = "Indica se o veículo possui macaco", example = "true") // Adicionado
+    @Schema(description = "Quantidade de macaco no veículo", example = "1") // Adicionado
     private Boolean macaco;
 
-    @Schema(description = "Indica se o veículo possui chave de roda", example = "true") // Adicionado
+    @Schema(description = "Quantidade de chaves de roda no veículo", example = "1") // Adicionado
     private Boolean chave_roda;
 
-    @Schema(description = "Quantidade de geladeiras no veículo (para caminhões/motorhomes)", example = "1") // Adicionado
+    @Schema(description = "Quantidade de geladeiras no veículo", example = "1") // Adicionado
     private Integer geladeira;
 
     @Schema(description = "Quantidade de monitores/TVs no veículo", example = "2") // Adicionado
     private Integer monitor;
+
+    @Schema(description = "Quantidade de estepes no veículo", example = "2") // Adicionado
+    private Integer estepe;
+
+    @Schema(description = "Quantidade de Som/DVD no veículo", example = "2") // Adicionado
+    private Integer somDvd;
+
+    @Schema(description = "Quantidade de caixa de ferramentas no veículo", example = "2") // Adicionado
+    private Integer caixaFerramenta;
 
     @ManyToOne
     @JoinColumn(name = "fk_veiculo")
