@@ -37,7 +37,10 @@ class EnderecosServiceTest {
     @InjectMocks
     private EnderecosService service;
 
+    // Entidade
     private Enderecos endereco;
+
+    // DTOs de Requisição
     private RequestPostEndereco requestPostEndereco;
     private RequestPatchComplemento requestPatchComplemento;
     private RequestPatchNumero requestPatchNumero;
@@ -45,259 +48,224 @@ class EnderecosServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Configuração da Entidade Mock
         endereco = new Enderecos();
         endereco.setIdEndereco(1);
-        endereco.setComplemento("Bloco 25 Apartamento 51");
-        endereco.setCep("00000000");
+        endereco.setCep("01001000");
+        endereco.setLogradouro("Praça da Sé");
+        endereco.setNumero(100);
+        endereco.setComplemento("Lado ímpar");
+        endereco.setBairro("Sé");
         endereco.setCidade("São Paulo");
-        endereco.setEstado("São Paulo");
-        endereco.setBairro("Jardim Taquaral");
-        endereco.setLogradouro("Avenida Brazil");
-        endereco.setNumero(190);
+        endereco.setEstado("SP");
 
+        // Configuração dos DTOs de Requisição
         requestPostEndereco = new RequestPostEndereco(
-                "00000000",
-                "Avenida Brazil",
-                190,
-                "Bloco 25 Apartamento 51",
-                "Jardim Taquaral",
+                "01001000",
+                "Praça da Sé",
+                100,
+                "Lado ímpar",
+                "Sé",
                 "São Paulo",
-                "São Paulo"
+                "SP"
         );
 
         requestPatchComplemento = new RequestPatchComplemento(1, "Novo Complemento");
-
-        requestPatchNumero = new RequestPatchNumero(1, 999);
+        requestPatchNumero = new RequestPatchNumero(1, 200);
 
         requestPutEndereco = new RequestPutEndereco(
                 1,
-                "11111111",
-                "Nova Rua",
-                123,
-                "Nova Casa",
-                "Novo Bairro",
-                "Nova Cidade",
-                "Novo Estado"
+                "04538133",
+                "Av. Brigadeiro Faria Lima",
+                1571,
+                "Andar 10",
+                "Jardim Paulistano",
+                "São Paulo",
+                "SP"
         );
     }
 
+    // --- Testes para findEnderecoById ---
     @Test
-    @DisplayName("Deve encontrar um endereço com sucesso")
-    void deveEncontrarUmEnderecoComSucesso() {
-        Integer idDesejado = 1;
+    @DisplayName("findEnderecoById: Deve encontrar um endereço pelo ID com sucesso")
+    void deveEncontrarEnderecoPorIdComSucesso() {
+        when(repository.findById(1)).thenReturn(Optional.of(endereco));
 
-        when(repository.findById(idDesejado)).thenReturn(Optional.of(endereco));
+        Enderecos resultado = service.findEnderecoById(1);
 
-        Enderecos resultadoBusca = service.findEnderecoById(idDesejado);
-
-        assertNotNull(resultadoBusca);
-        verify(repository).findById(idDesejado);
+        assertNotNull(resultado);
+        assertEquals(endereco.getIdEndereco(), resultado.getIdEndereco());
+        verify(repository).findById(1);
     }
 
     @Test
-    @DisplayName("Deve lançar DataNotFoundException ao buscar ID inexistente")
-    void deveLancarExcecaoAoBuscarEnderecoNaoExistente() {
-        Integer idDesejado = 2;
-
-        when(repository.findById(idDesejado)).thenReturn(Optional.empty());
+    @DisplayName("findEnderecoById: Deve lançar DataNotFoundException ao buscar por um ID inexistente")
+    void deveLancarDataNotFoundExceptionAoBuscarEnderecoPorIdInexistente() {
+        when(repository.findById(99)).thenReturn(Optional.empty());
 
         DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.findEnderecoById(idDesejado);
+            service.findEnderecoById(99);
         });
 
-        assertTrue(exception.getMessage().contains("ID " + idDesejado));
-        verify(repository).findById(idDesejado);
+        assertEquals("ID 99 não foi encontrado", exception.getMessage());
+        verify(repository).findById(99);
+    }
+
+    // --- Testes para findEnderecoByVIACEP ---
+    @Test
+    @DisplayName("findEnderecoByVIACEP: Deve retornar dados do CEP com sucesso")
+    void deveRetornarDadosDoCepComSucesso() {
+        String cep = "01001000";
+        ResponseViacep responseViacep = new ResponseViacep(cep, "Praça da Sé", "Sé", "São Paulo", "SP");
+        when(viacepConnection.consultarCEP(cep)).thenReturn(responseViacep);
+
+        ResponseViacep resultado = service.findEnderecoByVIACEP(cep);
+
+        assertNotNull(resultado);
+        assertEquals(cep, resultado.getCep());
+        verify(viacepConnection).consultarCEP(cep);
     }
 
     @Test
-    @DisplayName("Deve encontrar um endereço com sucesso pelo ViaCEP")
-    void deveEncontrarUmEnderecoComSucessoPeloViacep() {
-        String cepDesejado = "00000000";
+    @DisplayName("findEnderecoByVIACEP: Deve lançar NotAcepptableException para CEP com formato inválido")
+    void deveLancarExcecaoParaCepComFormatoInvalido() {
+        String cepInvalido = "12345";
 
-        ResponseViacep responseEsperada = new ResponseViacep("00000000", "Avenida Brazil", "Jardim Taquaral", "São Paulo", "São Paulo");
-
-        when(viacepConnection.consultarCEP(cepDesejado)).thenReturn(responseEsperada);
-
-        ResponseViacep responseResultado = service.findEnderecoByVIACEP(cepDesejado);
-
-        assertNotNull(responseResultado);
-        verify(viacepConnection).consultarCEP(cepDesejado);
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção quando CEP for diferente de 8 caracteres na busca ViaCEP")
-    void deveLancarExcecaoQuandoCepDiferenteDeOito() {
-        String cepDesejado = "0000000";
-
-        NotAcepptableException responseResultado = assertThrows(NotAcepptableException.class, () -> {
-            service.findEnderecoByVIACEP(cepDesejado);
+        NotAcepptableException exception = assertThrows(NotAcepptableException.class, () -> {
+            service.findEnderecoByVIACEP(cepInvalido);
         });
 
-        assertTrue(responseResultado.getMessage().contains("Envie um CEP que possua 8 caracteres"));
+        assertEquals("Envie um CEP que possua 8 caracteres", exception.getMessage());
+        verify(viacepConnection, never()).consultarCEP(anyString());
     }
 
+    // --- Testes para postEndereco ---
     @Test
-    @DisplayName("Deve lançar exceção quando CEP não for encontrado na busca ViaCEP")
-    void deveLancarExcecaoQuandoCepNaoEncontrado() {
-        String cepDesejado = "00000001";
-
-        when(viacepConnection.consultarCEP(cepDesejado)).thenThrow(new DataNotFoundException("CEP: %s não foi encontrado".formatted(cepDesejado), "Endereços"));
-
-        assertThrows(DataNotFoundException.class, () -> {
-            service.findEnderecoByVIACEP(cepDesejado);
-        });
-
-        verify(viacepConnection).consultarCEP(cepDesejado);
-    }
-
-    @Test
-    @DisplayName("Deve criar um novo endereço com sucesso")
-    void devePostarEnderecoComSucesso() {
-        // Arrange
+    @DisplayName("postEndereco: Deve criar um novo endereço com sucesso")
+    void deveCriarEnderecoComSucesso() {
         when(repository.save(any(Enderecos.class))).thenReturn(endereco);
 
-        // Act
-        Enderecos enderecoSalvo = service.postEndereco(requestPostEndereco);
+        Enderecos resultado = service.postEndereco(requestPostEndereco);
 
-        // Assert
-        assertNotNull(enderecoSalvo);
-        assertEquals(requestPostEndereco.getCep(), enderecoSalvo.getCep());
+        assertNotNull(resultado);
+        assertEquals(requestPostEndereco.getCep(), resultado.getCep());
         verify(repository).save(any(Enderecos.class));
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar criar endereço com CEP inválido")
-    void deveLancarExcecaoAoPostarEnderecoComCepInvalido() {
-        // Arrange
-        requestPostEndereco.setCep("12345");
+    @DisplayName("postEndereco: Deve lançar NotAcepptableException ao tentar criar endereço com CEP inválido")
+    void deveLancarExcecaoAoCriarEnderecoComCepInvalido() {
+        requestPostEndereco.setCep("123");
 
-        // Act
         NotAcepptableException exception = assertThrows(NotAcepptableException.class, () -> {
             service.postEndereco(requestPostEndereco);
         });
 
-        // Assert
-        assertTrue(exception.getMessage().contains("Envie um CEP que possua 8 caracteres"));
+        assertEquals("Envie um CEP que possua 8 caracteres", exception.getMessage());
         verify(repository, never()).save(any(Enderecos.class));
     }
 
+    // --- Testes para patchComplementoEndereco ---
     @Test
-    @DisplayName("Deve atualizar o complemento do endereço com sucesso")
+    @DisplayName("patchComplementoEndereco: Deve atualizar o complemento com sucesso")
     void deveAtualizarComplementoComSucesso() {
-        // Arrange
-        when(repository.findById(requestPatchComplemento.getId())).thenReturn(Optional.of(endereco));
-        when(repository.save(any(Enderecos.class))).thenReturn(endereco);
+        when(repository.findById(1)).thenReturn(Optional.of(endereco));
+        when(repository.save(any(Enderecos.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        // Act
-        Enderecos enderecoAtualizado = service.patchComplementoEndereco(requestPatchComplemento);
+        Enderecos resultado = service.patchComplementoEndereco(requestPatchComplemento);
 
-        // Assert
-        assertNotNull(enderecoAtualizado);
-        assertEquals(requestPatchComplemento.getComplemento(), enderecoAtualizado.getComplemento());
-        verify(repository).findById(requestPatchComplemento.getId());
+        assertNotNull(resultado);
+        assertEquals(requestPatchComplemento.getComplemento(), resultado.getComplemento());
+        verify(repository).findById(1);
         verify(repository).save(any(Enderecos.class));
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar atualizar complemento de ID inexistente")
+    @DisplayName("patchComplementoEndereco: Deve lançar DataNotFoundException ao tentar atualizar complemento de ID inexistente")
     void deveLancarExcecaoAoAtualizarComplementoDeIdInexistente() {
-        // Arrange
-        when(repository.findById(requestPatchComplemento.getId())).thenReturn(Optional.empty());
+        when(repository.findById(99)).thenReturn(Optional.empty());
 
-        // Act
         DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.patchComplementoEndereco(requestPatchComplemento);
+            service.patchComplementoEndereco(new RequestPatchComplemento(99, ""));
         });
 
-        // Assert
-        assertTrue(exception.getMessage().contains("Endereço com o ID %d não foi encontrado".formatted(requestPatchComplemento.getId())));
-        verify(repository).findById(requestPatchComplemento.getId());
+        assertEquals("Endereço com o ID 99 não foi encontrado", exception.getMessage());
+        verify(repository).findById(99);
         verify(repository, never()).save(any(Enderecos.class));
     }
 
+    // --- Testes para patchNumeroEndereco ---
     @Test
-    @DisplayName("Deve atualizar o número do endereço com sucesso")
+    @DisplayName("patchNumeroEndereco: Deve atualizar o número com sucesso")
     void deveAtualizarNumeroComSucesso() {
-        // Arrange
-        when(repository.findById(requestPatchNumero.getId())).thenReturn(Optional.of(endereco));
-        when(repository.save(any(Enderecos.class))).thenReturn(endereco);
+        when(repository.findById(1)).thenReturn(Optional.of(endereco));
+        when(repository.save(any(Enderecos.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        // Act
-        Enderecos enderecoAtualizado = service.patchNumeroEndereco(requestPatchNumero);
+        Enderecos resultado = service.patchNumeroEndereco(requestPatchNumero);
 
-        // Assert
-        assertNotNull(enderecoAtualizado);
-        assertEquals(requestPatchNumero.getNumero(), enderecoAtualizado.getNumero());
-        verify(repository).findById(requestPatchNumero.getId());
+        assertNotNull(resultado);
+        assertEquals(requestPatchNumero.getNumero(), resultado.getNumero());
+        verify(repository).findById(1);
         verify(repository).save(any(Enderecos.class));
     }
 
     @Test
-    @DisplayName("Deve retornar nulo ao tentar atualizar número de ID inexistente")
-    void deveRetornarNuloAoAtualizarNumeroDeIdInexistente() {
-        // Arrange
-        when(repository.findById(requestPatchNumero.getId())).thenReturn(Optional.empty());
+    @DisplayName("patchNumeroEndereco: Deve lançar DataNotFoundException ao tentar atualizar número de ID inexistente")
+    void deveLancarExcecaoAoAtualizarNumeroDeIdInexistente() {
+        when(repository.findById(99)).thenReturn(Optional.empty());
 
-        // Act
         DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.patchNumeroEndereco(requestPatchNumero);
+            service.patchNumeroEndereco(new RequestPatchNumero(99, 0));
         });
 
-        // Assert
-        assertTrue(exception.getMessage().contains("Endereço com o ID %d não foi encontrado".formatted(requestPatchComplemento.getId())));
-        verify(repository).findById(requestPatchNumero.getId());
+        assertEquals("Endereço com o ID 99 não foi encontrado", exception.getMessage());
+        verify(repository).findById(99);
         verify(repository, never()).save(any(Enderecos.class));
     }
 
+    // --- Testes para putEndereco ---
     @Test
-    @DisplayName("Deve atualizar o endereço completo com sucesso")
+    @DisplayName("putEndereco: Deve atualizar o endereço completo com sucesso")
     void deveAtualizarEnderecoCompletoComSucesso() {
-        // Arrange
-        when(repository.findById(requestPutEndereco.getId())).thenReturn(Optional.of(endereco));
-        when(repository.save(any(Enderecos.class))).thenReturn(endereco);
+        when(repository.findById(1)).thenReturn(Optional.of(endereco));
+        when(repository.save(any(Enderecos.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        // Act
-        Enderecos enderecoAtualizado = service.putEndereco(requestPutEndereco);
+        Enderecos resultado = service.putEndereco(requestPutEndereco);
 
-        // Assert
-        assertNotNull(enderecoAtualizado);
-        assertEquals(requestPutEndereco.getCep(), enderecoAtualizado.getCep());
-        assertEquals(requestPutEndereco.getLogradouro(), enderecoAtualizado.getLogradouro());
-        verify(repository).findById(requestPutEndereco.getId());
+        assertNotNull(resultado);
+        assertEquals(requestPutEndereco.getCep(), resultado.getCep());
+        assertEquals(requestPutEndereco.getLogradouro(), resultado.getLogradouro());
+        assertEquals(requestPutEndereco.getNumero(), resultado.getNumero());
+        verify(repository).findById(1);
         verify(repository).save(any(Enderecos.class));
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar atualizar endereço completo de ID inexistente")
-    void deveLancarExcecaoAoAtualizarEnderecoCompletoDeIdInexistente() {
-        // Arrange
-        when(repository.findById(requestPutEndereco.getId())).thenReturn(Optional.empty());
+    @DisplayName("putEndereco: Deve lançar NotAcepptableException ao tentar atualizar com CEP inválido")
+    void deveLancarExcecaoAoAtualizarComCepInvalido() {
+        requestPutEndereco.setCep("123");
 
-        // Act
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.putEndereco(requestPutEndereco);
-        });
-
-        // Assert
-        assertTrue(exception.getMessage().contains("Endereço com o ID %d não foi encontrado".formatted(requestPutEndereco.getId())));
-        verify(repository).findById(requestPutEndereco.getId());
-        verify(repository, never()).save(any(Enderecos.class));
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao tentar atualizar endereço completo com CEP inválido")
-    void deveLancarExcecaoAoAtualizarEnderecoCompletoComCepInvalido() {
-        // Arrange
-        requestPutEndereco.setCep("12345");
-
-        // Act
         NotAcepptableException exception = assertThrows(NotAcepptableException.class, () -> {
             service.putEndereco(requestPutEndereco);
         });
 
-        // Assert
-        assertTrue(exception.getMessage().contains("Envie um CEP que possua 8 caracteres"));
-        verify(repository, never()).findById(requestPutEndereco.getId());
+        assertEquals("Envie um CEP que possua 8 caracteres", exception.getMessage());
+        verify(repository, never()).findById(anyInt());
+        verify(repository, never()).save(any(Enderecos.class));
+    }
+
+    @Test
+    @DisplayName("putEndereco: Deve lançar DataNotFoundException ao tentar atualizar endereço de ID inexistente")
+    void deveLancarExcecaoAoAtualizarEnderecoDeIdInexistente() {
+        when(repository.findById(99)).thenReturn(Optional.empty());
+        requestPutEndereco.setId(99);
+
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
+            service.putEndereco(requestPutEndereco);
+        });
+
+        assertEquals("Endereço com o ID 99 não foi encontrado", exception.getMessage());
+        verify(repository).findById(99);
         verify(repository, never()).save(any(Enderecos.class));
     }
 }

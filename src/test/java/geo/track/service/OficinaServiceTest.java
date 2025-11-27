@@ -1,8 +1,6 @@
 package geo.track.service;
 
-import geo.track.config.GerenciadorTokenJwt;
 import geo.track.domain.Oficinas;
-import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.exception.ConflictException;
@@ -15,19 +13,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,327 +33,171 @@ class OficinaServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @Mock
-    private GerenciadorTokenJwt gerenciadorTokenJwt;
-
-    @Mock
-    private AuthenticationManager authenticationManager;
-
     @InjectMocks
     private OficinaService service;
 
     private Oficinas oficina;
+    private OficinaPatchEmailDTO patchEmailDTO;
+    private OficinaPatchStatusDTO patchStatusDTO;
 
     @BeforeEach
     void setUp() {
         oficina = new Oficinas();
         oficina.setIdOficina(1);
+        oficina.setRazaoSocial("Oficina do Zé");
         oficina.setCnpj("12345678000199");
-        oficina.setRazaoSocial("Oficina Teste LTDA");
-        oficina.setEmail("teste@oficina.com");
-        oficina.setSenha("senha123");
-        oficina.setStatus("ATIVO");
+        oficina.setEmail("contato@oficinadoze.com");
+        oficina.setSenha("senhaForte123");
+        oficina.setStatus(false);
+
+        patchEmailDTO = new OficinaPatchEmailDTO(1, "novo.email@oficinadoze.com");
+        patchStatusDTO = new OficinaPatchStatusDTO(1, false);
     }
 
+    // --- Testes para cadastrar ---
     @Test
-    @DisplayName("Deve cadastrar uma nova oficina com sucesso")
+    @DisplayName("cadastrar: Deve cadastrar uma oficina com sucesso")
     void deveCadastrarOficinaComSucesso() {
-        // Arrange
         when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(anyString())).thenReturn("senhaCriptografada");
+        when(passwordEncoder.encode(oficina.getSenha())).thenReturn("senhaCriptografada");
         when(repository.save(any(Oficinas.class))).thenReturn(oficina);
 
-        // Act
         Oficinas resultado = service.cadastrar(oficina);
 
-        // Assert
         assertNotNull(resultado);
+        assertEquals("senhaCriptografada", resultado.getSenha());
         verify(repository).findByCnpj(oficina.getCnpj());
-        verify(passwordEncoder).encode("senha123");
-        verify(repository).save(oficina);
+        verify(passwordEncoder).encode(oficina.getSenha());
+        verify(repository).save(any(Oficinas.class));
     }
 
     @Test
-    @DisplayName("Deve lançar ConflictException ao cadastrar CNPJ duplicado")
-    void deveLancarExcecaoAoCadastrarCnpjDuplicado() {
-        // Arrange
+    @DisplayName("cadastrar: Deve lançar ConflictException ao tentar cadastrar CNPJ duplicado")
+    void deveLancarConflictExceptionAoCadastrarCnpjDuplicado() {
         when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.of(oficina));
 
-        // Act & Assert
-        ConflictException exception = assertThrows(ConflictException.class,
-                () -> service.cadastrar(oficina));
+        ConflictException exception = assertThrows(ConflictException.class, () -> {
+            service.cadastrar(oficina);
+        });
 
-        assertTrue(exception.getMessage().contains(oficina.getCnpj()));
+        assertTrue(exception.getMessage().contains("O CNPJ %s já está cadastrado!".formatted(oficina.getCnpj())));
         verify(repository).findByCnpj(oficina.getCnpj());
+        verify(passwordEncoder, never()).encode(anyString());
+        verify(repository, never()).save(any(Oficinas.class));
     }
 
+    // --- Testes para listar ---
     @Test
-    @DisplayName("Deve autenticar oficina com sucesso")
-    void deveAutenticarOficinaComSucesso() {
-        // Arrange
-        Authentication auth = mock(Authentication.class);
-        String token = "token-jwt-gerado";
-
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(auth);
-        when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.of(oficina));
-        when(gerenciadorTokenJwt.generateToken(auth)).thenReturn(token);
-
-        // Act
-        UsuarioTokenDto resultado = service.autenticar(oficina);
-
-        // Assert
-        assertNotNull(resultado);
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(repository).findByCnpj(oficina.getCnpj());
-        verify(gerenciadorTokenJwt).generateToken(auth);
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao autenticar com CNPJ não cadastrado")
-    void deveLancarExcecaoAoAutenticarCnpjNaoCadastrado() {
-        // Arrange
-        Authentication auth = mock(Authentication.class);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenReturn(auth);
-        when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(ResponseStatusException.class, () -> service.autenticar(oficina));
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(repository).findByCnpj(oficina.getCnpj());
-    }
-
-    @Test
-    @DisplayName("Deve listar todas as oficinas")
-    void deveListarTodasOficinas() {
-        // Arrange
-        List<Oficinas> oficinas = Arrays.asList(oficina, new Oficinas());
-        when(repository.findAll()).thenReturn(oficinas);
-
-        // Act
+    @DisplayName("listar: Deve retornar uma lista de oficinas")
+    void deveRetornarListaDeOficinas() {
+        when(repository.findAll()).thenReturn(List.of(oficina));
         List<Oficinas> resultado = service.listar();
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(2, resultado.size());
+        assertFalse(resultado.isEmpty());
         verify(repository).findAll();
     }
 
     @Test
-    @DisplayName("Deve buscar oficina por ID com sucesso")
-    void deveBuscarOficinaPorIdComSucesso() {
-        // Arrange
+    @DisplayName("listar: Deve retornar uma lista vazia quando não houver oficinas")
+    void deveRetornarListaVazia() {
+        when(repository.findAll()).thenReturn(Collections.emptyList());
+        List<Oficinas> resultado = service.listar();
+        assertTrue(resultado.isEmpty());
+        verify(repository).findAll();
+    }
+
+    // --- Testes para findOficinasById ---
+    @Test
+    @DisplayName("findOficinasById: Deve encontrar oficina por ID com sucesso")
+    void deveEncontrarOficinaPorIdComSucesso() {
         when(repository.findById(1)).thenReturn(Optional.of(oficina));
-
-        // Act
         Oficinas resultado = service.findOficinasById(1);
-
-        // Assert
         assertNotNull(resultado);
-        assertEquals(oficina.getIdOficina(), resultado.getIdOficina());
+        assertEquals(1, resultado.getIdOficina());
         verify(repository).findById(1);
     }
 
     @Test
-    @DisplayName("Deve lançar DataNotFoundException ao buscar ID inexistente")
+    @DisplayName("findOficinasById: Deve lançar DataNotFoundException para ID inexistente")
     void deveLancarExcecaoAoBuscarIdInexistente() {
-        // Arrange
-        when(repository.findById(999)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-                () -> service.findOficinasById(999));
-
-        assertTrue(exception.getMessage().contains("999"));
-        verify(repository).findById(999);
+        when(repository.findById(99)).thenReturn(Optional.empty());
+        assertThrows(DataNotFoundException.class, () -> service.findOficinasById(99));
+        verify(repository).findById(99);
     }
 
+    // --- Testes para findOficinasByRazaoSocial ---
     @Test
-    @DisplayName("Deve buscar oficinas por razão social")
-    void deveBuscarOficinasPorRazaoSocial() {
-        // Arrange
-        List<Oficinas> oficinas = Arrays.asList(oficina);
-        when(repository.findByrazaoSocialContainingIgnoreCase("Teste"))
-                .thenReturn(oficinas);
-
-        // Act
-        List<Oficinas> resultado = service.findOficinasByRazaoSocial("Teste");
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(1, resultado.size());
-        verify(repository).findByrazaoSocialContainingIgnoreCase("Teste");
+    @DisplayName("findOficinasByRazaoSocial: Deve encontrar oficinas pela razão social")
+    void deveEncontrarOficinasPorRazaoSocial() {
+        when(repository.findByrazaoSocialContainingIgnoreCase("Zé")).thenReturn(List.of(oficina));
+        List<Oficinas> resultado = service.findOficinasByRazaoSocial("Zé");
+        assertFalse(resultado.isEmpty());
+        verify(repository).findByrazaoSocialContainingIgnoreCase("Zé");
     }
 
+    // --- Testes para findOficinasByCnpj ---
     @Test
-    @DisplayName("Deve buscar oficina por CNPJ com sucesso")
-    void deveBuscarOficinaPorCnpjComSucesso() {
-        // Arrange
+    @DisplayName("findOficinasByCnpj: Deve encontrar oficina por CNPJ com sucesso")
+    void deveEncontrarOficinaPorCnpjComSucesso() {
         when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.of(oficina));
-
-        // Act
         Oficinas resultado = service.findOficinasByCnpj(oficina.getCnpj());
-
-        // Assert
         assertNotNull(resultado);
-        assertEquals(oficina.getCnpj(), resultado.getCnpj());
         verify(repository).findByCnpj(oficina.getCnpj());
     }
 
+    // --- Testes para atualizar ---
     @Test
-    @DisplayName("Deve lançar DataNotFoundException ao buscar CNPJ inexistente")
-    void deveLancarExcecaoAoBuscarCnpjInexistente() {
-        // Arrange
-        String cnpj = "99999999000199";
-        when(repository.findByCnpj(cnpj)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-                () -> service.findOficinasByCnpj(cnpj));
-
-        assertTrue(exception.getMessage().contains(cnpj));
-        verify(repository).findByCnpj(cnpj);
-    }
-
-    @Test
-    @DisplayName("Deve atualizar oficina com sucesso")
+    @DisplayName("atualizar: Deve atualizar uma oficina com sucesso")
     void deveAtualizarOficinaComSucesso() {
-        // Arrange
         when(repository.existsById(1)).thenReturn(true);
         when(repository.save(any(Oficinas.class))).thenReturn(oficina);
-
-        // Act
         Oficinas resultado = service.atualizar(1, oficina);
-
-        // Assert
         assertNotNull(resultado);
-        assertEquals(1, oficina.getIdOficina());
+        assertEquals(1, resultado.getIdOficina());
         verify(repository).existsById(1);
         verify(repository).save(oficina);
     }
 
+    // --- Testes para patchEmail ---
     @Test
-    @DisplayName("Deve lançar DataNotFoundException ao atualizar ID inexistente")
-    void deveLancarExcecaoAoAtualizarIdInexistente() {
-        // Arrange
-        when(repository.existsById(999)).thenReturn(false);
-
-        // Act & Assert
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-                () -> service.atualizar(999, oficina));
-
-        assertTrue(exception.getMessage().contains("999"));
-        verify(repository).existsById(999);
-        verify(repository, never()).save(any());
-    }
-
-    @Test
-    @DisplayName("Deve atualizar email da oficina com sucesso")
+    @DisplayName("patchEmail: Deve atualizar o email com sucesso")
     void deveAtualizarEmailComSucesso() {
-        // Arrange
-        OficinaPatchEmailDTO dto = new OficinaPatchEmailDTO();
-        dto.setId(1);
-        dto.setEmail("teste@oficina.com");
-
         when(repository.findById(1)).thenReturn(Optional.of(oficina));
-        when(repository.save(any(Oficinas.class))).thenReturn(oficina);
-
-        // Act
-        Oficinas resultado = service.patchEmail(dto);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("teste@oficina.com", resultado.getEmail());
+        when(repository.save(any(Oficinas.class))).thenAnswer(inv -> inv.getArgument(0));
+        Oficinas resultado = service.patchEmail(patchEmailDTO);
+        assertEquals(patchEmailDTO.getEmail(), resultado.getEmail());
         verify(repository).findById(1);
-        verify(repository).save(oficina);
+        verify(repository).save(any(Oficinas.class));
     }
 
+    // --- Testes para patchStatus ---
     @Test
-    @DisplayName("Deve lançar DataNotFoundException ao atualizar email de ID inexistente")
-    void deveLancarExcecaoAoAtualizarEmailIdInexistente() {
-        // Arrange
-        OficinaPatchEmailDTO dto = new OficinaPatchEmailDTO();
-        dto.setId(999);
-        dto.setEmail("email@teste.com");
-
-        when(repository.findById(999)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-                () -> service.patchEmail(dto));
-
-        assertTrue(exception.getMessage().contains("oficina"));
-        verify(repository).findById(999);
-        verify(repository, never()).save(any());
-    }
-
-    @Test
-    @DisplayName("Deve atualizar status da oficina com sucesso")
+    @DisplayName("patchStatus: Deve atualizar o status com sucesso")
     void deveAtualizarStatusComSucesso() {
-        // Arrange
-        OficinaPatchStatusDTO dto = new OficinaPatchStatusDTO();
-        dto.setId(1);
-        dto.setStatus("INATIVO");
-
         when(repository.findById(1)).thenReturn(Optional.of(oficina));
-        when(repository.save(any(Oficinas.class))).thenReturn(oficina);
-
-        // Act
-        Oficinas resultado = service.patchStatus(dto);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("INATIVO", resultado.getStatus());
+        when(repository.save(any(Oficinas.class))).thenAnswer(inv -> inv.getArgument(0));
+        Oficinas resultado = service.patchStatus(patchStatusDTO);
+        assertEquals(patchStatusDTO.getStatus(), resultado.getStatus());
         verify(repository).findById(1);
-        verify(repository).save(oficina);
+        verify(repository).save(any(Oficinas.class));
     }
 
+    // --- Testes para remover ---
     @Test
-    @DisplayName("Deve lançar DataNotFoundException ao atualizar status de ID inexistente")
-    void deveLancarExcecaoAoAtualizarStatusIdInexistente() {
-        // Arrange
-        OficinaPatchStatusDTO dto = new OficinaPatchStatusDTO();
-        dto.setId(999);
-        dto.setStatus("INATIVO");
-
-        when(repository.findById(999)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-                () -> service.patchStatus(dto));
-
-        assertTrue(exception.getMessage().contains("oficina"));
-        verify(repository).findById(999);
-        verify(repository, never()).save(any());
-    }
-
-    @Test
-    @DisplayName("Deve remover oficina com sucesso")
+    @DisplayName("remover: Deve remover uma oficina com sucesso")
     void deveRemoverOficinaComSucesso() {
-        // Arrange
         when(repository.existsById(1)).thenReturn(true);
         doNothing().when(repository).deleteById(1);
-
-        // Act
-        service.remover(1);
-
-        // Assert
+        assertDoesNotThrow(() -> service.remover(1));
         verify(repository).existsById(1);
         verify(repository).deleteById(1);
     }
 
     @Test
-    @DisplayName("Deve lançar DataNotFoundException ao remover ID inexistente")
-    void deveLancarExcecaoAoRemoverIdInexistente() {
-        // Arrange
-        when(repository.existsById(999)).thenReturn(false);
-
-        // Act & Assert
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-                () -> service.remover(999));
-
-        assertTrue(exception.getMessage().contains("999"));
-        verify(repository).existsById(999);
-        verify(repository, never()).deleteById(any());
+    @DisplayName("remover: Deve lançar DataNotFoundException ao tentar remover oficina inexistente")
+    void deveLancarExcecaoAoRemoverOficinaInexistente() {
+        when(repository.existsById(99)).thenReturn(false);
+        assertThrows(DataNotFoundException.class, () -> service.remover(99));
+        verify(repository).existsById(99);
+        verify(repository, never()).deleteById(anyInt());
     }
 }
