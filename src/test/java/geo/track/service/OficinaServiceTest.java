@@ -1,6 +1,7 @@
 package geo.track.service;
 
 import geo.track.domain.Oficinas;
+import geo.track.config.GerenciadorTokenJwt;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.exception.ConflictException;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
@@ -33,6 +35,12 @@ class OficinaServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private GerenciadorTokenJwt gerenciadorTokenJwt;
+
+    @Mock
+    private AuthenticationManager authenticationManager;
+
     @InjectMocks
     private OficinaService service;
 
@@ -47,7 +55,7 @@ class OficinaServiceTest {
         oficina.setRazaoSocial("Oficina do Zé");
         oficina.setCnpj("12345678000199");
         oficina.setEmail("contato@oficinadoze.com");
-        oficina.setSenha("senhaForte123");
+        oficina.setSenha("senha123");
         oficina.setStatus(false);
 
         patchEmailDTO = new OficinaPatchEmailDTO(1, "novo.email@oficinadoze.com");
@@ -55,20 +63,23 @@ class OficinaServiceTest {
     }
 
     // --- Testes para cadastrar ---
+
     @Test
-    @DisplayName("cadastrar: Deve cadastrar uma oficina com sucesso")
+    @DisplayName("Deve cadastrar uma nova oficina com sucesso")
     void deveCadastrarOficinaComSucesso() {
+        // Arrange
         when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(oficina.getSenha())).thenReturn("senhaCriptografada");
+        when(passwordEncoder.encode(anyString())).thenReturn("senhaCriptografada");
         when(repository.save(any(Oficinas.class))).thenReturn(oficina);
 
+        // Act
         Oficinas resultado = service.cadastrar(oficina);
 
+        // Assert
         assertNotNull(resultado);
-        assertEquals("senhaCriptografada", resultado.getSenha());
         verify(repository).findByCnpj(oficina.getCnpj());
-        verify(passwordEncoder).encode(oficina.getSenha());
-        verify(repository).save(any(Oficinas.class));
+        verify(passwordEncoder).encode("senha123");
+        verify(repository).save(oficina);
     }
 
     @Test

@@ -32,7 +32,7 @@ public class UsuarioCriacaoDto {
 
     @NotBlank
     @Schema(description = "Status do usuário", example = "ATIVO")
-    private String status;
+    private Boolean status;
 
     @Size(min = 6, max = 20)
     @Schema(description = "Senha do usuário", example = "123456")
