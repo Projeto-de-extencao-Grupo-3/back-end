@@ -50,7 +50,7 @@ public class ClientesService {
 
 
     public List<Clientes> findClienteByNome(String nome) {
-        List<Clientes> cliente = clientesRepository.findByNome(nome);
+        List<Clientes> cliente = clientesRepository.findByNomeContainingIgnoreCase(nome);
 
         if (cliente.isEmpty()) {
             throw new DataNotFoundException("O nome %d não foi encontrado".formatted(nome), "Clientes");
