@@ -55,7 +55,7 @@ class OficinaServiceTest {
         oficina.setRazaoSocial("Oficina do Zé");
         oficina.setCnpj("12345678000199");
         oficina.setEmail("contato@oficinadoze.com");
-        oficina.setSenha("senha123");
+        oficina.setSenha("senha");
         oficina.setStatus(false);
 
         patchEmailDTO = new OficinaPatchEmailDTO(1, "novo.email@oficinadoze.com");
@@ -69,7 +69,7 @@ class OficinaServiceTest {
     void deveCadastrarOficinaComSucesso() {
         // Arrange
         when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(anyString())).thenReturn("senhaCriptografada");
+        when(passwordEncoder.encode(oficina.getSenha())).thenReturn("senhaCriptografada");
         when(repository.save(any(Oficinas.class))).thenReturn(oficina);
 
         // Act
@@ -78,7 +78,7 @@ class OficinaServiceTest {
         // Assert
         assertNotNull(resultado);
         verify(repository).findByCnpj(oficina.getCnpj());
-        verify(passwordEncoder).encode("senha123");
+        verify(passwordEncoder).encode("senha");
         verify(repository).save(oficina);
     }
 

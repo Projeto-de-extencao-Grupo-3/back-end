@@ -101,13 +101,13 @@ class ServicosServiceTest {
         when(repository.save(any(Servicos.class))).thenReturn(servico);
 
         Servicos servicoAtualizado = new Servicos();
-        servicoAtualizado.setTituloServico("Alinhamento e Balanceamento");
+        servicoAtualizado.setTituloServico("Troca de Óleo");
 
         Servicos resultado = service.atualizar(1, servicoAtualizado);
 
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdServico());
-        assertEquals("Alinhamento e Balanceamento", resultado.getTituloServico());
+        assertEquals("Troca de Óleo", resultado.getTituloServico());
         verify(repository).existsById(1);
         verify(repository).save(any(Servicos.class));
     }

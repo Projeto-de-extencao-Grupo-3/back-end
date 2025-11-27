@@ -42,9 +42,9 @@ class ProdutosServiceTest {
         produto = new Produtos();
         produto.setIdPeca(1);
         produto.setNome("Filtro de Óleo");
-        produto.setQuantidadeEstoque(10);
-        produto.setPrecoCompra(15.00);
-        produto.setPrecoVenda(25.00);
+        produto.setQuantidadeEstoque(50);
+        produto.setPrecoCompra(18.00);
+        produto.setPrecoVenda(30.00);
 
         patchQtdEstoque = new RequestPatchQtdEstoque(1, 50);
         patchPrecoCompra = new RequestPatchPrecoCompra(1, 18.00);

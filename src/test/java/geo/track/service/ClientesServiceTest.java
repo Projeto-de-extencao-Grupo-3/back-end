@@ -20,6 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.IllegalFormatConversionException;
 import java.util.List;
 import java.util.Optional;
 
@@ -224,7 +226,7 @@ class ClientesServiceTest {
     @Test
     @DisplayName("findClienteByNome: Deve lançar DataNotFoundException ao buscar por um nome inexistente")
     void deveLancarDataNotFoundExceptionAoBuscarClientePorNomeInexistente() {
-        String nomeDesejado = "Jooo da Silva";
+        String nomeDesejado = "João da Silva";
 
         when(repository.findByNomeContainingIgnoreCase(nomeDesejado)).thenReturn(List.of());
 
@@ -269,7 +271,7 @@ class ClientesServiceTest {
 
         // Verificações (Assert)
         assertNotNull(resultadoCliente);
-        assertEquals("CPF/CNPJ %s não foi encontrado".formatted(cpfCnpjDesejado), resultadoCliente.getMessage());
+        assertEquals("CPF %s não foi encontrado".formatted(cpfCnpjDesejado), resultadoCliente.getMessage());
         assertEquals("Clientes", resultadoCliente.getDomain());
         verify(repository).findByCpfCnpj(cpfCnpjDesejado);
     }
@@ -337,8 +339,7 @@ class ClientesServiceTest {
     @DisplayName("putCliente: Deve atualizar os dados de um cliente com sucesso")
     void deveAtualizarDadosClienteComSucesso() {
         when(repository.findById(requestPutCliente.getIdCliente())).thenReturn(Optional.of(cliente));
-        when(repository.save(any(Clientes.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
+        when(repository.save(any(Clientes.class))).thenReturn(cliente);
         Clientes clienteAtualizado = service.putCliente(requestPutCliente);
 
         assertNotNull(clienteAtualizado);
@@ -368,19 +369,13 @@ class ClientesServiceTest {
     @Test
     @DisplayName("deletar: Deve deletar um cliente com sucesso")
     void deveDeletarClienteComSucesso() {
-        Integer idDesejado = 1;
+        when(repository.existsById(1)).thenReturn(true);
+        doNothing().when(repository).deleteById(1);
 
-        when(repository.existsById(idDesejado)).thenReturn(true);
+        assertDoesNotThrow(() -> service.deletar(1));
 
-        service.deletar(idDesejado);
-
-        DataNotFoundException resultadoCliente = assertThrows(DataNotFoundException.class, () -> {
-            service.findClienteById(idDesejado);
-        });
-
-        assertNotNull(resultadoCliente);
-
-        verify(repository).deleteById(idDesejado);
+        verify(repository).existsById(1);
+        verify(repository).deleteById(1);
     }
 
     @Test

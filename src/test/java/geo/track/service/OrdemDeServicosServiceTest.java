@@ -58,6 +58,7 @@ class OrdemDeServicosServiceTest {
                 .idOrdemServico(1)
                 .valorTotal(500.0)
                 .status(StatusVeiculo.EM_PRODUCAO)
+                .nfRealizada(true)
                 .dtSaidaPrevista(LocalDate.now().plusMonths(1))
                 .fk_entrada(registroEntrada)
                 .build();

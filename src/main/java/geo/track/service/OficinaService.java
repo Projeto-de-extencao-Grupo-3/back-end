@@ -27,17 +27,13 @@ import java.util.Optional;
 public class OficinaService {
     private final OficinaRepository repository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private OficinaRepository oficinaRepository;
+    private final OficinaRepository oficinaRepository;
 
-    @Autowired
-    private GerenciadorTokenJwt gerenciadorTokenJwt;
+    private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     public Oficinas cadastrar(Oficinas Oficinas){
         if (repository.findByCnpj(Oficinas.getCnpj()).isPresent()){

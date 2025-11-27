@@ -32,7 +32,7 @@ class FuncionariosServiceTest {
     void setUp() {
         funcionario = new Funcionarios();
         funcionario.setIdFuncionario(1);
-        funcionario.setNome("João da Silva");
+        funcionario.setNome("João da Silva Santos");
         funcionario.setCargo("Mecânico");
         funcionario.setTelefone("11987654321");
     }

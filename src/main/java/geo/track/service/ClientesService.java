@@ -53,7 +53,7 @@ public class ClientesService {
         List<Clientes> cliente = clientesRepository.findByNomeContainingIgnoreCase(nome);
 
         if (cliente.isEmpty()) {
-            throw new DataNotFoundException("O nome %d não foi encontrado".formatted(nome), "Clientes");
+            throw new DataNotFoundException("O nome %s não foi encontrado".formatted(nome), "Clientes");
         }
         return cliente;
     }
@@ -62,7 +62,7 @@ public class ClientesService {
         Optional<Clientes> cliente = clientesRepository.findByCpfCnpj(cpfCnpj);
 
         if (cliente.isEmpty()) {
-            throw new DataNotFoundException("CPF %d não foi encontrado".formatted(cpfCnpj), "Clientes");
+            throw new DataNotFoundException("CPF %s não foi encontrado".formatted(cpfCnpj), "Clientes");
         }
         return cliente.get();
     }
@@ -115,14 +115,12 @@ public class ClientesService {
 
     }
 
-    public Clientes deletar(Integer id){
+    public void deletar(Integer id){
         if (clientesRepository.existsById(id)){
             clientesRepository.deleteById(id);
-
+            return;
         }
         throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Clientes");
-
-
     }
 }
 
