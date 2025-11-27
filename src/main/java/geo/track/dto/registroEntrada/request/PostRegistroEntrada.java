@@ -2,11 +2,13 @@ package geo.track.dto.registroEntrada.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 @Schema(description = "Objeto de requisição para criar um novo registro de entrada")
 public class PostRegistroEntrada {
 

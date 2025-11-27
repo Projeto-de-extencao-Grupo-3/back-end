@@ -2,12 +2,14 @@ package geo.track.dto.registroEntrada.request;
 
 import io.swagger.v3.oas.annotations.media.Schema; // Import adicionado
 import jakarta.validation.constraints.NotNull; // Import adicionado
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF; // Import adicionado
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 @Schema(description = "Objeto de requisição para atualizar (PUT) um registro de entrada existente") // Adicionado
 public class RequestPutRegistroEntrada {
 
