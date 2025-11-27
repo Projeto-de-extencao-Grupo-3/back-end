@@ -1,15 +1,15 @@
 package geo.track.service;
 
 import geo.track.domain.RegistroEntrada;
-import geo.track.dto.registroEntrada.request.PostRegistroEntrada;
+import geo.track.domain.Veiculos;
+import geo.track.dto.registroEntrada.request.*;
+import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
 import geo.track.repository.RegistroEntradaRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,23 +17,60 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class RegistroEntradaService {
-    private final RegistroEntradaRepository registroRepository;
+    private final RegistroEntradaRepository REGISTRO_REPOSITORY;
+    private final VeiculosService VEICULO_SERVICE;
 
-    public RegistroEntrada postRegistro(@Valid @RequestBody PostRegistroEntrada registroDTO){
-        RegistroEntrada registro = new RegistroEntrada();
-
-        registro.setDataEntradaPrevista(registroDTO.getDtEntradaPrevista());
-//        registro.setFkVeiculo(registroDTO.getFkVeiculo());
-
-        return registroRepository.save(registro);
+    public RegistroEntrada realizarAgendamentoVeiculo(RequestPostEntradaAgendada dto) {
+        RegistroEntrada novoAgendamento = this.postRegistro(dto);
+        return novoAgendamento;
     }
 
-    public List<RegistroEntrada> findRegistro(){
-        return registroRepository.findAll();
+    public RegistroEntrada realizarEntradaVeiculo(RequestPostEntrada dto) {
+        RegistroEntrada novaEntrada = this.postRegistro(dto);
+        return novaEntrada;
+    }
+
+    public RegistroEntrada atualizarEntradaVeiculoAgendado(RequestPutRegistroEntrada dto) {
+        RegistroEntrada entradaRealizada = this.putRegistro(dto);
+        return entradaRealizada;
+    }
+
+    private RegistroEntrada postRegistro(RequestPostEntradaAgendada registroDTO){
+        RegistroEntrada registro = new RegistroEntrada();
+        Veiculos veiculo = VEICULO_SERVICE.findVeiculoById(registroDTO.getFkVeiculo());
+
+        registro.setDataEntradaPrevista(registroDTO.getDtEntradaPrevista());
+        registro.setFkVeiculo(veiculo);
+
+        return REGISTRO_REPOSITORY.save(registro);
+    }
+
+    public RegistroEntrada postRegistro(RequestPostEntrada body){
+        Veiculos veiculo = VEICULO_SERVICE.findVeiculoById(body.idVeiculo());
+
+        RegistroEntrada registro = new RegistroEntrada();
+        registro.setDataEntradaEfetiva(body.dataEntradaEfetiva());
+        registro.setResponsavel(body.nomeResponsavel());
+        registro.setCpf(body.cpfResponsavel());
+        registro.setExtintor(body.quantidadeExtintor());
+        registro.setMacaco(body.quantidadeMacaco());
+        registro.setChaveRoda(body.quantidadeChaveRoda());
+        registro.setGeladeira(body.quantidadeGeladeira());
+        registro.setMonitor(body.quantidadeMonitor());
+        registro.setEstepe(body.quantidadeEstepe());
+        registro.setSomDvd(body.quantidadeSomDvd());
+        registro.setCaixaFerramenta(body.quantidadeCaixaFerramenta());
+        registro.setFkVeiculo(veiculo);
+
+        return REGISTRO_REPOSITORY.save(registro);
+    }
+
+    public List<RegistroEntrada> findRegistros(){
+        return REGISTRO_REPOSITORY.findAll();
     }
 
     public RegistroEntrada findRegistroById(Integer idRegistro){
-        Optional<RegistroEntrada> registro = registroRepository.findById(idRegistro);
+        Optional<RegistroEntrada> registro = REGISTRO_REPOSITORY.findById(idRegistro);
 
         if (registro.isEmpty()){
             throw new DataNotFoundException("Não existe uma registro de entrada com esse ID", "Registro de Entrada");
@@ -42,40 +79,64 @@ public class RegistroEntradaService {
         return registro.get();
     }
 
-    public RegistroEntrada putRegistro(RequestPutRegistroEntrada registroDTO){
-        Optional<RegistroEntrada> registroOPT = registroRepository.findById(registroDTO.getIdRegistro());
+    public RegistroEntrada putRegistro(RequestPutRegistroEntrada registroDTO) {
+        // Busca o registro ou lança a exceção diretamente (Clean Code)
+        RegistroEntrada registro = REGISTRO_REPOSITORY.findById(registroDTO.getIdRegistro())
+                .orElseThrow(() -> new DataNotFoundException("Não existe um registro de entrada com esse ID", "Registro de Entrada"));
 
-        if (registroOPT.isEmpty()){
-            throw new DataNotFoundException("Não existe uma registro de entrada com esse ID", "Registro de Entrada");
+        // Verifica cada campo antes de atualizar
+        if (registroDTO.getDtEntradaEfetiva() != null) {
+            registro.setDataEntradaEfetiva(registroDTO.getDtEntradaEfetiva());
         }
 
-        RegistroEntrada registro = registroOPT.get();
+        if (registroDTO.getResponsavel() != null) {
+            registro.setResponsavel(registroDTO.getResponsavel());
+        }
 
-        registro.setDataEntradaEfetiva(registroDTO.getDtEntradaEfetiva());
-        registro.setResponsavel(registroDTO.getResponsavel());
-        registro.setCpf(registroDTO.getCpf());
-        registro.setExtintor(registroDTO.getExtintor());
-        registro.setMacaco(registroDTO.getMacaco());
-        registro.setChave_roda(registroDTO.getChaveRoda());
-        registro.setGeladeira(registroDTO.getGeladeira());
-        registro.setMonitor(registroDTO.getMonitor());
+        if (registroDTO.getCpf() != null) {
+            registro.setCpf(registroDTO.getCpf());
+        }
 
-        return registroRepository.save(registro);
+        if (registroDTO.getExtintor() != null) {
+            registro.setExtintor(registroDTO.getExtintor());
+        }
+
+        if (registroDTO.getMacaco() != null) {
+            registro.setMacaco(registroDTO.getMacaco());
+        }
+
+        if (registroDTO.getChaveRoda() != null) {
+            registro.setChaveRoda(registroDTO.getChaveRoda());
+        }
+
+        if (registroDTO.getGeladeira() != null) {
+            registro.setGeladeira(registroDTO.getGeladeira());
+        }
+
+        if (registroDTO.getMonitor() != null) {
+            registro.setMonitor(registroDTO.getMonitor());
+        }
+
+        if (registroDTO.getEstepe() != null) {
+            registro.setEstepe(registroDTO.getEstepe());
+        }
+
+        if (registroDTO.getSomDvd() != null) {
+            registro.setSomDvd(registroDTO.getSomDvd());
+        }
+
+        if (registroDTO.getCaixaFerramenta() != null) {
+            registro.setCaixaFerramenta(registroDTO.getCaixaFerramenta());
+        }
+
+        return REGISTRO_REPOSITORY.save(registro);
     }
 
-    public void deleteRegistro(Integer idRegistro){
-        Optional<RegistroEntrada> registroOPT = registroRepository.findById(idRegistro);
-
-        if (registroOPT.isEmpty()){
-            throw new DataNotFoundException("Não existe uma registro de entrada com esse ID", "Registro de Entrada");
-        }
-
-        RegistroEntrada registro = registroOPT.get();
-        if (registro.getFk_veiculo() == null){
+    public void deletarRegistro(Integer idRegistro){
+        if (!REGISTRO_REPOSITORY.existsById(idRegistro)){
             throw new ForbiddenException("Solicitação recusada", "Registro de Entrada");
-
         }
 
-
+        REGISTRO_REPOSITORY.deleteById(idRegistro);
     }
 }

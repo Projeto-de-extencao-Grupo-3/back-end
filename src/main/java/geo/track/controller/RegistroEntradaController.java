@@ -1,7 +1,8 @@
 package geo.track.controller;
 
 import geo.track.domain.RegistroEntrada;
-import geo.track.dto.registroEntrada.request.PostRegistroEntrada;
+import geo.track.dto.registroEntrada.request.RequestPostEntrada;
+import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.ExceptionBody; // Import necessário
 import geo.track.service.RegistroEntradaService;
@@ -25,10 +26,10 @@ import java.util.List;
 @Tag(name = "Registro de Entrada", description = "Endpoints para gerenciar os registros de entrada de veículos") // Adicionado
 @SecurityRequirement(name = "Bearer")
 public class RegistroEntradaController {
-    private final RegistroEntradaService registroService;
+    private final RegistroEntradaService ENTRADA_SERVICE;
 
     @Operation( // Adicionado
-            summary = "Cadastrar novo registro de entrada",
+            summary = "Realizar o Agendamento de um Veículo",
             description = "Recebe um objeto e o armazena, retornando o registro criado."
     )
     @ApiResponses(value = { // Adicionado
@@ -43,9 +44,63 @@ public class RegistroEntradaController {
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
     })
-    @PostMapping
-    public ResponseEntity<RegistroEntrada> postRegistro(@RequestBody PostRegistroEntrada registroDTO){ // Corrigido
-        RegistroEntrada registro = registroService.postRegistro(registroDTO);
+    @PostMapping("/agendamento")
+    public ResponseEntity<RegistroEntrada> realizarAgendamentoVeiculo(@RequestBody RequestPostEntradaAgendada registroDTO){ // Corrigido
+        RegistroEntrada registro = ENTRADA_SERVICE.realizarAgendamentoVeiculo(registroDTO);
+        return ResponseEntity.status(201).body(registro);
+    }
+
+    @Operation( // Adicionado
+            summary = "Realizar a Entrada de Veículo Não-Agendado anteriormente",
+            description = "Recebe um objeto com os novos dados do registro e o identificador e retornando o registro atualizado."
+    )
+    @ApiResponses(value = { // Adicionado
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Registro atualizado com sucesso",
+                    content = {@Content(schema = @Schema(implementation = RegistroEntrada.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos fornecidos para a atualização",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Registro não encontrado para atualização",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            )
+    })
+    @PostMapping("/entrada")
+    public ResponseEntity<RegistroEntrada> realizarEntradaVeiculo(@RequestBody RequestPostEntrada registroDTO){ // Corrigido
+        RegistroEntrada registro = ENTRADA_SERVICE.realizarEntradaVeiculo(registroDTO);
+        return ResponseEntity.status(201).body(registro);
+    }
+
+    @Operation( // Adicionado
+            summary = "Atualizar os dados de Entrada de Veículo agendado anteriormente",
+            description = "Recebe um objeto com os novos dados do registro e o identificador e retornando o registro atualizado."
+    )
+    @ApiResponses(value = { // Adicionado
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Registro atualizado com sucesso",
+                    content = {@Content(schema = @Schema(implementation = RegistroEntrada.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos fornecidos para a atualização",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Registro não encontrado para atualização",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            )
+    })
+    @PutMapping("/atualizar")
+    public ResponseEntity<RegistroEntrada> atualizarEntradaVeiculoAgendado(@RequestBody RequestPutRegistroEntrada registroDTO){ // Corrigido
+        RegistroEntrada registro = ENTRADA_SERVICE.atualizarEntradaVeiculoAgendado(registroDTO);
         return ResponseEntity.status(201).body(registro);
     }
 
@@ -65,7 +120,7 @@ public class RegistroEntradaController {
     })
     @GetMapping
     public ResponseEntity<List<RegistroEntrada>> findRegistro(){
-        List<RegistroEntrada> registro = registroService.findRegistro();
+        List<RegistroEntrada> registro = ENTRADA_SERVICE.findRegistros();
         if (registro.isEmpty()){
             return ResponseEntity.status(204).build();
         }
@@ -89,34 +144,7 @@ public class RegistroEntradaController {
     })
     @GetMapping("/{idRegistro}")
     public ResponseEntity<RegistroEntrada> findRegistroById(@PathVariable Integer idRegistro){ // Corrigido
-        RegistroEntrada registro = registroService.findRegistroById(idRegistro);
-        return ResponseEntity.status(200).body(registro);
-    }
-
-    @Operation( // Adicionado
-            summary = "Atualizar completamente um registro de entrada",
-            description = "Recebe um objeto com os novos dados do registro e o identificador e retornando o registro atualizado."
-    )
-    @ApiResponses(value = { // Adicionado
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Registro atualizado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = RegistroEntrada.class))}
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Dados inválidos fornecidos para a atualização",
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Registro não encontrado para atualização",
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
-            )
-    })
-    @PutMapping
-    public ResponseEntity<RegistroEntrada> putRegistro(@RequestBody RequestPutRegistroEntrada registroDTO){ // Corrigido
-        RegistroEntrada registro = registroService.putRegistro(registroDTO);
+        RegistroEntrada registro = ENTRADA_SERVICE.findRegistroById(idRegistro);
         return ResponseEntity.status(200).body(registro);
     }
 
@@ -135,7 +163,7 @@ public class RegistroEntradaController {
     })
     @DeleteMapping("/{idRegistro}") // Corrigido
     public ResponseEntity<Void> deleteRegistro(@PathVariable Integer idRegistro){
-        registroService.deleteRegistro(idRegistro);
+        ENTRADA_SERVICE.deletarRegistro(idRegistro);
         return ResponseEntity.status(204).build();
     }
 

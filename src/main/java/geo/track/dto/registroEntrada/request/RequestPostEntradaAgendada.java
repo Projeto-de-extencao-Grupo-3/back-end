@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @Schema(description = "Objeto de requisição para criar um novo registro de entrada")
-public class PostRegistroEntrada {
+public class RequestPostEntradaAgendada {
 
     @NotNull
     @Schema(description = "Data prevista para a entrada do veículo", example = "2025-10-27", requiredMode = Schema.RequiredMode.REQUIRED)

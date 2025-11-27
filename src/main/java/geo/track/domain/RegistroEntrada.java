@@ -38,13 +38,13 @@ public class RegistroEntrada {
     private String cpf;
 
     @Schema(description = "Quantidade de extintor no veículo", example = "1") // Adicionado
-    private Boolean extintor;
+    private Integer extintor;
 
     @Schema(description = "Quantidade de macaco no veículo", example = "1") // Adicionado
-    private Boolean macaco;
+    private Integer macaco;
 
     @Schema(description = "Quantidade de chaves de roda no veículo", example = "1") // Adicionado
-    private Boolean chave_roda;
+    private Integer chaveRoda;
 
     @Schema(description = "Quantidade de geladeiras no veículo", example = "1") // Adicionado
     private Integer geladeira;
@@ -64,7 +64,7 @@ public class RegistroEntrada {
     @ManyToOne
     @JoinColumn(name = "fk_veiculo")
     @Schema(description = "Veículo associado a este registro de entrada") // Adicionado
-    private Veiculos fk_veiculo;
+    private Veiculos fkVeiculo;
 
     @OneToOne(mappedBy = "fk_entrada", cascade = CascadeType.ALL)
     @Schema(description = "Ordem de serviço gerada a partir desta entrada") // Adicionado
