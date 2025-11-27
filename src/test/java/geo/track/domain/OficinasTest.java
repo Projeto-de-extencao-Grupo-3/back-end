@@ -19,7 +19,7 @@ class OficinasTest {
         oficina.setCnpj("12.345.678/0001-99");
         oficina.setEmail("contato@autocenter.com");
         oficina.setDtCriacao(agora);
-        oficina.setStatus("Ativa");
+        oficina.setStatus(true);
         oficina.setSenha("123456");
 
         Assertions.assertEquals(1, oficina.getIdOficina());
@@ -27,7 +27,7 @@ class OficinasTest {
         Assertions.assertEquals("12.345.678/0001-99", oficina.getCnpj());
         Assertions.assertEquals("contato@autocenter.com", oficina.getEmail());
         Assertions.assertEquals(agora, oficina.getDtCriacao());
-        Assertions.assertEquals("Ativa", oficina.getStatus());
+        Assertions.assertEquals(true, oficina.getStatus());
         Assertions.assertEquals("123456", oficina.getSenha());
     }
 
@@ -41,7 +41,7 @@ class OficinasTest {
                 "98.765.432/0001-11",
                 "teste@oficina.com",
                 dataCriacao,
-                "Inativa",
+                false,
                 "senhaSegura",
                 List.of(),
                 List.of()
@@ -52,7 +52,7 @@ class OficinasTest {
         Assertions.assertEquals("98.765.432/0001-11", oficina.getCnpj());
         Assertions.assertEquals("teste@oficina.com", oficina.getEmail());
         Assertions.assertEquals(dataCriacao, oficina.getDtCriacao());
-        Assertions.assertEquals("Inativa", oficina.getStatus());
+        Assertions.assertEquals(false, oficina.getStatus());
         Assertions.assertEquals("senhaSegura", oficina.getSenha());
         Assertions.assertEquals(List.of(), oficina.getFuncionarios());
         Assertions.assertEquals(List.of(), oficina.getClientes());
