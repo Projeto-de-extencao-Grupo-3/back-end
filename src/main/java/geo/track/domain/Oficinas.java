@@ -40,7 +40,7 @@ public class Oficinas {
     private LocalDateTime dtCriacao;
 
     @Schema(description = "Status atual da oficina", example = "ATIVO")
-    private String status;
+    private Boolean status;
 
     @Schema(description = "Senha de acesso ao sistema (armazenada de forma segura)", example = "••••••••")
     private String senha;
