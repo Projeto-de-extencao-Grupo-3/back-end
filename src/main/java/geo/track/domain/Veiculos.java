@@ -50,7 +50,7 @@ public class Veiculos {
     @Schema(description = "Cliente proprietário deste veículo") // Adicionado
     private Clientes fkCliente;
 
-    @OneToMany(mappedBy = "fk_veiculo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkVeiculo", cascade = CascadeType.ALL)
     @Schema(description = "Histórico de registros de entrada deste veículo na oficina") // Adicionado
     private List<RegistroEntrada> registroEntradas;
 }

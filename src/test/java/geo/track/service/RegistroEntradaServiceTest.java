@@ -2,7 +2,7 @@ package geo.track.service;
 
 import geo.track.domain.RegistroEntrada;
 import geo.track.domain.Veiculos;
-import geo.track.dto.registroEntrada.request.PostRegistroEntrada;
+import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
@@ -36,7 +36,7 @@ class RegistroEntradaServiceTest {
 
     private RegistroEntrada registroEntrada;
     private Veiculos veiculo;
-    private PostRegistroEntrada postRegistroEntrada;
+    private RequestPostEntradaAgendada postRegistroEntrada;
     private RequestPutRegistroEntrada putRegistroEntrada;
 
     @BeforeEach
@@ -47,15 +47,16 @@ class RegistroEntradaServiceTest {
         registroEntrada = new RegistroEntrada();
         registroEntrada.setIdRegistroEntrada(1);
         registroEntrada.setDataEntradaPrevista(LocalDate.now().plusDays(1));
-        registroEntrada.setFk_veiculo(veiculo);
+        registroEntrada.setFkVeiculo(veiculo);
 
-        postRegistroEntrada = new PostRegistroEntrada(LocalDate.now().plusDays(1), 1);
+        postRegistroEntrada = new RequestPostEntradaAgendada(LocalDate.now().plusDays(1), 1);
         putRegistroEntrada = new RequestPutRegistroEntrada(
                 1,
                 LocalDate.now(),
                 "João Responsável",
                 "123.456.789-00",
-                true, true, true, 1, 1, 1
+                1, 1, 1, 1, 1, 1,1,1,
+                1
         );
     }
 
@@ -69,7 +70,7 @@ class RegistroEntradaServiceTest {
             return re;
         });
 
-        RegistroEntrada resultado = service.postRegistro(postRegistroEntrada);
+        RegistroEntrada resultado = service.realizarAgendamentoVeiculo(postRegistroEntrada);
 
         assertNotNull(resultado);
         assertEquals(postRegistroEntrada.getDtEntradaPrevista(), resultado.getDataEntradaPrevista());
@@ -81,7 +82,7 @@ class RegistroEntradaServiceTest {
     @DisplayName("findRegistro: Deve retornar uma lista de registros")
     void deveRetornarListaDeRegistros() {
         when(repository.findAll()).thenReturn(List.of(registroEntrada));
-        List<RegistroEntrada> resultado = service.findRegistro();
+        List<RegistroEntrada> resultado = service.findRegistros();
         assertFalse(resultado.isEmpty());
         verify(repository).findAll();
     }
@@ -90,7 +91,7 @@ class RegistroEntradaServiceTest {
     @DisplayName("findRegistro: Deve retornar uma lista vazia quando não houver registros")
     void deveRetornarListaVazia() {
         when(repository.findAll()).thenReturn(Collections.emptyList());
-        List<RegistroEntrada> resultado = service.findRegistro();
+        List<RegistroEntrada> resultado = service.findRegistros();
         assertTrue(resultado.isEmpty());
         verify(repository).findAll();
     }
@@ -143,11 +144,11 @@ class RegistroEntradaServiceTest {
     @Test
     @DisplayName("deleteRegistro: Deve lançar ForbiddenException ao tentar deletar registro sem veículo")
     void deveLancarForbiddenExceptionAoDeletarRegistroSemVeiculo() {
-        registroEntrada.setFk_veiculo(null);
+        registroEntrada.setFkVeiculo(null);
         when(repository.findById(1)).thenReturn(Optional.of(registroEntrada));
 
         ForbiddenException exception = assertThrows(ForbiddenException.class, () -> {
-            service.deleteRegistro(1);
+            service.deletarRegistro(1);
         });
 
         assertEquals("Solicitação recusada", exception.getMessage());
@@ -161,7 +162,7 @@ class RegistroEntradaServiceTest {
         when(repository.findById(99)).thenReturn(Optional.empty());
 
         DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.deleteRegistro(99);
+            service.deletarRegistro(99);
         });
 
         assertEquals("Não existe uma registro de entrada com esse ID", exception.getMessage());
