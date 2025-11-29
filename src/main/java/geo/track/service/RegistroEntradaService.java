@@ -129,6 +129,10 @@ public class RegistroEntradaService {
             registro.setCaixaFerramenta(registroDTO.getCaixaFerramenta());
         }
 
+        if (registroDTO.getObservacoes() != null) {
+            registro.setObservacoes(registroDTO.getObservacoes());
+        }
+
         return REGISTRO_REPOSITORY.save(registro);
     }
 

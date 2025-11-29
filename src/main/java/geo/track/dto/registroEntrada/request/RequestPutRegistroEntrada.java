@@ -53,4 +53,7 @@ public class RequestPutRegistroEntrada {
 
     @Schema(description = "ID do veículo associado ao registro (caso precise ser corrigido)", example = "1") // Adicionado
     private Integer fkVeiculo;
+
+    @Schema(description = "Observações sobre a entrada do Veículo", example = "Entrou com um suporte para TV no Bagageiro") // Adicionado
+    private String observacoes;
 }
