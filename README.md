@@ -1,22 +1,13 @@
-## Docker
+## Configuração do Banco de Dados para Dev
 
-Conectando o seu back-end ao container mysql do Erickao
+## Pegar a imagem no docker hub
+``` bash 
+docker pull henriquedandrade/bd-grotrack-v2:bd
 ```
-docker pull erickym/bd-grotrack:latest
+
+## Comando para rodar o container
+``` bash 
+docker run -d   --name grotrack   -e MYSQL_ROOT_PASSWORD=123456   -e MYSQL_DATABASE=grotrack   -p 3306:3306   -v mysql-data:/var/lib/mysql   henriquedandrade/bd-grotrack-v2:bd
 ```
-Abra o Docker Destop ai no sua sanduicheira
 
-Em Images, ache a imagem baixada e clique para rodar o bagui
-<img width="1533" height="76" alt="image" src="https://github.com/user-attachments/assets/32230db9-4ec1-4bd0-96d0-b68cd760d93e" />
-
-Vai abrir essa telinha pra você, configure conforme o print abaixo do texto
-
-->TEXTO<-
-
-<img width="786" height="826" alt="image" src="https://github.com/user-attachments/assets/44999332-1c5b-4aa8-aa84-1313734f7ef9" />
-
-Agora é só rodar a app e ser feliz pae
-
-
-
-
+Após isto, garanta que o container esteja rodando e o utilize para desenvolver
