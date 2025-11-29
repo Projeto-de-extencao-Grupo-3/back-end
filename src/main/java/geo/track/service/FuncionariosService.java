@@ -7,6 +7,8 @@ import geo.track.repository.FuncionariosRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FuncionariosService {
@@ -16,16 +18,14 @@ public class FuncionariosService {
         if (repository.existsByNome(funcionarios.getNome())){
             throw new ConflictException("Nome já existe","Funcionario");
         }
-        Funcionarios funcionarioRegistrado = repository.save(funcionarios);
-        return funcionarioRegistrado;
+        return repository.save(funcionarios);
     }
 
     public Funcionarios buscarPorId(Integer id){
         if (!repository.existsByIdFuncionario(id)){
             throw new DataNotFoundException("Funcionario Não encontrado","Funcionario");
         }
-        Funcionarios getFuncionario = repository.getByIdFuncionario(id);
-        return getFuncionario;
+        return repository.getByIdFuncionario(id);
     }
 
     public Funcionarios atualizar(Integer id, Funcionarios funcionario){
@@ -33,8 +33,7 @@ public class FuncionariosService {
         if (!repository.existsById(id)){
             throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
         }
-        Funcionarios save = repository.save(funcionario);
-        return save;
+        return repository.save(funcionario);
     }
 
     public void deletar(Integer id){
