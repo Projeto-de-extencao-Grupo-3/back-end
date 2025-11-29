@@ -1,0 +1,105 @@
+package geo.track.controller;
+
+import geo.track.domain.ItensServicos;
+import geo.track.domain.OrdemDeServicos;
+import geo.track.exception.ExceptionBody;
+import geo.track.service.ItensServicosService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/itensServico")
+@RequiredArgsConstructor
+@Tag(name = "ItensServicos", description = "Endpoints utilizados para gerenciar ItensServicos.")
+public class ItensServicoController {
+
+    private final ItensServicosService service;
+
+    @Operation(summary = "Cadastrar ItensServico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Ordem de Serviço encontrado com sucesso", content = {
+                    @Content(schema = @Schema(implementation = OrdemDeServicos.class))
+            }),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @PostMapping
+    public ResponseEntity<ItensServicos> cadastrar(@RequestBody ItensServicos itens) {
+
+        ItensServicos itensServicos = service.cadastrar(itens);
+        if (itensServicos == null) {
+            return ResponseEntity.status(404).build();
+        }
+
+        return ResponseEntity.status(200).body(itensServicos);
+    }
+
+    @Operation(summary = "Buscar todos os Itens Serviço")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Itens Serviço encontrado com sucesso", content = {
+                    @Content(schema = @Schema(implementation = OrdemDeServicos.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Itens Serviço não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @GetMapping
+    public ResponseEntity<List<ItensServicos>> findAll() {
+        List<ItensServicos> itensServicos = service.listar();
+        return ResponseEntity.status(200).body(itensServicos);
+    }
+
+    @Operation(summary = "Buscar Itens Serviço por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Itens Serviço encontrado com sucesso", content = {
+                    @Content(schema = @Schema(implementation = OrdemDeServicos.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Itens Serviço não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<ItensServicos> findById(@PathVariable Integer id) {
+        ItensServicos itensServicos = service.findById(id);
+
+        if(itensServicos.getIdItensServicos() == null){
+            return ResponseEntity.status(404).build();
+        }
+
+        return ResponseEntity.status(200).body(service.findById(id));
+    }
+
+    @Operation(summary = "Atualizar Itens Serviço por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Itens Serviço atualizado com sucesso", content = {
+                    @Content(schema = @Schema(implementation = OrdemDeServicos.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Itens Serviço não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<ItensServicos> atualizar(@PathVariable Integer id, @RequestBody ItensServicos itens) {
+        ItensServicos itensServicos = service.atualizar(id, itens);
+        return ResponseEntity.status(200).body(itensServicos);
+    }
+
+    @Operation(summary = "Deletar Itens Serviço por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Itens Serviço deletado com sucesso", content = {
+                    @Content(schema = @Schema(implementation = OrdemDeServicos.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Itens Serviço não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        service.delete(id);
+        return ResponseEntity.status(204).build();
+    }
+}

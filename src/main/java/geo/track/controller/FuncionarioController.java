@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/funcionarios")
@@ -35,6 +37,20 @@ public class FuncionarioController {
     public ResponseEntity<Funcionarios> cadastrar(@RequestBody Funcionarios funcionario){
         Funcionarios funcionarioResposta = service.cadastrar(funcionario);
         return ResponseEntity.status(201).body(funcionarioResposta);
+    }
+
+    @Operation(summary = "Buscar o funcionário pela fkOficina")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funcionário encontrado com sucesso", content = {
+                    @Content(schema = @Schema(implementation = Funcionarios.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Funcionário não encontrado", content = @Content(schema = @Schema(implementation = ExceptionBody.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @GetMapping("/oficina/{idOficina}")
+    public ResponseEntity<List<Funcionarios>> findByOficina(@PathVariable Integer idOficina) {
+        List<Funcionarios> funcionarioResposta = service.buscarPorOficina(idOficina);
+        return ResponseEntity.status(200).body(funcionarioResposta);
     }
 
     @Operation(summary = "Buscar o funcionário pelo ID")

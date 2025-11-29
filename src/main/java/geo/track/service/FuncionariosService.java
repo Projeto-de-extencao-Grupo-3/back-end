@@ -21,6 +21,10 @@ public class FuncionariosService {
         return repository.save(funcionarios);
     }
 
+    public List<Funcionarios> buscarPorOficina(Integer idOficina) {
+        return repository.findByFkOficina_IdOficina(idOficina);
+    }
+
     public Funcionarios buscarPorId(Integer id){
         if (!repository.existsByIdFuncionario(id)){
             throw new DataNotFoundException("Funcionario Não encontrado","Funcionario");
