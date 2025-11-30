@@ -34,7 +34,7 @@ public class ProdutosService {
 
     public Produtos putProdutos(Integer id, Produtos produtoAtt) {
         if(repository.existsById(id)){
-            produtoAtt.setIdPeca(id);
+            produtoAtt.setIdProduto(id);
             Produtos prod = repository.save(produtoAtt);
             return prod;
         }

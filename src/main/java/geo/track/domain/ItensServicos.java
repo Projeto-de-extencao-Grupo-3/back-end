@@ -20,7 +20,7 @@ public class ItensServicos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "ID da lista de serviços", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer idItensServicos;
+    private Integer idRegistroServico;
 
     @NotBlank
     @Schema(description = "Preço cobrado", example = "99.90", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -51,7 +51,7 @@ public class ItensServicos {
     private Servicos fkServico;
 
     @ManyToOne
-    @JoinColumn(name = "fk_order_de_servico")
+    @JoinColumn(name = "fk_ordem_servico")
     @Schema(description = "FK da ordem de serviço ")
     private OrdemDeServicos fkOrdemServico;
 

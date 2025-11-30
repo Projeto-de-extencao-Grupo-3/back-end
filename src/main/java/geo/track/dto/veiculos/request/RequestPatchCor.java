@@ -12,8 +12,4 @@ public class RequestPatchCor {
     @NotNull
     @Schema(description = "ID do veículo que terá a cor atualizada", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer idVeiculo;
-
-    @NotBlank
-    @Schema(description = "Nova cor do veículo", example = "Azul", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String cor;
 }

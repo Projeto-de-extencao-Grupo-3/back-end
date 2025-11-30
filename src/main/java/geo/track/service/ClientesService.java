@@ -37,7 +37,7 @@ public class ClientesService {
         return clientesRepository.findAll();
     }
 
-    public ResponseGetCliente findClienteById(Integer id){
+    public Clientes findClienteById(Integer id){
         Optional<Clientes> cliente = clientesRepository.findById(id);
 
 
@@ -45,7 +45,7 @@ public class ClientesService {
             throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Clientes");
         }
 
-        return ClientesMapper.toDTO(cliente.get());
+        return cliente.get();
     }
 
 

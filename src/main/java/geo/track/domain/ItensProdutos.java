@@ -20,23 +20,27 @@ public class ItensProdutos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Id da lista de produtos", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer idItensProdutos;
+    private Integer idRegistroPeca;
 
     @NotBlank
-    @Schema(description = "Quatidade do produto selecionado", example = "12", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Quantidade do produto selecionado", example = "12", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer quantidade;
 
     @NotBlank
     @Schema(description = "Preço da peça selecionada", example = "29.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double precoPeca;
 
+    @NotBlank
+    @Schema(description = "Indicador se o item foi abaixado no Estoque", example = "29.90", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Boolean baixado;
+
     @ManyToOne
-    @JoinColumn(name = "fk_produto")
+    @JoinColumn(name = "fk_peca")
     @Schema(description = "FK do produto ")
     private Produtos fkPeca;
 
     @ManyToOne
-    @JoinColumn(name = "fk_order_de_servico")
+    @JoinColumn(name = "fk_ordem_servico")
     @Schema(description = "FK da ordem de serviço ")
     private OrdemDeServicos fkOrdemServico;
 

@@ -22,7 +22,7 @@ public class Produtos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Identificador único da peça", example = "1")
-    private Integer idPeca;
+    private Integer idProduto;
 
     @NotBlank
     @Schema(description = "Nome da peça ou produto", example = "Filtro de óleo")
@@ -47,7 +47,12 @@ public class Produtos {
     @Schema(description = "Quantidade disponível em estoque", example = "45")
     private Integer quantidadeEstoque;
 
-    @OneToMany(mappedBy = "fkPeca", cascade = CascadeType.ALL)
+    @NotNull
+    @Positive
+    @Schema(description = "Visibilidade de item em Orçamento", example = "45")
+    private Boolean viavelOrcamento;
+
+    @OneToMany(mappedBy = "fkPeca")
     @Schema(description = "Lista de produtos associados à uma lista de produtos")
     private List<ItensProdutos> produtos;
 }

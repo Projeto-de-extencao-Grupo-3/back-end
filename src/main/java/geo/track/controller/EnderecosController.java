@@ -5,9 +5,11 @@ import geo.track.dto.enderecos.request.RequestPatchComplemento;
 import geo.track.dto.enderecos.request.RequestPatchNumero;
 import geo.track.dto.enderecos.request.RequestPostEndereco;
 import geo.track.dto.enderecos.request.RequestPutEndereco;
+import geo.track.dto.enderecos.response.EnderecoResponse;
 import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.exception.ExceptionBody;
 import geo.track.exception.constraint.message.EnderecosExceptionMessages;
+import geo.track.mapper.EnderecoMapper;
 import geo.track.service.EnderecosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +19,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,19 +33,19 @@ public class EnderecosController {
     @Operation(summary = "Buscar endereço pelo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço encontrado com sucesso", content = {
-                    @Content(schema = @Schema(implementation = Enderecos.class))
+                    @Content(schema = @Schema(implementation = EnderecoResponse.class))
             }),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Enderecos> getEnderecoById(@PathVariable Integer id) {
+    public ResponseEntity<EnderecoResponse> getEnderecoById(@PathVariable Integer id) {
         Enderecos enderecos = enderecosService.findEnderecoById(id);
 
         if (enderecos == null) {
             return ResponseEntity.status(404).build();
         }
 
-        return ResponseEntity.status(200).body(enderecos);
+        return ResponseEntity.status(200).body(EnderecoMapper.toResponse(enderecos));
     }
 
     @Operation(summary = "Buscar dados de endereço com o CEP do VIACEP")
@@ -70,9 +71,9 @@ public class EnderecosController {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "201",
                     description = "Endereço cadastrado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = Enderecos.class))}
+                    content = {@Content(schema = @Schema(implementation = EnderecoResponse.class))}
             ),
             @ApiResponse(
                     responseCode = "406",
@@ -81,8 +82,9 @@ public class EnderecosController {
             )
     })
     @PostMapping()
-    public ResponseEntity<Enderecos> postEndereco(@RequestBody RequestPostEndereco endereco) {
-        return ResponseEntity.status(201).body(enderecosService.postEndereco(endereco));
+    public ResponseEntity<EnderecoResponse> postEndereco(@RequestBody RequestPostEndereco endereco) {
+        Enderecos novoEndereco = enderecosService.postEndereco(endereco);
+        return ResponseEntity.status(201).body(EnderecoMapper.toResponse(novoEndereco));
     }
 
     @Operation(
@@ -93,7 +95,7 @@ public class EnderecosController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Endereço atualizado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = Enderecos.class))}
+                    content = {@Content(schema = @Schema(implementation = EnderecoResponse.class))}
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -102,10 +104,9 @@ public class EnderecosController {
             ),
     })
     @PatchMapping("/complemento")
-    public ResponseEntity<Enderecos> patchComplementoEndereco(@RequestBody RequestPatchComplemento enderecoDTO) {
+    public ResponseEntity<EnderecoResponse> patchComplementoEndereco(@RequestBody RequestPatchComplemento enderecoDTO) {
         Enderecos enderecos = enderecosService.patchComplementoEndereco(enderecoDTO);
-
-        return ResponseEntity.status(200).body(enderecos);
+        return ResponseEntity.status(200).body(EnderecoMapper.toResponse(enderecos));
     }
 
     @Operation(
@@ -116,7 +117,7 @@ public class EnderecosController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Endereço atualizado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = Enderecos.class))}
+                    content = {@Content(schema = @Schema(implementation = EnderecoResponse.class))}
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -125,14 +126,9 @@ public class EnderecosController {
             ),
     })
     @PatchMapping("/numero")
-    public ResponseEntity<Enderecos> patchNumeroEndereco(@RequestBody RequestPatchNumero enderecoDTO) {
+    public ResponseEntity<EnderecoResponse> patchNumeroEndereco(@RequestBody RequestPatchNumero enderecoDTO) {
         Enderecos enderecos = enderecosService.patchNumeroEndereco(enderecoDTO);
-
-        if (enderecos == null) {
-            return ResponseEntity.status(404).build();
-        }
-
-        return ResponseEntity.status(200).body(enderecos);
+        return ResponseEntity.status(200).body(EnderecoMapper.toResponse(enderecos));
     }
 
     @Operation(
@@ -143,7 +139,7 @@ public class EnderecosController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Endereço atualizado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = Enderecos.class))}
+                    content = {@Content(schema = @Schema(implementation = EnderecoResponse.class))}
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -153,10 +149,8 @@ public class EnderecosController {
             @ApiResponse(responseCode = "406", description = EnderecosExceptionMessages.formatacaoCEPException, content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PutMapping()
-    public ResponseEntity<Enderecos> putEndereco(@RequestBody RequestPutEndereco enderecoDTO) {
+    public ResponseEntity<EnderecoResponse> putEndereco(@RequestBody RequestPutEndereco enderecoDTO) {
         Enderecos enderecos = enderecosService.putEndereco(enderecoDTO);
-
-        return ResponseEntity.status(200).body(enderecos);
+        return ResponseEntity.status(200).body(EnderecoMapper.toResponse(enderecos));
     }
-
 }

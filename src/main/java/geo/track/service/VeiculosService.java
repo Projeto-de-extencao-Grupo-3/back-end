@@ -83,9 +83,6 @@ public class VeiculosService {
         Veiculos veiculo = veiculoOpt.get();
 
         veiculo.setIdVeiculo(veiculoDTO.getIdVeiculo());
-        veiculo.setCor(veiculoDTO.getCor());
-
-
 
         return repository.save(veiculo);
     }

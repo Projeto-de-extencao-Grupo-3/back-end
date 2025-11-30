@@ -59,17 +59,17 @@ public class RegistroEntrada {
     private Integer somDvd;
 
     @Schema(description = "Quantidade de caixa de ferramentas no veículo", example = "2") // Adicionado
-    private Integer caixaFerramenta;
+    private Integer caixaFerramentas;
 
-    @Schema(description = "Observações sobre a entrada do Veículo", example = "Entrou com um suporte para TV no Bagageiro") // Adicionado
-    private String observacoes;
+//    @Schema(description = "Observações sobre a entrada do Veículo", example = "Entrou com um suporte para TV no Bagageiro") // Adicionado
+//    private String observacoes;
 
     @ManyToOne
     @JoinColumn(name = "fk_veiculo")
     @Schema(description = "Veículo associado a este registro de entrada") // Adicionado
     private Veiculos fkVeiculo;
 
-    @OneToOne(mappedBy = "fk_entrada", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "fk_entrada")
     @Schema(description = "Ordem de serviço gerada a partir desta entrada") // Adicionado
     private OrdemDeServicos ordemDeServicos;
 }

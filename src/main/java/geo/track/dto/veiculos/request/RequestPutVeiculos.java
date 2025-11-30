@@ -37,8 +37,4 @@ public class RequestPutVeiculos {
     @Digits(integer = 4, fraction = 0)
     @Schema(description = "Ano de fabricação do veículo", example = "2022", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer anoFabricacao;
-
-    @NotBlank
-    @Schema(description = "Cor predominante do veículo", example = "Cinza", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String cor;
 }

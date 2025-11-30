@@ -41,7 +41,7 @@ public class ResponseGetCliente {
     private Enderecos fkEndereco;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "fkCliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkCliente")
     private List<Veiculos> veiculos;
 
     public ResponseGetCliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, Integer fkOficina, Enderecos fkEndereco, List<Veiculos> veiculos) {

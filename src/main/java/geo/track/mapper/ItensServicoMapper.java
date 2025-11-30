@@ -1,42 +1,40 @@
 package geo.track.mapper;
 
 import geo.track.domain.ItensServicos;
-import geo.track.domain.OrdemDeServicos;
-import geo.track.domain.Servicos;
-import geo.track.dto.itensServicos.ItensServicoRequestDTO;
-import geo.track.dto.itensServicos.ItensServicoResponseDTO;
+import geo.track.dto.itensservicos.ItensServicoResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItensServicoMapper {
+    public static ItensServicoResponse toResponse(ItensServicos entity) {
+        if (entity == null) {
+            return null;
+        }
 
-    public static ItensServicos toEntity(ItensServicoRequestDTO dto, Servicos servico, OrdemDeServicos ordem) {
+        ItensServicoResponse response = new ItensServicoResponse();
+        response.setIdItensServicos(entity.getIdRegistroServico());
+        response.setPrecoCobrado(entity.getPrecoCobrado());
+        response.setParteVeiculo(entity.getParteVeiculo());
+        response.setLadoVeiculo(entity.getLadoVeiculo());
+        response.setCor(entity.getCor());
+        response.setEspecificacaoServico(entity.getEspecificacaoServico());
+        response.setObservacoesItem(entity.getObservacoesItem());
 
-        ItensServicos itens = new ItensServicos();
-        itens.setPrecoCobrado(dto.getPrecoCobrado());
-        itens.setParteVeiculo(dto.getParteVeiculo());
-        itens.setLadoVeiculo(dto.getLadoVeiculo());
-        itens.setCor(dto.getCor());
-        itens.setEspecificacaoServico(dto.getEspecificacaoServico());
-        itens.setObservacoesItem(dto.getObservacoesItem());
-        itens.setFkServico(servico);
-        itens.setFkOrdemServico(ordem);
+        if (entity.getFkServico() != null) {
+            response.setIdServico(entity.getFkServico().getIdServico());
+        }
 
-        return itens;
+        if (entity.getFkOrdemServico() != null) {
+            response.setIdOrdemServico(entity.getFkOrdemServico().getIdOrdemServico());
+        }
+
+        return response;
     }
 
-    public static ItensServicoResponseDTO toDTO(ItensServicos entity) {
-        ItensServicoResponseDTO dto = new ItensServicoResponseDTO();
-
-        dto.setIdItensServicos(entity.getIdItensServicos());
-        dto.setPrecoCobrado(entity.getPrecoCobrado());
-        dto.setParteVeiculo(entity.getParteVeiculo());
-        dto.setLadoVeiculo(entity.getLadoVeiculo());
-        dto.setCor(entity.getCor());
-        dto.setEspecificacaoServico(entity.getEspecificacaoServico());
-        dto.setObservacoesItem(entity.getObservacoesItem());
-
-        dto.setFkServicoId(entity.getFkServico() != null ? entity.getFkServico().getIdServico() : null);
-        dto.setFkOrdemServicoId(entity.getFkOrdemServico() != null ? entity.getFkOrdemServico().getIdOrdemServico() : null);
-
-        return dto;
+    public static List<ItensServicoResponse> toResponse(List<ItensServicos> entities) {
+        return entities.stream()
+                .map(ItensServicoMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

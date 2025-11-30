@@ -179,7 +179,7 @@ class ClientesServiceTest {
         when(repository.findById(idDesejado)).thenReturn(Optional.of(cliente));
 
         // Execução do método (Act)
-        ResponseGetCliente resultadoCliente = service.findClienteById(idDesejado);
+        Clientes resultadoCliente = service.findClienteById(idDesejado);
 
         // Verificações (Assert)
         assertNotNull(resultadoCliente);

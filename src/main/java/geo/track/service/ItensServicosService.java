@@ -19,7 +19,7 @@ public class ItensServicosService {
     private final ItensServicoRepository itensServicoRepository;
 
     public ItensServicos cadastrar(ItensServicos itensServicos){
-        if (itensServicoRepository.existsById(itensServicos.getIdItensServicos())){
+        if (itensServicoRepository.existsById(itensServicos.getIdRegistroServico())){
             throw new ConflictException("ID já existe","Itens Serviço");
         }
         return itensServicoRepository.save(itensServicos);

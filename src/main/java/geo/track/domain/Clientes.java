@@ -51,7 +51,7 @@ public class Clientes {
 
     @NotBlank
     @Schema(description = "Tipo de cliente", example = "PESSOA_FISICA", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
-    private TipoCliente tipoCliente;
+    private String tipoCliente;
 
     @ManyToOne
     @JoinColumn(name = "fk_oficina")
@@ -64,7 +64,7 @@ public class Clientes {
     private Enderecos fkEndereco;
 
     @Getter()
-    @OneToMany(mappedBy = "fkCliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkCliente")
     @Schema(description = "Lista de veículos pertencentes a este cliente") // Adicionado
     private List<Veiculos> veiculos;
 
@@ -74,7 +74,7 @@ public class Clientes {
         this.cpfCnpj = cpfCnpj;
         this.telefone = telefone;
         this.email = email;
-        this.tipoCliente = tipoCliente;
+        this.tipoCliente = tipoCliente.name();
         this.fkOficina = fkOficina;
         this.fkEndereco = fkEndereco;
     }

@@ -29,6 +29,7 @@ public class Servicos {
 
     @NotBlank // Assumindo que este campo é obrigatório
     @Schema(description = "Nome ou título descritivo do serviço", example = "Troca de óleo e filtro", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Column(name = "nome")
     private String tituloServico;
 
     @NotNull // Assumindo que este campo é obrigatório
@@ -38,7 +39,7 @@ public class Servicos {
     @Schema(description = "Indica se o serviço está ativo e disponível para novas O.S.", example = "true") // Adicionado
     private boolean ativo;
 
-    @OneToMany(mappedBy = "fkServico", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkServico")
     @Schema(description = "Lista de servicos associados à uma lista de produtos")
     private List<ItensServicos> servicos;
 }

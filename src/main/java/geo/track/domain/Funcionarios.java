@@ -38,7 +38,7 @@ public class Funcionarios {
     @JoinColumn(name = "fk_oficina")
     private Oficinas fkOficina;
 
-    @OneToMany(mappedBy = "fkFuncionarioLista", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkFuncionarioLista")
     @Schema(description = "Lista de serviços associados à ordem de serviço")
     private List<FuncionariosServico> funcionarioLista;
 

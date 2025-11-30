@@ -59,7 +59,7 @@ public class RegistroEntradaService {
         registro.setMonitor(body.quantidadeMonitor());
         registro.setEstepe(body.quantidadeEstepe());
         registro.setSomDvd(body.quantidadeSomDvd());
-        registro.setCaixaFerramenta(body.quantidadeCaixaFerramenta());
+        registro.setCaixaFerramentas(body.quantidadeCaixaFerramentas());
         registro.setFkVeiculo(veiculo);
 
         return REGISTRO_REPOSITORY.save(registro);
@@ -125,12 +125,12 @@ public class RegistroEntradaService {
             registro.setSomDvd(registroDTO.getSomDvd());
         }
 
-        if (registroDTO.getCaixaFerramenta() != null) {
-            registro.setCaixaFerramenta(registroDTO.getCaixaFerramenta());
+        if (registroDTO.getCaixaFerramentas() != null) {
+            registro.setCaixaFerramentas(registroDTO.getCaixaFerramentas());
         }
 
         if (registroDTO.getObservacoes() != null) {
-            registro.setObservacoes(registroDTO.getObservacoes());
+//            registro.setObservacoes(registroDTO.getObservacoes());
         }
 
         return REGISTRO_REPOSITORY.save(registro);

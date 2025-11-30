@@ -1,7 +1,5 @@
 package geo.track.dto.registroEntrada.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.time.LocalDate;
 
 public record RequestPostEntrada(
@@ -17,6 +15,6 @@ public record RequestPostEntrada(
         Integer quantidadeMonitor,
         Integer quantidadeEstepe,
         Integer quantidadeSomDvd,
-        Integer quantidadeCaixaFerramenta,
+        Integer quantidadeCaixaFerramentas,
         String observacoes
 ) {}

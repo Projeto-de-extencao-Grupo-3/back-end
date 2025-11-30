@@ -45,11 +45,11 @@ public class Oficinas {
     @Schema(description = "Senha de acesso ao sistema (armazenada de forma segura)", example = "••••••••")
     private String senha;
 
-    @OneToMany(mappedBy = "fkOficina", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkOficina")
     @Schema(description = "Lista de funcionários associados à oficina")
     private List<Funcionarios> funcionarios;
 
-    @OneToMany(mappedBy = "fkOficina", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkOficina")
     @Schema(description = "Lista de clientes associados à oficina")
     private List<Clientes> clientes;
 }

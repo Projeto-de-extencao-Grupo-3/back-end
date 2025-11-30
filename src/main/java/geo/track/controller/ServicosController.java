@@ -1,15 +1,17 @@
 package geo.track.controller;
 
 import geo.track.domain.Servicos;
-import geo.track.exception.ExceptionBody; // Import necessário
+import geo.track.dto.servicos.ServicoResponse;
+import geo.track.exception.ExceptionBody;
+import geo.track.mapper.ServicoMapper;
 import geo.track.service.ServicosService;
-import io.swagger.v3.oas.annotations.Operation; // Import necessário
-import io.swagger.v3.oas.annotations.media.Content; // Import necessário
-import io.swagger.v3.oas.annotations.media.Schema; // Import necessário
-import io.swagger.v3.oas.annotations.responses.ApiResponse; // Import necessário
-import io.swagger.v3.oas.annotations.responses.ApiResponses; // Import necessário
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag; // Import necessário
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,21 +19,21 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/servicos")
 @RequiredArgsConstructor
-@Tag(name = "Serviços", description = "Endpoints utilizados para gerenciar os serviços") // Adicionado
+@Tag(name = "Serviços", description = "Endpoints utilizados para gerenciar os serviços")
 @SecurityRequirement(name = "Bearer")
 public class ServicosController {
 
     private final ServicosService service;
 
-    @Operation( // Adicionado
+    @Operation(
             summary = "Cadastrar novo serviço",
             description = "Recebe um objeto de serviço e o armazena, retornando o serviço criado."
     )
-    @ApiResponses(value = { // Adicionado
+    @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
                     description = "Serviço cadastrado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = Servicos.class))}
+                    content = {@Content(schema = @Schema(implementation = ServicoResponse.class))}
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -40,17 +42,17 @@ public class ServicosController {
             )
     })
     @PostMapping
-    public ResponseEntity<Servicos> cadastrar(@RequestBody Servicos servico){
+    public ResponseEntity<ServicoResponse> cadastrar(@RequestBody Servicos servico){
         Servicos servicoResposta = service.cadastrar(servico);
-        return ResponseEntity.status(201).body(servicoResposta);
+        return ResponseEntity.status(201).body(ServicoMapper.toResponse(servicoResposta));
     }
 
-    @Operation(summary = "Buscar serviço pelo ID") // Adicionado
-    @ApiResponses(value = { // Adicionado
+    @Operation(summary = "Buscar serviço pelo ID")
+    @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     description = "Serviço encontrado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = Servicos.class))}
+                    content = {@Content(schema = @Schema(implementation = ServicoResponse.class))}
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -59,20 +61,20 @@ public class ServicosController {
             )
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Servicos> buscarPorId(@PathVariable Integer id){
+    public ResponseEntity<ServicoResponse> buscarPorId(@PathVariable Integer id){
         Servicos servicoResposta = service.buscarPorId(id);
-        return ResponseEntity.status(200).body(servicoResposta);
+        return ResponseEntity.status(200).body(ServicoMapper.toResponse(servicoResposta));
     }
 
-    @Operation( // Adicionado
+    @Operation(
             summary = "Atualizar completamente um serviço",
             description = "Recebe o ID e um objeto de serviço com os novos dados para atualização."
     )
-    @ApiResponses(value = { // Adicionado
+    @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     description = "Serviço atualizado com sucesso",
-                    content = {@Content(schema = @Schema(implementation = Servicos.class))}
+                    content = {@Content(schema = @Schema(implementation = ServicoResponse.class))}
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -86,13 +88,13 @@ public class ServicosController {
             )
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Servicos> atualizar(@PathVariable Integer id, @RequestBody Servicos servico){
+    public ResponseEntity<ServicoResponse> atualizar(@PathVariable Integer id, @RequestBody Servicos servico){
         Servicos servicoResposta = service.atualizar(id, servico);
-        return ResponseEntity.status(200).body(servicoResposta);
+        return ResponseEntity.status(200).body(ServicoMapper.toResponse(servicoResposta));
     }
 
-    @Operation(summary = "Remover um serviço") // Adicionado
-    @ApiResponses(value = { // Adicionado
+    @Operation(summary = "Remover um serviço")
+    @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",
                     description = "Serviço removido com sucesso",

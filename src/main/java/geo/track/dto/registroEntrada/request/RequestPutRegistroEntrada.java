@@ -49,7 +49,7 @@ public class RequestPutRegistroEntrada {
     private Integer somDvd;
 
     @Schema(description = "Quantidade de caixa de ferramentas no veículo", example = "2") // Adicionado
-    private Integer caixaFerramenta;
+    private Integer caixaFerramentas;
 
     @Schema(description = "ID do veículo associado ao registro (caso precise ser corrigido)", example = "1") // Adicionado
     private Integer fkVeiculo;

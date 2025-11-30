@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor -- FOI GERADO NA MÃO TA AI EMBAIXO
 public class OrdemDeServicos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class OrdemDeServicos {
 
     @NotNull
     @Schema(description = "Status atual do veículo", example = "EM_REPARO")
-    private StatusVeiculo status;
+    private String status;
 
     @Schema(description = "Indica se o serviço envolve seguradora", example = "true")
     private Boolean seguradora;
@@ -47,32 +47,42 @@ public class OrdemDeServicos {
     @Schema(description = "Indica se o pagamento foi realizado", example = "true")
     private Boolean pagtRealizado;
 
-    @Schema(description = "Indica se a ordem de serviço está ativa ou não", example = "true")
-    private Boolean ativo;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_entrada")
     @Schema(description = "Registro de entrada relacionado á ordem de serviço.")
     private RegistroEntrada fk_entrada;
 
-    @OneToMany(mappedBy = "fkOrdemServico", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkOrdemServico")
     @Schema(description = "Lista de produtos associados à ordem de serviço")
     private List<ItensProdutos> produtos;
 
-    @OneToMany(mappedBy = "fkOrdemServico", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fkOrdemServico")
     @Schema(description = "Lista de serviços associados à ordem de serviço")
     private List<ItensServicos> servicos;
+
+    public OrdemDeServicos(Integer idOrdemServico, Double valorTotal, LocalDate dtSaidaPrevista, LocalDate dtSaidaEfetiva, StatusVeiculo status, Boolean seguradora, Boolean nfRealizada, Boolean pagtRealizado, RegistroEntrada fk_entrada, List<ItensProdutos> produtos, List<ItensServicos> servicos) {
+        this.idOrdemServico = idOrdemServico;
+        this.valorTotal = valorTotal;
+        this.dtSaidaPrevista = dtSaidaPrevista;
+        this.dtSaidaEfetiva = dtSaidaEfetiva;
+        this.status = status.name();
+        this.seguradora = seguradora;
+        this.nfRealizada = nfRealizada;
+        this.pagtRealizado = pagtRealizado;
+        this.fk_entrada = fk_entrada;
+        this.produtos = produtos;
+        this.servicos = servicos;
+    }
 
     private OrdemDeServicos(Builder builder) {
         this.idOrdemServico = builder.idOrdemServico;
         this.valorTotal = builder.valorTotal;
         this.dtSaidaPrevista = builder.dtSaidaPrevista;
         this.dtSaidaEfetiva = builder.dtSaidaEfetiva;
-        this.status = builder.status;
+        this.status = builder.status.name();
         this.seguradora = builder.seguradora;
         this.nfRealizada = builder.nfRealizada;
         this.pagtRealizado = builder.pagtRealizado;
-        this.ativo = builder.ativo;
         this.fk_entrada = builder.fk_entrada;
         this.produtos = builder.produtos;
         this.servicos = builder.servicos;
