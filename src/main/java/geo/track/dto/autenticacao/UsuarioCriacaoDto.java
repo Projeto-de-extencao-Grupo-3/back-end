@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +31,7 @@ public class UsuarioCriacaoDto {
     @Schema(description = "Data de criação do usuário", example = "2025-11-16T20:45:00")
     private LocalDateTime dt_criacao;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Status do usuário", example = "ATIVO")
     private Boolean status;
 

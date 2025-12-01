@@ -3,6 +3,7 @@ package geo.track.dto.clientes.request;
 import geo.track.enums.cliente.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,15 +30,15 @@ public class RequestPostCliente {
     @Schema(description = "Endereço de e-mail do cliente", example = "joao.silva@email.com", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private String email;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Tipo de cliente", example = "PESSOA_FISICA", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private TipoCliente tipoCliente;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Endereço associado a este cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private Integer fkEndereco;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Oficina associada a este cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private Integer fkOficina;
 }

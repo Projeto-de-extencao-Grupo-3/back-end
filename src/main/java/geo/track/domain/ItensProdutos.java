@@ -3,6 +3,7 @@ package geo.track.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,15 +23,15 @@ public class ItensProdutos {
     @Schema(description = "Id da lista de produtos", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer idRegistroPeca;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Quantidade do produto selecionado", example = "12", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer quantidade;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Preço da peça selecionada", example = "29.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double precoPeca;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Indicador se o item foi abaixado no Estoque", example = "29.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean baixado;
 

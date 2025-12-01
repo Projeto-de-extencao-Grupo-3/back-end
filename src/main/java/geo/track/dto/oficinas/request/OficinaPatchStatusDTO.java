@@ -13,6 +13,6 @@ public class OficinaPatchStatusDTO {
 
     @NotNull
     private Integer id;
-    @NotBlank
+    @NotNull
     private Boolean status;
 }

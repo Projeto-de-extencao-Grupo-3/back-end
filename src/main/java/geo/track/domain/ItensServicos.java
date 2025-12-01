@@ -3,6 +3,7 @@ package geo.track.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,7 @@ public class ItensServicos {
     @Schema(description = "ID da lista de serviços", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer idRegistroServico;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Preço cobrado", example = "99.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double precoCobrado;
 
