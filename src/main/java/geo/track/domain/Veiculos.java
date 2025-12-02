@@ -36,6 +36,10 @@ public class Veiculos {
     @Schema(description = "Modelo do veículo", example = "Nivus", requiredMode = Schema.RequiredMode.REQUIRED)
     private String modelo;
 
+    @NotBlank
+    @Schema(description = "Prefixo do veículo", example = "1200", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String prefixo;
+
     @NotNull
     @Positive
     @Digits(integer = 4, fraction = 0)

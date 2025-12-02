@@ -7,20 +7,13 @@ import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 
 import java.util.List;
 
-public interface RegistroEntradaInputPort {
+public interface RegistroEntradaPort {
     RegistroEntrada realizarAgendamentoVeiculo(RequestPostEntradaAgendada dto);
-
     RegistroEntrada realizarEntradaVeiculo(RequestPostEntrada dto);
-
     RegistroEntrada atualizarEntradaVeiculoAgendado(RequestPutRegistroEntrada dto);
-
     RegistroEntrada postRegistro(RequestPostEntrada body);
-
     List<RegistroEntrada> findRegistros();
-
     RegistroEntrada findRegistroById(Integer idRegistro);
-
     RegistroEntrada putRegistro(RequestPutRegistroEntrada registroDTO);
-
     void deletarRegistro(Integer idRegistro);
 }

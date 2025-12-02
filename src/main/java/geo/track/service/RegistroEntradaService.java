@@ -7,6 +7,7 @@ import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
+import geo.track.port.RegistroEntradaPort;
 import geo.track.repository.RegistroEntradaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RegistroEntradaService {
+public class RegistroEntradaService implements RegistroEntradaPort {
     private final RegistroEntradaRepository REGISTRO_REPOSITORY;
     private final VeiculosService VEICULO_SERVICE;
 
@@ -39,6 +40,7 @@ public class RegistroEntradaService {
         RegistroEntrada registro = new RegistroEntrada();
         Veiculos veiculo = VEICULO_SERVICE.findVeiculoById(registroDTO.getFkVeiculo());
 
+        registro.setIdRegistroEntrada(null);
         registro.setDataEntradaPrevista(registroDTO.getDtEntradaPrevista());
         registro.setFkVeiculo(veiculo);
 
@@ -50,6 +52,7 @@ public class RegistroEntradaService {
 
         RegistroEntrada registro = new RegistroEntrada();
         registro.setDataEntradaEfetiva(body.dataEntradaEfetiva());
+        registro.setDataEntradaPrevista(body.dataEntradaEfetiva()); // Porque o carro não era previsto nenhuma nada
         registro.setResponsavel(body.nomeResponsavel());
         registro.setCpf(body.cpfResponsavel());
         registro.setExtintor(body.quantidadeExtintor());

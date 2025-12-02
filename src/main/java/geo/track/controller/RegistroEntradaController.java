@@ -7,7 +7,7 @@ import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
 import geo.track.exception.ExceptionBody;
 import geo.track.mapper.RegistroEntradaMapper;
-import geo.track.service.RegistroEntradaService;
+import geo.track.port.RegistroEntradaPort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,7 +28,7 @@ import java.util.List;
 @Tag(name = "Registro de Entrada", description = "Endpoints para gerenciar os registros de entrada de veículos")
 @SecurityRequirement(name = "Bearer")
 public class RegistroEntradaController {
-    private final RegistroEntradaService entradaService;
+    private final RegistroEntradaPort REGISTRO_ENTRADA_SERVICE;
 
     @Operation(
             summary = "Realizar o Agendamento de um Veículo",
@@ -48,7 +48,7 @@ public class RegistroEntradaController {
     })
     @PostMapping("/agendamento")
     public ResponseEntity<RegistroEntradaResponse> realizarAgendamentoVeiculo(@RequestBody RequestPostEntradaAgendada registroDTO){
-        RegistroEntrada registro = entradaService.realizarAgendamentoVeiculo(registroDTO);
+        RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.realizarAgendamentoVeiculo(registroDTO);
         return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponse(registro));
     }
 
@@ -75,7 +75,7 @@ public class RegistroEntradaController {
     })
     @PostMapping("/entrada")
     public ResponseEntity<RegistroEntradaResponse> realizarEntradaVeiculo(@RequestBody RequestPostEntrada registroDTO){
-        RegistroEntrada registro = entradaService.realizarEntradaVeiculo(registroDTO);
+        RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.realizarEntradaVeiculo(registroDTO);
         return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponse(registro));
     }
 
@@ -102,7 +102,7 @@ public class RegistroEntradaController {
     })
     @PutMapping("/atualizar")
     public ResponseEntity<RegistroEntradaResponse> atualizarEntradaVeiculoAgendado(@RequestBody RequestPutRegistroEntrada registroDTO){
-        RegistroEntrada registro = entradaService.atualizarEntradaVeiculoAgendado(registroDTO);
+        RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.atualizarEntradaVeiculoAgendado(registroDTO);
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(registro));
     }
 
@@ -122,7 +122,7 @@ public class RegistroEntradaController {
     })
     @GetMapping
     public ResponseEntity<List<RegistroEntradaResponse>> findRegistro(){
-        List<RegistroEntrada> registro = entradaService.findRegistros();
+        List<RegistroEntrada> registro = REGISTRO_ENTRADA_SERVICE.findRegistros();
         if (registro.isEmpty()){
             return ResponseEntity.status(204).build();
         }
@@ -144,7 +144,7 @@ public class RegistroEntradaController {
     })
     @GetMapping("/{idRegistro}")
     public ResponseEntity<RegistroEntradaResponse> findRegistroById(@PathVariable Integer idRegistro){
-        RegistroEntrada registro = entradaService.findRegistroById(idRegistro);
+        RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.findRegistroById(idRegistro);
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(registro));
     }
 
@@ -163,7 +163,7 @@ public class RegistroEntradaController {
     })
     @DeleteMapping("/{idRegistro}")
     public ResponseEntity<Void> deleteRegistro(@PathVariable Integer idRegistro){
-        entradaService.deletarRegistro(idRegistro);
+        REGISTRO_ENTRADA_SERVICE.deletarRegistro(idRegistro);
         return ResponseEntity.status(204).build();
     }
 }
