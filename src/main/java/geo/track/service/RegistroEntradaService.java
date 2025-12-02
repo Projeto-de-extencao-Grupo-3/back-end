@@ -76,7 +76,7 @@ public class RegistroEntradaService implements RegistroEntradaPort {
         Optional<RegistroEntrada> registro = REGISTRO_REPOSITORY.findById(idRegistro);
 
         if (registro.isEmpty()){
-            throw new DataNotFoundException("Não existe uma registro de entrada com esse ID", "Registro de Entrada");
+            throw new DataNotFoundException("Registro de Entrada não encontrado", "Registro de Entrada");
         }
 
         return registro.get();
@@ -141,7 +141,7 @@ public class RegistroEntradaService implements RegistroEntradaPort {
 
     public void deletarRegistro(Integer idRegistro){
         if (!REGISTRO_REPOSITORY.existsById(idRegistro)){
-            throw new ForbiddenException("Solicitação recusada", "Registro de Entrada");
+            throw new DataNotFoundException("Registro de Entrada não encontrado", "Registro de Entrada");
         }
 
         REGISTRO_REPOSITORY.deleteById(idRegistro);
