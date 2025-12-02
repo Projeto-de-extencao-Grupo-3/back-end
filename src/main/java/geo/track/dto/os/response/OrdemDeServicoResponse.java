@@ -1,6 +1,7 @@
 package geo.track.dto.os.response;
 
 import geo.track.enums.os.StatusVeiculo;
+import jdk.jshell.Snippet;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ public class OrdemDeServicoResponse {
     private Double valorTotal;
     private LocalDate dtSaidaPrevista;
     private LocalDate dtSaidaEfetiva;
-    private String status;
+    private StatusVeiculo status;
     private Boolean seguradora;
     private Boolean nfRealizada;
     private Boolean pagtRealizado;

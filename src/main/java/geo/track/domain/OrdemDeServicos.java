@@ -36,7 +36,7 @@ public class OrdemDeServicos {
 
     @NotNull
     @Schema(description = "Status atual do veículo", example = "EM_REPARO")
-    private String status;
+    private StatusVeiculo status;
 
     @Schema(description = "Indica se o serviço envolve seguradora", example = "true")
     private Boolean seguradora;
@@ -65,7 +65,7 @@ public class OrdemDeServicos {
         this.valorTotal = valorTotal;
         this.dtSaidaPrevista = dtSaidaPrevista;
         this.dtSaidaEfetiva = dtSaidaEfetiva;
-        this.status = status.name();
+        this.status = status;
         this.seguradora = seguradora;
         this.nfRealizada = nfRealizada;
         this.pagtRealizado = pagtRealizado;
@@ -79,7 +79,7 @@ public class OrdemDeServicos {
         this.valorTotal = builder.valorTotal;
         this.dtSaidaPrevista = builder.dtSaidaPrevista;
         this.dtSaidaEfetiva = builder.dtSaidaEfetiva;
-        this.status = builder.status.name();
+        this.status = builder.status;
         this.seguradora = builder.seguradora;
         this.nfRealizada = builder.nfRealizada;
         this.pagtRealizado = builder.pagtRealizado;

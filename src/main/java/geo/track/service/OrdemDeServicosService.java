@@ -99,7 +99,7 @@ public class OrdemDeServicosService {
 
         OrdemDeServicos ordem = ordemOPT.get();
 
-        ordem.setStatus(ordemDTO.getStatus().name());
+        ordem.setStatus(ordemDTO.getStatus());
 
         return ordemRepository.save(ordem);
     }
