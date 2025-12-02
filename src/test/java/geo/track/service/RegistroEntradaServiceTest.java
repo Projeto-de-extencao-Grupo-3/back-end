@@ -31,6 +31,9 @@ class RegistroEntradaServiceTest {
     @Mock
     private RegistroEntradaRepository repository;
 
+    @Mock
+    private VeiculosService veiculosService;
+
     @InjectMocks
     private RegistroEntradaService service;
 
@@ -56,7 +59,7 @@ class RegistroEntradaServiceTest {
                 "João Responsável",
                 "123.456.789-00",
                 1, 1, 1, 1, 1, 1,1,1,
-                1
+                1, ""
         );
     }
 
@@ -64,6 +67,7 @@ class RegistroEntradaServiceTest {
     @Test
     @DisplayName("postRegistro: Deve criar um registro de entrada com sucesso")
     void deveCriarRegistroComSucesso() {
+        when(veiculosService.findVeiculoById(any(Integer.class))).thenReturn(veiculo);
         when(repository.save(any(RegistroEntrada.class))).thenAnswer(inv -> {
             RegistroEntrada re = inv.getArgument(0);
             re.setIdRegistroEntrada(1);

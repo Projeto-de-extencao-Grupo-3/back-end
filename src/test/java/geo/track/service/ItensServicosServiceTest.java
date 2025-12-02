@@ -37,7 +37,7 @@ class ItensServicosServiceTest {
         ordemDeServicos.setIdOrdemServico(1);
 
         itemServico = new ItensServicos();
-        itemServico.setIdItensServicos(1);
+        itemServico.setIdRegistroServico(1);
         itemServico.setFkOrdemServico(ordemDeServicos);
     }
 
@@ -52,7 +52,7 @@ class ItensServicosServiceTest {
         assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
         assertEquals(1, resultado.size());
-        assertEquals(itemServico.getIdItensServicos(), resultado.get(0).getIdItensServicos());
+        assertEquals(itemServico.getIdRegistroServico(), resultado.get(0).getIdRegistroServico());
         verify(repository).findAllByFkOrdemServicoIdOrdemServico(1);
     }
 

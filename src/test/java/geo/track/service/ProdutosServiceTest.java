@@ -40,7 +40,7 @@ class ProdutosServiceTest {
     @BeforeEach
     void setUp() {
         produto = new Produtos();
-        produto.setIdPeca(1);
+        produto.setIdProduto(1);
         produto.setNome("Filtro de Óleo");
         produto.setQuantidadeEstoque(50);
         produto.setPrecoCompra(18.00);
@@ -106,7 +106,7 @@ class ProdutosServiceTest {
         when(repository.save(any(Produtos.class))).thenReturn(produto);
         Produtos resultado = service.putProdutos(1, produto);
         assertNotNull(resultado);
-        assertEquals(1, resultado.getIdPeca());
+        assertEquals(1, resultado.getIdProduto());
         verify(repository).existsById(1);
         verify(repository).save(produto);
     }

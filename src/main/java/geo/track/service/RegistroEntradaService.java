@@ -52,7 +52,7 @@ public class RegistroEntradaService implements RegistroEntradaPort {
 
         RegistroEntrada registro = new RegistroEntrada();
         registro.setDataEntradaEfetiva(body.dataEntradaEfetiva());
-        registro.setDataEntradaPrevista(body.dataEntradaEfetiva()); // Porque o carro não era previsto nenhuma nada
+        registro.setDataEntradaPrevista(body.dataEntradaEfetiva()); // Porque o carro não era previsto nenhuma nada, então define a data da entrada efetiva
         registro.setResponsavel(body.nomeResponsavel());
         registro.setCpf(body.cpfResponsavel());
         registro.setExtintor(body.quantidadeExtintor());
