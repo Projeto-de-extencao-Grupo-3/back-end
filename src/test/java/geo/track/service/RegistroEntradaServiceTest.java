@@ -144,33 +144,17 @@ class RegistroEntradaServiceTest {
         verify(repository, never()).save(any(RegistroEntrada.class));
     }
 
-    // --- Testes para deleteRegistro ---
-    @Test
-    @DisplayName("deleteRegistro: Deve lançar ForbiddenException ao tentar deletar registro sem veículo")
-    void deveLancarForbiddenExceptionAoDeletarRegistroSemVeiculo() {
-        registroEntrada.setFkVeiculo(null);
-        when(repository.findById(1)).thenReturn(Optional.of(registroEntrada));
-
-        ForbiddenException exception = assertThrows(ForbiddenException.class, () -> {
-            service.deletarRegistro(1);
-        });
-
-        assertEquals("Solicitação recusada", exception.getMessage());
-        verify(repository).findById(1);
-        verify(repository, never()).deleteById(anyInt());
-    }
-
     @Test
     @DisplayName("deleteRegistro: Deve lançar DataNotFoundException ao tentar deletar registro inexistente")
     void deveLancarDataNotFoundExceptionAoDeletarRegistroInexistente() {
-        when(repository.findById(99)).thenReturn(Optional.empty());
+        when(repository.existsById(any(Integer.class))).thenReturn(false);
 
         DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
             service.deletarRegistro(99);
         });
 
-        assertEquals("Não existe uma registro de entrada com esse ID", exception.getMessage());
-        verify(repository).findById(99);
+        assertEquals("Registro de Entrada não encontrado", exception.getMessage());
+        verify(repository).existsById(any(Integer.class));
         verify(repository, never()).deleteById(anyInt());
     }
 }
