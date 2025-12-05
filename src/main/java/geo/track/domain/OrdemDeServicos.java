@@ -35,6 +35,7 @@ public class OrdemDeServicos {
     private LocalDate dtSaidaEfetiva;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Schema(description = "Status atual do veículo", example = "EM_REPARO")
     private StatusVeiculo status;
 

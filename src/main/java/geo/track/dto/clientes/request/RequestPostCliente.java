@@ -2,6 +2,8 @@ package geo.track.dto.clientes.request;
 
 import geo.track.enums.cliente.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,6 +33,7 @@ public class RequestPostCliente {
     private String email;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Schema(description = "Tipo de cliente", example = "PESSOA_FISICA", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private TipoCliente tipoCliente;
 

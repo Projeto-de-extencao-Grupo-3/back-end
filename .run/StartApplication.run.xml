@@ -7,6 +7,15 @@
     </method>
   </configuration>
   <configuration default="false" name="StartApplication" type="Application" factoryName="Application">
+    <envs>
+      <env name="SERVER_PORT" value="8080" />
+      <env name="SPRING_DATASOURCE_URL" value="jdbc:mysql://127.0.0.1:3306/grotrack" />
+      <env name="SPRING_DATASOURCE_USERNAME" value="root" />
+      <env name="SPRING_DATASOURCE_PASSWORD" value="123456" />
+      <env name="SPRING_JPA_HIBERNATE_DDL_AUTO" value="update" />
+      <env name="JWT_SECRET" value="&quot;RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdWUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNlcnZlIG8gVW5pdmVyc28gZSBwb3IgcXVlIGVsZSBlc3TDoSBhcXVpLCBlbGUgZGVzYXBhcmVjZXJhIGluc3RhbnRhbmVhbWVudGUgZSBzZXJhIHN1YnN0aXR1w61kbyBwb3IgYWxnbyBhaW5kYSBtYWlzIGVzdHJhbmhvIGUgaW5leHBsaWNhdmVsLiBFeGlzdGUgdW1hIHNlZ3VuZGEgdGVvcmlhIHF1ZSBkaXogcXVlIGlzc28gauEgYWNvbnRlY2V1Li4u&quot;" />
+      <env name="JWT_VALIDITY" value="3600000" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="geo.track.StartApplication" />
     <module name="back-end" />
     <method v="2">
