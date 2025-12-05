@@ -1,7 +1,10 @@
 package geo.track.mapper;
 
 import geo.track.domain.ItensServicos;
-import geo.track.dto.itensservicos.ItensServicoResponse;
+import geo.track.domain.OrdemDeServicos;
+import geo.track.domain.Servicos;
+import geo.track.dto.itensServicos.ItensServicoResponse;
+import geo.track.dto.itensServicos.RequestPostItemServico;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,5 +39,20 @@ public class ItensServicoMapper {
         return entities.stream()
                 .map(ItensServicoMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public static ItensServicos toDomain(RequestPostItemServico dto, OrdemDeServicos ordemServico, Servicos servico) {
+        ItensServicos item = new ItensServicos();
+
+        item.setPrecoCobrado(dto.getPrecoCobrado());
+        item.setParteVeiculo(dto.getParteVeiculo());
+        item.setLadoVeiculo(dto.getLadoVeiculo());
+        item.setCor(dto.getCor());
+        item.setEspecificacaoServico(dto.getEspecificacaoServico());
+        item.setObservacoesItem(dto.getObservacoesItem());
+        item.setFkOrdemServico(ordemServico);
+        item.setFkServico(servico);
+
+        return item;
     }
 }

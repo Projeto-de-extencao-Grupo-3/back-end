@@ -1,5 +1,7 @@
 package geo.track.domain;
 
+import geo.track.enums.servico.LadosVeiculo;
+import geo.track.enums.servico.PartesVeiculo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -28,12 +30,14 @@ public class ItensServicos {
     private Double precoCobrado;
 
     @NotBlank
+    @Enumerated(EnumType.STRING)
     @Schema(description = "Parte que será reparada no veiculo", example = "Parachoque/Parabrisa/Janelas", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String parteVeiculo;
+    private PartesVeiculo parteVeiculo;
 
     @NotBlank
+    @Enumerated(EnumType.STRING)
     @Schema(description = "Lado no qual será executado o reparo", example = "Latera Esquerda/Transeira", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String ladoVeiculo;
+    private LadosVeiculo ladoVeiculo;
 
     @NotBlank
     @Schema(description = "Cor do Veiculo", example = "Ciano/Vermelho", requiredMode = Schema.RequiredMode.REQUIRED)

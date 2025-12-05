@@ -1,5 +1,6 @@
 package geo.track.domain;
 
+import geo.track.enums.servico.TipoServico;
 import io.swagger.v3.oas.annotations.media.Schema; // Import adicionado
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank; // Import adicionado
@@ -16,27 +17,27 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Representa um tipo de serviço oferecido pela oficina") // Adicionado
+@Schema(description = "Representa um tipo de serviço oferecido pela oficina")
 public class Servicos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID único do serviço", example = "1") // Adicionado
+    @Schema(description = "ID único do serviço", example = "1")
     private Integer idServico;
 
     @NotBlank // Assumindo que este campo é obrigatório
-    @Schema(description = "Categoria do serviço", example = "Mecânico", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
-    private String tipoServico;
+    @Schema(description = "Categoria do serviço", example = "Mecânico", requiredMode = Schema.RequiredMode.REQUIRED)
+    private TipoServico tipoServico;
 
     @NotBlank // Assumindo que este campo é obrigatório
-    @Schema(description = "Nome ou título descritivo do serviço", example = "Troca de óleo e filtro", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "Nome ou título descritivo do serviço", example = "Troca de óleo e filtro", requiredMode = Schema.RequiredMode.REQUIRED)
     @Column(name = "nome")
     private String tituloServico;
 
     @NotNull // Assumindo que este campo é obrigatório
-    @Schema(description = "Tempo base estimado para a execução do serviço (em minutos)", example = "60", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "Tempo base estimado para a execução do serviço (em minutos)", example = "60", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer tempoBase;
 
-    @Schema(description = "Indica se o serviço está ativo e disponível para novas O.S.", example = "true") // Adicionado
+    @Schema(description = "Indica se o serviço está ativo e disponível para novas O.S.", example = "true")
     private boolean ativo;
 
     @OneToMany(mappedBy = "fkServico")

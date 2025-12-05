@@ -1,10 +1,15 @@
 package geo.track.controller;
 
 import geo.track.domain.ItensServicos;
-import geo.track.dto.itensservicos.ItensServicoResponse;
+import geo.track.domain.OrdemDeServicos;
+import geo.track.domain.Servicos;
+import geo.track.dto.itensServicos.ItensServicoResponse;
+import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.exception.ExceptionBody;
 import geo.track.mapper.ItensServicoMapper;
 import geo.track.service.ItensServicosService;
+import geo.track.service.OrdemDeServicosService;
+import geo.track.service.ServicosService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +31,9 @@ import java.util.List;
 @Tag(name = "ItensServicos", description = "Endpoints utilizados para gerenciar ItensServicos.")
 public class ItensServicoController {
 
-    private final ItensServicosService service;
+    private final ItensServicosService REGISTRO_SERVICO_SERVICE;
+    private final OrdemDeServicosService ORDEM_SERVICO_SERVICE;
+    private final ServicosService SERVICO_SERVICE;
 
     @Operation(summary = "Cadastrar ItensServico")
     @ApiResponses(value = {
@@ -36,8 +43,12 @@ public class ItensServicoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PostMapping
-    public ResponseEntity<ItensServicoResponse> cadastrar(@RequestBody ItensServicos itens) {
-        ItensServicos itensServicos = service.cadastrar(itens);
+    public ResponseEntity<ItensServicoResponse> cadastrar(@RequestBody RequestPostItemServico body) {
+        OrdemDeServicos ordemServico = ORDEM_SERVICO_SERVICE.findOrdemById(body.getFkOrdemServico());
+        Servicos servico = SERVICO_SERVICE.buscarPorId(body.getFkServico());
+        ItensServicos item = ItensServicoMapper.toDomain(body, ordemServico, servico);
+
+        ItensServicos itensServicos = REGISTRO_SERVICO_SERVICE.cadastrar(item);
         return ResponseEntity.status(201).body(ItensServicoMapper.toResponse(itensServicos));
     }
 
@@ -51,7 +62,7 @@ public class ItensServicoController {
     })
     @GetMapping
     public ResponseEntity<List<ItensServicoResponse>> findAll() {
-        List<ItensServicos> itensServicos = service.listar();
+        List<ItensServicos> itensServicos = REGISTRO_SERVICO_SERVICE.listar();
         if (itensServicos.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -68,7 +79,7 @@ public class ItensServicoController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ItensServicoResponse> findById(@PathVariable Integer id) {
-        ItensServicos itensServicos = service.findById(id);
+        ItensServicos itensServicos = REGISTRO_SERVICO_SERVICE.findById(id);
         return ResponseEntity.status(200).body(ItensServicoMapper.toResponse(itensServicos));
     }
 
@@ -82,7 +93,7 @@ public class ItensServicoController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<ItensServicoResponse> atualizar(@PathVariable Integer id, @RequestBody ItensServicos itens) {
-        ItensServicos itensServicos = service.atualizar(id, itens);
+        ItensServicos itensServicos = REGISTRO_SERVICO_SERVICE.atualizar(id, itens);
         return ResponseEntity.status(200).body(ItensServicoMapper.toResponse(itensServicos));
     }
 
@@ -94,7 +105,7 @@ public class ItensServicoController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        service.delete(id);
+        REGISTRO_SERVICO_SERVICE.delete(id);
         return ResponseEntity.status(204).build();
     }
 }
