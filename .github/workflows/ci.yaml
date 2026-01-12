@@ -1,16 +1,27 @@
-name: Java CI/CD com MySQL e JaCoCo
+name: Workflow Build & Test
 
 on:
   push:
     branches: [ "main", "develop" ]
   pull_request:
     branches: [ "main", "develop" ]
+  # Permite disparar manualmente pela aba Actions do GitHub
+  workflow_dispatch:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # Configura o container do banco de dados
+    env:
+      SERVER_PORT: 8080
+      DB_HOST: localhost
+      DB_PORT: 3306
+      DB_NAME: grotrack
+      DB_USERNAME: root
+      DB_PASSWORD: 123456
+      JWT_VALIDITY: 3600000
+      JWT_SECRET: "RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdWUgc2VydmUgbyBVbml2ZXJzbyBlIHBvciBxdWUgZWxlIGVzdOEgYXF1aSwgZWxlIGRlc2FwYXJlY2Vy4SBpbnN0YW50YW5lYW1lbnRlIGUgc2Vy4SBzdWJzdGl0de1kbyBwb3IgYWxnbyBhaW5kYSBtYWlzIGVzdHJhbmhvIGUgaW5leHBsaWPhdmVsLiBFeGlzdGUgdW1hIHNlZ3VuZGEgdGVvcmlhIHF1ZSBkaXogcXVlIGlzc28gauEgYWNvbnRlY2V1Li4u"
+
     services:
       mysql:
         image: henriquedandrade/bd-grotrack-v2:bd
@@ -19,7 +30,6 @@ jobs:
           MYSQL_DATABASE: grotrack
         ports:
           - 3306:3306
-        # Aguarda o MySQL estar pronto para receber conexões
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval=10s
@@ -37,18 +47,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Executar Build e Testes Integrados
+      - name: Executar Build e Testes
         run: mvn clean verify
-        env:
-          # Variáveis que seu Spring Boot usará para conectar no banco do Service acima
-          DB_HOST: localhost
-          DB_PORT: 3306
-          DB_NAME: grotrack
-          DB_USERNAME: root
-          DB_PASSWORD: 123456
-          # Suas variáveis de JWT necessárias para subir o contexto do Spring
-          JWT_VALIDITY: 3600000
-          JWT_SECRET: "RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdWUgc2VydmUgbyBVbml2ZXJzbyBlIHBvciBxdWUgZWxlIGVzdOEgYXF1aSwgZWxlIGRlc2FwYXJlY2Vy4SBpbnN0YW50YW5lYW1lbnRlIGUgc2Vy4SBzdWJzdGl0de1kbyBwb3IgYWxnbyBhaW5kYSBtYWlzIGVzdHJhbmhvIGUgaW5leHBsaWPhdmVsLiBFeGlzdGUgdW1hIHNlZ3VuZGEgdGVvcmlhIHF1ZSBkaXogcXVlIGlzc28gauEgYWNvbnRlY2V1Li4u"
 
       - name: Upload do Relatório de Cobertura JaCoCo
         if: always()
