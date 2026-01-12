@@ -1,0 +1,58 @@
+name: Java CI/CD com MySQL e JaCoCo
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    # Configura o container do banco de dados
+    services:
+      mysql:
+        image: henriquedandrade/bd-grotrack-v2:bd
+        env:
+          MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: grotrack
+        ports:
+          - 3306:3306
+        # Aguarda o MySQL estar pronto para receber conexões
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Executar Build e Testes Integrados
+        run: mvn clean verify
+        env:
+          # Variáveis que seu Spring Boot usará para conectar no banco do Service acima
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_NAME: grotrack
+          DB_USERNAME: root
+          DB_PASSWORD: 123456
+          # Suas variáveis de JWT necessárias para subir o contexto do Spring
+          JWT_VALIDITY: 3600000
+          JWT_SECRET: "RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdWUgc2VydmUgbyBVbml2ZXJzbyBlIHBvciBxdWUgZWxlIGVzdOEgYXF1aSwgZWxlIGRlc2FwYXJlY2Vy4SBpbnN0YW50YW5lYW1lbnRlIGUgc2Vy4SBzdWJzdGl0de1kbyBwb3IgYWxnbyBhaW5kYSBtYWlzIGVzdHJhbmhvIGUgaW5leHBsaWPhdmVsLiBFeGlzdGUgdW1hIHNlZ3VuZGEgdGVvcmlhIHF1ZSBkaXogcXVlIGlzc28gauEgYWNvbnRlY2V1Li4u"
+
+      - name: Upload do Relatório de Cobertura JaCoCo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/

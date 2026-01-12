@@ -1,5 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="StartApplication" type="Application" factoryName="Application">
+    <envs>
+      <env name="SERVER_PORT" value="8080" />
+      <env name="JWT_SECRET" value="RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdWUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNlcnZlIG8gVW5pdmVyc28gZSBwb3IgcXVlIGVsZSBlc3TDoSBhcXVpLCBlbGUgZGVzYXBhcmVjZXJhIGluc3RhbnRhbmVhbWVudGUgZSBzZXJhIHN1YnN0aXR1w61kbyBwb3IgYWxnbyBhaW5kYSBtYWlzIGVzdHJhbmhvIGUgaW5leHBsaWNhdmVsLiBFeGlzdGUgdW1hIHNlZ3VuZGEgdGVvcmlhIHF1ZSBkaXogcXVlIGlzc28gauEgYWNvbnRlY2V1Li4u" />
+      <env name="JWT_VALIDITY" value="3600000 " />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="geo.track.StartApplication" />
     <module name="back-end" />
     <method v="2">
