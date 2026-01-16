@@ -27,6 +27,7 @@ public class Servico {
 
     @NotBlank // Assumindo que este campo é obrigatório
     @Schema(description = "Categoria do serviço", example = "Mecânico", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Enumerated(EnumType.STRING)
     private TipoServico tipoServico;
 
     @NotBlank // Assumindo que este campo é obrigatório

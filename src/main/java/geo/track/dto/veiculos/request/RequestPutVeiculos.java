@@ -22,10 +22,6 @@ public class RequestPutVeiculos {
     @Schema(description = "Placa do veículo (formato Mercosul ou antigo)", example = "BRA2E19", requiredMode = Schema.RequiredMode.REQUIRED)
     private String placa;
 
-    @NotBlank
-    @Schema(description = "Marca do veículo", example = "Volkswagen", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String marca;
-
     @NotNull
     @Positive
     @Digits(integer = 4, fraction = 0)

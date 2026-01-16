@@ -3,6 +3,7 @@ package geo.track.mapper;
 import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
 import geo.track.domain.Servico;
+import geo.track.dto.itensServicos.ItemServicoOsResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPostItemServico;
 
@@ -54,5 +55,33 @@ public class ItemServicoMapper {
         item.setFkServico(servico);
 
         return item;
+    }
+
+    public static ItemServicoOsResponse toOsResponse(ItemServico entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        ItemServicoOsResponse response = new ItemServicoOsResponse();
+        response.setIdRegistroServico(entity.getIdRegistroServico());
+        response.setPrecoCobrado(entity.getPrecoCobrado());
+        response.setParteVeiculo(entity.getParteVeiculo());
+        response.setLadoVeiculo(entity.getLadoVeiculo());
+        response.setCor(entity.getCor());
+        response.setEspecificacaoServico(entity.getEspecificacaoServico());
+        response.setObservacoesItem(entity.getObservacoesItem());
+
+        if (entity.getFkServico() != null) {
+            response.setNomeServico(entity.getFkServico().getTituloServico());
+            response.setTipoServico(entity.getFkServico().getTipoServico());
+            response.setTempoBase(entity.getFkServico().getTempoBase());
+        }
+        return response;
+    }
+
+    public static List<ItemServicoOsResponse> toOsResponse(List<ItemServico> entities) {
+        return entities.stream()
+                .map(ItemServicoMapper::toOsResponse)
+                .collect(Collectors.toList());
     }
 }

@@ -29,10 +29,6 @@ public class Veiculo {
     private String placa;
 
     @NotBlank
-    @Schema(description = "Marca do veículo", example = "Volkswagen", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String marca;
-
-    @NotBlank
     @Schema(description = "Modelo do veículo", example = "Nivus", requiredMode = Schema.RequiredMode.REQUIRED)
     private String modelo;
 

@@ -36,8 +36,8 @@ public class ItemServico {
     private PartesVeiculo parteVeiculo;
 
     @NotBlank
-    @Enumerated(EnumType.STRING)
     @Schema(description = "Lado no qual será executado o reparo", example = "Latera Esquerda/Transeira", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Enumerated(EnumType.STRING)
     private LadosVeiculo ladoVeiculo;
 
     @NotBlank

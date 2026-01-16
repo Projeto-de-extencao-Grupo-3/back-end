@@ -55,6 +55,9 @@ public class OrdemDeServico {
     @Schema(description = "Lista de produtos associados à ordem de serviço")
     private List<ItemProduto> produtos;
 
+    @Schema(description = "Indica se o serviço está ativo", example = "true")
+    private Boolean ativo;
+
     @OneToMany(mappedBy = "fkOrdemServico")
     @Schema(description = "Lista de serviços associados à ordem de serviço")
     private List<ItemServico> servicos;

@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Objeto utilizado para armazenar informações dos funcionarios que estão responsável por um determinado serviço") // 1. Descrição do objeto
-@Table(name = "funcionarios_servico")
+@   Table(name = "funcionarios_servico")
 public class FuncionarioServico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

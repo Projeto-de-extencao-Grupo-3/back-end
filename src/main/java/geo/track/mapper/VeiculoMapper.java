@@ -15,7 +15,6 @@ public class VeiculoMapper {
         VeiculoResponse response = new VeiculoResponse();
         response.setIdVeiculo(entity.getIdVeiculo());
         response.setPlaca(entity.getPlaca());
-        response.setMarca(entity.getMarca());
         response.setModelo(entity.getModelo());
         response.setAnoModelo(entity.getAnoModelo());
 
