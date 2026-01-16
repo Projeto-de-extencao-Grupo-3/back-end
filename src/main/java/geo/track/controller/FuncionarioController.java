@@ -1,10 +1,10 @@
 package geo.track.controller;
 
-import geo.track.domain.Funcionarios;
+import geo.track.domain.Funcionario;
 import geo.track.dto.funcionarios.FuncionarioResponse;
 import geo.track.exception.ExceptionBody;
 import geo.track.mapper.FuncionarioMapper;
-import geo.track.service.FuncionariosService;
+import geo.track.service.FuncionarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +26,7 @@ import java.util.List;
 @SecurityRequirement(name = "Bearer")
 public class FuncionarioController {
 
-    private final FuncionariosService service;
+    private final FuncionarioService service;
 
     @Operation(summary = "Cadastrar um novo funcionário")
     @ApiResponses(value = {
@@ -37,8 +37,8 @@ public class FuncionarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PostMapping
-    public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody Funcionarios funcionario){
-        Funcionarios funcionarioResposta = service.cadastrar(funcionario);
+    public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody Funcionario funcionario){
+        Funcionario funcionarioResposta = service.cadastrar(funcionario);
         return ResponseEntity.status(201).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
@@ -52,7 +52,7 @@ public class FuncionarioController {
     })
     @GetMapping("/oficina/{idOficina}")
     public ResponseEntity<List<FuncionarioResponse>> findByOficina(@PathVariable Integer idOficina) {
-        List<Funcionarios> funcionarioResposta = service.buscarPorOficina(idOficina);
+        List<Funcionario> funcionarioResposta = service.buscarPorOficina(idOficina);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
@@ -66,7 +66,7 @@ public class FuncionarioController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<FuncionarioResponse> buscarPorId(@PathVariable Integer id){
-        Funcionarios funcionarioResposta = service.buscarPorId(id);
+        Funcionario funcionarioResposta = service.buscarPorId(id);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
@@ -80,8 +80,8 @@ public class FuncionarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PutMapping("/{id}")
-    public ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Integer id, @RequestBody Funcionarios funcionario){
-        Funcionarios funcionarioResposta = service.atualizar(id, funcionario);
+    public ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Integer id, @RequestBody Funcionario funcionario){
+        Funcionario funcionarioResposta = service.atualizar(id, funcionario);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 

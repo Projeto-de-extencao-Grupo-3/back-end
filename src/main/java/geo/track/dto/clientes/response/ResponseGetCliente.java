@@ -1,9 +1,8 @@
 package geo.track.dto.clientes.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import geo.track.domain.Enderecos;
-import geo.track.domain.Oficinas;
-import geo.track.domain.Veiculos;
+import geo.track.domain.Endereco;
+import geo.track.domain.Veiculo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -38,13 +37,13 @@ public class ResponseGetCliente {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_endereco")
-    private Enderecos fkEndereco;
+    private Endereco fkEndereco;
 
     @JsonIgnore
     @OneToMany(mappedBy = "fkCliente")
-    private List<Veiculos> veiculos;
+    private List<Veiculo> veiculos;
 
-    public ResponseGetCliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, Integer fkOficina, Enderecos fkEndereco, List<Veiculos> veiculos) {
+    public ResponseGetCliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, Integer fkOficina, Endereco fkEndereco, List<Veiculo> veiculos) {
         this.idCliente = idCliente;
         this.nome = nome;
         this.cpfCnpj = cpfCnpj;

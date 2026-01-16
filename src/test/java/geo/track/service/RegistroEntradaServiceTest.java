@@ -1,11 +1,10 @@
 package geo.track.service;
 
 import geo.track.domain.RegistroEntrada;
-import geo.track.domain.Veiculos;
+import geo.track.domain.Veiculo;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.ForbiddenException;
 import geo.track.repository.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,19 +31,19 @@ class RegistroEntradaServiceTest {
     private RegistroEntradaRepository repository;
 
     @Mock
-    private VeiculosService veiculosService;
+    private VeiculoService veiculoService;
 
     @InjectMocks
     private RegistroEntradaService service;
 
     private RegistroEntrada registroEntrada;
-    private Veiculos veiculo;
+    private Veiculo veiculo;
     private RequestPostEntradaAgendada postRegistroEntrada;
     private RequestPutRegistroEntrada putRegistroEntrada;
 
     @BeforeEach
     void setUp() {
-        veiculo = new Veiculos();
+        veiculo = new Veiculo();
         veiculo.setIdVeiculo(1);
 
         registroEntrada = new RegistroEntrada();
@@ -67,7 +66,7 @@ class RegistroEntradaServiceTest {
     @Test
     @DisplayName("postRegistro: Deve criar um registro de entrada com sucesso")
     void deveCriarRegistroComSucesso() {
-        when(veiculosService.findVeiculoById(any(Integer.class))).thenReturn(veiculo);
+        when(veiculoService.findVeiculoById(any(Integer.class))).thenReturn(veiculo);
         when(repository.save(any(RegistroEntrada.class))).thenAnswer(inv -> {
             RegistroEntrada re = inv.getArgument(0);
             re.setIdRegistroEntrada(1);

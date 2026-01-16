@@ -1,13 +1,13 @@
 package geo.track.mapper;
 
-import geo.track.domain.Funcionarios;
+import geo.track.domain.Funcionario;
 import geo.track.dto.funcionarios.FuncionarioResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class FuncionarioMapper {
-    public static FuncionarioResponse toResponse(Funcionarios entity) {
+    public static FuncionarioResponse toResponse(Funcionario entity) {
         if (entity == null) {
             return null;
         }
@@ -26,7 +26,7 @@ public class FuncionarioMapper {
         return response;
     }
 
-    public static List<FuncionarioResponse> toResponse(List<Funcionarios> entities) {
+    public static List<FuncionarioResponse> toResponse(List<Funcionario> entities) {
         return entities.stream()
                 .map(FuncionarioMapper::toResponse)
                 .collect(Collectors.toList());
