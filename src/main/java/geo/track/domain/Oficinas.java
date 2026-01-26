@@ -20,6 +20,7 @@ import java.util.List;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "idOficina")
+@Table(name = "oficinas")
 public class Oficinas {
 
     @Id
@@ -47,9 +48,9 @@ public class Oficinas {
 
     @OneToMany(mappedBy = "fkOficina")
     @Schema(description = "Lista de funcionários associados à oficina")
-    private List<Funcionarios> funcionarios;
+    private List<Funcionario> funcionarios;
 
     @OneToMany(mappedBy = "fkOficina")
     @Schema(description = "Lista de clientes associados à oficina")
-    private List<Clientes> clientes;
+    private List<Cliente> clientes;
 }

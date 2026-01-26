@@ -1,13 +1,13 @@
 package geo.track.mapper;
 
-import geo.track.domain.Produtos;
+import geo.track.domain.Produto;
 import geo.track.dto.produtos.ProdutoResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProdutoMapper {
-    public static ProdutoResponse toResponse(Produtos entity) {
+    public static ProdutoResponse toResponse(Produto entity) {
         if (entity == null) {
             return null;
         }
@@ -23,7 +23,7 @@ public class ProdutoMapper {
         return response;
     }
 
-    public static List<ProdutoResponse> toResponse(List<Produtos> entities) {
+    public static List<ProdutoResponse> toResponse(List<Produto> entities) {
         return entities.stream()
                 .map(ProdutoMapper::toResponse)
                 .collect(Collectors.toList());

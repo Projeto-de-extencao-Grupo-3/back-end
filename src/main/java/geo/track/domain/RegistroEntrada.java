@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Representa o registro de entrada de um veículo na oficina") // Adicionado
+@Table(name = "registro_entrada")
 public class RegistroEntrada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,9 +68,9 @@ public class RegistroEntrada {
     @ManyToOne
     @JoinColumn(name = "fk_veiculo")
     @Schema(description = "Veículo associado a este registro de entrada") // Adicionado
-    private Veiculos fkVeiculo;
+    private Veiculo fkVeiculo;
 
     @OneToOne(mappedBy = "fk_entrada")
     @Schema(description = "Ordem de serviço gerada a partir desta entrada") // Adicionado
-    private OrdemDeServicos ordemDeServicos;
+    private OrdemDeServico ordemDeServicos;
 }

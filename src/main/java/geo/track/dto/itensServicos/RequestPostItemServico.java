@@ -13,10 +13,8 @@ public class RequestPostItemServico {
     @NotNull
     private Double precoCobrado;
     @NotNull
-    @Enumerated(EnumType.STRING)
     private PartesVeiculo parteVeiculo;
     @NotNull
-    @Enumerated(EnumType.STRING)
     private LadosVeiculo ladoVeiculo;
     @NotBlank
     private String cor;

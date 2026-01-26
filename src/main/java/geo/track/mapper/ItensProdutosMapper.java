@@ -1,15 +1,14 @@
 package geo.track.mapper;
 
-import geo.track.domain.ItensProdutos;
-import geo.track.domain.OrdemDeServicos;
-import geo.track.domain.Produtos;
-import geo.track.dto.itensProdutos.RequestPostItemProduto;
+import geo.track.domain.ItemProduto;
+import geo.track.domain.OrdemDeServico;
+import geo.track.domain.Produto;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
 
 public class ItensProdutosMapper {
 
-    public static ItensProdutos toEntity(Integer id, Integer quantidade, Double precoProduto, Boolean baixado, Produtos produto, OrdemDeServicos ordemServico) {
-        return new ItensProdutos(
+    public static ItemProduto toEntity(Integer id, Integer quantidade, Double precoProduto, Boolean baixado, Produto produto, OrdemDeServico ordemServico) {
+        return new ItemProduto(
                 null,
                 quantidade,
                 precoProduto,
@@ -19,8 +18,8 @@ public class ItensProdutosMapper {
         );
     }
 
-    public static ItensProdutos updateEntity(ItensProdutos registroDesejado, RequestPutItemProduto body) {
-        ItensProdutos entity = registroDesejado;
+    public static ItemProduto updateEntity(ItemProduto registroDesejado, RequestPutItemProduto body) {
+        ItemProduto entity = registroDesejado;
 
         if (body.quantidade() != null) {
             entity.setQuantidade(body.quantidade());

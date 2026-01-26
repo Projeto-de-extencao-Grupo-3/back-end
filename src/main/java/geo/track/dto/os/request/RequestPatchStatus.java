@@ -1,6 +1,8 @@
 package geo.track.dto.os.request;
 
 import geo.track.enums.os.StatusVeiculo;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jdk.jfr.DataAmount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RequestPatchStatus {
     private Integer idOrdem;
+    @Enumerated(EnumType.STRING)
     private StatusVeiculo status;
     private Integer fkEntrada;
 }

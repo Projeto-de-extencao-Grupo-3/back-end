@@ -1,12 +1,11 @@
 package geo.track.service;
 
 import geo.track.domain.RegistroEntrada;
-import geo.track.domain.Veiculos;
+import geo.track.domain.Veiculo;
 import geo.track.dto.registroEntrada.request.*;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.ForbiddenException;
 import geo.track.port.RegistroEntradaPort;
 import geo.track.repository.RegistroEntradaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RegistroEntradaService implements RegistroEntradaPort {
     private final RegistroEntradaRepository REGISTRO_REPOSITORY;
-    private final VeiculosService VEICULO_SERVICE;
+    private final VeiculoService VEICULO_SERVICE;
 
     public RegistroEntrada realizarAgendamentoVeiculo(RequestPostEntradaAgendada dto) {
         RegistroEntrada novoAgendamento = this.postRegistro(dto);
@@ -38,7 +37,7 @@ public class RegistroEntradaService implements RegistroEntradaPort {
 
     private RegistroEntrada postRegistro(RequestPostEntradaAgendada registroDTO){
         RegistroEntrada registro = new RegistroEntrada();
-        Veiculos veiculo = VEICULO_SERVICE.findVeiculoById(registroDTO.getFkVeiculo());
+        Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(registroDTO.getFkVeiculo());
 
         registro.setIdRegistroEntrada(null);
         registro.setDataEntradaPrevista(registroDTO.getDtEntradaPrevista());
@@ -48,7 +47,7 @@ public class RegistroEntradaService implements RegistroEntradaPort {
     }
 
     public RegistroEntrada postRegistro(RequestPostEntrada body){
-        Veiculos veiculo = VEICULO_SERVICE.findVeiculoById(body.idVeiculo());
+        Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(body.idVeiculo());
 
         RegistroEntrada registro = new RegistroEntrada();
         registro.setDataEntradaEfetiva(body.dataEntradaEfetiva());
