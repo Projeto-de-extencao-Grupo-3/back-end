@@ -2,9 +2,12 @@ name: Workflow Build & Test
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: [ "main" ]
+    # Garante que o build rode em tipos específicos de eventos de PR
+    types: [opened, synchronize, reopened]
+
   # Permite disparar manualmente pela aba Actions do GitHub
   workflow_dispatch:
 
@@ -12,15 +15,19 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    # Adicionando permissões mínimas de segurança
+    permissions:
+      contents: read
+
     env:
       SERVER_PORT: 8080
-      DB_HOST: localhost
+      DB_HOST: 127.0.0.1 # Mudança de localhost para 127.0.0.1 costuma ser mais estável em containers
       DB_PORT: 3306
       DB_NAME: grotrack
       DB_USERNAME: root
       DB_PASSWORD: 123456
       JWT_VALIDITY: 3600000
-      JWT_SECRET: "RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdWUgc2VydmUgbyBVbml2ZXJzbyBlIHBvciBxdWUgZWxlIGVzdOEgYXF1aSwgZWxlIGRlc2FwYXJlY2Vy4SBpbnN0YW50YW5lYW1lbnRlIGUgc2Vy4SBzdWJzdGl0de1kbyBwb3IgYWxnbyBhaW5kYSBtYWlzIGVzdHJhbmhvIGUgaW5leHBsaWPhdmVsLiBFeGlzdGUgdW1hIHNlZ3VuZGEgdGVvcmlhIHF1ZSBkaXogcXVlIGlzc28gauEgYWNvbnRlY2V1Li4u"
+      JWT_SECRET: "RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdW..."
 
     services:
       mysql:
@@ -47,12 +54,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Executar Build e Testes
+      - name: Executar Build e Testes com Maven
+        # clean verify roda testes unitários e de integração
         run: mvn clean verify
 
       - name: Upload do Relatório de Cobertura JaCoCo
+        # O 'if: always()' garante que o relatório suba mesmo se os testes falharem
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco/
+          retention-days: 7 # Opcional: limpa o storage do GitHub após uma semana
