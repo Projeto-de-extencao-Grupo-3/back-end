@@ -1,8 +1,10 @@
 package geo.track.dto.os.response;
 
+import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.itensProdutos.ItemProdutoOsResponse;
 import geo.track.dto.itensServicos.ItemServicoOsResponse;
 
+import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
 import geo.track.enums.os.StatusVeiculo;
 import lombok.Data;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Data
 public class OrdemDeServicoResponse {
     private Integer idOrdemServico;
+    private ClienteResponse cliente;
     private Double valorTotal;
     private LocalDate dtSaidaPrevista;
     private LocalDate dtSaidaEfetiva;
@@ -22,5 +25,5 @@ public class OrdemDeServicoResponse {
     private Boolean ativo;
     private List<ItemServicoOsResponse> servicos;
     private List<ItemProdutoOsResponse> produtos;
-    private Integer idEntrada;
+    private RegistroEntradaResponse entrada;
 }

@@ -1,6 +1,12 @@
 package geo.track.controller;
 
+import geo.track.domain.OrdemDeServico;
+import geo.track.dto.arquivos.RequestGetArquivoOrcamento;
+import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.port.GatewayExportData;
+import geo.track.service.OrdemDeServicoService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,13 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/arquivos")
 public class ArquivosController {
-    private GatewayExportData gatewayExportData;
+    private final GatewayExportData gatewayExportData;
+    private final OrdemDeServicoService ordemServicoService;
 
-    @PostMapping("/pdf")
-    public ResponseEntity<byte[]> post(@RequestBody Object value) {
-        byte[] pdfContent = gatewayExportData.getData(value);
+    @PostMapping("/ordem-servico")
+    public ResponseEntity<byte[]> post(@RequestBody @Valid RequestGetArquivoOrcamento body) {
+        OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento());
+
+        byte[] pdfContent = gatewayExportData.getData(OrdemDeServicoMapper.toResponse(orcamento));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
@@ -26,8 +36,5 @@ public class ArquivosController {
                 .headers(headers)
                 .body(pdfContent);
     }
-
-    public ArquivosController(GatewayExportData gatewayExportData) {
-        this.gatewayExportData = gatewayExportData;
-    }
 }
+

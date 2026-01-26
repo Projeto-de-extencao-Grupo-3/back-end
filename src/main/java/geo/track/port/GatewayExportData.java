@@ -1,5 +1,6 @@
 package geo.track.port;
 
+import geo.track.dto.os.response.OrdemDeServicoResponse;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface GatewayExportData {
 
     @PostMapping("/api/pdf/generate")
-    byte[] getData(@Valid @RequestBody Object body);
+    byte[] getData(@Valid @RequestBody OrdemDeServicoResponse body);
 }

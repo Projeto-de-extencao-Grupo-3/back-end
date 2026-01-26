@@ -6,7 +6,7 @@ import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RegistroEntradaMapper {
+public final class RegistroEntradaMapper {
     public static RegistroEntradaResponse toResponse(RegistroEntrada entity) {
         if (entity == null) {
             return null;
