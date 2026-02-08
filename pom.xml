@@ -186,7 +186,12 @@
 				</executions>
 				<configuration>
 					<format>JSON</format>
+					<format>HTML</format>
 					<failBuildOnCVSS>7.0</failBuildOnCVSS>
+					<skipProvidedScope>true</skipProvidedScope>
+					<skipTestScope>true</skipTestScope>
+					<autoUpdate>true</autoUpdate>
+					<nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
 				</configuration>
 			</plugin>
 
