@@ -18,6 +18,7 @@ jobs:
     # Adicionando permissões mínimas de segurança
     permissions:
       contents: read
+      security-events: write
 
     env:
       SERVER_PORT: 8080
@@ -58,6 +59,17 @@ jobs:
         # clean verify roda testes unitários e de integração
         run: mvn clean verify
 
+      - name: Executar OWASP Dependency-Check
+        run: mvn org.owasp:dependency-check-maven:check
+        continue-on-error: true
+
+      - name: Executar SonarQube Scan
+        env:
+          SONAR_HOST_URL: https://sonarcloud.io
+          SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn sonar:sonar -Dsonar.projectKey=grotrack-backend -Dsonar.organization=seu-org -Dsonar.sources=src
+        continue-on-error: true
+
       - name: Upload do Relatório de Cobertura JaCoCo
         # O 'if: always()' garante que o relatório suba mesmo se os testes falharem
         if: always()
@@ -66,3 +78,11 @@ jobs:
           name: jacoco-report
           path: target/site/jacoco/
           retention-days: 7 # Opcional: limpa o storage do GitHub após uma semana
+
+      - name: Upload do Relatório OWASP Dependency-Check
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: target/dependency-check-report.json
+          retention-days: 7
