@@ -191,7 +191,6 @@
 					<skipProvidedScope>true</skipProvidedScope>
 					<skipTestScope>true</skipTestScope>
 					<autoUpdate>true</autoUpdate>
-					<nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
 				</configuration>
 			</plugin>
 

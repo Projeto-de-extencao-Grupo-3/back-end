@@ -29,7 +29,6 @@ jobs:
       DB_PASSWORD: 123456
       JWT_VALIDITY: 3600000
       JWT_SECRET: "RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdW..."
-      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
     services:
       mysql:
