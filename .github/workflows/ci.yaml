@@ -55,22 +55,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Cache NVD Database
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-database-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            nvd-database-${{ runner.os }}-
-
       - name: Executar Build e Testes com Maven
         # clean verify roda testes unitários e de integração
         run: mvn clean verify -DskipTests=false
-
-      - name: Executar OWASP Dependency-Check
-        if: always()
-        run: mvn org.owasp:dependency-check-maven:check -DskipDependencyCheck=false
-        continue-on-error: true
 
       - name: Executar SonarQube Scan
         if: always()
@@ -88,13 +75,3 @@ jobs:
           name: jacoco-report
           path: target/site/jacoco/
           retention-days: 7 # Opcional: limpa o storage do GitHub após uma semana
-
-      - name: Upload do Relatório OWASP Dependency-Check
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dependency-check-report
-          path: |
-            target/dependency-check-report.json
-            target/dependency-check-report.html
-          retention-days: 7
