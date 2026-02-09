@@ -57,16 +57,16 @@ class OrdemDeServicoServiceTest {
         ordemDeServicos = OrdemDeServico.builder()
                 .idOrdemServico(1)
                 .valorTotal(500.0)
-                .status(StatusVeiculo.EM_PROGRESSO)
+                .status(StatusVeiculo.EM_PRODUCAO)
                 .nfRealizada(true)
                 .dtSaidaPrevista(LocalDate.now().plusMonths(1))
                 .fk_entrada(registroEntrada)
                 .build();
 
-        postEntradaVeiculo = new PostEntradaVeiculo(StatusVeiculo.EM_PROGRESSO, 500.0, 1);
+        postEntradaVeiculo = new PostEntradaVeiculo(StatusVeiculo.EM_PRODUCAO, 500.0, 1);
         requestPutValorESaida = new RequestPutValorESaida(1, 750.0, LocalDate.now().plusWeeks(5), 1);
         requestPatchSaidaEfetiva = new RequestPatchSaidaEfetiva(1, 1, LocalDate.now().plusWeeks(6));
-        requestPatchStatus = new RequestPatchStatus(1, StatusVeiculo.CONCLUIDA, 1);
+        requestPatchStatus = new RequestPatchStatus(1, StatusVeiculo.FINALIZADO, 1);
         requestPatchSeguradora = new RequestPatchSeguradora(1, 1, true);
         requestPatchNfRealizada = new RequestPatchNfRealizada(1, 1, true);
         requestPatchPagtoRealizado = new RequestPatchPagtoRealizado(1, 1, true);
