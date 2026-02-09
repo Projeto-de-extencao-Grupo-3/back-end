@@ -5,24 +5,20 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-    # Garante que o build rode em tipos específicos de eventos de PR
     types: [opened, synchronize, reopened]
-
-  # Permite disparar manualmente pela aba Actions do GitHub
   workflow_dispatch:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # Adicionando permissões mínimas de segurança
     permissions:
       contents: read
       security-events: write
 
     env:
       SERVER_PORT: 8080
-      DB_HOST: 127.0.0.1 # Mudança de localhost para 127.0.0.1 costuma ser mais estável em containers
+      DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_NAME: grotrack
       DB_USERNAME: root
@@ -47,6 +43,8 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Importante para o SonarQube analisar o histórico de commits
 
       - name: Configurar JDK 21
         uses: actions/setup-java@v4
@@ -55,14 +53,20 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Executar Build e Testes com Maven
-        # clean verify roda testes unitários e de integração
+      - name: Dependency Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: mvn org.owasp:dependency-check-maven:check -DnvdApiKey=$NVD_API_KEY
+
+      - name: Executar Build e Testes com Maven (JaCoCo)
+        # O verify garante que o JaCoCo gere o relatório xml antes do Sonar rodar
         run: mvn clean verify -DskipTests=false
 
       - name: Executar SonarQube Scan
+        if: always() # Garante que o scan rode mesmo se um teste falhar
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Gerado automaticamente pelo GitHub
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # O secret que você criou
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
           mvn sonar:sonar 
           -Dsonar.projectKey=seu_project_key_aqui 
@@ -70,10 +74,9 @@ jobs:
           -Dsonar.host.url=https://sonarcloud.io
 
       - name: Upload do Relatório de Cobertura JaCoCo
-        # O 'if: always()' garante que o relatório suba mesmo se os testes falharem
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco/
-          retention-days: 7 # Opcional: limpa o storage do GitHub após uma semana
+          retention-days: 7
