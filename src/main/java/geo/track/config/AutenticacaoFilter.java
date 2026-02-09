@@ -2,6 +2,7 @@ package geo.track.config;
 
 import geo.track.service.AutenticacaoService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,18 +38,27 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
 
         String requestTokenHeader = request.getHeader("Authorization");
 
+
         if (Objects.nonNull(requestTokenHeader) && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7);
+            jwtToken = requestTokenHeader.substring(7).trim();
 
             try {
                 username = jwtTokenManager.getUsernameFromToken(jwtToken);
+                if (username != null) {
+                    username = username.toLowerCase();
+                }
             } catch (ExpiredJwtException exception) {
-
                 LOGGER.info("[FALHA AUTENTICACAO] - Token expirado, usuario: {} - {}",
                         exception.getClaims().getSubject(), exception.getMessage());
-
                 LOGGER.trace("[FALHA AUTENTICACAO] - stack trace: %s", exception);
-
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            } catch (JwtException exception) {
+                LOGGER.warn("[FALHA AUTENTICACAO] - Token inválido: {}", exception.getMessage());
+                LOGGER.trace("[FALHA AUTENTICACAO] - stack trace: %s", exception);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            } catch (Exception exception) {
+                LOGGER.error("[FALHA AUTENTICACAO] - Erro ao processar token: {}", exception.getMessage());
+                LOGGER.trace("[FALHA AUTENTICACAO] - stack trace: %s", exception);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
 
@@ -56,24 +66,31 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             addUsernameInContext(request, username, jwtToken);
+        } else {
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void addUsernameInContext(HttpServletRequest request, String username, String jwtToken) {
+    private void addUsernameInContext(HttpServletRequest request, String email, String jwtToken) {
+        try {
+            UserDetails userDetails = autenticacaoService.loadUserByUsername(email);
 
-        UserDetails userDetails = autenticacaoService.loadUserByUsername(username);
+            if (jwtTokenManager.validateToken(jwtToken, userDetails)) {
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
 
-        if (jwtTokenManager.validateToken(jwtToken, userDetails)) {
+                usernamePasswordAuthenticationToken
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-
-            usernamePasswordAuthenticationToken
-                    .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                LOGGER.debug("[AUTENTICACAO SUCESSO] - Usuario: {} autenticado com sucesso", email);
+            } else {
+                LOGGER.warn("[FALHA AUTENTICACAO] - Validação do token falhou para usuario: {}", email);
+            }
+        } catch (Exception exception) {
+            LOGGER.error("[FALHA AUTENTICACAO] - Erro ao adicionar usuario no context: {}", exception.getMessage());
+            LOGGER.trace("[FALHA AUTENTICACAO] - stack trace: %s", exception);
         }
     }
 }

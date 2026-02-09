@@ -52,9 +52,8 @@ public class OficinaController {
             @ApiResponse(responseCode = "401", description = "Credenciais inválidas", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PostMapping("/login")
-    public ResponseEntity<UsuarioTokenDto> login(@RequestBody UsuarioLoginDto usuarioLoginDto) {
-        final Oficinas empresa = UsuarioMapper.of(usuarioLoginDto);
-        UsuarioTokenDto usuarioTokenDto = this.oficinaService.autenticar(empresa);
+    public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto) {
+        UsuarioTokenDto usuarioTokenDto = this.oficinaService.autenticar(usuarioLoginDto);
         return ResponseEntity.status(200).body(usuarioTokenDto);
     }
 

@@ -25,6 +25,7 @@ public class AutenticacaoProvider implements AuthenticationProvider {
         final String username = authentication.getName();
         final String password = authentication.getCredentials().toString();
 
+        System.out.println("username auth: "+username);
         UserDetails userDetails = this.usuarioAutorizacaoService.loadUserByUsername(username);
 
         if (this.passwordEncoder.matches(password, userDetails.getPassword())) {

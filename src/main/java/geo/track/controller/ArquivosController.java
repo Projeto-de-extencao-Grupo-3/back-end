@@ -29,8 +29,6 @@ public class ArquivosController {
     public ResponseEntity<byte[]> post(@RequestHeader("authorization") String token, @RequestBody @Valid RequestGetArquivoOrcamento body) {
         OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento());
 
-        System.out.println(token);
-
         byte[] pdfContent = gatewayExportData.getArquivoOrcamento(token, OrdemDeServicoMapper.toResponse(orcamento));
 
         HttpHeaders headers = new HttpHeaders();

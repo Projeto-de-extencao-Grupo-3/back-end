@@ -1,5 +1,6 @@
 package geo.track.dto.autenticacao;
 
+import geo.track.domain.Funcionario;
 import geo.track.domain.Oficinas;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,22 +10,18 @@ import java.util.Collection;
 public class UsuarioDetalhesDto implements UserDetails {
 
     private final String nome;
-
     private final String email;
-
-    private final String cnpj;
-
     private final String senha;
+    private final String cnpj;
+    private final Integer idOficina;
 
-    public UsuarioDetalhesDto(Oficinas beneficiario) {
-        this.nome = beneficiario.getRazaoSocial();
-        this.email = beneficiario.getEmail();
-        this.cnpj = beneficiario.getCnpj();
-        this.senha = beneficiario.getSenha();
-    }
 
-    public String getNome() {
-        return nome;
+    public UsuarioDetalhesDto(Oficinas oficina, Funcionario funcionario) {
+        this.nome = funcionario.getNome();
+        this.email = funcionario.getEmail();
+        this.cnpj = oficina.getCnpj();
+        this.senha = funcionario.getSenha();
+        this.idOficina = oficina.getIdOficina();
     }
 
     @Override
@@ -39,7 +36,7 @@ public class UsuarioDetalhesDto implements UserDetails {
 
     @Override
     public String getUsername() {
-        return cnpj;
+        return email;
     }
 
     @Override

@@ -43,9 +43,6 @@ public class Oficinas {
     @Schema(description = "Status atual da oficina", example = "ATIVO")
     private Boolean status;
 
-    @Schema(description = "Senha de acesso ao sistema (armazenada de forma segura)", example = "••••••••")
-    private String senha;
-
     @OneToMany(mappedBy = "fkOficina")
     @Schema(description = "Lista de funcionários associados à oficina")
     private List<Funcionario> funcionarios;
