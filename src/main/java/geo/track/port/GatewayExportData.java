@@ -5,10 +5,14 @@ import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "export-data", url = "${export.data.url}")
 public interface GatewayExportData {
 
     @PostMapping("/api/pdf/generate")
-    byte[] getData(@Valid @RequestBody OrdemDeServicoResponse body);
+    byte[] getArquivoOrcamento(@RequestHeader("Authorization") String bearerToken, @Valid @RequestBody OrdemDeServicoResponse body);
+
+    @PostMapping("/api/pdf/generate/os")
+    byte[] getArquivoOrdemServico(@RequestHeader("Authorization") String bearerToken, @Valid @RequestBody OrdemDeServicoResponse body);
 }

@@ -1,15 +1,19 @@
 package geo.track.service;
 
 import geo.track.config.GerenciadorTokenJwt;
+import geo.track.domain.Funcionario;
 import geo.track.domain.Oficinas;
+import geo.track.dto.autenticacao.UsuarioLoginDto;
 import geo.track.dto.autenticacao.UsuarioMapper;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OficinaService {
@@ -34,34 +39,33 @@ public class OficinaService {
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
 
     private final AuthenticationManager authenticationManager;
+    private final FuncionarioRepository funcionarioRepository;
 
     public Oficinas cadastrar(Oficinas Oficinas){
         if (repository.findByCnpj(Oficinas.getCnpj()).isPresent()){
             throw new ConflictException("O CNPJ %s já está cadastrado!".formatted(Oficinas.getCnpj()), "Oficinas");
         }
-        String senhaCriptografada = passwordEncoder.encode(Oficinas.getSenha());
-        Oficinas.setSenha(senhaCriptografada);
         return repository.save(Oficinas);
     }
 
-    public UsuarioTokenDto autenticar(Oficinas Oficinas) {
+    public UsuarioTokenDto autenticar(UsuarioLoginDto body) {
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
-                Oficinas.getCnpj(), Oficinas.getSenha());
+                body.getEmail(), body.getSenha());
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        Oficinas usuarioAutenticado =
-                repository.findByCnpj(Oficinas.getCnpj())
+        Funcionario funcionarioAutenticado =
+                funcionarioRepository.findByEmail(body.getEmail())
                         .orElseThrow(
-                                () -> new ResponseStatusException(404, "CNPJ do usuário não cadastrado", null)
+                                () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
                         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        final String token = gerenciadorTokenJwt.generateToken(authentication);
+        final String token = gerenciadorTokenJwt.generateToken(authentication, funcionarioAutenticado);
 
-        return UsuarioMapper.of(usuarioAutenticado, token);
+        return UsuarioMapper.of(funcionarioAutenticado, token);
     }
 
     public List<Oficinas> listar(){

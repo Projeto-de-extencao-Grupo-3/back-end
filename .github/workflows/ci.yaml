@@ -5,23 +5,20 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-    # Garante que o build rode em tipos específicos de eventos de PR
     types: [opened, synchronize, reopened]
-
-  # Permite disparar manualmente pela aba Actions do GitHub
   workflow_dispatch:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # Adicionando permissões mínimas de segurança
     permissions:
       contents: read
+      security-events: write
 
     env:
       SERVER_PORT: 8080
-      DB_HOST: 127.0.0.1 # Mudança de localhost para 127.0.0.1 costuma ser mais estável em containers
+      DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_NAME: grotrack
       DB_USERNAME: root
@@ -46,6 +43,8 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Importante para o SonarQube analisar o histórico de commits
 
       - name: Configurar JDK 21
         uses: actions/setup-java@v4
@@ -54,15 +53,88 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Executar Build e Testes com Maven
-        # clean verify roda testes unitários e de integração
-        run: mvn clean verify
+      - name: Cache de Banco de Dados NVD (Dependency Check)
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: dependency-check-data-${{ runner.os }}
+          restore-keys: |
+            dependency-check-data-${{ runner.os }}
+
+      - name: Dependency Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        continue-on-error: true
+        run: |
+          echo "🔍 Iniciando Dependency Check..."
+          
+          # Definir dados directory para cache
+          export DEPENDENCY_CHECK_HOME="$HOME/.dependency-check"
+          mkdir -p "$DEPENDENCY_CHECK_HOME/data"
+          
+          # Configuração comum
+          COMMON_OPTS="-DskipProvidedScope=true -DskipRuntimeScope=false -DskipTestScope=true -DcacheDirectory=$DEPENDENCY_CHECK_HOME/data"
+          
+          # Tentar com API Key se disponível
+          if [ ! -z "$NVD_API_KEY" ]; then
+            echo "✓ NVD_API_KEY detectada. Tentando com API..."
+            mvn org.owasp:dependency-check-maven:check \
+              -DnvdApiKey=$NVD_API_KEY \
+              $COMMON_OPTS \
+              -DcveUrl12Modified=https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.json \
+              -DcveUrl20Modified=https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-modified.json \
+              -Dretriever=ASYNC && exit 0
+            echo "⚠️  Tentativa com API falhou. Tentando fallback..."
+          fi
+          
+          # Fallback: modo offline com cache
+          echo "📦 Rodando Dependency Check em modo offline..."
+          mvn org.owasp:dependency-check-maven:check \
+            $COMMON_OPTS \
+            -Dformat=JSON \
+            -Dretriever=ASYNC || {
+            echo "⚠️  Dependency Check não conseguiu atualizar banco de dados."
+            echo "    Continuando build (será corrigido quando API Key for configurada)..."
+            exit 0
+          }
+
+      - name: Executar Build e Testes com Maven (JaCoCo)
+        # O verify garante que o JaCoCo gere o relatório xml antes do Sonar rodar
+        run: mvn clean verify -DskipTests=false
+
+      - name: Validar Configuração SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          echo "🔍 Validando configuração SonarQube..."
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "⚠️  SONAR_TOKEN não configurado!"
+            echo "    Por favor, adicione ao GitHub Secrets"
+            exit 1
+          fi
+          echo "✓ SONAR_TOKEN configurado"
+          echo "✓ Organização: grotrack"
+          echo "✓ Projeto: grotrack_back-end"
+
+      - name: Executar SonarQube Scan
+        if: always() # Garante que o scan rode mesmo se um teste falhar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
+        run: >
+          mvn sonar:sonar 
+          -Dsonar.projectKey=grotrack_back-end 
+          -Dsonar.organization=grotrack 
+          -Dsonar.host.url=https://sonarcloud.io 
+          -Dsonar.login=$SONAR_TOKEN 
+          -Dsonar.sources=src/main/java 
+          -Dsonar.tests=src/test/java
 
       - name: Upload do Relatório de Cobertura JaCoCo
-        # O 'if: always()' garante que o relatório suba mesmo se os testes falharem
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco/
-          retention-days: 7 # Opcional: limpa o storage do GitHub após uma semana
+          retention-days: 7

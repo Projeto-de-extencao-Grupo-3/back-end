@@ -1,5 +1,6 @@
 package geo.track.config;
 
+import geo.track.domain.Funcionario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -11,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -23,22 +26,35 @@ public class GerenciadorTokenJwt {
     private long jwtTokenValidity;
 
     public String getUsernameFromToken(String token) {
-        return getClaimForToken(token, Claims::getSubject);
+        String username = getClaimForToken(token, Claims::getSubject);
+        return username;
+    }
+
+    public Integer getIdOficinaFromToken(String token) {
+        return getClaimForToken(token, claims -> claims.get("id_oficina", Integer.class));
     }
 
     public Date getExpirationDateFromToken(String token) {
         return getClaimForToken(token, Claims::getExpiration);
     }
 
-    public String generateToken(final Authentication authentication) {
+    public String generateToken(final Authentication authentication, Funcionario funcionario) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("id_oficina", funcionario.getFkOficina().getIdOficina());
+
 
         // Para verificacoes de permissões;
         final String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        return Jwts.builder().setSubject(authentication.getName())
+        String token = Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(authentication.getName())
                 .signWith(parseSecret()).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1_000)).compact();
+
+
+        return token;
     }
 
     public <T> T getClaimForToken(String token, Function<Claims, T> claimsResolver) {
@@ -48,7 +64,7 @@ public class GerenciadorTokenJwt {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equalsIgnoreCase(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {
@@ -57,13 +73,21 @@ public class GerenciadorTokenJwt {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(parseSecret())
-                .build()
-                .parseClaimsJws(token).getBody();
+        try {
+
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(parseSecret())
+                    .build()
+                    .parseClaimsJws(token.trim()).getBody();
+
+            return claims;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     private SecretKey parseSecret() {
-        return Keys.hmacShaKeyFor(this.secret.getBytes(StandardCharsets.UTF_8));
+        SecretKey key = Keys.hmacShaKeyFor(this.secret.trim().getBytes(StandardCharsets.UTF_8));
+        return key;
     }
 }

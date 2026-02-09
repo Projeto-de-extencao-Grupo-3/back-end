@@ -35,6 +35,12 @@ public class Funcionario {
     @Schema(description = "Telefone do funcionário", example = "4002-8922")
     private String telefone;
 
+    @Schema(description = "Email de contato da oficina", example = "contato@autocenter.com")
+    private String email;
+
+    @Schema(description = "Senha de acesso ao sistema (armazenada de forma segura)", example = "••••••••")
+    private String senha;
+
     @ManyToOne
     @JoinColumn(name = "fk_oficina")
     private Oficinas fkOficina;

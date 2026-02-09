@@ -1,5 +1,6 @@
 package geo.track.controller;
 
+import geo.track.config.GerenciadorTokenJwt;
 import geo.track.domain.OrdemDeServico;
 import geo.track.dto.os.request.*;
 import geo.track.dto.os.response.OrdemDeServicoResponse;
@@ -27,6 +28,7 @@ import java.util.List;
 @SecurityRequirement(name = "Bearer")
 public class OrdemDeServicoController {
     private final OrdemDeServicoService ordemService;
+    private final GerenciadorTokenJwt gerenciadorToken;
 
     @Operation(summary = "Cadastrar nova Ordem de Serviço")
     @ApiResponses(value = {
@@ -68,7 +70,10 @@ public class OrdemDeServicoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @GetMapping("/{idOrdem}")
-    public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem){
+    public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @RequestHeader("Authorization") String token){
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+        System.out.println("id do usuario que ta consultando:" + gerenciadorToken.getIdOficinaFromToken(jwtToken));
+
         OrdemDeServico ordem = ordemService.findOrdemById(idOrdem);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }

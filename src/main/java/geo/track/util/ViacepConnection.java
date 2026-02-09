@@ -16,7 +16,6 @@ public class ViacepConnection {
 
         RequestViacep viacep = res.getBody();
 
-        System.out.println(viacep);
 
         if (viacep.getErro() != null) {
             throw new DataNotFoundException("CEP: %s não foi encontrado".formatted(cep), "Endereços");
