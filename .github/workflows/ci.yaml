@@ -70,7 +70,7 @@ jobs:
         run: >
           mvn sonar:sonar 
           -Dsonar.projectKey=grotrack 
-          -Dsonar.organization=GROTRACK 
+          -Dsonar.organization=grotrack 
           -Dsonar.host.url=https://sonarcloud.io
 
       - name: Upload do Relatório de Cobertura JaCoCo
