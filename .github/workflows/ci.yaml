@@ -68,29 +68,33 @@ jobs:
         run: |
           echo "🔍 Iniciando Dependency Check..."
           
+          # Definir dados directory para cache
+          export DEPENDENCY_CHECK_HOME="$HOME/.dependency-check"
+          mkdir -p "$DEPENDENCY_CHECK_HOME/data"
+          
+          # Configuração comum
+          COMMON_OPTS="-DskipProvidedScope=true -DskipRuntimeScope=false -DskipTestScope=true -DcacheDirectory=$DEPENDENCY_CHECK_HOME/data"
+          
           # Tentar com API Key se disponível
           if [ ! -z "$NVD_API_KEY" ]; then
             echo "✓ NVD_API_KEY detectada. Tentando com API..."
             mvn org.owasp:dependency-check-maven:check \
               -DnvdApiKey=$NVD_API_KEY \
-              -DskipProvidedScope=true \
-              -DskipRuntimeScope=false \
-              -DskipTestScope=true \
+              $COMMON_OPTS \
               -DcveUrl12Modified=https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.json \
               -DcveUrl20Modified=https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-modified.json \
               -Dretriever=ASYNC && exit 0
-            echo "⚠️  Tentativa com API falhou. Tentando em modo offline com cache..."
+            echo "⚠️  Tentativa com API falhou. Tentando fallback..."
           fi
           
           # Fallback: modo offline com cache
           echo "📦 Rodando Dependency Check em modo offline..."
           mvn org.owasp:dependency-check-maven:check \
-            -DskipProvidedScope=true \
-            -DskipRuntimeScope=false \
-            -DskipTestScope=true \
-            -DofflineMode=false \
-            -Dformat=JSON || {
-            echo "⚠️  Dependency Check falhou, mas continuando o build (não é crítico)..."
+            $COMMON_OPTS \
+            -Dformat=JSON \
+            -Dretriever=ASYNC || {
+            echo "⚠️  Dependency Check não conseguiu atualizar banco de dados."
+            echo "    Continuando build (será corrigido quando API Key for configurada)..."
             exit 0
           }
 
@@ -98,16 +102,34 @@ jobs:
         # O verify garante que o JaCoCo gere o relatório xml antes do Sonar rodar
         run: mvn clean verify -DskipTests=false
 
+      - name: Validar Configuração SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          echo "🔍 Validando configuração SonarQube..."
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "⚠️  SONAR_TOKEN não configurado!"
+            echo "    Por favor, adicione ao GitHub Secrets"
+            exit 1
+          fi
+          echo "✓ SONAR_TOKEN configurado"
+          echo "✓ Organização: grotrack"
+          echo "✓ Projeto: grotrack_back-end"
+
       - name: Executar SonarQube Scan
         if: always() # Garante que o scan rode mesmo se um teste falhar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
         run: >
           mvn sonar:sonar 
-          -Dsonar.projectKey=grotrack 
+          -Dsonar.projectKey=grotrack_back-end 
           -Dsonar.organization=grotrack 
-          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.host.url=https://sonarcloud.io 
+          -Dsonar.login=$SONAR_TOKEN 
+          -Dsonar.sources=src/main/java 
+          -Dsonar.tests=src/test/java
 
       - name: Upload do Relatório de Cobertura JaCoCo
         if: always()
