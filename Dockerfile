@@ -12,7 +12,7 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 
 # Empacota o projeto (gera o jar)
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 # Etapa 2: imagem final, leve, apenas para rodar o jar
 FROM eclipse-temurin:21-jre
