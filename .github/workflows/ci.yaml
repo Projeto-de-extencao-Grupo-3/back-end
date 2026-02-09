@@ -60,12 +60,14 @@ jobs:
         run: mvn clean verify -DskipTests=false
 
       - name: Executar SonarQube Scan
-        if: always()
         env:
-          SONAR_HOST_URL: https://sonarcloud.io
-          SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn sonar:sonar -Dsonar.projectKey=grotrack-backend -Dsonar.organization=seu-org -Dsonar.sources=src
-        continue-on-error: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Gerado automaticamente pelo GitHub
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # O secret que você criou
+        run: >
+          mvn sonar:sonar 
+          -Dsonar.projectKey=seu_project_key_aqui 
+          -Dsonar.organization=sua_org_aqui 
+          -Dsonar.host.url=https://sonarcloud.io
 
       - name: Upload do Relatório de Cobertura JaCoCo
         # O 'if: always()' garante que o relatório suba mesmo se os testes falharem
