@@ -20,7 +20,6 @@ class OficinasTest {
         oficina.setEmail("contato@autocenter.com");
         oficina.setDtCriacao(agora);
         oficina.setStatus(true);
-        oficina.setSenha("123456");
 
         Assertions.assertEquals(1, oficina.getIdOficina());
         Assertions.assertEquals("Auto Center São Lucas LTDA", oficina.getRazaoSocial());
@@ -28,7 +27,6 @@ class OficinasTest {
         Assertions.assertEquals("contato@autocenter.com", oficina.getEmail());
         Assertions.assertEquals(agora, oficina.getDtCriacao());
         Assertions.assertEquals(true, oficina.getStatus());
-        Assertions.assertEquals("123456", oficina.getSenha());
     }
 
     @Test
@@ -42,7 +40,6 @@ class OficinasTest {
                 "teste@oficina.com",
                 dataCriacao,
                 false,
-                "senhaSegura",
                 List.of(),
                 List.of()
         );
@@ -53,7 +50,6 @@ class OficinasTest {
         Assertions.assertEquals("teste@oficina.com", oficina.getEmail());
         Assertions.assertEquals(dataCriacao, oficina.getDtCriacao());
         Assertions.assertEquals(false, oficina.getStatus());
-        Assertions.assertEquals("senhaSegura", oficina.getSenha());
         Assertions.assertEquals(List.of(), oficina.getFuncionarios());
         Assertions.assertEquals(List.of(), oficina.getClientes());
     }

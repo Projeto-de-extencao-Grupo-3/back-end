@@ -72,7 +72,6 @@ public class OrdemDeServicoController {
     @GetMapping("/{idOrdem}")
     public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @RequestHeader("Authorization") String token){
         String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
-        System.out.println("id do usuario que ta consultando:" + gerenciadorToken.getIdOficinaFromToken(jwtToken));
 
         OrdemDeServico ordem = ordemService.findOrdemById(idOrdem);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));

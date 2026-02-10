@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,12 +29,17 @@ class FuncionarioServiceTest {
 
     private Funcionario funcionario;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     void setUp() {
         funcionario = new Funcionario();
         funcionario.setIdFuncionario(1);
         funcionario.setNome("João da Silva Santos");
         funcionario.setCargo("Mecânico");
+        funcionario.setSenha("123456");
+        funcionario.setEmail("joao@gameplay.com");
         funcionario.setTelefone("11987654321");
     }
 
@@ -41,28 +47,29 @@ class FuncionarioServiceTest {
     @Test
     @DisplayName("cadastrar: Deve cadastrar um funcionário com sucesso")
     void deveCadastrarFuncionarioComSucesso() {
-        when(repository.existsByNome(funcionario.getNome())).thenReturn(false);
+        when(repository.existsByEmail(funcionario.getEmail())).thenReturn(false);
         when(repository.save(any(Funcionario.class))).thenReturn(funcionario);
 
         Funcionario resultado = service.cadastrar(funcionario);
 
         assertNotNull(resultado);
         assertEquals(funcionario.getNome(), resultado.getNome());
-        verify(repository).existsByNome(funcionario.getNome());
+        verify(repository).existsByEmail(funcionario.getEmail());
+        verify(passwordEncoder).encode("123456");
         verify(repository).save(any(Funcionario.class));
     }
 
     @Test
     @DisplayName("cadastrar: Deve lançar ConflictException ao tentar cadastrar nome duplicado")
     void deveLancarConflictExceptionAoCadastrarNomeDuplicado() {
-        when(repository.existsByNome(funcionario.getNome())).thenReturn(true);
+        when(repository.existsByEmail(funcionario.getEmail())).thenReturn(true);
 
         ConflictException exception = assertThrows(ConflictException.class, () -> {
             service.cadastrar(funcionario);
         });
 
-        assertEquals("Nome já existe", exception.getMessage());
-        verify(repository).existsByNome(funcionario.getNome());
+        assertEquals("Funcionário já existente com este email!", exception.getMessage());
+        verify(repository).existsByEmail(funcionario.getEmail());
         verify(repository, never()).save(any(Funcionario.class));
     }
 
@@ -90,7 +97,7 @@ class FuncionarioServiceTest {
             service.buscarPorId(99);
         });
 
-        assertEquals("Funcionario Não encontrado", exception.getMessage());
+        assertEquals("Funcionario não encontrado", exception.getMessage());
         verify(repository).existsByIdFuncionario(99);
         verify(repository, never()).getByIdFuncionario(anyInt());
     }

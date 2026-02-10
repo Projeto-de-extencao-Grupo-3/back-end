@@ -5,6 +5,7 @@ import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +14,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FuncionarioService {
     private final FuncionarioRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public Funcionario cadastrar(Funcionario funcionarios){
-        if (repository.existsByNome(funcionarios.getNome())){
-            throw new ConflictException("Nome já existe","Funcionario");
+
+    public Funcionario cadastrar(Funcionario body){
+        if (repository.existsByEmail(body.getEmail())){
+            throw new ConflictException("Funcionário já existente com este email!","Funcionario");
         }
-        return repository.save(funcionarios);
+
+        body.setSenha(passwordEncoder.encode(body.getSenha()));
+        return repository.save(body);
     }
 
     public List<Funcionario> buscarPorOficina(Integer idOficina) {
@@ -27,7 +32,7 @@ public class FuncionarioService {
 
     public Funcionario buscarPorId(Integer id){
         if (!repository.existsByIdFuncionario(id)){
-            throw new DataNotFoundException("Funcionario Não encontrado","Funcionario");
+            throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
         }
         return repository.getByIdFuncionario(id);
     }
