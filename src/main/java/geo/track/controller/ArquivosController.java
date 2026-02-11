@@ -1,12 +1,12 @@
 package geo.track.controller;
 
+import geo.track.controller.swagger.ArquivosSwagger;
 import geo.track.domain.OrdemDeServico;
 import geo.track.dto.arquivos.RequestGetArquivoOrcamento;
 import geo.track.exception.BadRequestException;
 import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.port.GatewayExportData;
 import geo.track.service.OrdemDeServicoService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -20,11 +20,11 @@ import java.time.LocalDate;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/arquivos")
-@SecurityRequirement(name = "Bearer")
-public class ArquivosController {
+public class ArquivosController implements ArquivosSwagger {
     private final GatewayExportData gatewayExportData;
     private final OrdemDeServicoService ordemServicoService;
 
+    @Override
     @PostMapping("/orcamento")
     public ResponseEntity<byte[]> post(@RequestHeader("authorization") String token, @RequestBody @Valid RequestGetArquivoOrcamento body) {
         OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento());
@@ -47,6 +47,7 @@ public class ArquivosController {
                 .body(pdfContent);
     }
 
+    @Override
     @PostMapping("/ordem_servico")
     public ResponseEntity<byte[]> posta(@RequestHeader("authorization") String token,@RequestBody @Valid RequestGetArquivoOrcamento body) {
         OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento());
@@ -72,4 +73,3 @@ public class ArquivosController {
                 .body(pdfContent);
     }
 }
-
