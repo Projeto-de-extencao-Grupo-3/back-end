@@ -1,5 +1,6 @@
 package geo.track.controller.swagger;
 
+import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.os.request.*;
 import geo.track.dto.os.response.OrdemDeServicoResponse;
 import geo.track.exception.ExceptionBody;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,7 +53,7 @@ public interface OrdemDeServicoSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @GetMapping("/{idOrdem}")
-    ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @RequestHeader("Authorization") String token);
+    ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated);
 
     @Operation(summary = "Atualizar valor e data de saída da ordem de serviço")
     @ApiResponses(value = {

@@ -22,15 +22,15 @@ public class OrdemDeServico {
     @Schema(description = "Identificador único da ordem de serviço", example = "101")
     private Integer idOrdemServico;
 
-    @NotNull
-    @Schema(description = "Valor total da ordem de serviço", example = "850.00")
-    private Double valorTotal;
+//    @NotNull
+//    @Schema(description = "Valor total da ordem de serviço", example = "850.00")
+//    private Double valorTotal;
 
     @Schema(description = "Data prevista de saída do veículo", example = "2025-11-05")
-    private LocalDate dtSaidaPrevista;
+    private LocalDate dataSaidaPrevista;
 
     @Schema(description = "Data efetiva de saída do veículo", example = "2025-11-06")
-    private LocalDate dtSaidaEfetiva;
+    private LocalDate dataSaidaEfetiva;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -49,7 +49,7 @@ public class OrdemDeServico {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_entrada")
     @Schema(description = "Registro de entrada relacionado á ordem de serviço.")
-    private RegistroEntrada fk_entrada;
+    private RegistroEntrada fkEntrada;
 
     @OneToMany(mappedBy = "fkOrdemServico")
     @Schema(description = "Lista de produtos associados à ordem de serviço")
@@ -62,30 +62,28 @@ public class OrdemDeServico {
     @Schema(description = "Lista de serviços associados à ordem de serviço")
     private List<ItemServico> servicos;
 
-    public OrdemDeServico(Integer idOrdemServico, Double valorTotal, LocalDate dtSaidaPrevista, LocalDate dtSaidaEfetiva, StatusVeiculo status, Boolean seguradora, Boolean nfRealizada, Boolean pagtRealizado, RegistroEntrada fk_entrada, List<ItemProduto> produtos, List<ItemServico> servicos) {
+    public OrdemDeServico(Integer idOrdemServico, Double valorTotal, LocalDate dataSaidaPrevista, LocalDate dataSaidaEfetiva, StatusVeiculo status, Boolean seguradora, Boolean nfRealizada, Boolean pagtRealizado, RegistroEntrada fkEntrada, List<ItemProduto> produtos, List<ItemServico> servicos) {
         this.idOrdemServico = idOrdemServico;
-        this.valorTotal = valorTotal;
-        this.dtSaidaPrevista = dtSaidaPrevista;
-        this.dtSaidaEfetiva = dtSaidaEfetiva;
+        this.dataSaidaPrevista = dataSaidaPrevista;
+        this.dataSaidaEfetiva = dataSaidaEfetiva;
         this.status = status;
         this.seguradora = seguradora;
         this.nfRealizada = nfRealizada;
         this.pagtRealizado = pagtRealizado;
-        this.fk_entrada = fk_entrada;
+        this.fkEntrada = fkEntrada;
         this.produtos = produtos;
         this.servicos = servicos;
     }
 
     private OrdemDeServico(Builder builder) {
         this.idOrdemServico = builder.idOrdemServico;
-        this.valorTotal = builder.valorTotal;
-        this.dtSaidaPrevista = builder.dtSaidaPrevista;
-        this.dtSaidaEfetiva = builder.dtSaidaEfetiva;
+        this.dataSaidaPrevista = builder.dtSaidaPrevista;
+        this.dataSaidaEfetiva = builder.dtSaidaEfetiva;
         this.status = builder.status;
         this.seguradora = builder.seguradora;
         this.nfRealizada = builder.nfRealizada;
         this.pagtRealizado = builder.pagtRealizado;
-        this.fk_entrada = builder.fk_entrada;
+        this.fkEntrada = builder.fkEntrada;
         this.produtos = builder.produtos;
         this.servicos = builder.servicos;
     }
@@ -105,7 +103,7 @@ public class OrdemDeServico {
         private Boolean nfRealizada;
         private Boolean pagtRealizado;
         private Boolean ativo;
-        private RegistroEntrada fk_entrada;
+        private RegistroEntrada fkEntrada;
         private List<ItemProduto> produtos;
         private List<ItemServico> servicos;
 
@@ -154,8 +152,8 @@ public class OrdemDeServico {
             return this;
         }
 
-        public Builder fk_entrada(RegistroEntrada fk_entrada) {
-            this.fk_entrada = fk_entrada;
+        public Builder fkEntrada(RegistroEntrada fkEntrada) {
+            this.fkEntrada = fkEntrada;
             return this;
         }
 

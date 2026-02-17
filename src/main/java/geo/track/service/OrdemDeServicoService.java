@@ -4,6 +4,10 @@ import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
 import geo.track.domain.RegistroEntrada;
 import geo.track.dto.os.request.*;
+import geo.track.dto.os.response.ResponseViewNotaFiscal;
+import geo.track.dto.os.response.ResponseViewPagtoPendente;
+import geo.track.dto.os.response.ResponseViewPagtoRealizado;
+import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
@@ -31,7 +35,6 @@ public class OrdemDeServicoService {
         LocalDate dataPrevista = LocalDate.now().plusMonths(1);
 
         OrdemDeServico ordem = OrdemDeServico.builder()
-                .valorTotal(ordemDTO.getValorTotal())
                 .status(ordemDTO.getStatus())
                 .dtSaidaPrevista(dataPrevista)
                 .dtSaidaEfetiva(null)
@@ -39,7 +42,7 @@ public class OrdemDeServicoService {
                 .nfRealizada(false)
                 .pagtRealizado(false)
                 .ativo(true)
-                .fk_entrada(entrada)
+                .fkEntrada(entrada)
                 .build();
 
         return ordemRepository.save(ordem);
@@ -67,8 +70,7 @@ public class OrdemDeServicoService {
 
         OrdemDeServico ordem = ordemOPT.get();
 
-        ordem.setValorTotal(ordemDTO.getValorTotal());
-        ordem.setDtSaidaPrevista(ordemDTO.getSaidaPrevista());
+        ordem.setDataSaidaPrevista(ordemDTO.getSaidaPrevista());
 
         return ordemRepository.save(ordem);
     }
@@ -82,7 +84,7 @@ public class OrdemDeServicoService {
         
         OrdemDeServico ordem = ordemOPT.get();
         
-        ordem.setDtSaidaEfetiva(ordemDTO.getDtSaidaEfeiva());
+        ordem.setDataSaidaEfetiva(ordemDTO.getDtSaidaEfeiva());
         
         return ordemRepository.save(ordem);
     }
@@ -150,7 +152,7 @@ public class OrdemDeServicoService {
         }
 
         OrdemDeServico ordem = ordemOPT.get();
-        RegistroEntrada entrada = ordem.getFk_entrada();
+        RegistroEntrada entrada = ordem.getFkEntrada();
 
         List<ItemServico> servicos = itemServicoService.listarPelaOrdemServico(ordem);
 
@@ -164,6 +166,36 @@ public class OrdemDeServicoService {
 
         // verificar se tem serviços atrelado
         ordemRepository.delete(ordem);
+    }
+
+    public List<OrdemDeServico> findOrdemByPlaca(String placa) {
+        return ordemRepository.findByPlaca(placa);
+    }
+
+    public List<OrdemDeServico> findOrdemByStatus(StatusVeiculo status) {
+        return ordemRepository.findByStatus(status);
+    }
+
+    public List<OrdemDeServico> findOrdemByStatusUltimos30Dias() {
+        LocalDate dataLimite = LocalDate.now().minusDays(30L);
+        return ordemRepository.findByStatusUltimos30Dias(dataLimite);
+    }
+
+    public Boolean existsOrdemByRegistroEntrada(Integer idRegistroEtrada) {
+        RegistroEntrada entrada = registroEntradaService.findRegistroById(idRegistroEtrada);
+        return ordemRepository.existsByFkEntrada(entrada);
+    }
+
+    public ResponseViewNotaFiscal findKpiNotaFiscal(Integer idOrdem) {
+        return ordemRepository.findViewNotasFicaisPendentes(idOrdem);
+    }
+
+    public ResponseViewPagtoRealizado findKpiPagamentoRealizado(Integer idOrdem) {
+        return ordemRepository.findViewPagamentoRealizados(idOrdem);
+    }
+
+    public ResponseViewPagtoPendente findKpiPagamentoPendente(Integer idOrdem) {
+        return ordemRepository.findViewPagamentoPendente(idOrdem);
     }
 }
 
