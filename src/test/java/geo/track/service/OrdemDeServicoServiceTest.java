@@ -60,7 +60,7 @@ class OrdemDeServicoServiceTest {
                 .status(StatusVeiculo.EM_PRODUCAO)
                 .nfRealizada(true)
                 .dtSaidaPrevista(LocalDate.now().plusMonths(1))
-                .fk_entrada(registroEntrada)
+                .fkEntrada(registroEntrada)
                 .build();
 
         postEntradaVeiculo = new PostEntradaVeiculo(StatusVeiculo.EM_PRODUCAO, 500.0, 1);
@@ -117,7 +117,7 @@ class OrdemDeServicoServiceTest {
         OrdemDeServico resultado = service.putValorESaida(requestPutValorESaida);
 
         assertEquals(requestPutValorESaida.getValorTotal(), resultado.getValorTotal());
-        assertEquals(requestPutValorESaida.getSaidaPrevista(), resultado.getDtSaidaPrevista());
+        assertEquals(requestPutValorESaida.getSaidaPrevista(), resultado.getDataSaidaPrevista());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
@@ -129,7 +129,7 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(inv -> inv.getArgument(0));
         OrdemDeServico resultado = service.patchSaidaEfetiva(requestPatchSaidaEfetiva);
-        assertEquals(requestPatchSaidaEfetiva.getDtSaidaEfeiva(), resultado.getDtSaidaEfetiva());
+        assertEquals(requestPatchSaidaEfetiva.getDtSaidaEfeiva(), resultado.getDataSaidaEfetiva());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
