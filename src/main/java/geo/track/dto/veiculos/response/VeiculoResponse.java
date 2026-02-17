@@ -8,5 +8,4 @@ public class VeiculoResponse {
     private String placa;
     private String modelo;
     private Integer anoModelo;
-    private Integer idCliente;
 }

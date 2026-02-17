@@ -18,10 +18,6 @@ public class VeiculoMapper {
         response.setModelo(entity.getModelo());
         response.setAnoModelo(entity.getAnoModelo());
 
-        if (entity.getFkCliente() != null) {
-            response.setIdCliente(entity.getFkCliente().getIdCliente());
-        }
-
         return response;
     }
 
