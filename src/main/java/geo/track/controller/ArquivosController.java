@@ -35,12 +35,12 @@ public class ArquivosController implements ArquivosSwagger {
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         StringBuilder nome = new StringBuilder();
-        String[] nomeCompleto = orcamento.getFk_entrada().getFkVeiculo().getFkCliente().getNome().toUpperCase().split(" ");
+        String[] nomeCompleto = orcamento.getFkEntrada().getFkVeiculo().getFkCliente().getNome().toUpperCase().split(" ");
         for (String palavra : nomeCompleto) {
             nome.append(String.format("%s_", palavra));
         }
         DecimalFormat df = new DecimalFormat("0000");
-        headers.setContentDispositionFormData("attachment", String.format("ORC%s_%s%s.pdf", df.format(orcamento.getIdOrdemServico()), nome, orcamento.getFk_entrada().getFkVeiculo().getPlaca()));
+        headers.setContentDispositionFormData("attachment", String.format("ORC%s_%s%s.pdf", df.format(orcamento.getIdOrdemServico()), nome, orcamento.getFkEntrada().getFkVeiculo().getPlaca()));
 
         return ResponseEntity.ok()
                 .headers(headers)
@@ -53,7 +53,7 @@ public class ArquivosController implements ArquivosSwagger {
         OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento());
 
         if (orcamento.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", "Ordem de Serviço");
-        if (orcamento.getDtSaidaEfetiva() == null) orcamento.setDtSaidaEfetiva(LocalDate.now());
+        if (orcamento.getDataSaidaEfetiva() == null) orcamento.setDataSaidaEfetiva(LocalDate.now());
 
         byte[] pdfContent = gatewayExportData.getArquivoOrdemServico(token, OrdemDeServicoMapper.toResponse(orcamento));
 
@@ -61,12 +61,12 @@ public class ArquivosController implements ArquivosSwagger {
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         StringBuilder nome = new StringBuilder();
-        String[] nomeCompleto = orcamento.getFk_entrada().getFkVeiculo().getFkCliente().getNome().toUpperCase().split(" ");
+        String[] nomeCompleto = orcamento.getFkEntrada().getFkVeiculo().getFkCliente().getNome().toUpperCase().split(" ");
         for (String palavra : nomeCompleto) {
             nome.append(String.format("%s_", palavra));
         }
         DecimalFormat df = new DecimalFormat("0000");
-        headers.setContentDispositionFormData("attachment", String.format("OS%s_%s%s.pdf", df.format(orcamento.getIdOrdemServico()), nome, orcamento.getFk_entrada().getFkVeiculo().getPlaca()));
+        headers.setContentDispositionFormData("attachment", String.format("OS%s_%s%s.pdf", df.format(orcamento.getIdOrdemServico()), nome, orcamento.getFkEntrada().getFkVeiculo().getPlaca()));
 
         return ResponseEntity.ok()
                 .headers(headers)
