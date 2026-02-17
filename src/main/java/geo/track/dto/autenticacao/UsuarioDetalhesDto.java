@@ -15,6 +15,9 @@ public class UsuarioDetalhesDto implements UserDetails {
     private final String cnpj;
     private final Integer idOficina;
 
+    public Integer getIdOficina() {
+        return idOficina;
+    }
 
     public UsuarioDetalhesDto(Oficinas oficina, Funcionario funcionario) {
         this.nome = funcionario.getNome();

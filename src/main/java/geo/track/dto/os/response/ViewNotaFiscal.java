@@ -1,6 +1,6 @@
 package geo.track.dto.os.response;
 
-public record ResponseViewNotaFiscal(
+public record ViewNotaFiscal(
         Long quantidadeNfsPendentes
 ) {
 }

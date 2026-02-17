@@ -25,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     private final OrdemDeServicoService ordemService;
-    private final GerenciadorTokenJwt gerenciadorToken;
 
     @Override
     @PostMapping
@@ -82,17 +81,6 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordens));
     }
 
-    @GetMapping("/servicos-produtos/{idOrdem}")
-    public ResponseEntity<ServicoProdutoOrdemResponse> findById(@PathVariable Integer idOrdem) {
-        OrdemDeServico ordem = ordemService.findOrdemById(idOrdem);
-
-        if (ordem.getServicos().isEmpty() && ordem.getProdutos().isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toServicoProdutoResponse(ordem));
-    }
-
     @Override
     @GetMapping("/{idOrdem}")
     public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated) {
@@ -100,23 +88,6 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 
         OrdemDeServico ordem = ordemService.findOrdemById(idOrdem);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
-    }
-
-
-
-
-    @GetMapping("/analise-financeira/{idOrdem}")
-    public ResponseEntity<HashMap<String, Object>> findOrdemByIdAnaliseFinanceira(@PathVariable Integer idOrdem) {
-        ResponseViewNotaFiscal kpiNotaFiscal = ordemService.findKpiNotaFiscal(idOrdem);
-        ResponseViewPagtoRealizado kpiPagamentoRealizado = ordemService.findKpiPagamentoRealizado(idOrdem);
-        ResponseViewPagtoPendente kpiPagamentoPendente = ordemService.findKpiPagamentoPendente(idOrdem);
-
-        HashMap<String, Object> returnObj = new HashMap<>();
-        returnObj.put("kpi_servicos_nota_fiscal_pendente", kpiNotaFiscal);
-        returnObj.put("kpi_servicos_pagamento_realizado", kpiPagamentoRealizado);
-        returnObj.put("kpi_servicos_a_receber", kpiPagamentoPendente);
-
-        return ResponseEntity.status(200).body(returnObj);
     }
 
     @Override

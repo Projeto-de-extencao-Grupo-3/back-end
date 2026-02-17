@@ -4,13 +4,12 @@ import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
 import geo.track.domain.RegistroEntrada;
 import geo.track.dto.os.request.*;
-import geo.track.dto.os.response.ResponseViewNotaFiscal;
-import geo.track.dto.os.response.ResponseViewPagtoPendente;
-import geo.track.dto.os.response.ResponseViewPagtoRealizado;
+import geo.track.dto.os.response.*;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
+import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.repository.OrdemDeServicoRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -186,16 +185,31 @@ public class OrdemDeServicoService {
         return ordemRepository.existsByFkEntrada(entrada);
     }
 
-    public ResponseViewNotaFiscal findKpiNotaFiscal(Integer idOrdem) {
-        return ordemRepository.findViewNotasFicaisPendentes(idOrdem);
+    public ViewNotaFiscal findKpiNotaFiscal(Integer idOrdem) {
+        ViewNotaFiscal viewNotasFicaisPendentes = ordemRepository.findViewNotasFicaisPendentes(idOrdem);
+        if (viewNotasFicaisPendentes == null) {
+            return new ViewNotaFiscal(0L);
+        }
+        return viewNotasFicaisPendentes;
     }
 
-    public ResponseViewPagtoRealizado findKpiPagamentoRealizado(Integer idOrdem) {
-        return ordemRepository.findViewPagamentoRealizados(idOrdem);
+    public ViewPagtoRealizado findKpiPagamentoRealizado(Integer idOrdem) {
+        ViewPagtoRealizado viewPagamentoRealizados = ordemRepository.findViewPagamentoRealizados(idOrdem);
+        if (viewPagamentoRealizados == null) {
+            return new ViewPagtoRealizado(0L);
+        }
+        return viewPagamentoRealizados;
     }
 
-    public ResponseViewPagtoPendente findKpiPagamentoPendente(Integer idOrdem) {
-        return ordemRepository.findViewPagamentoPendente(idOrdem);
+    public ViewPagtoPendente findKpiPagamentoPendente(Integer idOrdem) {
+        ViewPagtoPendente viewPagamentoPendente = ordemRepository.findViewPagamentoPendente(idOrdem);
+        if (viewPagamentoPendente == null) {
+            return new ViewPagtoPendente(0.0, 0L);
+        }
+        return viewPagamentoPendente;
+    }
+
+    public List<OrdemDeServicoResponse> findOrdemByNfRealizadaAndPagtRealizado(Boolean nfRealizada, Boolean pagtRealizado, Integer idOficina) {
+        return OrdemDeServicoMapper.toResponse(ordemRepository.findByNfRealizadaAndPagtRealizadoAndIdOficina(nfRealizada, pagtRealizado, idOficina));
     }
 }
-
