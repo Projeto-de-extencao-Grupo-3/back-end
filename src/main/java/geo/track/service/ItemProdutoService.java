@@ -8,7 +8,7 @@ import geo.track.dto.itensProdutos.RequestPutItemProduto;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.mapper.ItensProdutosMapper;
+import geo.track.mapper.ItemProdutoMapper;
 import geo.track.repository.ItemProdutoRepository;
 import geo.track.repository.OrdemDeServicoRepository;
 import geo.track.repository.ProdutoRepository;
@@ -28,7 +28,7 @@ public class ItemProdutoService {
         OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(body.fkOrdemServico()).orElseThrow(() -> new DataNotFoundException("Ordem de Serviço não encontrada!", "Ordem de Serviço"));
         Produto produto = PRODUTO_REPOSITORY.findById(body.fkProduto()).orElseThrow(() -> new DataNotFoundException("Produto não encontrado!", "Produtos"));
 
-        ItemProduto registroProduto = ItensProdutosMapper.toEntity(null, body.quantidade(), body.precoProduto(), false, produto, ordemServico);
+        ItemProduto registroProduto = ItemProdutoMapper.toEntity(null, body.quantidade(), body.precoProduto(), false, produto, ordemServico);
 
         return ITENS_PRODUTO_REPOSITORY.save(registroProduto);
     }
@@ -55,7 +55,7 @@ public class ItemProdutoService {
         }
 
         // Pra quem não entender isso daqui abstrai aqueles IF's feios dms e tira a responsabilidade da service de mapear
-        ItemProduto registroAtualizado = ItensProdutosMapper.updateEntity(registroDesejado, body);
+        ItemProduto registroAtualizado = ItemProdutoMapper.updateEntity(registroDesejado, body);
 
         if (body.baixado() != null && body.baixado().equals(true) && registroDesejado.getBaixado().equals(false)) {
             Produto estoqueProduto = registroAtualizado.getFkPeca();

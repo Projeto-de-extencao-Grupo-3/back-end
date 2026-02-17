@@ -3,14 +3,16 @@ package geo.track.dto.os.request;
 import geo.track.enums.os.StatusVeiculo;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class PostEntradaVeiculo {
+    @NotNull
     @Enumerated(EnumType.STRING)
     private StatusVeiculo status;
-    private Double valorTotal = 0.0;
+    @NotNull
     private Integer fkEntrada;
 }

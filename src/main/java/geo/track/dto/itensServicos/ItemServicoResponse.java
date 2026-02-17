@@ -1,5 +1,6 @@
 package geo.track.dto.itensServicos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import geo.track.enums.servico.LadosVeiculo;
 import geo.track.enums.servico.PartesVeiculo;
 import jakarta.persistence.EnumType;
@@ -7,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemServicoResponse {
     private Integer idItensServicos;
     private Double precoCobrado;

@@ -17,21 +17,12 @@ public class ItemServicoMapper {
         }
 
         ItemServicoResponse response = new ItemServicoResponse();
-        response.setIdItensServicos(entity.getIdRegistroServico());
         response.setPrecoCobrado(entity.getPrecoCobrado());
         response.setParteVeiculo(entity.getParteVeiculo());
         response.setLadoVeiculo(entity.getLadoVeiculo());
         response.setCor(entity.getCor());
         response.setEspecificacaoServico(entity.getEspecificacaoServico());
         response.setObservacoesItem(entity.getObservacoesItem());
-
-        if (entity.getFkServico() != null) {
-            response.setIdServico(entity.getFkServico().getIdServico());
-        }
-
-        if (entity.getFkOrdemServico() != null) {
-            response.setIdOrdemServico(entity.getFkOrdemServico().getIdOrdemServico());
-        }
 
         return response;
     }
