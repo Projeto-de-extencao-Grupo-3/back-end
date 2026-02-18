@@ -1,11 +1,11 @@
 package geo.track.controller;
 
-import geo.track.dto.analise.financeira.response.ResponseNotaFiscalPendente;
+import geo.track.dto.analise.financeira.response.ResponseNotaFiscals;
 import geo.track.dto.analise.financeira.response.ResponsePagamentos;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.os.response.*;
 import geo.track.mapper.AnaliseFinanceiraMapper;
-import geo.track.service.OrdemDeServicoService;
+import geo.track.service.AnaliseFinanceiraService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,23 +18,15 @@ import java.util.List;
 @RequestMapping("/analise-financeira")
 @RequiredArgsConstructor
 public class AnaliseFinanceiraController {
-    private final OrdemDeServicoService ordemService;
+    private final AnaliseFinanceiraService analiseService;
 
     @GetMapping()
     public ResponseEntity<HashMap<String, Object>> findOrdemByIdAnaliseFinanceira(@AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
 
-        ViewPagtoPendente kpiPagamentoPendente = ordemService.findKpiPagamentoPendente(idOficina);
-        List<OrdemDeServicoResponse> ordensPagtoPendente = ordemService.findOrdemByNfRealizadaAndPagtRealizado(false, false, idOficina);
-        ResponsePagamentos responsePagtoPendente = AnaliseFinanceiraMapper.toResponsePagamentoPendente(kpiPagamentoPendente.totalValorNaoPago(), kpiPagamentoPendente.quantidadeServicosNaoPagos(), ordensPagtoPendente);
-
-        ViewNotaFiscal kpiNotaFiscal = ordemService.findKpiNotaFiscal(idOficina);
-        List<OrdemDeServicoResponse> ordensNotaFiscalpendente = ordemService.findOrdemByNfRealizadaAndPagtRealizado(false, true, idOficina);
-        ResponseNotaFiscalPendente responseNF = AnaliseFinanceiraMapper.toResponseNotaFiscalPendente(kpiNotaFiscal.quantidadeNfsPendentes(), ordensNotaFiscalpendente);
-
-        ViewPagtoRealizado kpiPagamentoRealizado = ordemService.findKpiPagamentoRealizado(idOficina);
-        List<OrdemDeServicoResponse> ordensPagtoRealizado = ordemService.findOrdemByNfRealizadaAndPagtRealizado(true, true, idOficina);
-        ResponsePagamentos responsePagtoRealizado = AnaliseFinanceiraMapper.toResponsePagamentoRealizado(kpiPagamentoRealizado.totalPagamentosRealizados(), ordensPagtoRealizado);
+        ResponsePagamentos responsePagtoPendente = analiseService.findOrdensPagtoCondition(idOficina, false, false);
+        ResponseNotaFiscals responseNF = analiseService.findOrdensNotaFiscalCondition(idOficina, false, true);
+        ResponsePagamentos responsePagtoRealizado = analiseService.findOrdensPagtoCondition(idOficina, true, true);
 
         HashMap<String, Object> returnObj = new HashMap<>();
         returnObj.put("servicos_pagamento_pendente", responsePagtoPendente);

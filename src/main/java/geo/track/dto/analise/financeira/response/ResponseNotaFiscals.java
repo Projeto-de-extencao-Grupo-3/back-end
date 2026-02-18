@@ -6,7 +6,7 @@ import geo.track.dto.os.response.OrdemDeServicoResponse;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record ResponseNotaFiscalPendente(
+public record ResponseNotaFiscals(
         Long quantidadeNotasFiscaisPendentes,
         List<OrdemDeServicoResponse> ordensDeServicos
         ){
