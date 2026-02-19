@@ -20,12 +20,12 @@ import java.util.List;
 @RequestMapping("/clientes")
 @RequiredArgsConstructor
 public class ClienteController implements ClienteSwagger {
-    private final ClienteService clienteService;
+    private final ClienteService CLIENTE_SERVICE;
 
     @Override
     @GetMapping
     public ResponseEntity<List<ClienteResponse>> findAllClientes() {
-        List<Cliente> clientes = clienteService.findClientes();
+        List<Cliente> clientes = CLIENTE_SERVICE.findClientes();
 
         if (clientes.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -37,14 +37,14 @@ public class ClienteController implements ClienteSwagger {
     @Override
     @PostMapping
     public ResponseEntity<ClienteResponse> postCliente(@Valid @RequestBody RequestPostCliente cliente) {
-        Cliente novoCliente = clienteService.postCliente(cliente);
+        Cliente novoCliente = CLIENTE_SERVICE.postCliente(cliente);
         return ResponseEntity.status(201).body(ClientesMapper.toResponse(novoCliente));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> getClienteById(@PathVariable Integer id) {
-        Cliente cliente = clienteService.findClienteById(id);
+        Cliente cliente = CLIENTE_SERVICE.findClienteById(id);
 
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
@@ -52,7 +52,7 @@ public class ClienteController implements ClienteSwagger {
     @Override
     @GetMapping("/nome")
     public ResponseEntity<List<ClienteResponse>> getClienteByNome(@RequestParam String nome) {
-        List<Cliente> clientes = clienteService.findClienteByNome(nome);
+        List<Cliente> clientes = CLIENTE_SERVICE.findClienteByNome(nome);
         if (clientes.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -62,35 +62,35 @@ public class ClienteController implements ClienteSwagger {
     @Override
     @GetMapping("/cpfCnpj")
     public ResponseEntity<ClienteResponse> getClienteByCpfCnpj(@RequestParam String cpfCnpj) {
-        Cliente cliente = clienteService.findClienteByCpfCnpj(cpfCnpj);
+        Cliente cliente = CLIENTE_SERVICE.findClienteByCpfCnpj(cpfCnpj);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
     @Override
     @PatchMapping("/email")
     public ResponseEntity<ClienteResponse> patchEmailCliente(@RequestBody RequestPatchEmail clienteDTO) {
-        Cliente cliente = clienteService.patchEmailCliente(clienteDTO);
+        Cliente cliente = CLIENTE_SERVICE.patchEmailCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
     @Override
     @PatchMapping("/telefone")
     public ResponseEntity<ClienteResponse> patchTelefoneCliente(@RequestBody RequestPatchTelefone clienteDTO) {
-        Cliente cliente = clienteService.patchTelefoneCliente(clienteDTO);
+        Cliente cliente = CLIENTE_SERVICE.patchTelefoneCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
     @Override
     @PutMapping()
     public ResponseEntity<ClienteResponse> putCliente(@RequestBody RequestPutCliente clienteDTO) {
-        Cliente cliente = clienteService.putCliente(clienteDTO);
+        Cliente cliente = CLIENTE_SERVICE.putCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removerCliente(@PathVariable Integer id) {
-        clienteService.deletar(id);
+        CLIENTE_SERVICE.deletar(id);
         return ResponseEntity.status(204).build();
     }
 }

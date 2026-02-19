@@ -15,26 +15,26 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProdutoService {
-    private final ProdutoRepository repository;
+    private final ProdutoRepository PRODUTO_REPOSITORY;
 
     public Produto cadastrar(Produto prod){
-        return repository.save(prod);
+        return PRODUTO_REPOSITORY.save(prod);
     }
 
     public List<Produto> listar(){
-        return repository.findAll();
+        return PRODUTO_REPOSITORY.findAll();
     }
 
     public Produto findProdutoById(Integer id) {
-        return repository.findById(id).orElseThrow(
+        return PRODUTO_REPOSITORY.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Não existe um produto com esse ID", "Produtos")
         );
     }
 
     public Produto putProdutos(Integer id, Produto produtoAtt) {
-        if(repository.existsById(id)){
+        if(PRODUTO_REPOSITORY.existsById(id)){
             produtoAtt.setIdProduto(id);
-            Produto prod = repository.save(produtoAtt);
+            Produto prod = PRODUTO_REPOSITORY.save(produtoAtt);
             return prod;
         }
 
@@ -42,7 +42,7 @@ public class ProdutoService {
     }
 
     public Produto patchQtdEstoque(RequestPatchQtdEstoque produtoAtt){
-        Optional<Produto> produtoOpt = repository.findById(produtoAtt.getId());
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
             throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
@@ -50,11 +50,11 @@ public class ProdutoService {
 
         Produto prod = produtoOpt.get();
         prod.setQuantidadeEstoque(prod.getQuantidadeEstoque());
-        return repository.save(prod);
+        return PRODUTO_REPOSITORY.save(prod);
     }
 
     public Produto patchPrecoCompra(RequestPatchPrecoCompra produtoAtt){
-        Optional<Produto> produtoOpt = repository.findById(produtoAtt.getId());
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
             throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
@@ -62,11 +62,11 @@ public class ProdutoService {
 
         Produto prod = produtoOpt.get();
         prod.setPrecoCompra(prod.getPrecoCompra());
-        return repository.save(prod);
+        return PRODUTO_REPOSITORY.save(prod);
     }
 
     public Produto patchPrecoVenda(RequestPatchPrecoVenda produtoAtt){
-        Optional<Produto> produtoOpt = repository.findById(produtoAtt.getId());
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
             throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
@@ -74,15 +74,15 @@ public class ProdutoService {
 
         Produto prod = produtoOpt.get();
         prod.setPrecoVenda(prod.getPrecoVenda());
-        return repository.save(prod);
+        return PRODUTO_REPOSITORY.save(prod);
     }
 
     public void excluir(Integer id){
-        if(!repository.existsById(id)){
+        if(!PRODUTO_REPOSITORY.existsById(id)){
             throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
         }
 
-        repository.deleteById(id);
+        PRODUTO_REPOSITORY.deleteById(id);
     }
 
 

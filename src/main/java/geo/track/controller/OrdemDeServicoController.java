@@ -1,6 +1,5 @@
 package geo.track.controller;
 
-import geo.track.config.GerenciadorTokenJwt;
 import geo.track.controller.swagger.OrdemDeServicoSwagger;
 import geo.track.domain.OrdemDeServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
@@ -10,30 +9,28 @@ import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.service.OrdemDeServicoService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
 @RequestMapping("/ordens")
 @RequiredArgsConstructor
 public class OrdemDeServicoController implements OrdemDeServicoSwagger {
-    private final OrdemDeServicoService ordemService;
+    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
     @Override
     @PostMapping
     public ResponseEntity<OrdemDeServicoResponse> postOrdem(@RequestBody PostEntradaVeiculo ordemDTO) {
-        if (ordemService.existsOrdemByRegistroEntrada(ordemDTO.getFkEntrada())) {
+        if (ORDEM_SERVICO_SERVICE.existsOrdemByRegistroEntrada(ordemDTO.getFkEntrada())) {
             throw new BadRequestException("Já existe uma ordem de serviço para o registro de entrada com ID %d".formatted(ordemDTO.getFkEntrada()), "Ordem de Serviço");
         }
 
-        OrdemDeServico ordem = ordemService.postOrdem(ordemDTO);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.postOrdem(ordemDTO);
         return ResponseEntity.status(201).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
@@ -41,7 +38,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     @GetMapping
     public ResponseEntity<List<OrdemDeServicoResponse>> findOrdem(@AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
-        List<OrdemDeServico> ordem = ordemService.findOrdem(idOficina);
+        List<OrdemDeServico> ordem = ORDEM_SERVICO_SERVICE.findOrdem(idOficina);
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -52,7 +49,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     @GetMapping("/veiculos/{placa}")
     public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByPlaca(@PathVariable String placa, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
-        List<OrdemDeServico> ordem = ordemService.findOrdemByPlaca(placa, idOficina);
+        List<OrdemDeServico> ordem = ORDEM_SERVICO_SERVICE.findOrdemByPlaca(placa, idOficina);
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -75,9 +72,9 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 
         // Busca dos ultimos 30 dias
         if (statusEnum.equals(StatusVeiculo.FINALIZADO)) {
-            ordens = ordemService.findOrdemByStatusUltimos30Dias(idOficina);
+            ordens = ORDEM_SERVICO_SERVICE.findOrdemByStatusUltimos30Dias(idOficina);
         } else {
-            ordens = ordemService.findOrdemByStatus(statusEnum, idOficina);
+            ordens = ORDEM_SERVICO_SERVICE.findOrdemByStatus(statusEnum, idOficina);
         }
 
         if (ordens.isEmpty()) {
@@ -90,56 +87,56 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     @GetMapping("/{idOrdem}")
     public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated) {
         Integer idOficina = userAuthenticated.getIdOficina();
-        OrdemDeServico ordem = ordemService.findOrdemById(idOrdem, idOficina);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.findOrdemById(idOrdem, idOficina);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @PutMapping
     public ResponseEntity<OrdemDeServicoResponse> putValorESaida(@RequestBody RequestPutValorESaida ordemDTO) {
-        OrdemDeServico ordem = ordemService.putValorESaida(ordemDTO);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.putValorESaida(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @PatchMapping("/saidaEfetiva")
     public ResponseEntity<OrdemDeServicoResponse> patchSaidaEfetiva(@RequestBody RequestPatchSaidaEfetiva ordemDTO) {
-        OrdemDeServico ordem = ordemService.patchSaidaEfetiva(ordemDTO);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.patchSaidaEfetiva(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @PatchMapping("/status")
     public ResponseEntity<OrdemDeServicoResponse> patchStatus(@RequestBody RequestPatchStatus ordemDTO) {
-        OrdemDeServico ordem = ordemService.patchStatus(ordemDTO);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.patchStatus(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @PatchMapping("/seguradora")
     public ResponseEntity<OrdemDeServicoResponse> patchSeguradora(@RequestBody RequestPatchSeguradora ordemDTO) {
-        OrdemDeServico ordem = ordemService.patchSeguradora(ordemDTO);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.patchSeguradora(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @PatchMapping("/nfRealizada")
     public ResponseEntity<OrdemDeServicoResponse> patchNfRealizada(@RequestBody RequestPatchNfRealizada ordemDTO) {
-        OrdemDeServico ordem = ordemService.patchNfRealizada(ordemDTO);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.patchNfRealizada(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @PatchMapping("/pagtoRealizado")
     public ResponseEntity<OrdemDeServicoResponse> patchPagtoRealizado(@RequestBody RequestPatchPagtoRealizado ordemDTO) {
-        OrdemDeServico ordem = ordemService.patchPagtoRealizado(ordemDTO);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.patchPagtoRealizado(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrdem(@PathVariable Integer id) {
-        ordemService.deleteOrdem(id);
+        ORDEM_SERVICO_SERVICE.deleteOrdem(id);
         return ResponseEntity.status(204).build();
     }
 }

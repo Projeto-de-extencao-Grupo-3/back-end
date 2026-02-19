@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,13 +25,13 @@ import java.util.List;
 @RequestMapping("/painel-controle")
 @RequiredArgsConstructor
 public class PainelControleController {
-    private final OrdemDeServicoService ordemService;
-    private final PainelControleService painelService;
+    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
+    private final PainelControleService PAINEL_CONTROLE_SERVICE;
 
     @GetMapping("/servicos-produtos/{idOrdem}")
     public ResponseEntity<ServicoProdutoOrdemResponse> findById(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario, @PathVariable Integer idOrdem) {
         Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico ordem = ordemService.findOrdemById(idOrdem, idOficina);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.findOrdemById(idOrdem, idOficina);
 
         if (ordem.getServicos().isEmpty() && ordem.getProdutos().isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -45,7 +44,7 @@ public class PainelControleController {
     public ResponseEntity<HashMap<StatusVeiculo, ResponsePainelControle>> findDataForPainelControle(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
 
-        List<List<OrdemDeServico>> listaOrdensPorStatus = painelService.findOrdensPorStatus(idOficina);
+        List<List<OrdemDeServico>> listaOrdensPorStatus = PAINEL_CONTROLE_SERVICE.findOrdensPorStatus(idOficina);
         return ResponseEntity.status(200).body(PainelControleMapper.toResponseList(listaOrdensPorStatus));
     }
 }

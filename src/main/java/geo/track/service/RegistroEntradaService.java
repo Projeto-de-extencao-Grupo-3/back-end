@@ -17,7 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class RegistroEntradaService implements RegistroEntradaPort {
-    private final RegistroEntradaRepository REGISTRO_REPOSITORY;
+    private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final VeiculoService VEICULO_SERVICE;
 
     public RegistroEntrada realizarAgendamentoVeiculo(RequestPostEntradaAgendada dto) {
@@ -43,7 +43,7 @@ public class RegistroEntradaService implements RegistroEntradaPort {
         registro.setDataEntradaPrevista(registroDTO.getDtEntradaPrevista());
         registro.setFkVeiculo(veiculo);
 
-        return REGISTRO_REPOSITORY.save(registro);
+        return REGISTRO_ENTRADA_REPOSITORY.save(registro);
     }
 
     public RegistroEntrada postRegistro(RequestPostEntrada body){
@@ -64,15 +64,15 @@ public class RegistroEntradaService implements RegistroEntradaPort {
         registro.setCaixaFerramentas(body.quantidadeCaixaFerramentas());
         registro.setFkVeiculo(veiculo);
 
-        return REGISTRO_REPOSITORY.save(registro);
+        return REGISTRO_ENTRADA_REPOSITORY.save(registro);
     }
 
     public List<RegistroEntrada> findRegistros(){
-        return REGISTRO_REPOSITORY.findAll();
+        return REGISTRO_ENTRADA_REPOSITORY.findAll();
     }
 
     public RegistroEntrada findRegistroById(Integer idRegistro){
-        Optional<RegistroEntrada> registro = REGISTRO_REPOSITORY.findById(idRegistro);
+        Optional<RegistroEntrada> registro = REGISTRO_ENTRADA_REPOSITORY.findById(idRegistro);
 
         if (registro.isEmpty()){
             throw new DataNotFoundException("Registro de Entrada não encontrado", "Registro de Entrada");
@@ -83,7 +83,7 @@ public class RegistroEntradaService implements RegistroEntradaPort {
 
     public RegistroEntrada putRegistro(RequestPutRegistroEntrada registroDTO) {
         // Busca o registro ou lança a exceção diretamente (Clean Code)
-        RegistroEntrada registro = REGISTRO_REPOSITORY.findById(registroDTO.getIdRegistro())
+        RegistroEntrada registro = REGISTRO_ENTRADA_REPOSITORY.findById(registroDTO.getIdRegistro())
                 .orElseThrow(() -> new DataNotFoundException("Não existe um registro de entrada com esse ID", "Registro de Entrada"));
 
         // Verifica cada campo antes de atualizar
@@ -135,14 +135,14 @@ public class RegistroEntradaService implements RegistroEntradaPort {
 //            registro.setObservacoes(registroDTO.getObservacoes());
         }
 
-        return REGISTRO_REPOSITORY.save(registro);
+        return REGISTRO_ENTRADA_REPOSITORY.save(registro);
     }
 
     public void deletarRegistro(Integer idRegistro){
-        if (!REGISTRO_REPOSITORY.existsById(idRegistro)){
+        if (!REGISTRO_ENTRADA_REPOSITORY.existsById(idRegistro)){
             throw new DataNotFoundException("Registro de Entrada não encontrado", "Registro de Entrada");
         }
 
-        REGISTRO_REPOSITORY.deleteById(idRegistro);
+        REGISTRO_ENTRADA_REPOSITORY.deleteById(idRegistro);
     }
 }

@@ -22,12 +22,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class OrdemDeServicoService {
-    private final OrdemDeServicoRepository ordemRepository;
-    private final ItemServicoService itemServicoService;
-    private final RegistroEntradaService registroEntradaService;
+    private final OrdemDeServicoRepository ORDEM_REPOSITORY;
+    private final ItemServicoService ITEM_SERVICO_SERVICE;
+    private final RegistroEntradaService REGISTRO_ENTRADA_SERVICE;
 
     public OrdemDeServico postOrdem(@Valid @RequestBody PostEntradaVeiculo ordemDTO) {
-        RegistroEntrada entrada = registroEntradaService.findRegistroById(ordemDTO.getFkEntrada());
+        RegistroEntrada entrada = REGISTRO_ENTRADA_SERVICE.findRegistroById(ordemDTO.getFkEntrada());
 
 //      Data prevista ser da seguinte forma : Data atual(HOJE) + 1 Mês para frente
         LocalDate dataPrevista = LocalDate.now().plusMonths(1);
@@ -43,15 +43,15 @@ public class OrdemDeServicoService {
                 .fkEntrada(entrada)
                 .build();
 
-        return ordemRepository.save(ordem);
+        return ORDEM_REPOSITORY.save(ordem);
     }
 
     public List<OrdemDeServico> findOrdem(Integer idOficina){
-        return ordemRepository.findAllByIdOficina(idOficina);
+        return ORDEM_REPOSITORY.findAllByIdOficina(idOficina);
     }
 
     public OrdemDeServico findOrdemById(Integer idOrdem, Integer idOficina){
-        Optional<OrdemDeServico> ordem = ordemRepository.findByIdAndIdOficina(idOrdem, idOficina);
+        Optional<OrdemDeServico> ordem = ORDEM_REPOSITORY.findByIdAndIdOficina(idOrdem, idOficina);
 
         if (ordem.isEmpty()){
             throw new DataNotFoundException("O ID %d não foi encontrado ou não pertence a esta oficina".formatted(idOrdem), "Ordem de Serviço");
@@ -60,7 +60,7 @@ public class OrdemDeServicoService {
     }
 
     public OrdemDeServico putValorESaida(RequestPutValorESaida ordemDTO){
-        Optional<OrdemDeServico> ordemOPT = ordemRepository.findById(ordemDTO.getIdOrdem());
+        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(ordemDTO.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
             throw new DataNotFoundException("Não existe uma ordem com esse ID", "Ordem de Serviço");
@@ -70,11 +70,11 @@ public class OrdemDeServicoService {
 
         ordem.setDataSaidaPrevista(ordemDTO.getSaidaPrevista());
 
-        return ordemRepository.save(ordem);
+        return ORDEM_REPOSITORY.save(ordem);
     }
 
     public OrdemDeServico patchSaidaEfetiva(RequestPatchSaidaEfetiva ordemDTO){
-        Optional<OrdemDeServico> ordemOPT = ordemRepository.findById(ordemDTO.getIdOrdem());
+        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(ordemDTO.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
             throw new DataNotFoundException("Não existe uma ordem com esse ID", "Ordem de Serviço");
@@ -84,11 +84,11 @@ public class OrdemDeServicoService {
         
         ordem.setDataSaidaEfetiva(ordemDTO.getDtSaidaEfeiva());
         
-        return ordemRepository.save(ordem);
+        return ORDEM_REPOSITORY.save(ordem);
     }
 
     public OrdemDeServico patchStatus(RequestPatchStatus ordemDTO){
-        Optional<OrdemDeServico> ordemOPT = ordemRepository.findById(ordemDTO.getIdOrdem());
+        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(ordemDTO.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
             throw new DataNotFoundException("Não existe uma ordem com esse ID", "Ordem de Serviço");
@@ -98,11 +98,11 @@ public class OrdemDeServicoService {
 
         ordem.setStatus(ordemDTO.getStatus());
 
-        return ordemRepository.save(ordem);
+        return ORDEM_REPOSITORY.save(ordem);
     }
 
     public OrdemDeServico patchSeguradora(RequestPatchSeguradora ordemDTO){
-        Optional<OrdemDeServico> ordemOPT = ordemRepository.findById(ordemDTO.getIdOrdem());
+        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(ordemDTO.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
             throw new DataNotFoundException("Não existe uma ordem com esse ID", "Ordem de Serviço");
@@ -112,11 +112,11 @@ public class OrdemDeServicoService {
 
         ordem.setSeguradora(ordemDTO.getSeguradora());
 
-        return ordemRepository.save(ordem);
+        return ORDEM_REPOSITORY.save(ordem);
     }
 
     public OrdemDeServico patchNfRealizada(RequestPatchNfRealizada ordemDTO){
-        Optional<OrdemDeServico> ordemOPT = ordemRepository.findById(ordemDTO.getIdOrdem());
+        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(ordemDTO.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
             throw new DataNotFoundException("Não existe uma ordem com esse ID", "Ordem de Serviço");
@@ -126,11 +126,11 @@ public class OrdemDeServicoService {
 
         ordem.setSeguradora(ordemDTO.getNfRealizada());
 
-        return ordemRepository.save(ordem);
+        return ORDEM_REPOSITORY.save(ordem);
     }
 
     public OrdemDeServico patchPagtoRealizado(RequestPatchPagtoRealizado ordemDTO){
-        Optional<OrdemDeServico> ordemOPT = ordemRepository.findById(ordemDTO.getIdOrdem());
+        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(ordemDTO.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
             throw new DataNotFoundException("Não existe uma ordem com esse ID", "Ordem de Serviço");
@@ -139,11 +139,11 @@ public class OrdemDeServicoService {
         OrdemDeServico ordem = ordemOPT.get();
 
         ordem.setPagtRealizado(ordemDTO.getPagtoRealizado());
-        return ordemRepository.save(ordem);
+        return ORDEM_REPOSITORY.save(ordem);
     }
 
     public void deleteOrdem(Integer idOrdem){
-        Optional<OrdemDeServico> ordemOPT = ordemRepository.findById(idOrdem);
+        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(idOrdem);
 
         if (ordemOPT.isEmpty()) {
             throw new DataNotFoundException("Não existe uma ordem com esse ID", "Ordem de Serviço");
@@ -152,7 +152,7 @@ public class OrdemDeServicoService {
         OrdemDeServico ordem = ordemOPT.get();
         RegistroEntrada entrada = ordem.getFkEntrada();
 
-        List<ItemServico> servicos = itemServicoService.listarPelaOrdemServico(ordem);
+        List<ItemServico> servicos = ITEM_SERVICO_SERVICE.listarPelaOrdemServico(ordem);
 
         if (!servicos.isEmpty()) {
             throw new BadRequestException("Não é possível deletar ordem de serviço que possui serviços anexados", "Ordem de Serviço");
@@ -163,29 +163,29 @@ public class OrdemDeServicoService {
         }
 
         // verificar se tem serviços atrelado
-        ordemRepository.delete(ordem);
+        ORDEM_REPOSITORY.delete(ordem);
     }
 
     public List<OrdemDeServico> findOrdemByPlaca(String placa, Integer idOficina) {
-        return ordemRepository.findByPlacaAndIdOficina(placa, idOficina);
+        return ORDEM_REPOSITORY.findByPlacaAndIdOficina(placa, idOficina);
     }
 
     public List<OrdemDeServico> findOrdemByStatus(StatusVeiculo status, Integer idOficina) {
-        return ordemRepository.findByStatusAndIdOficina(status, idOficina);
+        return ORDEM_REPOSITORY.findByStatusAndIdOficina(status, idOficina);
     }
 
     public List<OrdemDeServico> findOrdemByStatusUltimos30Dias(Integer idOficina) {
         LocalDate dataLimite = LocalDate.now().minusDays(30L);
-        return ordemRepository.findByStatusUltimos30DiasAndIdOficina(dataLimite, idOficina);
+        return ORDEM_REPOSITORY.findByStatusUltimos30DiasAndIdOficina(dataLimite, idOficina);
     }
 
     public Boolean existsOrdemByRegistroEntrada(Integer idRegistroEtrada) {
-        RegistroEntrada entrada = registroEntradaService.findRegistroById(idRegistroEtrada);
-        return ordemRepository.existsByFkEntrada(entrada);
+        RegistroEntrada entrada = REGISTRO_ENTRADA_SERVICE.findRegistroById(idRegistroEtrada);
+        return ORDEM_REPOSITORY.existsByFkEntrada(entrada);
     }
 
     public ViewNotaFiscal findKpiNotaFiscal(Integer idOrdem) {
-        ViewNotaFiscal viewNotasFicaisPendentes = ordemRepository.findViewNotasFicaisPendentes(idOrdem);
+        ViewNotaFiscal viewNotasFicaisPendentes = ORDEM_REPOSITORY.findViewNotasFicaisPendentes(idOrdem);
         if (viewNotasFicaisPendentes == null) {
             return new ViewNotaFiscal(0L);
         }
@@ -193,7 +193,7 @@ public class OrdemDeServicoService {
     }
 
     public ViewPagtoRealizado findKpiPagamentoRealizado(Integer idOrdem) {
-        ViewPagtoRealizado viewPagamentoRealizados = ordemRepository.findViewPagamentoRealizados(idOrdem);
+        ViewPagtoRealizado viewPagamentoRealizados = ORDEM_REPOSITORY.findViewPagamentoRealizados(idOrdem);
         if (viewPagamentoRealizados == null) {
             return new ViewPagtoRealizado(0L);
         }
@@ -201,7 +201,7 @@ public class OrdemDeServicoService {
     }
 
     public ViewPagtoPendente findKpiPagamentoPendente(Integer idOrdem) {
-        ViewPagtoPendente viewPagamentoPendente = ordemRepository.findViewPagamentoPendente(idOrdem);
+        ViewPagtoPendente viewPagamentoPendente = ORDEM_REPOSITORY.findViewPagamentoPendente(idOrdem);
         if (viewPagamentoPendente == null) {
             return new ViewPagtoPendente(0.0, 0L);
         }
@@ -209,6 +209,6 @@ public class OrdemDeServicoService {
     }
 
     public List<OrdemDeServico> findOrdemByNfRealizadaAndPagtRealizado(Boolean nfRealizada, Boolean pagtRealizado, Integer idOficina) {
-        return ordemRepository.findByNfRealizadaAndPagtRealizadoAndIdOficinaAndIsFinalizado(nfRealizada, pagtRealizado, idOficina);
+        return ORDEM_REPOSITORY.findByNfRealizadaAndPagtRealizadoAndIdOficinaAndIsFinalizado(nfRealizada, pagtRealizado, idOficina);
     }
 }

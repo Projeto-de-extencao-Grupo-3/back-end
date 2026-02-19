@@ -1,6 +1,5 @@
 package geo.track.controller;
 
-import geo.track.controller.swagger.ItemServicoSwagger;
 import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
 import geo.track.domain.Servico;
@@ -22,8 +21,7 @@ import java.util.List;
 @RequestMapping("/itensServico")
 @RequiredArgsConstructor
 public class ItemServicoController {
-
-    private final ItemServicoService REGISTRO_SERVICO_SERVICE;
+    private final ItemServicoService ITEM_SERVICO_SERVICE;
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final ServicoService SERVICO_SERVICE;
 
@@ -35,13 +33,13 @@ public class ItemServicoController {
         Servico servico = SERVICO_SERVICE.buscarPorId(body.getFkServico());
         ItemServico item = ItemServicoMapper.toDomain(body, ordemServico, servico);
 
-        ItemServico itemServico = REGISTRO_SERVICO_SERVICE.cadastrar(item);
+        ItemServico itemServico = ITEM_SERVICO_SERVICE.cadastrar(item);
         return ResponseEntity.status(201).body(ItemServicoMapper.toResponse(itemServico));
     }
 
     @GetMapping
     public ResponseEntity<List<ItemServicoResponse>> findAll() {
-        List<ItemServico> itensServicos = REGISTRO_SERVICO_SERVICE.listar();
+        List<ItemServico> itensServicos = ITEM_SERVICO_SERVICE.listar();
         if (itensServicos.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -50,19 +48,19 @@ public class ItemServicoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ItemServicoResponse> findById(@PathVariable Integer id) {
-        ItemServico itemServico = REGISTRO_SERVICO_SERVICE.findById(id);
+        ItemServico itemServico = ITEM_SERVICO_SERVICE.findById(id);
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ItemServicoResponse> atualizar(@PathVariable Integer id, @RequestBody ItemServico itens) {
-        ItemServico itemServico = REGISTRO_SERVICO_SERVICE.atualizar(id, itens);
+        ItemServico itemServico = ITEM_SERVICO_SERVICE.atualizar(id, itens);
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        REGISTRO_SERVICO_SERVICE.delete(id);
+        ITEM_SERVICO_SERVICE.delete(id);
         return ResponseEntity.status(204).build();
     }
 }

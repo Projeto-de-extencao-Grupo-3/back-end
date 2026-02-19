@@ -11,37 +11,37 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ServicoService {
 
-    private final ServicoRepository repository;
+    private final ServicoRepository SERVICO_REPOSITORY;
 
     public Servico cadastrar(Servico servicoss){
-        if (repository.existsByTituloServico(servicoss.getTituloServico())){
+        if (SERVICO_REPOSITORY.existsByTituloServico(servicoss.getTituloServico())){
             throw new ConflictException("Nome já existe","Servico");
         }
-        Servico servicoRegistrado = repository.save(servicoss);
+        Servico servicoRegistrado = SERVICO_REPOSITORY.save(servicoss);
         return servicoRegistrado;
     }
 
     public Servico buscarPorId(Integer id){
-        if (!repository.existsByIdServico(id)){
+        if (!SERVICO_REPOSITORY.existsByIdServico(id)){
             throw new DataNotFoundException("Servico Não encontrado","Servico");
         }
-        Servico getServico = repository.getByIdServico(id);
+        Servico getServico = SERVICO_REPOSITORY.getByIdServico(id);
         return getServico;
     }
 
     public Servico atualizar(Integer id, Servico servico){
         servico.setIdServico(id);
-        if (!repository.existsById(id)){
+        if (!SERVICO_REPOSITORY.existsById(id)){
             throw new DataNotFoundException("Servico não encontrado","Servico");
         }
-        Servico save = repository.save(servico);
+        Servico save = SERVICO_REPOSITORY.save(servico);
         return save;
     }
 
     public void deletar(Integer id){
-        if (!repository.existsById(id)){
+        if (!SERVICO_REPOSITORY.existsById(id)){
             throw new DataNotFoundException("Servico não encontrado","Servico");
         }
-        repository.deleteById(id);
+        SERVICO_REPOSITORY.deleteById(id);
     }
 }

@@ -19,11 +19,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class EnderecoService {
-    private final ViacepConnection viacepConnection;
-    private final EnderecoRepository enderecosRepository;
+    private final ViacepConnection VIACEP_CONNECTION;
+    private final EnderecoRepository ENDERECO_REPOSITORY;
 
     public Endereco findEnderecoById(Integer id) {
-        Optional<Endereco> endereco = enderecosRepository.findById(id);
+        Optional<Endereco> endereco = ENDERECO_REPOSITORY.findById(id);
 
         if (endereco.isEmpty()) {
             throw new DataNotFoundException("ID %d não foi encontrado".formatted(id), "Endereços");
@@ -37,7 +37,7 @@ public class EnderecoService {
             throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
         }
 
-        return viacepConnection.consultarCEP(cep);
+        return VIACEP_CONNECTION.consultarCEP(cep);
     }
 
     public Endereco postEndereco(RequestPostEndereco dtoEndereco) {
@@ -47,11 +47,11 @@ public class EnderecoService {
             throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
         }
 
-        return enderecosRepository.save(endereco);
+        return ENDERECO_REPOSITORY.save(endereco);
     }
 
     public Endereco patchComplementoEndereco(RequestPatchComplemento enderecoDTO) {
-        Optional<Endereco> enderecos = enderecosRepository.findById(enderecoDTO.getId());
+        Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(enderecoDTO.getId());
 
         if (enderecos.isEmpty()) {
             throw new DataNotFoundException("Endereço com o ID %d não foi encontrado".formatted(enderecoDTO.getId()), "Endereços");
@@ -60,18 +60,18 @@ public class EnderecoService {
         Endereco endereco = enderecos.get();
         endereco.setComplemento(enderecoDTO.getComplemento());
 
-        return enderecosRepository.save(endereco);
+        return ENDERECO_REPOSITORY.save(endereco);
     }
 
     public Endereco patchNumeroEndereco(RequestPatchNumero enderecoDTO) {
-        Optional<Endereco> enderecos = enderecosRepository.findById(enderecoDTO.getId());
+        Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(enderecoDTO.getId());
 
         if (enderecos.isPresent()) {
             Endereco endereco = enderecos.get();
 
             endereco.setNumero(enderecoDTO.getNumero());
 
-            enderecosRepository.save(endereco);
+            ENDERECO_REPOSITORY.save(endereco);
 
             return endereco;
         } else {
@@ -85,7 +85,7 @@ public class EnderecoService {
              throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
         }
 
-        Optional<Endereco> enderecos = enderecosRepository.findById(enderecoDTO.getId());
+        Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(enderecoDTO.getId());
 
         if (enderecos.isPresent()) {
             Endereco endereco = enderecos.get();
@@ -98,7 +98,7 @@ public class EnderecoService {
             endereco.setCidade(enderecoDTO.getCidade());
             endereco.setEstado(enderecoDTO.getEstado());
 
-            enderecosRepository.save(endereco);
+            ENDERECO_REPOSITORY.save(endereco);
 
             return endereco;
         } else {

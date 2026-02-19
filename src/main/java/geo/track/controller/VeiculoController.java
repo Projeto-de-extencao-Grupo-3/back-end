@@ -18,20 +18,19 @@ import java.util.List;
 @RequestMapping("/veiculos")
 @RequiredArgsConstructor
 public class VeiculoController implements VeiculoSwagger {
-
-    private final VeiculoService service;
+    private final VeiculoService VEICULO_SERVICE;
 
     @Override
     @PostMapping
     public ResponseEntity<VeiculoResponse>cadastrar(@Valid @RequestBody Veiculo veiculo){
-        Veiculo veicCadastrado = service.cadastrar(veiculo);
+        Veiculo veicCadastrado = VEICULO_SERVICE.cadastrar(veiculo);
         return ResponseEntity.status(201).body(VeiculoMapper.toResponse(veicCadastrado));
     }
 
     @Override
     @GetMapping
     public ResponseEntity<List<VeiculoResponse>>listar(){
-        List<Veiculo>listaVeiculos = service.listar();
+        List<Veiculo>listaVeiculos = VEICULO_SERVICE.listar();
 
         if(listaVeiculos.isEmpty()){
             return ResponseEntity.status(204).build();
@@ -43,14 +42,14 @@ public class VeiculoController implements VeiculoSwagger {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<VeiculoResponse> findVeiculoById(@PathVariable Integer id){
-        Veiculo veic = service.findVeiculoById(id);
+        Veiculo veic = VEICULO_SERVICE.findVeiculoById(id);
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
     @Override
     @GetMapping("/placa/{placa}")
     public ResponseEntity<List<VeiculoResponse>>findVeiculoByPlaca(@PathVariable String placa){
-        List<Veiculo>veic = service.findVeiculoByPlaca(placa);
+        List<Veiculo>veic = VEICULO_SERVICE.findVeiculoByPlaca(placa);
 
         if(veic.isEmpty()){
             return ResponseEntity.status(204).build();
@@ -62,34 +61,34 @@ public class VeiculoController implements VeiculoSwagger {
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<VeiculoResponse>putVeiculo(@PathVariable Integer id, @RequestBody Veiculo veiculoAtt){
-        Veiculo veic = service.putEndereco(id, veiculoAtt);
+        Veiculo veic = VEICULO_SERVICE.putEndereco(id, veiculoAtt);
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
     @Override
     @PatchMapping("/placa")
     public ResponseEntity<VeiculoResponse>patchPlaca(@RequestBody RequestPatchPlaca veiculoDTO){
-        Veiculo veic = service.patchPlaca(veiculoDTO);
+        Veiculo veic = VEICULO_SERVICE.patchPlaca(veiculoDTO);
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
     @Override
     @PatchMapping("/cor")
     public ResponseEntity<VeiculoResponse>patchCor(@RequestBody RequestPatchCor veiculoDTO){
-        Veiculo veic = service.patchCor(veiculoDTO);
+        Veiculo veic = VEICULO_SERVICE.patchCor(veiculoDTO);
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
     // ...existing code...
     @DeleteMapping("/{id}")
     public ResponseEntity<Void>deleteVeiculoById(@PathVariable Integer id){
-        service.deleteVeiculoById(id);
+        VEICULO_SERVICE.deleteVeiculoById(id);
         return ResponseEntity.status(204).build();
     }
 
     @DeleteMapping("/placa/{placa}")
     public ResponseEntity<Void>deleteVeiculoByPlaca(@PathVariable String placa){
-        service.deleteVeiculoByPlaca(placa);
+        VEICULO_SERVICE.deleteVeiculoByPlaca(placa);
         return ResponseEntity.status(204).build();
     }
 }

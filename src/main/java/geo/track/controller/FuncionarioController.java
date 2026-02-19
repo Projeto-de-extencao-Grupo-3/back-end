@@ -15,41 +15,40 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/funcionarios")
 public class FuncionarioController implements FuncionarioSwagger {
-
-    private final FuncionarioService service;
+    private final FuncionarioService FUNCIONARIO_SERVICE;
 
     @Override
     @PostMapping
     public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody Funcionario funcionario){
-        Funcionario funcionarioResposta = service.cadastrar(funcionario);
+        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.cadastrar(funcionario);
         return ResponseEntity.status(201).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
     @Override
     @GetMapping("/oficina/{idOficina}")
     public ResponseEntity<List<FuncionarioResponse>> findByOficina(@PathVariable Integer idOficina) {
-        List<Funcionario> funcionarioResposta = service.buscarPorOficina(idOficina);
+        List<Funcionario> funcionarioResposta = FUNCIONARIO_SERVICE.buscarPorOficina(idOficina);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<FuncionarioResponse> buscarPorId(@PathVariable Integer id){
-        Funcionario funcionarioResposta = service.buscarPorId(id);
+        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.buscarPorId(id);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Integer id, @RequestBody Funcionario funcionario){
-        Funcionario funcionarioResposta = service.atualizar(id, funcionario);
+        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.atualizar(id, funcionario);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
-        service.deletar(id);
+        FUNCIONARIO_SERVICE.deletar(id);
         return ResponseEntity.status(204).build();
     }
 }

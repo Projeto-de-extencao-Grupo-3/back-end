@@ -17,20 +17,19 @@ import java.util.List;
 @RequestMapping("/itensProdutos")
 @RequiredArgsConstructor
 public class ItemProdutoController implements ItemProdutoSwagger {
-
-    private final ItemProdutoService service;
+    private final ItemProdutoService ITEM_PRODUTO_SERVICE;
 
     @Override
     @PostMapping
     public ResponseEntity<ItemProdutoResponse> save(@RequestBody RequestPostItemProduto body) {
-        ItemProduto registroProduto = service.cadastrarRegistro(body);
+        ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.cadastrarRegistro(body);
         return ResponseEntity.status(201).body(ItemProdutoMapper.toResponse(registroProduto));
     }
 
     @Override
     @GetMapping
     public ResponseEntity<List<ItemProdutoResponse>> findAll() {
-        List<ItemProduto> registroProdutos = service.listarRegistros();
+        List<ItemProduto> registroProdutos = ITEM_PRODUTO_SERVICE.listarRegistros();
         if (registroProdutos.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -40,21 +39,21 @@ public class ItemProdutoController implements ItemProdutoSwagger {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<ItemProdutoResponse> findById(@PathVariable Integer id) {
-        ItemProduto registroProduto = service.buscarRegistroPorID(id);
+        ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.buscarRegistroPorID(id);
         return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(registroProduto));
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<ItemProdutoResponse> put(@PathVariable Integer id, @RequestBody RequestPutItemProduto body) {
-        ItemProduto registroProduto = service.atualizarRegistro(id, body);
+        ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.atualizarRegistro(id, body);
         return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(registroProduto));
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        service.deletarRegistro(id);
+        ITEM_PRODUTO_SERVICE.deletarRegistro(id);
         return ResponseEntity.status(204).build();
     }
 }

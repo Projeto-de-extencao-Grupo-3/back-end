@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemProdutoService {
-    private final ItemProdutoRepository ITENS_PRODUTO_REPOSITORY;
+    private final ItemProdutoRepository ITEM_PRODUTO_REPOSITORY;
     private final ProdutoRepository PRODUTO_REPOSITORY;
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
@@ -30,25 +30,25 @@ public class ItemProdutoService {
 
         ItemProduto registroProduto = ItemProdutoMapper.toEntity(null, body.quantidade(), body.precoProduto(), false, produto, ordemServico);
 
-        return ITENS_PRODUTO_REPOSITORY.save(registroProduto);
+        return ITEM_PRODUTO_REPOSITORY.save(registroProduto);
     }
 
     public List<ItemProduto> listarRegistros() {
-        return ITENS_PRODUTO_REPOSITORY.findAll();
+        return ITEM_PRODUTO_REPOSITORY.findAll();
     }
 
     public ItemProduto buscarRegistroPorID(Integer id) {
-        ItemProduto registroProduto = ITENS_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException("Registro de Produto não encontrado!", "ItensProdutos"));
+        ItemProduto registroProduto = ITEM_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException("Registro de Produto não encontrado!", "ItensProdutos"));
         return registroProduto;
     }
 
     public List<ItemProduto> listarPelaOrdemServico(OrdemDeServico ordemDeServicos) {
-        List<ItemProduto> registroProdutos = ITENS_PRODUTO_REPOSITORY.findAllByFkOrdemServicoIdOrdemServico(ordemDeServicos.getIdOrdemServico());
+        List<ItemProduto> registroProdutos = ITEM_PRODUTO_REPOSITORY.findAllByFkOrdemServicoIdOrdemServico(ordemDeServicos.getIdOrdemServico());
         return registroProdutos;
     }
 
     public ItemProduto atualizarRegistro(Integer id, RequestPutItemProduto body) {
-        ItemProduto registroDesejado = ITENS_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException("Registro de Produto não encontrado", "ItensProdutos"));
+        ItemProduto registroDesejado = ITEM_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException("Registro de Produto não encontrado", "ItensProdutos"));
 
         if (body.baixado() != null && body.baixado().equals(false)) {
             throw new BadRequestException("Não é possível retirar a baixa do sistema!", "ItensProdutos");
@@ -70,10 +70,10 @@ public class ItemProdutoService {
             PRODUTO_REPOSITORY.save(estoqueProduto);
         }
 
-        return ITENS_PRODUTO_REPOSITORY.save(registroAtualizado);
+        return ITEM_PRODUTO_REPOSITORY.save(registroAtualizado);
     }
 
     public void deletarRegistro(Integer id) {
-        ITENS_PRODUTO_REPOSITORY.deleteById(id);
+        ITEM_PRODUTO_REPOSITORY.deleteById(id);
     }
 }

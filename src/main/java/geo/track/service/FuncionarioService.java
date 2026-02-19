@@ -13,43 +13,43 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FuncionarioService {
-    private final FuncionarioRepository repository;
-    private final PasswordEncoder passwordEncoder;
+    private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
+    private final PasswordEncoder PASSWORD_ENCODER;
 
 
     public Funcionario cadastrar(Funcionario body){
-        if (repository.existsByEmail(body.getEmail())){
+        if (FUNCIONARIO_REPOSITORY.existsByEmail(body.getEmail())){
             throw new ConflictException("Funcionário já existente com este email!","Funcionario");
         }
 
-        body.setSenha(passwordEncoder.encode(body.getSenha()));
-        return repository.save(body);
+        body.setSenha(PASSWORD_ENCODER.encode(body.getSenha()));
+        return FUNCIONARIO_REPOSITORY.save(body);
     }
 
     public List<Funcionario> buscarPorOficina(Integer idOficina) {
-        return repository.findByFkOficina_IdOficina(idOficina);
+        return FUNCIONARIO_REPOSITORY.findByFkOficina_IdOficina(idOficina);
     }
 
     public Funcionario buscarPorId(Integer id){
-        if (!repository.existsByIdFuncionario(id)){
+        if (!FUNCIONARIO_REPOSITORY.existsByIdFuncionario(id)){
             throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
         }
-        return repository.getByIdFuncionario(id);
+        return FUNCIONARIO_REPOSITORY.getByIdFuncionario(id);
     }
 
     public Funcionario atualizar(Integer id, Funcionario funcionario){
         funcionario.setIdFuncionario(id);
-        if (!repository.existsById(id)){
+        if (!FUNCIONARIO_REPOSITORY.existsById(id)){
             throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
         }
-        return repository.save(funcionario);
+        return FUNCIONARIO_REPOSITORY.save(funcionario);
     }
 
     public void deletar(Integer id){
-        if (!repository.existsById(id)){
+        if (!FUNCIONARIO_REPOSITORY.existsById(id)){
             throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
         }
-        repository.deleteById(id);
+        FUNCIONARIO_REPOSITORY.deleteById(id);
     }
 
 }

@@ -14,22 +14,21 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ItemServicoService {
-
-    private final ItemServicoRepository itensServicoRepository;
+    private final ItemServicoRepository ITEM_SERVICO_REPOSITORY;
 
     public ItemServico cadastrar(ItemServico itemServico){
-        if (itensServicoRepository.existsById(itemServico.getIdRegistroServico())){
+        if (ITEM_SERVICO_REPOSITORY.existsById(itemServico.getIdRegistroServico())){
             throw new ConflictException("ID já existe","Itens Serviço");
         }
-        return itensServicoRepository.save(itemServico);
+        return ITEM_SERVICO_REPOSITORY.save(itemServico);
     }
 
     public List<ItemServico> listar(){
-        return itensServicoRepository.findAll();
+        return ITEM_SERVICO_REPOSITORY.findAll();
     }
 
     public ItemServico findById(Integer id){
-        Optional<ItemServico> ordem = itensServicoRepository.findById(id);
+        Optional<ItemServico> ordem = ITEM_SERVICO_REPOSITORY.findById(id);
 
         if (ordem.isEmpty()){
             throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Itens de Serviço");
@@ -38,13 +37,13 @@ public class ItemServicoService {
     }
 
     public List<ItemServico> listarPelaOrdemServico(OrdemDeServico ordemDeServicos) {
-        List<ItemServico> servicos = itensServicoRepository.findAllByFkOrdemServicoIdOrdemServico(ordemDeServicos.getIdOrdemServico());
+        List<ItemServico> servicos = ITEM_SERVICO_REPOSITORY.findAllByFkOrdemServicoIdOrdemServico(ordemDeServicos.getIdOrdemServico());
 
         return servicos;
     }
 
     public ItemServico atualizar(Integer id, ItemServico updatedItens) {
-        ItemServico existente = itensServicoRepository.findById(id)
+        ItemServico existente = ITEM_SERVICO_REPOSITORY.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Item de serviço não encontrado", "ItensServiço"));
 
         existente.setPrecoCobrado(updatedItens.getPrecoCobrado());
@@ -57,10 +56,10 @@ public class ItemServicoService {
         existente.setFkServico(updatedItens.getFkServico());
         existente.setFkOrdemServico(updatedItens.getFkOrdemServico());
 
-        return itensServicoRepository.save(existente);
+        return ITEM_SERVICO_REPOSITORY.save(existente);
     }
 
     public void delete(Integer id){
-        itensServicoRepository.deleteById(id);
+        ITEM_SERVICO_REPOSITORY.deleteById(id);
     }
 }

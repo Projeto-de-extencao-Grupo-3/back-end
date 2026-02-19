@@ -14,12 +14,10 @@ import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,22 +28,16 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class OficinaService {
-    private final OficinaRepository repository;
-
-    private final PasswordEncoder passwordEncoder;
-
-    private final OficinaRepository oficinaRepository;
-
-    private final GerenciadorTokenJwt gerenciadorTokenJwt;
-
-    private final AuthenticationManager authenticationManager;
-    private final FuncionarioRepository funcionarioRepository;
+    private final OficinaRepository OFICINA_REPOSITORY;
+    private final GerenciadorTokenJwt GERENCIADOR_TOKEN_JWT;
+    private final AuthenticationManager AUTHENTICATION_MANAGER;
+    private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
 
     public Oficinas cadastrar(Oficinas Oficinas){
-        if (repository.findByCnpj(Oficinas.getCnpj()).isPresent()){
+        if (OFICINA_REPOSITORY.findByCnpj(Oficinas.getCnpj()).isPresent()){
             throw new ConflictException("O CNPJ %s já está cadastrado!".formatted(Oficinas.getCnpj()), "Oficinas");
         }
-        return repository.save(Oficinas);
+        return OFICINA_REPOSITORY.save(Oficinas);
     }
 
     public UsuarioTokenDto autenticar(UsuarioLoginDto body) {
@@ -53,48 +45,48 @@ public class OficinaService {
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 body.getEmail(), body.getSenha());
 
-        final Authentication authentication = this.authenticationManager.authenticate(credentials);
+        final Authentication authentication = this.AUTHENTICATION_MANAGER.authenticate(credentials);
 
         Funcionario funcionarioAutenticado =
-                funcionarioRepository.findByEmail(body.getEmail())
+                FUNCIONARIO_REPOSITORY.findByEmail(body.getEmail())
                         .orElseThrow(
                                 () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
                         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        final String token = gerenciadorTokenJwt.generateToken(authentication, funcionarioAutenticado);
+        final String token = GERENCIADOR_TOKEN_JWT.generateToken(authentication, funcionarioAutenticado);
 
         return UsuarioMapper.of(funcionarioAutenticado, token);
     }
 
     public List<Oficinas> listar(){
-        return repository.findAll();
+        return OFICINA_REPOSITORY.findAll();
     }
 
     public Oficinas findOficinasById(Integer id){
-        return repository.findById(id).orElseThrow(() -> new DataNotFoundException("Oficina com ID %d não encontrado".formatted(id), "Oficinas"));
+        return OFICINA_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException("Oficina com ID %d não encontrado".formatted(id), "Oficinas"));
     }
 
     public List<Oficinas> findOficinasByRazaoSocial(String razaoSocial){
-        return repository.findByrazaoSocialContainingIgnoreCase(razaoSocial);
+        return OFICINA_REPOSITORY.findByrazaoSocialContainingIgnoreCase(razaoSocial);
     }
 
     public Oficinas findOficinasByCnpj(String cnpj){
-        return repository.findByCnpj(cnpj).orElseThrow(() -> new DataNotFoundException("Oficina com CNPJ %s não foi encontrado".formatted(cnpj), "Oficinas"));
+        return OFICINA_REPOSITORY.findByCnpj(cnpj).orElseThrow(() -> new DataNotFoundException("Oficina com CNPJ %s não foi encontrado".formatted(cnpj), "Oficinas"));
     }
 
     public Oficinas atualizar(Integer id, Oficinas oficinas){
-        if (repository.existsById(id)){
+        if (OFICINA_REPOSITORY.existsById(id)){
             oficinas.setIdOficina(id);
-            Oficinas empSalva = repository.save(oficinas);
+            Oficinas empSalva = OFICINA_REPOSITORY.save(oficinas);
             return empSalva;
         }
          throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Oficinas");
     }
 
     public Oficinas patchEmail(OficinaPatchEmailDTO dto){
-        Optional<Oficinas> Oficinas = repository.findById(dto.getId());
+        Optional<Oficinas> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
 
         if(Oficinas.isEmpty()){
             throw new DataNotFoundException("Não existe uma oficina com esse ID", "Oficinas");
@@ -103,12 +95,12 @@ public class OficinaService {
 
         emp.setIdOficina(dto.getId());
         emp.setEmail(dto.getEmail());
-        return repository.save(emp);
+        return OFICINA_REPOSITORY.save(emp);
     }
 
 
     public Oficinas patchStatus(OficinaPatchStatusDTO dto){
-        Optional<Oficinas> Oficinas = repository.findById(dto.getId());
+        Optional<Oficinas> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
 
         if(Oficinas.isEmpty()){
             throw new DataNotFoundException("Não existe uma oficina com esse ID", "Oficinas");
@@ -117,13 +109,13 @@ public class OficinaService {
 
         emp.setIdOficina(dto.getId());
         emp.setStatus(dto.getStatus());
-        return repository.save(emp);
+        return OFICINA_REPOSITORY.save(emp);
     }
 
     public void remover(Integer id){
-        if (!repository.existsById(id)){
+        if (!OFICINA_REPOSITORY.existsById(id)){
             throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Oficinas");
         }
-        repository.deleteById(id);
+        OFICINA_REPOSITORY.deleteById(id);
     }
 }
