@@ -12,19 +12,28 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, Integer> {
-    @Query("SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v WHERE v.placa = :placa")
-    List<OrdemDeServico> findByPlaca(String placa);
+    
+    @Query("SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v JOIN v.fkCliente c JOIN c.fkOficina ofi WHERE v.placa = :placa AND ofi.idOficina = :idOficina")
+    List<OrdemDeServico> findByPlacaAndIdOficina(@Param("placa") String placa, @Param("idOficina") Integer idOficina);
 
-    List<OrdemDeServico> findByStatus(StatusVeiculo status);
+    @Query("SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v JOIN v.fkCliente c JOIN c.fkOficina ofi WHERE o.status = :status AND ofi.idOficina = :idOficina")
+    List<OrdemDeServico> findByStatusAndIdOficina(@Param("status") StatusVeiculo status, @Param("idOficina") Integer idOficina);
 
-    @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva >= :data")
-    List<OrdemDeServico> findByStatusUltimos30Dias(LocalDate data);
+    @Query("SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v JOIN v.fkCliente c JOIN c.fkOficina ofi WHERE o.dataSaidaEfetiva >= :data AND ofi.idOficina = :idOficina")
+    List<OrdemDeServico> findByStatusUltimos30DiasAndIdOficina(@Param("data") LocalDate data, @Param("idOficina") Integer idOficina);
+
+    @Query("SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v JOIN v.fkCliente c JOIN c.fkOficina ofi WHERE ofi.idOficina = :idOficina")
+    List<OrdemDeServico> findAllByIdOficina(@Param("idOficina") Integer idOficina);
+
+    @Query("SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v JOIN v.fkCliente c JOIN c.fkOficina ofi WHERE o.idOrdemServico = :idOrdem AND ofi.idOficina = :idOficina")
+    Optional<OrdemDeServico> findByIdAndIdOficina(@Param("idOrdem") Integer idOrdem, @Param("idOficina") Integer idOficina);
 
     Boolean existsByFkEntrada(RegistroEntrada registroEntrada);
 
-    // quero buscar as notas ficais pendentes a partir da view 'vw_kpi_nfs_pendentes'
+    // KPI Queries
     @Query(value = "SELECT quantidade_nfs_pendentes FROM vw_kpi_nfs_pendentes WHERE id_oficina = :idOficina", nativeQuery = true)
     ViewNotaFiscal findViewNotasFicaisPendentes(@Param("idOficina") Integer idOficina);
 
@@ -41,8 +50,9 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
             "JOIN c.fkOficina ofi " +
             "WHERE o.nfRealizada = :nfRealizada " +
             "AND o.pagtRealizado = :pagtRealizado " +
-            "AND ofi.idOficina = :idOficina")
-    List<OrdemDeServico> findByNfRealizadaAndPagtRealizadoAndIdOficina(
+            "AND ofi.idOficina = :idOficina " +
+            "AND o.status = 'FINALIZADO'")
+    List<OrdemDeServico> findByNfRealizadaAndPagtRealizadoAndIdOficinaAndIsFinalizado(
             @Param("nfRealizada") Boolean nfRealizada,
             @Param("pagtRealizado") Boolean pagtRealizado,
             @Param("idOficina") Integer idOficina);

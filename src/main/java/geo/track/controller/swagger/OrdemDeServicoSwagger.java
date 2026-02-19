@@ -5,6 +5,7 @@ import geo.track.dto.os.request.*;
 import geo.track.dto.os.response.OrdemDeServicoResponse;
 import geo.track.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,7 +43,7 @@ public interface OrdemDeServicoSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @GetMapping
-    ResponseEntity<List<OrdemDeServicoResponse>> findOrdem();
+    ResponseEntity<List<OrdemDeServicoResponse>> findOrdem(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario);
 
     @Operation(summary = "Buscar Ordem de Serviço por ID")
     @ApiResponses(value = {
@@ -53,7 +54,30 @@ public interface OrdemDeServicoSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @GetMapping("/{idOrdem}")
-    ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated);
+    ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated);
+
+    @Operation(summary = "Buscar Ordem de Serviço por Placa")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ordem de Serviço encontrada com sucesso", content = {
+                    @Content(schema = @Schema(implementation = OrdemDeServicoResponse.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "Nenhuma Ordem de Serviço encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @GetMapping("/veiculos/{placa}")
+    ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByPlaca(@PathVariable String placa, @Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario);
+
+    @Operation(summary = "Buscar Ordem de Serviço por Status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ordem de Serviço encontrada com sucesso", content = {
+                    @Content(schema = @Schema(implementation = OrdemDeServicoResponse.class))
+            }),
+            @ApiResponse(responseCode = "204", description = "Nenhuma Ordem de Serviço encontrada"),
+            @ApiResponse(responseCode = "400", description = "Status inválido"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @GetMapping("/status/{status}")
+    ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByStatus(@PathVariable String status, @Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario);
 
     @Operation(summary = "Atualizar valor e data de saída da ordem de serviço")
     @ApiResponses(value = {

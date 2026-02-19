@@ -62,6 +62,14 @@ public class OrdemDeServico {
     @Schema(description = "Lista de serviços associados à ordem de serviço")
     private List<ItemServico> servicos;
 
+    @Transient
+    public Oficinas getOficina() {
+        if (fkEntrada != null && fkEntrada.getFkVeiculo() != null && fkEntrada.getFkVeiculo().getFkCliente() != null) {
+            return fkEntrada.getFkVeiculo().getFkCliente().getFkOficina();
+        }
+        return null;
+    }
+
     public OrdemDeServico(Integer idOrdemServico, Double valorTotal, LocalDate dataSaidaPrevista, LocalDate dataSaidaEfetiva, StatusVeiculo status, Boolean seguradora, Boolean nfRealizada, Boolean pagtRealizado, RegistroEntrada fkEntrada, List<ItemProduto> produtos, List<ItemServico> servicos) {
         this.idOrdemServico = idOrdemServico;
         this.dataSaidaPrevista = dataSaidaPrevista;

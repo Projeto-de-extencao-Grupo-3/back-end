@@ -6,6 +6,7 @@ import geo.track.domain.OrdemDeServico;
 import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;
+import geo.track.dto.os.response.CardOrdemDeServicoResponse;
 import geo.track.dto.os.response.OrdemDeServicoResponse;
 import geo.track.dto.os.response.ServicoProdutoOrdemResponse;
 
@@ -70,5 +71,23 @@ public class OrdemDeServicoMapper {
         List<ItemProdutoResponse> produtos = entity.getProdutos().stream().map(ItemProdutoMapper::toResponse).toList();
 
         return new ServicoProdutoOrdemResponse(servicos, produtos);
+    }
+
+    public static List<CardOrdemDeServicoResponse> toCard(List<OrdemDeServico> ordem) {
+        return ordem.stream().map(OrdemDeServicoMapper::toCard).toList();
+    }
+
+    public static CardOrdemDeServicoResponse toCard(OrdemDeServico ordem) {
+        OrdemDeServicoResponse ordemResponse = OrdemDeServicoMapper.toResponse(ordem);
+
+        return new   CardOrdemDeServicoResponse(
+                ordem.getIdOrdemServico(),
+                ordemResponse.getValorTotal(),
+                ordemResponse.getDataSaidaPrevista(),
+                ordemResponse.getDataSaidaEfetiva(),
+                ordemResponse.getStatus(),
+                ordemResponse.getCliente(),
+                ordemResponse.getVeiculo()
+        );
     }
 }

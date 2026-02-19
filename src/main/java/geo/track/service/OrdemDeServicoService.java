@@ -9,7 +9,6 @@ import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
-import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.repository.OrdemDeServicoRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,15 +46,15 @@ public class OrdemDeServicoService {
         return ordemRepository.save(ordem);
     }
 
-    public List<OrdemDeServico> findOrdem(){
-        return ordemRepository.findAll();
+    public List<OrdemDeServico> findOrdem(Integer idOficina){
+        return ordemRepository.findAllByIdOficina(idOficina);
     }
 
-    public OrdemDeServico findOrdemById(Integer idOrdem){
-        Optional<OrdemDeServico> ordem = ordemRepository.findById(idOrdem);
+    public OrdemDeServico findOrdemById(Integer idOrdem, Integer idOficina){
+        Optional<OrdemDeServico> ordem = ordemRepository.findByIdAndIdOficina(idOrdem, idOficina);
 
         if (ordem.isEmpty()){
-            throw new DataNotFoundException("O ID %d não foi encontrado".formatted(idOrdem), "Ordem de Serviço");
+            throw new DataNotFoundException("O ID %d não foi encontrado ou não pertence a esta oficina".formatted(idOrdem), "Ordem de Serviço");
         }
         return ordem.get();
     }
@@ -167,17 +166,17 @@ public class OrdemDeServicoService {
         ordemRepository.delete(ordem);
     }
 
-    public List<OrdemDeServico> findOrdemByPlaca(String placa) {
-        return ordemRepository.findByPlaca(placa);
+    public List<OrdemDeServico> findOrdemByPlaca(String placa, Integer idOficina) {
+        return ordemRepository.findByPlacaAndIdOficina(placa, idOficina);
     }
 
-    public List<OrdemDeServico> findOrdemByStatus(StatusVeiculo status) {
-        return ordemRepository.findByStatus(status);
+    public List<OrdemDeServico> findOrdemByStatus(StatusVeiculo status, Integer idOficina) {
+        return ordemRepository.findByStatusAndIdOficina(status, idOficina);
     }
 
-    public List<OrdemDeServico> findOrdemByStatusUltimos30Dias() {
+    public List<OrdemDeServico> findOrdemByStatusUltimos30Dias(Integer idOficina) {
         LocalDate dataLimite = LocalDate.now().minusDays(30L);
-        return ordemRepository.findByStatusUltimos30Dias(dataLimite);
+        return ordemRepository.findByStatusUltimos30DiasAndIdOficina(dataLimite, idOficina);
     }
 
     public Boolean existsOrdemByRegistroEntrada(Integer idRegistroEtrada) {
@@ -209,7 +208,7 @@ public class OrdemDeServicoService {
         return viewPagamentoPendente;
     }
 
-    public List<OrdemDeServicoResponse> findOrdemByNfRealizadaAndPagtRealizado(Boolean nfRealizada, Boolean pagtRealizado, Integer idOficina) {
-        return OrdemDeServicoMapper.toResponse(ordemRepository.findByNfRealizadaAndPagtRealizadoAndIdOficina(nfRealizada, pagtRealizado, idOficina));
+    public List<OrdemDeServico> findOrdemByNfRealizadaAndPagtRealizado(Boolean nfRealizada, Boolean pagtRealizado, Integer idOficina) {
+        return ordemRepository.findByNfRealizadaAndPagtRealizadoAndIdOficinaAndIsFinalizado(nfRealizada, pagtRealizado, idOficina);
     }
 }

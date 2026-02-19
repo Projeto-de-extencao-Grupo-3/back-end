@@ -15,11 +15,15 @@ import java.util.List;
 public class PainelControleService {
     private final OrdemDeServicoService ordemService;
 
-    public List<List<OrdemDeServico>> findOrdensPorStatus() {
+    public List<List<OrdemDeServico>> findOrdensPorStatus(Integer idOficina) {
         List<List<OrdemDeServico>> listaOrdensPorStatus = new ArrayList<>();
 
         for(int i = 0; i < StatusVeiculo.values().length; i++) {
-            listaOrdensPorStatus.add(ordemService.findOrdemByStatus(StatusVeiculo.values()[i]));
+            if (StatusVeiculo.values()[i].equals(StatusVeiculo.FINALIZADO)) {
+                listaOrdensPorStatus.add(ordemService.findOrdemByStatusUltimos30Dias(idOficina));
+            } else {
+                listaOrdensPorStatus.add(ordemService.findOrdemByStatus(StatusVeiculo.values()[i], idOficina));
+            }
         }
 
         return listaOrdensPorStatus;

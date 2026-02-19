@@ -39,25 +39,30 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<OrdemDeServicoResponse>> findOrdem() {
-        List<OrdemDeServico> ordem = ordemService.findOrdem();
+    public ResponseEntity<List<OrdemDeServicoResponse>> findOrdem(@AuthenticationPrincipal UsuarioDetalhesDto usuario) {
+        Integer idOficina = usuario.getIdOficina();
+        List<OrdemDeServico> ordem = ordemService.findOrdem(idOficina);
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
+    @Override
     @GetMapping("/veiculos/{placa}")
-    public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByPlaca(@PathVariable String placa) {
-        List<OrdemDeServico> ordem = ordemService.findOrdemByPlaca(placa);
+    public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByPlaca(@PathVariable String placa, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
+        Integer idOficina = usuario.getIdOficina();
+        List<OrdemDeServico> ordem = ordemService.findOrdemByPlaca(placa, idOficina);
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
+    @Override
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByStatus(@PathVariable String status) {
+    public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByStatus(@PathVariable String status, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
+        Integer idOficina = usuario.getIdOficina();
         List<String> validStatus = Arrays.stream(StatusVeiculo.values()).map(Enum::name).toList();
         boolean isValid = validStatus.contains(status.toUpperCase());
 
@@ -70,9 +75,9 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 
         // Busca dos ultimos 30 dias
         if (statusEnum.equals(StatusVeiculo.FINALIZADO)) {
-            ordens = ordemService.findOrdemByStatusUltimos30Dias();
+            ordens = ordemService.findOrdemByStatusUltimos30Dias(idOficina);
         } else {
-            ordens = ordemService.findOrdemByStatus(statusEnum);
+            ordens = ordemService.findOrdemByStatus(statusEnum, idOficina);
         }
 
         if (ordens.isEmpty()) {
@@ -84,9 +89,8 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     @Override
     @GetMapping("/{idOrdem}")
     public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated) {
-
-
-        OrdemDeServico ordem = ordemService.findOrdemById(idOrdem);
+        Integer idOficina = userAuthenticated.getIdOficina();
+        OrdemDeServico ordem = ordemService.findOrdemById(idOrdem, idOficina);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 

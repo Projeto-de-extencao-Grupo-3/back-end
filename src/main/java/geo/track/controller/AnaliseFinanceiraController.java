@@ -29,9 +29,9 @@ public class AnaliseFinanceiraController {
         ResponsePagamentos responsePagtoRealizado = analiseService.findOrdensPagtoCondition(idOficina, true, true);
 
         HashMap<String, Object> returnObj = new HashMap<>();
-        returnObj.put("servicos_pagamento_pendente", responsePagtoPendente);
-        returnObj.put("servicos_nota_fiscal_pendente", responseNF);
-        returnObj.put("servicos_pagamento_realizado", responsePagtoRealizado);
+        returnObj.put("SERVICOS_PAGAMENTO_PENDENTE", responsePagtoPendente);
+        returnObj.put("SERVICOS_NOTA_FISCAL_PENDENTE", responseNF);
+        returnObj.put("SERVICOS_PAGAMENTO_REALIZADO", responsePagtoRealizado);
 
         return ResponseEntity.status(200).body(returnObj);
     }

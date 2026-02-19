@@ -3,6 +3,7 @@ package geo.track.controller;
 import geo.track.controller.swagger.ArquivosSwagger;
 import geo.track.domain.OrdemDeServico;
 import geo.track.dto.arquivos.RequestGetArquivoOrcamento;
+import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.exception.BadRequestException;
 import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.port.GatewayExportData;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DecimalFormat;
@@ -20,14 +22,14 @@ import java.time.LocalDate;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/arquivos")
-public class ArquivosController implements ArquivosSwagger {
+public class ArquivosController{
     private final GatewayExportData gatewayExportData;
     private final OrdemDeServicoService ordemServicoService;
 
-    @Override
     @PostMapping("/orcamento")
-    public ResponseEntity<byte[]> post(@RequestHeader("authorization") String token, @RequestBody @Valid RequestGetArquivoOrcamento body) {
-        OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento());
+    public ResponseEntity<byte[]> post(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token, @RequestBody @Valid RequestGetArquivoOrcamento body) {
+        Integer idUsuario = usuario.getIdOficina();
+        OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento(), idUsuario);
 
         byte[] pdfContent = gatewayExportData.getArquivoOrcamento(token, OrdemDeServicoMapper.toResponse(orcamento));
 
@@ -47,10 +49,10 @@ public class ArquivosController implements ArquivosSwagger {
                 .body(pdfContent);
     }
 
-    @Override
     @PostMapping("/ordem_servico")
-    public ResponseEntity<byte[]> posta(@RequestHeader("authorization") String token,@RequestBody @Valid RequestGetArquivoOrcamento body) {
-        OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento());
+    public ResponseEntity<byte[]> posta(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token,@RequestBody @Valid RequestGetArquivoOrcamento body) {
+        Integer idOficina = usuario.getIdOficina();
+        OrdemDeServico orcamento = ordemServicoService.findOrdemById(body.idOrcamento(), idOficina);
 
         if (orcamento.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", "Ordem de Serviço");
         if (orcamento.getDataSaidaEfetiva() == null) orcamento.setDataSaidaEfetiva(LocalDate.now());
