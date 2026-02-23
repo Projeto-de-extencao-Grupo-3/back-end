@@ -1,6 +1,7 @@
 package geo.track.mapper;
 
 import geo.track.domain.RegistroEntrada;
+import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;
 import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
 
 import java.util.List;
@@ -31,10 +32,6 @@ public final class RegistroEntradaMapper {
             response.setIdVeiculo(entity.getFkVeiculo().getIdVeiculo());
         }
 
-        if (entity.getOrdemDeServicos() != null) {
-            response.setIdOrdemDeServico(entity.getOrdemDeServicos().getIdOrdemServico());
-        }
-
         return response;
     }
 
@@ -42,5 +39,14 @@ public final class RegistroEntradaMapper {
         return entities.stream()
                 .map(RegistroEntradaMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public static RegistroEntradaCriacaoResponse toResponsePost(RegistroEntrada registro) {
+        RegistroEntradaCriacaoResponse response = new RegistroEntradaCriacaoResponse();
+
+        response.setEntrada(toResponse(registro));
+        response.setOrdemServico(OrdemDeServicoMapper.toCard(registro.getOrdemDeServicos()));
+
+        return response;
     }
 }

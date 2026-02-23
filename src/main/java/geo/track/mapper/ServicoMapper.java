@@ -3,6 +3,7 @@ package geo.track.mapper;
 import geo.track.domain.Servico;
 import geo.track.dto.servicos.ServicoResponse;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,9 @@ public class ServicoMapper {
     }
 
     public static List<ServicoResponse> toResponse(List<Servico> entities) {
+        if (entities == null) {
+            return Collections.emptyList();
+        }
         return entities.stream()
                 .map(ServicoMapper::toResponse)
                 .collect(Collectors.toList());

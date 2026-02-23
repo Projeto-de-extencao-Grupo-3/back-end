@@ -18,14 +18,19 @@ public class OrdemDeServicoMapper {
         if (entity == null) {
             return null;
         }
+        Double totalServico = 0.0;
+        Double totalProduto = 0.0;
+        if (entity.getServicos() != null) {
+            totalServico = entity.getServicos().stream()
+                    .mapToDouble(ItemServico::getPrecoCobrado)
+                    .sum();
+        }
 
-        Double totalServico = entity.getServicos().stream()
-                .mapToDouble(ItemServico::getPrecoCobrado)
-                .sum();
-
-        Double totalProduto = entity.getProdutos().stream()
-                .mapToDouble(p -> p.getPrecoPeca() * p.getQuantidade())
-                .sum();
+        if (entity.getProdutos() != null) {
+            totalProduto = entity.getProdutos().stream()
+                    .mapToDouble(p -> p.getPrecoPeca() * p.getQuantidade())
+                    .sum();
+        }
 
         OrdemDeServicoResponse response = new OrdemDeServicoResponse();
         response.setIdOrdemServico(entity.getIdOrdemServico());
@@ -85,6 +90,8 @@ public class OrdemDeServicoMapper {
                 ordemResponse.getValorTotal(),
                 ordemResponse.getDataSaidaPrevista(),
                 ordemResponse.getDataSaidaEfetiva(),
+                ordemResponse.getEntrada().getDataEntradaPrevista(),
+                ordemResponse.getEntrada().getDataEntradaEfetiva(),
                 ordemResponse.getStatus(),
                 ordemResponse.getCliente(),
                 ordemResponse.getVeiculo()
