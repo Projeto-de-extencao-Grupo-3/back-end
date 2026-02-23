@@ -3,6 +3,7 @@ package geo.track.controller.swagger;
 import geo.track.dto.registroEntrada.request.RequestPostEntrada;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
+import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;
 import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
 import geo.track.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,7 +64,7 @@ public interface RegistroEntradaSwagger {
             )
     })
     @PostMapping("/entrada")
-    ResponseEntity<RegistroEntradaResponse> realizarEntradaVeiculo(@RequestBody RequestPostEntrada registroDTO);
+    ResponseEntity<RegistroEntradaCriacaoResponse> realizarEntradaVeiculo(@RequestBody RequestPostEntrada registroDTO);
 
     @Operation(
             summary = "Atualizar os dados de Entrada de Veículo agendado anteriormente",

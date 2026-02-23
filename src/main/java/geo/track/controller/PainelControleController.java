@@ -31,7 +31,7 @@ public class PainelControleController {
     @GetMapping("/servicos-produtos/{idOrdem}")
     public ResponseEntity<ServicoProdutoOrdemResponse> findById(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario, @PathVariable Integer idOrdem) {
         Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.findOrdemById(idOrdem, idOficina);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem, idOficina);
 
         if (ordem.getServicos().isEmpty() && ordem.getProdutos().isEmpty()) {
             return ResponseEntity.status(204).build();

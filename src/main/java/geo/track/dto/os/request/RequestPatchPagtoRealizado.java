@@ -7,6 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class RequestPatchPagtoRealizado {
     private Integer idOrdem;
-    private Integer fkVeiculo;
     private Boolean pagtoRealizado;
 }

@@ -20,5 +20,4 @@ public class RegistroEntradaResponse {
     private Integer somDvd;
     private Integer caixaFerramenta;
     private Integer idVeiculo;
-    private Integer idOrdemDeServico;
 }

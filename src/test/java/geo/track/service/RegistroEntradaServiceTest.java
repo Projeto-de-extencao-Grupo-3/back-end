@@ -85,7 +85,7 @@ class RegistroEntradaServiceTest {
     @DisplayName("findRegistro: Deve retornar uma lista de registros")
     void deveRetornarListaDeRegistros() {
         when(repository.findAll()).thenReturn(List.of(registroEntrada));
-        List<RegistroEntrada> resultado = service.findRegistros();
+        List<RegistroEntrada> resultado = service.listarEntradas();
         assertFalse(resultado.isEmpty());
         verify(repository).findAll();
     }
@@ -94,7 +94,7 @@ class RegistroEntradaServiceTest {
     @DisplayName("findRegistro: Deve retornar uma lista vazia quando não houver registros")
     void deveRetornarListaVazia() {
         when(repository.findAll()).thenReturn(Collections.emptyList());
-        List<RegistroEntrada> resultado = service.findRegistros();
+        List<RegistroEntrada> resultado = service.listarEntradas();
         assertTrue(resultado.isEmpty());
         verify(repository).findAll();
     }
@@ -104,7 +104,7 @@ class RegistroEntradaServiceTest {
     @DisplayName("findRegistroById: Deve encontrar registro por ID com sucesso")
     void deveEncontrarRegistroPorIdComSucesso() {
         when(repository.findById(1)).thenReturn(Optional.of(registroEntrada));
-        RegistroEntrada resultado = service.findRegistroById(1);
+        RegistroEntrada resultado = service.buscarEntradaPorId(1);
         assertNotNull(resultado);
         verify(repository).findById(1);
     }
@@ -113,7 +113,7 @@ class RegistroEntradaServiceTest {
     @DisplayName("findRegistroById: Deve lançar DataNotFoundException para ID inexistente")
     void deveLancarExcecaoAoBuscarIdInexistente() {
         when(repository.findById(99)).thenReturn(Optional.empty());
-        assertThrows(DataNotFoundException.class, () -> service.findRegistroById(99));
+        assertThrows(DataNotFoundException.class, () -> service.buscarEntradaPorId(99));
         verify(repository).findById(99);
     }
 
@@ -124,7 +124,7 @@ class RegistroEntradaServiceTest {
         when(repository.findById(1)).thenReturn(Optional.of(registroEntrada));
         when(repository.save(any(RegistroEntrada.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        RegistroEntrada resultado = service.putRegistro(putRegistroEntrada);
+        RegistroEntrada resultado = service.atualizarEntradaVeiculoAgendado(putRegistroEntrada);
 
         assertNotNull(resultado);
         assertEquals(putRegistroEntrada.getResponsavel(), resultado.getResponsavel());
@@ -138,18 +138,18 @@ class RegistroEntradaServiceTest {
     void deveLancarExcecaoAoAtualizarRegistroInexistente() {
         when(repository.findById(99)).thenReturn(Optional.empty());
         putRegistroEntrada.setIdRegistro(99);
-        assertThrows(DataNotFoundException.class, () -> service.putRegistro(putRegistroEntrada));
+        assertThrows(DataNotFoundException.class, () -> service.atualizarEntradaVeiculoAgendado(putRegistroEntrada));
         verify(repository).findById(99);
         verify(repository, never()).save(any(RegistroEntrada.class));
     }
 
     @Test
     @DisplayName("deleteRegistro: Deve lançar DataNotFoundException ao tentar deletar registro inexistente")
-    void deveLancarDataNotFoundExceptionAoDeletarRegistroInexistente() {
+    void deveLancarDataNotFoundExceptionAoDeletarEntradaVeiculoInexistente() {
         when(repository.existsById(any(Integer.class))).thenReturn(false);
 
         DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.deletarRegistro(99);
+            service.deletarEntrada(99);
         });
 
         assertEquals("Registro de Entrada não encontrado", exception.getMessage());

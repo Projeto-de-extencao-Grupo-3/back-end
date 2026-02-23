@@ -5,9 +5,10 @@ import geo.track.domain.RegistroEntrada;
 import geo.track.dto.registroEntrada.request.RequestPostEntrada;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
+import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;
 import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
 import geo.track.mapper.RegistroEntradaMapper;
-import geo.track.port.RegistroEntradaPort;
+import geo.track.service.RegistroEntradaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequestMapping("/entrada")
 @RequiredArgsConstructor
 public class RegistroEntradaController implements RegistroEntradaSwagger {
-    private final RegistroEntradaPort REGISTRO_ENTRADA_SERVICE;
+    private final RegistroEntradaService REGISTRO_ENTRADA_SERVICE;
 
     @Override
     @PostMapping("/agendamento")
@@ -28,10 +29,10 @@ public class RegistroEntradaController implements RegistroEntradaSwagger {
     }
 
     @Override
-    @PostMapping("/entrada")
-    public ResponseEntity<RegistroEntradaResponse> realizarEntradaVeiculo(@RequestBody RequestPostEntrada registroDTO) {
+    @PostMapping()
+    public ResponseEntity<RegistroEntradaCriacaoResponse> realizarEntradaVeiculo(@RequestBody RequestPostEntrada registroDTO) {
         RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.realizarEntradaVeiculo(registroDTO);
-        return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponse(registro));
+        return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponsePost(registro));
     }
 
     @Override
@@ -44,7 +45,7 @@ public class RegistroEntradaController implements RegistroEntradaSwagger {
     @Override
     @GetMapping
     public ResponseEntity<List<RegistroEntradaResponse>> findRegistro() {
-        List<RegistroEntrada> registro = REGISTRO_ENTRADA_SERVICE.findRegistros();
+        List<RegistroEntrada> registro = REGISTRO_ENTRADA_SERVICE.listarEntradas();
         if (registro.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -54,12 +55,12 @@ public class RegistroEntradaController implements RegistroEntradaSwagger {
     @Override
     @GetMapping("/{idRegistro}")
     public ResponseEntity<RegistroEntradaResponse> findRegistroById(@PathVariable Integer idRegistro) {
-        RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.findRegistroById(idRegistro);
+        RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.buscarEntradaPorId(idRegistro);
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(registro));
     }
 
     public ResponseEntity<Void> deleteRegistro(@PathVariable Integer idRegistro) {
-        REGISTRO_ENTRADA_SERVICE.deletarRegistro(idRegistro);
+        REGISTRO_ENTRADA_SERVICE.deletarEntrada(idRegistro);
         return ResponseEntity.status(204).build();
     }
 }

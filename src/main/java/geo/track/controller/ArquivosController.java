@@ -5,7 +5,7 @@ import geo.track.dto.arquivos.RequestGetArquivoOrcamento;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.exception.BadRequestException;
 import geo.track.mapper.OrdemDeServicoMapper;
-import geo.track.port.GatewayExportData;
+import geo.track.gateway.GatewayExportData;
 import geo.track.service.OrdemDeServicoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class ArquivosController{
     @PostMapping("/orcamento")
     public ResponseEntity<byte[]> post(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token, @RequestBody @Valid RequestGetArquivoOrcamento body) {
         Integer idUsuario = usuario.getIdOficina();
-        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.findOrdemById(body.idOrcamento(), idUsuario);
+        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.idOrcamento(), idUsuario);
 
         byte[] pdfContent = GATEWAY_EXPORT_DATA.getArquivoOrcamento(token, OrdemDeServicoMapper.toResponse(orcamento));
 
@@ -51,7 +51,7 @@ public class ArquivosController{
     @PostMapping("/ordem_servico")
     public ResponseEntity<byte[]> posta(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token,@RequestBody @Valid RequestGetArquivoOrcamento body) {
         Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.findOrdemById(body.idOrcamento(), idOficina);
+        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.idOrcamento(), idOficina);
 
         if (orcamento.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", "Ordem de Serviço");
         if (orcamento.getDataSaidaEfetiva() == null) orcamento.setDataSaidaEfetiva(LocalDate.now());

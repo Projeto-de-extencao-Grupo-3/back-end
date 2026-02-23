@@ -28,29 +28,35 @@ import java.util.List;
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID único do Cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "ID único do Cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    // Adicionado
     private Integer idCliente;
 
     @NotBlank
-    @Schema(description = "Nome completo do cliente", example = "João da Silva", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "Nome completo do cliente", example = "João da Silva", requiredMode = Schema.RequiredMode.REQUIRED)
+    // Adicionado
     private String nome;
 
     @NotBlank
     @CPF
-    @Schema(description = "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente", example = "12345678909", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente", example = "12345678909", requiredMode = Schema.RequiredMode.REQUIRED)
+    // Adicionado
     private String cpfCnpj;
 
     @NotBlank
     @Size(min = 10, max = 11)
-    @Schema(description = "Número de telefone do cliente (com DDD)", example = "11987654321", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "Número de telefone do cliente (com DDD)", example = "11987654321", requiredMode = Schema.RequiredMode.REQUIRED)
+    // Adicionado
     private String telefone;
 
     @NotBlank
-    @Schema(description = "Endereço de e-mail do cliente", example = "joao.silva@email.com", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "Endereço de e-mail do cliente", example = "joao.silva@email.com", requiredMode = Schema.RequiredMode.REQUIRED)
+    // Adicionado
     private String email;
 
     @NotBlank
-    @Schema(description = "Tipo de cliente", example = "PESSOA_FISICA", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "Tipo de cliente", example = "PESSOA_FISICA", requiredMode = Schema.RequiredMode.REQUIRED)
+    // Adicionado
     private String tipoCliente;
 
     @ManyToOne

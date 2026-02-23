@@ -11,6 +11,8 @@ public record CardOrdemDeServicoResponse(
         Double valorTotal,
         LocalDate dataSaidaPrevista,
         LocalDate dataSaidaEfetiva,
+        LocalDate dataEntradaPrevista,
+        LocalDate dataEntradaEfetiva,
         StatusVeiculo status,
         ClienteResponse cliente,
         VeiculoResponse veiculo

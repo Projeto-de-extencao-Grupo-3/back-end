@@ -16,12 +16,8 @@ public class PainelControleService {
     public List<List<OrdemDeServico>> findOrdensPorStatus(Integer idOficina) {
         List<List<OrdemDeServico>> listaOrdensPorStatus = new ArrayList<>();
 
-        for(int i = 0; i < StatusVeiculo.values().length; i++) {
-            if (StatusVeiculo.values()[i].equals(StatusVeiculo.FINALIZADO)) {
-                listaOrdensPorStatus.add(ODEM_SERVICO_SERVICE.findOrdemByStatusUltimos30Dias(idOficina));
-            } else {
-                listaOrdensPorStatus.add(ODEM_SERVICO_SERVICE.findOrdemByStatus(StatusVeiculo.values()[i], idOficina));
-            }
+        for (int i = 0; i < StatusVeiculo.values().length; i++) {
+            listaOrdensPorStatus.add(ODEM_SERVICO_SERVICE.buscarOrdemPorStatus(StatusVeiculo.values()[i], idOficina));
         }
 
         return listaOrdensPorStatus;

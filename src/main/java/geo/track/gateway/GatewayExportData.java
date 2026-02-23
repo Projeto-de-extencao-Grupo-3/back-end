@@ -1,4 +1,4 @@
-package geo.track.port;
+package geo.track.gateway;
 
 import geo.track.dto.os.response.OrdemDeServicoResponse;
 import jakarta.validation.Valid;

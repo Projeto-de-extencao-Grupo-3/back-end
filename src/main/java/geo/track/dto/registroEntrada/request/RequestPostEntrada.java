@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public record RequestPostEntrada(
         Integer idCliente,
-        Integer idVeiculo,
+        Integer fkVeiculo,
         LocalDate dataEntradaEfetiva,
         String nomeResponsavel,
         String cpfResponsavel,

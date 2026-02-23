@@ -29,7 +29,7 @@ public class ItemServicoController {
     public ResponseEntity<ItemServicoResponse> cadastrar(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestBody RequestPostItemServico body) {
         Integer idOficina = usuario.getIdOficina();
 
-        OrdemDeServico ordemServico = ORDEM_SERVICO_SERVICE.findOrdemById(body.getFkOrdemServico(), idOficina);
+        OrdemDeServico ordemServico = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.getFkOrdemServico(), idOficina);
         Servico servico = SERVICO_SERVICE.buscarPorId(body.getFkServico());
         ItemServico item = ItemServicoMapper.toDomain(body, ordemServico, servico);
 
