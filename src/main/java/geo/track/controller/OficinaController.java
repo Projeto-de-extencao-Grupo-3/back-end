@@ -56,14 +56,14 @@ public class OficinaController implements OficinaSwagger {
 
     @Override
     @GetMapping("/razao-social")
-    public ResponseEntity<List<OficinaResponse>> getEmpresaByRazaoSocial(@RequestParam String razaoSocial){
+    public ResponseEntity<List<OficinaResponse>> getEmpresaByRazaoSocial(@PathVariable String razaoSocial){
         List<Oficinas> lista = OFICINA_SERVICE.findOficinasByRazaoSocial(razaoSocial);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(lista));
     }
 
     @Override
     @GetMapping("/cnpj")
-    public ResponseEntity<OficinaResponse> findEmpresaByCNPJ(@RequestParam String cnpj){
+    public ResponseEntity<OficinaResponse> findEmpresaByCNPJ(@PathVariable String cnpj){
         Oficinas emp = OFICINA_SERVICE.findOficinasByCnpj(cnpj);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(emp));
     }

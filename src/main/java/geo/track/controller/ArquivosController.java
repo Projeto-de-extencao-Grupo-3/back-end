@@ -26,10 +26,10 @@ public class ArquivosController{
     private final GatewayExportData GATEWAY_EXPORT_DATA;
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
-    @PostMapping("/orcamento")
-    public ResponseEntity<byte[]> post(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token, @RequestBody @Valid RequestGetArquivoOrcamento body) {
+    @GetMapping("/orcamento/{idOrcamento}")
+    public ResponseEntity<byte[]> post(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token, @PathVariable Integer idOrcamento) {
         Integer idUsuario = usuario.getIdOficina();
-        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.idOrcamento(), idUsuario);
+        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrcamento, idUsuario);
 
         byte[] pdfContent = GATEWAY_EXPORT_DATA.getArquivoOrcamento(token, OrdemDeServicoMapper.toResponse(orcamento));
 
@@ -49,10 +49,10 @@ public class ArquivosController{
                 .body(pdfContent);
     }
 
-    @PostMapping("/ordem_servico")
-    public ResponseEntity<byte[]> posta(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token,@RequestBody @Valid RequestGetArquivoOrcamento body) {
+    @GetMapping("/ordem_servico/{idOrdemServico}")
+    public ResponseEntity<byte[]> posta(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token,@PathVariable Integer idOrdemServico) {
         Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.idOrcamento(), idOficina);
+        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdemServico, idOficina);
 
         if (orcamento.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", EnumDomains.ORDEM_DE_SERVICO);
         if (orcamento.getDataSaidaEfetiva() == null) orcamento.setDataSaidaEfetiva(LocalDate.now());
