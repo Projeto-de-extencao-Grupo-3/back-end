@@ -7,6 +7,9 @@ import geo.track.dto.os.request.*;
 import geo.track.dto.os.response.*;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
+import geo.track.exception.ConflictException;
+import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.service.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +31,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 //    Criação de Ordem de Servico é feito automaticamente na entrada
     public ResponseEntity<OrdemDeServicoResponse> postOrdem(@RequestBody PostEntradaVeiculo ordemDTO) {
         if (ORDEM_SERVICO_SERVICE.existeOrdemServicoPorEntrada(ordemDTO.getFkEntrada())) {
-            throw new BadRequestException("Já existe uma ordem de serviço para o registro de entrada com ID %d".formatted(ordemDTO.getFkEntrada()), "Ordem de Serviço");
+            throw new ConflictException(OrdemDeServicoExceptionMessages.ORDEM_JA_EXISTE_PARA_REGISTRO_ENTRADA, EnumDomains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(ordemDTO);
@@ -65,7 +68,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
         boolean isValid = validStatus.contains(status.toUpperCase());
 
         if (!isValid) {
-            throw new BadRequestException("Status inválido. Os permitidos são: %s".formatted(Arrays.toString(StatusVeiculo.values())), "Ordem de Serviço");
+            throw new BadRequestException("Status inválido. Os permitidos são: %s".formatted(Arrays.toString(StatusVeiculo.values())), EnumDomains.ORDEM_DE_SERVICO);
         }
 
         StatusVeiculo statusEnum = StatusVeiculo.valueOf(status.toUpperCase());

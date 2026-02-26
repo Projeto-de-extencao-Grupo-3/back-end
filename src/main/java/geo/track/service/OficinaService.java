@@ -8,8 +8,10 @@ import geo.track.dto.autenticacao.UsuarioMapper;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
+import geo.track.exception.constraint.message.EnumDomains;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.OficinaExceptionMessages; // Corrected import
 import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ResponseStatusException; // Keep this import if ResponseStatusException is used elsewhere
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +37,7 @@ public class OficinaService {
 
     public Oficinas cadastrar(Oficinas Oficinas){
         if (OFICINA_REPOSITORY.findByCnpj(Oficinas.getCnpj()).isPresent()){
-            throw new ConflictException("O CNPJ %s já está cadastrado!".formatted(Oficinas.getCnpj()), "Oficinas");
+            throw new ConflictException(String.format(OficinaExceptionMessages.CNPJ_JA_CADASTRADO, Oficinas.getCnpj()), EnumDomains.OFICINA);
         }
         return OFICINA_REPOSITORY.save(Oficinas);
     }
@@ -50,7 +52,7 @@ public class OficinaService {
         Funcionario funcionarioAutenticado =
                 FUNCIONARIO_REPOSITORY.findByEmail(body.getEmail())
                         .orElseThrow(
-                                () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
+                                () -> new DataNotFoundException(OficinaExceptionMessages.EMAIL_NAO_CADASTRADO, EnumDomains.FUNCIONARIO) // Changed to DataNotFoundException
                         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -65,7 +67,7 @@ public class OficinaService {
     }
 
     public Oficinas findOficinasById(Integer id){
-        return OFICINA_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException("Oficina com ID %d não encontrado".formatted(id), "Oficinas"));
+        return OFICINA_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_ID, id), EnumDomains.OFICINA));
     }
 
     public List<Oficinas> findOficinasByRazaoSocial(String razaoSocial){
@@ -73,7 +75,7 @@ public class OficinaService {
     }
 
     public Oficinas findOficinasByCnpj(String cnpj){
-        return OFICINA_REPOSITORY.findByCnpj(cnpj).orElseThrow(() -> new DataNotFoundException("Oficina com CNPJ %s não foi encontrado".formatted(cnpj), "Oficinas"));
+        return OFICINA_REPOSITORY.findByCnpj(cnpj).orElseThrow(() -> new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_CNPJ, cnpj), EnumDomains.OFICINA));
     }
 
     public Oficinas atualizar(Integer id, Oficinas oficinas){
@@ -82,14 +84,14 @@ public class OficinaService {
             Oficinas empSalva = OFICINA_REPOSITORY.save(oficinas);
             return empSalva;
         }
-         throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Oficinas");
+         throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_ID, id), EnumDomains.OFICINA);
     }
 
     public Oficinas patchEmail(OficinaPatchEmailDTO dto){
         Optional<Oficinas> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
 
         if(Oficinas.isEmpty()){
-            throw new DataNotFoundException("Não existe uma oficina com esse ID", "Oficinas");
+            throw new DataNotFoundException(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, EnumDomains.OFICINA);
         }
         Oficinas emp = Oficinas.get();
 
@@ -103,7 +105,7 @@ public class OficinaService {
         Optional<Oficinas> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
 
         if(Oficinas.isEmpty()){
-            throw new DataNotFoundException("Não existe uma oficina com esse ID", "Oficinas");
+            throw new DataNotFoundException(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, EnumDomains.OFICINA);
         }
         Oficinas emp = Oficinas.get();
 
@@ -114,7 +116,7 @@ public class OficinaService {
 
     public void remover(Integer id){
         if (!OFICINA_REPOSITORY.existsById(id)){
-            throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Oficinas");
+            throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_ID, id), EnumDomains.OFICINA);
         }
         OFICINA_REPOSITORY.deleteById(id);
     }

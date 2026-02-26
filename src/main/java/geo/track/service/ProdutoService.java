@@ -5,6 +5,8 @@ import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.ProdutoExceptionMessages;
 import geo.track.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class ProdutoService {
 
     public Produto findProdutoById(Integer id) {
         return PRODUTO_REPOSITORY.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Não existe um produto com esse ID", "Produtos")
+                () -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO)
         );
     }
 
@@ -38,18 +40,18 @@ public class ProdutoService {
             return prod;
         }
 
-        throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+        throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
     }
 
     public Produto patchQtdEstoque(RequestPatchQtdEstoque produtoAtt){
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
-        prod.setQuantidadeEstoque(prod.getQuantidadeEstoque());
+        prod.setQuantidadeEstoque(produtoAtt.getQuantidadeEstoque());
         return PRODUTO_REPOSITORY.save(prod);
     }
 
@@ -57,11 +59,11 @@ public class ProdutoService {
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
-        prod.setPrecoCompra(prod.getPrecoCompra());
+        prod.setPrecoCompra(produtoAtt.getPrecoCompra());
         return PRODUTO_REPOSITORY.save(prod);
     }
 
@@ -69,23 +71,19 @@ public class ProdutoService {
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
-        prod.setPrecoVenda(prod.getPrecoVenda());
+        prod.setPrecoVenda(produtoAtt.getPrecoVenda());
         return PRODUTO_REPOSITORY.save(prod);
     }
 
     public void excluir(Integer id){
         if(!PRODUTO_REPOSITORY.existsById(id)){
-            throw new DataNotFoundException("Não existe um produto com esse ID", "Produtos");
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
         }
 
         PRODUTO_REPOSITORY.deleteById(id);
     }
-
-
-
-
 }

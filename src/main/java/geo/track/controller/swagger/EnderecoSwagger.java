@@ -36,7 +36,7 @@ public interface EnderecoSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço encontrado com sucesso na base de dados do VIACEP", content = {@Content(schema = @Schema(implementation = ResponseViacep.class))}),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado na base de dados do VIACEP", content = @Content(schema = @Schema(implementation = ExceptionBody.class))),
-            @ApiResponse(responseCode = "406", description = EnderecoExceptionMessages.formatacaoCEPException, content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+            @ApiResponse(responseCode = "406", description = EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @GetMapping("/viacep/{cep}")
     ResponseEntity<ResponseViacep> findEnderecoByVIACEP(@PathVariable String cep);
@@ -53,7 +53,7 @@ public interface EnderecoSwagger {
             ),
             @ApiResponse(
                     responseCode = "406",
-                    description = EnderecoExceptionMessages.formatacaoCEPException,
+                    description = EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA,
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
     })
@@ -113,7 +113,7 @@ public interface EnderecoSwagger {
                     description = "Endereço não encontrado",
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             ),
-            @ApiResponse(responseCode = "406", description = EnderecoExceptionMessages.formatacaoCEPException, content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+            @ApiResponse(responseCode = "406", description = EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PutMapping()
     ResponseEntity<EnderecoResponse> putEndereco(@RequestBody RequestPutEndereco enderecoDTO);

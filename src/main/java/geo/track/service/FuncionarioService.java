@@ -3,6 +3,8 @@ package geo.track.service;
 import geo.track.domain.Funcionario;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.FuncionarioExceptionMessages;
 import geo.track.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +21,7 @@ public class FuncionarioService {
 
     public Funcionario cadastrar(Funcionario body){
         if (FUNCIONARIO_REPOSITORY.existsByEmail(body.getEmail())){
-            throw new ConflictException("Funcionário já existente com este email!","Funcionario");
+            throw new ConflictException(FuncionarioExceptionMessages.EMAIL_JA_CADASTRADO, EnumDomains.FUNCIONARIO);
         }
 
         body.setSenha(PASSWORD_ENCODER.encode(body.getSenha()));
@@ -32,7 +34,7 @@ public class FuncionarioService {
 
     public Funcionario buscarPorId(Integer id){
         if (!FUNCIONARIO_REPOSITORY.existsByIdFuncionario(id)){
-            throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
+            throw new DataNotFoundException(FuncionarioExceptionMessages.FUNCIONARIO_NAO_ENCONTRADO_GENERICO,EnumDomains.FUNCIONARIO);
         }
         return FUNCIONARIO_REPOSITORY.getByIdFuncionario(id);
     }
@@ -40,14 +42,14 @@ public class FuncionarioService {
     public Funcionario atualizar(Integer id, Funcionario funcionario){
         funcionario.setIdFuncionario(id);
         if (!FUNCIONARIO_REPOSITORY.existsById(id)){
-            throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
+            throw new DataNotFoundException(FuncionarioExceptionMessages.FUNCIONARIO_NAO_ENCONTRADO_GENERICO,EnumDomains.FUNCIONARIO);
         }
         return FUNCIONARIO_REPOSITORY.save(funcionario);
     }
 
     public void deletar(Integer id){
         if (!FUNCIONARIO_REPOSITORY.existsById(id)){
-            throw new DataNotFoundException("Funcionario não encontrado","Funcionario");
+            throw new DataNotFoundException(FuncionarioExceptionMessages.FUNCIONARIO_NAO_ENCONTRADO_GENERICO,EnumDomains.FUNCIONARIO);
         }
         FUNCIONARIO_REPOSITORY.deleteById(id);
     }

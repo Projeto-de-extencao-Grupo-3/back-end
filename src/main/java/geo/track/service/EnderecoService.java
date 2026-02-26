@@ -4,6 +4,8 @@ import geo.track.domain.Endereco;
 import geo.track.dto.enderecos.request.RequestPostEndereco;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.NotAcepptableException;
+import geo.track.exception.constraint.message.EnderecoExceptionMessages;
+import geo.track.exception.constraint.message.EnumDomains;
 import geo.track.mapper.EnderecosMapper;
 import geo.track.repository.EnderecoRepository;
 import geo.track.dto.enderecos.request.RequestPatchComplemento;
@@ -26,7 +28,7 @@ public class EnderecoService {
         Optional<Endereco> endereco = ENDERECO_REPOSITORY.findById(id);
 
         if (endereco.isEmpty()) {
-            throw new DataNotFoundException("ID %d não foi encontrado".formatted(id), "Endereços");
+            throw new DataNotFoundException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, EnumDomains.ENDERECO);
         }
 
         return endereco.get();
@@ -34,17 +36,21 @@ public class EnderecoService {
 
     public ResponseViacep findEnderecoByVIACEP(String cep) {
         if (cep.length() != 8) {
-            throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
+            throw new NotAcepptableException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, EnumDomains.ENDERECO);
         }
 
-        return VIACEP_CONNECTION.consultarCEP(cep);
+        ResponseViacep response = VIACEP_CONNECTION.consultarCEP(cep);
+        if (response == null || response.getCep() == null) { // Assuming consultCEP returns null or a response with null cep if not found
+            throw new DataNotFoundException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, EnumDomains.ENDERECO);
+        }
+        return response;
     }
 
     public Endereco postEndereco(RequestPostEndereco dtoEndereco) {
         Endereco endereco = EnderecosMapper.RequestToEndereco(dtoEndereco);
 
         if (endereco.getCep().length() != 8) {
-            throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
+            throw new NotAcepptableException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, EnumDomains.ENDERECO);
         }
 
         return ENDERECO_REPOSITORY.save(endereco);
@@ -54,7 +60,7 @@ public class EnderecoService {
         Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(enderecoDTO.getId());
 
         if (enderecos.isEmpty()) {
-            throw new DataNotFoundException("Endereço com o ID %d não foi encontrado".formatted(enderecoDTO.getId()), "Endereços");
+            throw new DataNotFoundException(EnderecoExceptionMessages.ENDERECO_NAO_ENCONTRADO, EnumDomains.ENDERECO);
         }
 
         Endereco endereco = enderecos.get();
@@ -75,14 +81,14 @@ public class EnderecoService {
 
             return endereco;
         } else {
-            throw new DataNotFoundException("Endereço com o ID %d não foi encontrado".formatted(enderecoDTO.getId()), "Endereços");
+            throw new DataNotFoundException(EnderecoExceptionMessages.ENDERECO_NAO_ENCONTRADO, EnumDomains.ENDERECO);
         }
     }
 
     public Endereco putEndereco(RequestPutEndereco enderecoDTO) {
 
         if (enderecoDTO.getCep().length() != 8) {
-             throw new NotAcepptableException("Envie um CEP que possua 8 caracteres", "Endereços");
+             throw new NotAcepptableException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, EnumDomains.ENDERECO);
         }
 
         Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(enderecoDTO.getId());
@@ -102,7 +108,7 @@ public class EnderecoService {
 
             return endereco;
         } else {
-            throw new DataNotFoundException("Endereço com o ID %d não foi encontrado".formatted(enderecoDTO.getId()), "Endereços");
+            throw new DataNotFoundException(EnderecoExceptionMessages.ENDERECO_NAO_ENCONTRADO, EnumDomains.ENDERECO);
         }
     }
 

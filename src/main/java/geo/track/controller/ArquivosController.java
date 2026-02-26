@@ -4,6 +4,7 @@ import geo.track.domain.OrdemDeServico;
 import geo.track.dto.arquivos.RequestGetArquivoOrcamento;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.exception.BadRequestException;
+import geo.track.exception.constraint.message.EnumDomains;
 import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.gateway.GatewayExportData;
 import geo.track.service.OrdemDeServicoService;
@@ -53,7 +54,7 @@ public class ArquivosController{
         Integer idOficina = usuario.getIdOficina();
         OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.idOrcamento(), idOficina);
 
-        if (orcamento.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", "Ordem de Serviço");
+        if (orcamento.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", EnumDomains.ORDEM_DE_SERVICO);
         if (orcamento.getDataSaidaEfetiva() == null) orcamento.setDataSaidaEfetiva(LocalDate.now());
 
         byte[] pdfContent = GATEWAY_EXPORT_DATA.getArquivoOrdemServico(token, OrdemDeServicoMapper.toResponse(orcamento));

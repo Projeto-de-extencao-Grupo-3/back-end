@@ -3,8 +3,9 @@ package geo.track.util;
 import geo.track.exception.DataNotFoundException;
 import geo.track.dto.viacep.request.RequestViacep;
 import geo.track.dto.viacep.response.ResponseViacep;
+import geo.track.exception.constraint.message.EnderecoExceptionMessages;
+import geo.track.exception.constraint.message.EnumDomains;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,7 +19,7 @@ public class ViacepConnection {
 
 
         if (viacep.getErro() != null) {
-            throw new DataNotFoundException("CEP: %s não foi encontrado".formatted(cep), "Endereços");
+            throw new DataNotFoundException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, EnumDomains.ENDERECO);
         }
 
         ResponseViacep responseViacep = new ResponseViacep(viacep.getCep() ,viacep.getLogradouro(), viacep.getBairro(), viacep.getLocalidade(), viacep.getUf());
