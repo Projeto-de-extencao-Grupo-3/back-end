@@ -74,4 +74,29 @@ public class ArquivosController{
                 .headers(headers)
                 .body(pdfContent);
     }
+
+    @GetMapping("/ordem_servico_csv/{idOrdemServico}")
+    public ResponseEntity<byte[]> poste(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token,@PathVariable Integer idOrdemServico) {
+        Integer idOficina = usuario.getIdOficina();
+        OrdemDeServico ordemDeServico = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdemServico, idOficina);
+
+        if (ordemDeServico.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", EnumDomains.ORDEM_DE_SERVICO);
+
+        byte[] csvContent = GATEWAY_EXPORT_DATA.getCsvOrdemServico(token, OrdemDeServicoMapper.toResponse(ordemDeServico));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+
+        StringBuilder nome = new StringBuilder();
+        String[] nomeCompleto = ordemDeServico.getFkEntrada().getFkVeiculo().getFkCliente().getNome().toUpperCase().split(" ");
+        for (String palavra : nomeCompleto) {
+            nome.append(String.format("%s_", palavra));
+        }
+        DecimalFormat df = new DecimalFormat("0000");
+        headers.setContentDispositionFormData("attachment", String.format("OS%s_%s%s.pdf", df.format(ordemDeServico.getIdOrdemServico()), nome, ordemDeServico.getFkEntrada().getFkVeiculo().getPlaca()));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(csvContent);
+    }
 }

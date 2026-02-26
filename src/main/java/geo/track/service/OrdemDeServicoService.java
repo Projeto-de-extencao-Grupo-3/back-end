@@ -149,7 +149,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(idOrdem);
 
         if (ordemOPT.isEmpty()) {
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID_GENERICO, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ordemOPT.get();

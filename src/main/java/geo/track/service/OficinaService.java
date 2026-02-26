@@ -21,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException; // Keep this import if ResponseStatusException is used elsewhere
 
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +66,7 @@ public class OficinaService {
     }
 
     public Oficinas findOficinasById(Integer id){
-        return OFICINA_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_ID, id), EnumDomains.OFICINA));
+        return OFICINA_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, id), EnumDomains.OFICINA));
     }
 
     public List<Oficinas> findOficinasByRazaoSocial(String razaoSocial){
@@ -84,7 +83,7 @@ public class OficinaService {
             Oficinas empSalva = OFICINA_REPOSITORY.save(oficinas);
             return empSalva;
         }
-         throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_ID, id), EnumDomains.OFICINA);
+         throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, id), EnumDomains.OFICINA);
     }
 
     public Oficinas patchEmail(OficinaPatchEmailDTO dto){
@@ -116,7 +115,7 @@ public class OficinaService {
 
     public void remover(Integer id){
         if (!OFICINA_REPOSITORY.existsById(id)){
-            throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_ID, id), EnumDomains.OFICINA);
+            throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, id), EnumDomains.OFICINA);
         }
         OFICINA_REPOSITORY.deleteById(id);
     }

@@ -29,7 +29,7 @@ public class ItemProdutoService {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     public ItemProduto cadastrarRegistro(RequestPostItemProduto body) {
-        OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(body.fkOrdemServico()).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID_GENERICO, EnumDomains.ORDEM_DE_SERVICO));
+        OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(body.fkOrdemServico()).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO));
         Produto produto = PRODUTO_REPOSITORY.findById(body.fkProduto()).orElseThrow(() -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO));
 
         ItemProduto registroProduto = ItemProdutoMapper.toEntity(null, body.quantidade(), body.precoProduto(), false, produto, ordemServico);
