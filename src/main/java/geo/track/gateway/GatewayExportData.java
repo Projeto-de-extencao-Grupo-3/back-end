@@ -1,5 +1,4 @@
-package geo.track.port;
-
+package geo.track.gateway;
 import geo.track.dto.os.response.OrdemDeServicoResponse;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,4 +14,7 @@ public interface GatewayExportData {
 
     @PostMapping("/api/pdf/generate/os")
     byte[] getArquivoOrdemServico(@RequestHeader("Authorization") String bearerToken, @Valid @RequestBody OrdemDeServicoResponse body);
+
+    @PostMapping("/csv")
+    byte[] getCsvOrdemServico(@RequestHeader("Authorization") String bearerToken, @Valid @RequestBody OrdemDeServicoResponse body);
 }

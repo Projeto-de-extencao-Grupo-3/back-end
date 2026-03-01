@@ -4,6 +4,9 @@ import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.GlobalExceptionMessages; // Assuming a generic ID_JA_EXISTE
+import geo.track.exception.constraint.message.ItemServicoExceptionMessages;
 import geo.track.repository.ItemServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,38 +17,37 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ItemServicoService {
-
-    private final ItemServicoRepository itensServicoRepository;
+    private final ItemServicoRepository ITEM_SERVICO_REPOSITORY;
 
     public ItemServico cadastrar(ItemServico itemServico){
-        if (itensServicoRepository.existsById(itemServico.getIdRegistroServico())){
-            throw new ConflictException("ID já existe","Itens Serviço");
+        if (ITEM_SERVICO_REPOSITORY.existsById(itemServico.getIdRegistroServico())){
+            throw new ConflictException(GlobalExceptionMessages.ID_JA_EXISTE, EnumDomains.ITEM_SERVICO); // Using generic ID_JA_EXISTE
         }
-        return itensServicoRepository.save(itemServico);
+        return ITEM_SERVICO_REPOSITORY.save(itemServico);
     }
 
     public List<ItemServico> listar(){
-        return itensServicoRepository.findAll();
+        return ITEM_SERVICO_REPOSITORY.findAll();
     }
 
     public ItemServico findById(Integer id){
-        Optional<ItemServico> ordem = itensServicoRepository.findById(id);
+        Optional<ItemServico> ordem = ITEM_SERVICO_REPOSITORY.findById(id);
 
         if (ordem.isEmpty()){
-            throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Itens de Serviço");
+            throw new DataNotFoundException(ItemServicoExceptionMessages.ITEM_SERVICO_NAO_ENCONTRADO, EnumDomains.ITEM_SERVICO);
         }
         return ordem.get();
     }
 
     public List<ItemServico> listarPelaOrdemServico(OrdemDeServico ordemDeServicos) {
-        List<ItemServico> servicos = itensServicoRepository.findAllByFkOrdemServicoIdOrdemServico(ordemDeServicos.getIdOrdemServico());
+        List<ItemServico> servicos = ITEM_SERVICO_REPOSITORY.findAllByFkOrdemServicoIdOrdemServico(ordemDeServicos.getIdOrdemServico());
 
         return servicos;
     }
 
     public ItemServico atualizar(Integer id, ItemServico updatedItens) {
-        ItemServico existente = itensServicoRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Item de serviço não encontrado", "ItensServiço"));
+        ItemServico existente = ITEM_SERVICO_REPOSITORY.findById(id)
+                .orElseThrow(() -> new DataNotFoundException(ItemServicoExceptionMessages.ITEM_SERVICO_NAO_ENCONTRADO, EnumDomains.ITEM_SERVICO));
 
         existente.setPrecoCobrado(updatedItens.getPrecoCobrado());
         existente.setParteVeiculo(updatedItens.getParteVeiculo());
@@ -57,10 +59,10 @@ public class ItemServicoService {
         existente.setFkServico(updatedItens.getFkServico());
         existente.setFkOrdemServico(updatedItens.getFkOrdemServico());
 
-        return itensServicoRepository.save(existente);
+        return ITEM_SERVICO_REPOSITORY.save(existente);
     }
 
     public void delete(Integer id){
-        itensServicoRepository.deleteById(id);
+        ITEM_SERVICO_REPOSITORY.deleteById(id);
     }
 }

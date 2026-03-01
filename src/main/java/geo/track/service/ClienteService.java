@@ -6,6 +6,8 @@ import geo.track.domain.Oficinas;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.ClienteExceptionMessages;
+import geo.track.exception.constraint.message.EnumDomains;
 import geo.track.mapper.ClientesMapper;
 import geo.track.repository.ClienteRepository;
 import geo.track.dto.clientes.request.RequestPatchEmail;
@@ -19,29 +21,31 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
-    private final ClienteRepository clientesRepository;
-    private final OficinaService oficinaService;
-    private final EnderecoService enderecoService;
+    private final ClienteRepository CLIENTE_REPOSITORY;
+    private final OficinaService OFICINA_SERVICE;
+    private final EnderecoService ENDERECO_SERVICE;
 
     public Cliente postCliente(RequestPostCliente body){
-        if(clientesRepository.existsByCpfCnpj(body.getCpfCnpj())){throw new ConflictException("O CPF do cliente informado já existe", "Clientes");}
-        Oficinas oficina = oficinaService.findOficinasById(body.getFkOficina());
-        Endereco endereco = enderecoService.findEnderecoById(body.getFkEndereco());
+        if(CLIENTE_REPOSITORY.existsByCpfCnpj(body.getCpfCnpj())){
+            throw new ConflictException(ClienteExceptionMessages.CPF_EXISTENTE, EnumDomains.CLIENTE);
+        }
+        Oficinas oficina = OFICINA_SERVICE.findOficinasById(body.getFkOficina());
+        Endereco endereco = ENDERECO_SERVICE.findEnderecoById(body.getFkEndereco());
 
         Cliente cliente = ClientesMapper.toEntity(body,oficina, endereco);
-        return clientesRepository.save(cliente);
+        return CLIENTE_REPOSITORY.save(cliente);
     }
 
     public List<Cliente> findClientes(){
-        return clientesRepository.findAll();
+        return CLIENTE_REPOSITORY.findAll();
     }
 
     public Cliente findClienteById(Integer id){
-        Optional<Cliente> cliente = clientesRepository.findById(id);
+        Optional<Cliente> cliente = CLIENTE_REPOSITORY.findById(id);
 
 
         if (cliente.isEmpty()) {
-            throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Clientes");
+            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID, id), EnumDomains.CLIENTE);
         }
 
         return cliente.get();
@@ -49,56 +53,56 @@ public class ClienteService {
 
 
     public List<Cliente> findClienteByNome(String nome) {
-        List<Cliente> cliente = clientesRepository.findByNomeContainingIgnoreCase(nome);
+        List<Cliente> cliente = CLIENTE_REPOSITORY.findByNomeContainingIgnoreCase(nome);
 
         if (cliente.isEmpty()) {
-            throw new DataNotFoundException("O nome %s não foi encontrado".formatted(nome), "Clientes");
+            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_NOME, nome), EnumDomains.CLIENTE);
         }
         return cliente;
     }
 
     public Cliente findClienteByCpfCnpj(String cpfCnpj) {
-        Optional<Cliente> cliente = clientesRepository.findByCpfCnpj(cpfCnpj);
+        Optional<Cliente> cliente = CLIENTE_REPOSITORY.findByCpfCnpj(cpfCnpj);
 
         if (cliente.isEmpty()) {
-            throw new DataNotFoundException("CPF %s não foi encontrado".formatted(cpfCnpj), "Clientes");
+            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_CPF_CNPJ, cpfCnpj), EnumDomains.CLIENTE);
         }
         return cliente.get();
     }
 
     public Cliente patchEmailCliente(RequestPatchEmail clienteDTO) {
-        Optional<Cliente> clientes = clientesRepository.findById(clienteDTO.getId());
+        Optional<Cliente> clientes = CLIENTE_REPOSITORY.findById(clienteDTO.getId());
 
         if(clientes.isEmpty()){
-            throw new DataNotFoundException("Não existe cliente com esse ID", "Veiculo");
+            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, EnumDomains.CLIENTE);
         }
         Cliente cliente = clientes.get();
         cliente.setIdCliente(clienteDTO.getId());
         cliente.setEmail(clienteDTO.getEmail());
 
-        return clientesRepository.save(cliente);
+        return CLIENTE_REPOSITORY.save(cliente);
     }
 
     public Cliente patchTelefoneCliente(RequestPatchTelefone clienteDTO) {
-        Optional<Cliente> clientes = clientesRepository.findById(clienteDTO.getId());
+        Optional<Cliente> clientes = CLIENTE_REPOSITORY.findById(clienteDTO.getId());
 
         if(clientes.isEmpty()){
-            throw new DataNotFoundException("Não existe cliente com esse ID", "Clientes");
+            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, EnumDomains.CLIENTE);
         }
 
         Cliente cliente = clientes.get();
         cliente.setIdCliente(clienteDTO.getId());
         cliente.setTelefone(clienteDTO.getTelefone());
 
-        return clientesRepository.save(cliente);
+        return CLIENTE_REPOSITORY.save(cliente);
     }
 
     public Cliente putCliente(RequestPutCliente clienteDTO) {
-        Optional<Cliente> clientes = clientesRepository.findById(clienteDTO.getIdCliente());
+        Optional<Cliente> clientes = CLIENTE_REPOSITORY.findById(clienteDTO.getIdCliente());
 
 
         if(clientes.isEmpty()){
-            throw new DataNotFoundException("Não existe cliente com esse ID", "Clientes");
+            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, EnumDomains.CLIENTE);
         }
 
             Cliente cliente = clientes.get();
@@ -109,19 +113,16 @@ public class ClienteService {
             cliente.setTelefone(clienteDTO.getTelefone());
             cliente.setEmail(clienteDTO.getEmail());
 
-          return clientesRepository.save(cliente);
+          return CLIENTE_REPOSITORY.save(cliente);
 
 
     }
 
     public void deletar(Integer id){
-        if (clientesRepository.existsById(id)){
-            clientesRepository.deleteById(id);
+        if (CLIENTE_REPOSITORY.existsById(id)){
+            CLIENTE_REPOSITORY.deleteById(id);
             return;
         }
-        throw new DataNotFoundException("O ID %d não foi encontrado".formatted(id), "Clientes");
+        throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID, id), EnumDomains.CLIENTE);
     }
 }
-
-
-

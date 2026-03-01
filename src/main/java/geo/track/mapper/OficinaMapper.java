@@ -3,6 +3,7 @@ package geo.track.mapper;
 import geo.track.domain.Oficinas;
 import geo.track.dto.oficinas.response.OficinaResponse;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,9 @@ public class OficinaMapper {
     }
 
     public static List<OficinaResponse> toResponse(List<Oficinas> entities) {
+        if (entities == null) {
+            return Collections.emptyList();
+        }
         return entities.stream()
                 .map(OficinaMapper::toResponse)
                 .collect(Collectors.toList());

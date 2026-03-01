@@ -70,7 +70,7 @@ public class RegistroEntrada {
     @Schema(description = "Veículo associado a este registro de entrada") // Adicionado
     private Veiculo fkVeiculo;
 
-    @OneToOne(mappedBy = "fk_entrada")
+    @OneToOne(mappedBy = "fkEntrada")
     @Schema(description = "Ordem de serviço gerada a partir desta entrada") // Adicionado
     private OrdemDeServico ordemDeServicos;
 }

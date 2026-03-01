@@ -1,10 +1,14 @@
 package geo.track.mapper;
 
+import geo.track.domain.ItemProduto;
+import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
 import geo.track.dto.clientes.response.ClienteResponse;
+import geo.track.dto.itensProdutos.ItemProdutoResponse;
+import geo.track.dto.itensServicos.ItemServicoResponse;
+import geo.track.dto.os.response.CardOrdemDeServicoResponse;
 import geo.track.dto.os.response.OrdemDeServicoResponse;
-import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
-import geo.track.mapper.*;
+import geo.track.dto.os.response.ServicoProdutoOrdemResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,12 +18,27 @@ public class OrdemDeServicoMapper {
         if (entity == null) {
             return null;
         }
+        Double totalServico = 0.0;
+        Double totalProduto = 0.0;
+        if (entity.getServicos() != null) {
+            totalServico = entity.getServicos().stream()
+                    .mapToDouble(ItemServico::getPrecoCobrado)
+                    .sum();
+        }
+
+        if (entity.getProdutos() != null) {
+            totalProduto = entity.getProdutos().stream()
+                    .mapToDouble(p -> p.getPrecoPeca() * p.getQuantidade())
+                    .sum();
+        }
 
         OrdemDeServicoResponse response = new OrdemDeServicoResponse();
         response.setIdOrdemServico(entity.getIdOrdemServico());
-        response.setValorTotal(entity.getValorTotal());
-        response.setDtSaidaPrevista(entity.getDtSaidaPrevista());
-        response.setDtSaidaEfetiva(entity.getDtSaidaEfetiva());
+        response.setValorTotal(totalServico + totalProduto);
+        response.setValorTotalServicos(totalServico);
+        response.setValorTotalProdutos(totalProduto);
+        response.setDataSaidaPrevista(entity.getDataSaidaPrevista());
+        response.setDataSaidaEfetiva(entity.getDataSaidaEfetiva());
         response.setStatus(entity.getStatus());
         response.setSeguradora(entity.getSeguradora());
         response.setNfRealizada(entity.getNfRealizada());
@@ -27,15 +46,16 @@ public class OrdemDeServicoMapper {
         response.setAtivo(entity.getAtivo());
         response.setServicos(ItemServicoMapper.toOsResponse(entity.getServicos()));
         response.setProdutos(ItemProdutoMapper.toOsResponse(entity.getProdutos()));
+        response.setVeiculo(VeiculoMapper.toResponse(entity.getFkEntrada().getFkVeiculo()));
 
-        if (entity.getFk_entrada().getFkVeiculo().getFkCliente() != null) {
-            ClienteResponse cliente = ClientesMapper.toResponse(entity.getFk_entrada().getFkVeiculo().getFkCliente());
+        if (entity.getFkEntrada().getFkVeiculo().getFkCliente() != null) {
+            ClienteResponse cliente = ClientesMapper.toResponse(entity.getFkEntrada().getFkVeiculo().getFkCliente());
             response.setCliente(cliente);
         }
 
-        if (entity.getFk_entrada() != null) {
-//            RegistroEntradaResponse entrada = RegistroEntradaMapper.toResponse(entity.getFk_entrada());
-            response.setEntrada(RegistroEntradaMapper.toResponse(entity.getFk_entrada()));
+        if (entity.getFkEntrada() != null) {
+            response.setEntrada(RegistroEntradaMapper.toResponse(entity.getFkEntrada()));
+            response.setEntrada(RegistroEntradaMapper.toResponse(entity.getFkEntrada()));
         }
 
         return response;
@@ -45,5 +65,36 @@ public class OrdemDeServicoMapper {
         return entities.stream()
                 .map(OrdemDeServicoMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public static ServicoProdutoOrdemResponse toServicoProdutoResponse(OrdemDeServico entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        List<ItemServicoResponse> servicos = entity.getServicos().stream().map(ItemServicoMapper::toResponse).toList();
+        List<ItemProdutoResponse> produtos = entity.getProdutos().stream().map(ItemProdutoMapper::toResponse).toList();
+
+        return new ServicoProdutoOrdemResponse(servicos, produtos);
+    }
+
+    public static List<CardOrdemDeServicoResponse> toCard(List<OrdemDeServico> ordem) {
+        return ordem.stream().map(OrdemDeServicoMapper::toCard).toList();
+    }
+
+    public static CardOrdemDeServicoResponse toCard(OrdemDeServico ordem) {
+        OrdemDeServicoResponse ordemResponse = OrdemDeServicoMapper.toResponse(ordem);
+
+        return new   CardOrdemDeServicoResponse(
+                ordem.getIdOrdemServico(),
+                ordemResponse.getValorTotal(),
+                ordemResponse.getDataSaidaPrevista(),
+                ordemResponse.getDataSaidaEfetiva(),
+                ordemResponse.getEntrada().getDataEntradaPrevista(),
+                ordemResponse.getEntrada().getDataEntradaEfetiva(),
+                ordemResponse.getStatus(),
+                ordemResponse.getCliente(),
+                ordemResponse.getVeiculo()
+        );
     }
 }

@@ -1,0 +1,26 @@
+package geo.track.mapper;
+
+import geo.track.domain.OrdemDeServico;
+import geo.track.dto.os.response.CardOrdemDeServicoResponse;
+import geo.track.dto.os.response.OrdemDeServicoResponse;
+import geo.track.dto.painelControle.response.ResponsePainelControle;
+import geo.track.enums.os.StatusVeiculo;
+
+import java.util.HashMap;
+import java.util.List;
+
+public class PainelControleMapper {
+    public static HashMap<StatusVeiculo, ResponsePainelControle> toResponseList(List<List<OrdemDeServico>> matrizOrdens) {
+        HashMap<StatusVeiculo, ResponsePainelControle> response = new HashMap<>();
+
+        for (int i = 0; i < matrizOrdens.size(); i++) {
+            response.put(StatusVeiculo.values()[i], toResponse(matrizOrdens.get(i)));
+        }
+
+        return response;
+    }
+
+    public static ResponsePainelControle toResponse(List<OrdemDeServico> ordens) {
+        return new ResponsePainelControle(ordens.size(), ordens.stream().map(OrdemDeServicoMapper::toCard).toList());
+    }
+}

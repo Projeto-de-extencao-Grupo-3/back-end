@@ -15,5 +15,4 @@ public class RequestPatchStatus {
     private Integer idOrdem;
     @Enumerated(EnumType.STRING)
     private StatusVeiculo status;
-    private Integer fkEntrada;
 }

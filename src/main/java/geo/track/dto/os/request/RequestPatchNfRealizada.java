@@ -7,6 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class RequestPatchNfRealizada {
     private Integer idOrdem;
-    private Integer fkVeiculo;
     private Boolean nfRealizada;
 }

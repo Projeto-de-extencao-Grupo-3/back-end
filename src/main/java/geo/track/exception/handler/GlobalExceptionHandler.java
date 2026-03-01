@@ -29,4 +29,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionBody> NotAcceptableException(NotAcepptableException ex){
         return new ResponseEntity<>(new ExceptionBody(ex.getDomain(), ex.getMessage(), LocalDateTime.now(), NotAcepptableException.class.getSimpleName(), HttpStatus.NOT_ACCEPTABLE.value()), HttpStatus.NOT_ACCEPTABLE);
     }
+
+    @ExceptionHandler(BadBusinessRuleException.class)
+    public ResponseEntity<ExceptionBody> BadBusinessRuleException(BadBusinessRuleException ex) {
+        return new ResponseEntity<>(new ExceptionBody(ex.getDomain(), ex.getMessage(), LocalDateTime.now(), BadBusinessRuleException.class.getSimpleName(), HttpStatus.UNPROCESSABLE_ENTITY.value()), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
 }

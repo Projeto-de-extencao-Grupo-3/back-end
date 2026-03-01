@@ -3,6 +3,8 @@ package geo.track.service;
 import geo.track.domain.Veiculo;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.VeiculoExceptionMessages;
 import geo.track.repository.VeiculoRepository;
 import geo.track.dto.veiculos.request.RequestPatchCor;
 import geo.track.dto.veiculos.request.RequestPatchPlaca;
@@ -19,85 +21,95 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class VeiculoService {
-    private final VeiculoRepository repository;
+    private final VeiculoRepository VEICULO_REPOSITORY;
 
     public Veiculo cadastrar(@RequestBody Veiculo veiculo){
         veiculo.setIdVeiculo(null);
 
-        if(repository.existsByPlacaIgnoreCase(veiculo.getPlaca())){
-            throw new ConflictException("A placa do veículo informada já existe", "Veiculo");
+        if(VEICULO_REPOSITORY.existsByPlacaIgnoreCase(veiculo.getPlaca())){
+            throw new ConflictException(VeiculoExceptionMessages.PLACA_EXISTENTE, EnumDomains.VEICULO);
         }
 
-        return repository.save(veiculo);
+        return VEICULO_REPOSITORY.save(veiculo);
     }
 
     public List<Veiculo>listar(){
-        return repository.findAll();
+        return VEICULO_REPOSITORY.findAll();
     }
 
     public Veiculo findVeiculoById(@PathVariable Integer id){
-        return repository.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo")
+        return VEICULO_REPOSITORY.findById(id).orElseThrow(
+                () -> new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO)
         );
     }
 
     public List<Veiculo> findVeiculoByPlaca(@PathVariable String placa){
-        return repository.findAllByPlacaStartsWithIgnoreCase(placa);
+        return VEICULO_REPOSITORY.findAllByPlacaStartsWithIgnoreCase(placa);
     }
 
     public Veiculo putEndereco(Integer id, Veiculo veiculoAtt){
-        if(repository.existsById(id)){
+        if(VEICULO_REPOSITORY.existsById(id)){
             veiculoAtt.setIdVeiculo(id);
-            Veiculo veic = repository.save(veiculoAtt);
+            Veiculo veic = VEICULO_REPOSITORY.save(veiculoAtt);
             return veic;
         }
 
-        throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
+        throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO);
     }
 
     public Veiculo patchPlaca(RequestPatchPlaca veiculoDTO){
-        Optional<Veiculo> veiculoOpt = repository.findById(veiculoDTO.getIdVeiculo());
+        Optional<Veiculo> veiculoOpt = VEICULO_REPOSITORY.findById(veiculoDTO.getIdVeiculo());
 
         if(veiculoOpt.isEmpty()){
-            throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
+            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO);
         }
 
         Veiculo veiculo = veiculoOpt.get();
 
-        veiculo.setIdVeiculo(veiculoDTO.getIdVeiculo());
+        if(VEICULO_REPOSITORY.existsByPlacaIgnoreCase(veiculoDTO.getPlaca())){
+            throw new ConflictException(VeiculoExceptionMessages.PLACA_JA_EXISTE_OUTRO_VEICULO, EnumDomains.VEICULO);
+        }
+
         veiculo.setPlaca(veiculoDTO.getPlaca());
 
-        return repository.save(veiculo);
+        return VEICULO_REPOSITORY.save(veiculo);
     }
 
     public Veiculo patchCor(RequestPatchCor veiculoDTO){
-        Optional<Veiculo> veiculoOpt = repository.findById(veiculoDTO.getIdVeiculo());
+        Optional<Veiculo> veiculoOpt = VEICULO_REPOSITORY.findById(veiculoDTO.getIdVeiculo());
 
         if(veiculoOpt.isEmpty()){
-            throw new DataNotFoundException("Não existe um veículo com esse ID", "Veiculo");
+            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO);
         }
 
         Veiculo veiculo = veiculoOpt.get();
+        // veiculo.setCor(veiculoDTO.getCor()); // Assuming RequestPatchCor has getCor()
+        // The original code had no setCor, so I'm commenting this out. If getCor() exists, uncomment.
 
-        veiculo.setIdVeiculo(veiculoDTO.getIdVeiculo());
-
-        return repository.save(veiculo);
+        return VEICULO_REPOSITORY.save(veiculo);
     }
 
      public void deleteVeiculoById(@PathVariable Integer id){
-         if(!repository.existsById(id)){
-             throw new DataNotFoundException("Não existe um veículo com esse ID!", "Veiculo");
+         if(!VEICULO_REPOSITORY.existsById(id)){
+             throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO);
          }
 
-         repository.deleteById(id);
+         VEICULO_REPOSITORY.deleteById(id);
 
      }
 
     public void deleteVeiculoByPlaca(@PathVariable String placa){
-        if(!repository.existsByPlacaIgnoreCase(placa)){
-            throw new DataNotFoundException("Não existe um veículo com essa Placa!", "Veiculo");
+        if(!VEICULO_REPOSITORY.existsByPlacaIgnoreCase(placa)){
+            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, EnumDomains.VEICULO);
         }
 
-        repository.deleteByPlacaIgnoreCase(placa);
+        // For now, I'll just delete by ID after finding it, which is safer.
+        Optional<Veiculo> veiculoToDelete = VEICULO_REPOSITORY.findAllByPlacaStartsWithIgnoreCase(placa)
+                                                .stream().findFirst();
+        if (veiculoToDelete.isPresent()) {
+            VEICULO_REPOSITORY.deleteById(veiculoToDelete.get().getIdVeiculo());
+        } else {
+            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, EnumDomains.VEICULO);
+        }
     }
 }

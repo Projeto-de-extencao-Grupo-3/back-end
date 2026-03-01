@@ -1,22 +1,14 @@
 package geo.track.controller;
 
+import geo.track.controller.swagger.ClienteSwagger;
 import geo.track.domain.Cliente;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.dto.clientes.response.ClienteResponse;
-import geo.track.exception.ExceptionBody;
 import geo.track.mapper.ClientesMapper;
 import geo.track.service.ClienteService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,19 +19,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/clientes")
 @RequiredArgsConstructor
-@Tag(name = "Clientes", description = "Endpoints utilizados para gerenciar os clientes")
-@SecurityRequirement(name = "Bearer")
-public class ClienteController {
-    private final ClienteService clienteService;
+public class ClienteController implements ClienteSwagger {
+    private final ClienteService CLIENTE_SERVICE;
 
+    @Override
     @GetMapping
-    @Operation(summary = "Listar todos os clientes")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Clientes listados com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ClienteResponse.class)))),
-            @ApiResponse(responseCode = "204", description = "Nenhum cliente cadastrado", content = @Content)
-    })
     public ResponseEntity<List<ClienteResponse>> findAllClientes() {
-        List<Cliente> clientes = clienteService.findClientes();
+        List<Cliente> clientes = CLIENTE_SERVICE.findClientes();
 
         if (clientes.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -48,102 +34,63 @@ public class ClienteController {
         return ResponseEntity.status(200).body(response);
     }
 
-    @Operation(
-            summary = "Cadastrar novo cliente",
-            description = "Recebe um objeto e o armazena, retornando o cliente criado e seu devido ID."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos para o cliente", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}),
-            @ApiResponse(responseCode = "409", description = "Cliente já existente com este CPF.", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
+    @Override
     @PostMapping
     public ResponseEntity<ClienteResponse> postCliente(@Valid @RequestBody RequestPostCliente cliente) {
-        Cliente novoCliente = clienteService.postCliente(cliente);
+        Cliente novoCliente = CLIENTE_SERVICE.postCliente(cliente);
         return ResponseEntity.status(201).body(ClientesMapper.toResponse(novoCliente));
     }
 
-    @Operation(summary = "Buscar cliente pelo ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente encontrado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> getClienteById(@PathVariable Integer id) {
-        Cliente cliente = clienteService.findClienteById(id);
+        Cliente cliente = CLIENTE_SERVICE.findClienteById(id);
 
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
-    @Operation(summary = "Buscar clientes pelo nome (parcial ou completo)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClienteResponse.class)))}),
-            @ApiResponse(responseCode = "204", description = "Nenhum cliente encontrado para o nome fornecido", content = @Content)
-    })
+    @Override
     @GetMapping("/nome")
     public ResponseEntity<List<ClienteResponse>> getClienteByNome(@RequestParam String nome) {
-        List<Cliente> clientes = clienteService.findClienteByNome(nome);
+        List<Cliente> clientes = CLIENTE_SERVICE.findClienteByNome(nome);
         if (clientes.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(clientes));
     }
 
-    @Operation(summary = "Buscar cliente pelo CPF ou CNPJ")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente encontrado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado para o CPF/CNPJ", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
+    @Override
     @GetMapping("/cpfCnpj")
     public ResponseEntity<ClienteResponse> getClienteByCpfCnpj(@RequestParam String cpfCnpj) {
-        Cliente cliente = clienteService.findClienteByCpfCnpj(cpfCnpj);
+        Cliente cliente = CLIENTE_SERVICE.findClienteByCpfCnpj(cpfCnpj);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
-    @Operation(summary = "Atualizar o e-mail de um cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "E-mail do cliente atualizado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "Formato de e-mail inválido ou dados ausentes", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
+    @Override
     @PatchMapping("/email")
     public ResponseEntity<ClienteResponse> patchEmailCliente(@RequestBody RequestPatchEmail clienteDTO) {
-        Cliente cliente = clienteService.patchEmailCliente(clienteDTO);
+        Cliente cliente = CLIENTE_SERVICE.patchEmailCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
-    @Operation(summary = "Atualizar o telefone de um cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Telefone do cliente atualizado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "Formato de telefone inválido ou dados ausentes", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
+    @Override
     @PatchMapping("/telefone")
     public ResponseEntity<ClienteResponse> patchTelefoneCliente(@RequestBody RequestPatchTelefone clienteDTO) {
-        Cliente cliente = clienteService.patchTelefoneCliente(clienteDTO);
+        Cliente cliente = CLIENTE_SERVICE.patchTelefoneCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
-    @Operation(summary = "Atualizar completamente um cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos para a atualização", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
+    @Override
     @PutMapping()
     public ResponseEntity<ClienteResponse> putCliente(@RequestBody RequestPutCliente clienteDTO) {
-        Cliente cliente = clienteService.putCliente(clienteDTO);
+        Cliente cliente = CLIENTE_SERVICE.putCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
-    @Operation(summary = "Remover um cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Cliente removido com sucesso", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removerCliente(@PathVariable Integer id) {
-        clienteService.deletar(id);
+        CLIENTE_SERVICE.deletar(id);
         return ResponseEntity.status(204).build();
     }
 }

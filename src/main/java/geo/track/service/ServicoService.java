@@ -3,6 +3,8 @@ package geo.track.service;
 import geo.track.domain.Servico;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.ServicoExceptionMessages;
+import geo.track.exception.constraint.message.EnumDomains;
 import geo.track.repository.ServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,37 +13,37 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ServicoService {
 
-    private final ServicoRepository repository;
+    private final ServicoRepository SERVICO_REPOSITORY;
 
     public Servico cadastrar(Servico servicoss){
-        if (repository.existsByTituloServico(servicoss.getTituloServico())){
-            throw new ConflictException("Nome já existe","Servico");
+        if (SERVICO_REPOSITORY.existsByTituloServico(servicoss.getTituloServico())){
+            throw new ConflictException(ServicoExceptionMessages.NOME_SERVICO_EXISTENTE, EnumDomains.SERVICO);
         }
-        Servico servicoRegistrado = repository.save(servicoss);
+        Servico servicoRegistrado = SERVICO_REPOSITORY.save(servicoss);
         return servicoRegistrado;
     }
 
     public Servico buscarPorId(Integer id){
-        if (!repository.existsByIdServico(id)){
-            throw new DataNotFoundException("Servico Não encontrado","Servico");
+        if (!SERVICO_REPOSITORY.existsByIdServico(id)){
+            throw new DataNotFoundException(ServicoExceptionMessages.SERVICO_NAO_ENCONTRADO_ID, EnumDomains.SERVICO);
         }
-        Servico getServico = repository.getByIdServico(id);
+        Servico getServico = SERVICO_REPOSITORY.getByIdServico(id);
         return getServico;
     }
 
     public Servico atualizar(Integer id, Servico servico){
         servico.setIdServico(id);
-        if (!repository.existsById(id)){
-            throw new DataNotFoundException("Servico não encontrado","Servico");
+        if (!SERVICO_REPOSITORY.existsById(id)){
+            throw new DataNotFoundException(ServicoExceptionMessages.SERVICO_NAO_ENCONTRADO_ID, EnumDomains.SERVICO);
         }
-        Servico save = repository.save(servico);
+        Servico save = SERVICO_REPOSITORY.save(servico);
         return save;
     }
 
     public void deletar(Integer id){
-        if (!repository.existsById(id)){
-            throw new DataNotFoundException("Servico não encontrado","Servico");
+        if (!SERVICO_REPOSITORY.existsById(id)){
+            throw new DataNotFoundException(ServicoExceptionMessages.SERVICO_NAO_ENCONTRADO_ID, EnumDomains.SERVICO);
         }
-        repository.deleteById(id);
+        SERVICO_REPOSITORY.deleteById(id);
     }
 }

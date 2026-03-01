@@ -14,11 +14,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AutenticacaoService implements UserDetailsService {
-    private final FuncionarioRepository funcionarioRepository;
+    private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Funcionario> funcionarioOpt = funcionarioRepository.findByEmail(email.toLowerCase());
+        Optional<Funcionario> funcionarioOpt = FUNCIONARIO_REPOSITORY.findByEmail(email.toLowerCase());
 
         if (funcionarioOpt.isEmpty()) {
             throw new UsernameNotFoundException(String.format("usuario: %s nao encontrado", email));

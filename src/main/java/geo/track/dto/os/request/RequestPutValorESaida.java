@@ -13,7 +13,4 @@ public class RequestPutValorESaida {
     private Integer idOrdem;
     private Double valorTotal;
     private LocalDate saidaPrevista;
-    private Integer fkEntrada;
-
-
 }

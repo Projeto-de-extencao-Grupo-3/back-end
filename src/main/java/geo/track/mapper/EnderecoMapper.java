@@ -3,6 +3,7 @@ package geo.track.mapper;
 import geo.track.domain.Endereco;
 import geo.track.dto.enderecos.response.EnderecoResponse;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,9 @@ public class EnderecoMapper {
     }
 
     public static List<EnderecoResponse> toResponse(List<Endereco> entities) {
+        if (entities == null) {
+            return Collections.emptyList();
+        }
         return entities.stream()
                 .map(EnderecoMapper::toResponse)
                 .collect(Collectors.toList());
