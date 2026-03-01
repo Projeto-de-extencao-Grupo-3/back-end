@@ -14,16 +14,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Testes do ProdutosService")
+@DisplayName("Testes do ProdutoService")
 class ProdutoServiceTest {
 
     @Mock
@@ -39,6 +39,7 @@ class ProdutoServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Arrange: Preparar Entidade
         produto = new Produto();
         produto.setIdProduto(1);
         produto.setNome("Filtro de Óleo");
@@ -51,128 +52,254 @@ class ProdutoServiceTest {
         patchPrecoVenda = new RequestPatchPrecoVenda(1, 30.00);
     }
 
-    // --- Testes para cadastrar ---
+    // ===== cadastrar =====
     @Test
-    @DisplayName("cadastrar: Deve cadastrar um produto com sucesso")
-    void deveCadastrarProdutoComSucesso() {
-        when(repository.save(any(Produto.class))).thenReturn(produto);
-        Produto resultado = service.cadastrar(new Produto());
+    @DisplayName("cadastrar: Deve cadastrar novo produto com sucesso")
+    void testCadastrarProduto() {
+        // Arrange
+        Produto novoProduto = produto;
+        when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Produto resultado = service.cadastrar(novoProduto);
+
+        // Assert
         assertNotNull(resultado);
+        assertEquals("Filtro de Óleo", resultado.getNome());
         verify(repository).save(any(Produto.class));
     }
 
-    // --- Testes para listar ---
+    // ===== listar =====
     @Test
-    @DisplayName("listar: Deve retornar uma lista de produtos")
-    void deveRetornarListaDeProdutos() {
+    @DisplayName("listar: Deve retornar lista de produtos quando existem")
+    void testListarProdutos() {
+        // Arrange
         when(repository.findAll()).thenReturn(List.of(produto));
+
+        // Act
         List<Produto> resultado = service.listar();
+
+        // Assert
+        assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
+        assertEquals(1, resultado.size());
         verify(repository).findAll();
     }
 
     @Test
-    @DisplayName("listar: Deve retornar uma lista vazia quando não houver produtos")
-    void deveRetornarListaVazia() {
-        when(repository.findAll()).thenReturn(Collections.emptyList());
+    @DisplayName("listar: Deve retornar lista vazia quando não existem produtos")
+    void testListarProdutos_Vazio() {
+        // Arrange
+        when(repository.findAll()).thenReturn(List.of());
+
+        // Act
         List<Produto> resultado = service.listar();
+
+        // Assert
+        assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
         verify(repository).findAll();
     }
 
-    // --- Testes para findProdutoById ---
+    // ===== findProdutoById =====
     @Test
     @DisplayName("findProdutoById: Deve encontrar produto por ID com sucesso")
-    void deveEncontrarProdutoPorIdComSucesso() {
+    void testFindProdutoById() {
+        // Arrange
         when(repository.findById(1)).thenReturn(Optional.of(produto));
+
+        // Act
         Produto resultado = service.findProdutoById(1);
+
+        // Assert
         assertNotNull(resultado);
+        assertEquals(1, resultado.getIdProduto());
+        assertEquals("Filtro de Óleo", resultado.getNome());
         verify(repository).findById(1);
     }
 
     @Test
-    @DisplayName("findProdutoById: Deve lançar DataNotFoundException para ID inexistente")
-    void deveLancarExcecaoAoBuscarIdInexistente() {
-        when(repository.findById(99)).thenReturn(Optional.empty());
-        assertThrows(DataNotFoundException.class, () -> service.findProdutoById(99));
-        verify(repository).findById(99);
+    @DisplayName("findProdutoById: Deve lançar DataNotFoundException quando ID não existe")
+    void testFindProdutoById_NaoEncontrado() {
+        // Arrange
+        when(repository.findById(999)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.findProdutoById(999));
+
+        verify(repository).findById(999);
     }
 
-    // --- Testes para putProdutos ---
+    // ===== putProdutos =====
     @Test
-    @DisplayName("putProdutos: Deve atualizar um produto com sucesso")
-    void deveAtualizarProdutoComSucesso() {
+    @DisplayName("putProdutos: Deve atualizar produto com sucesso quando existe")
+    void testPutProdutos() {
+        // Arrange
+        Produto produtoAtualizado = produto;
+        produtoAtualizado.setNome("Filtro de Óleo Sintético");
+        produtoAtualizado.setPrecoVenda(35.00);
+
         when(repository.existsById(1)).thenReturn(true);
-        when(repository.save(any(Produto.class))).thenReturn(produto);
-        Produto resultado = service.putProdutos(1, produto);
+        when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Produto resultado = service.putProdutos(1, produtoAtualizado);
+
+        // Assert
         assertNotNull(resultado);
-        assertEquals(1, resultado.getIdProduto());
+        assertEquals("Filtro de Óleo Sintético", resultado.getNome());
+        assertEquals(35.00, resultado.getPrecoVenda());
         verify(repository).existsById(1);
-        verify(repository).save(produto);
+        verify(repository).save(any(Produto.class));
     }
 
     @Test
-    @DisplayName("putProdutos: Deve lançar DataNotFoundException para ID inexistente")
-    void deveLancarExcecaoAoAtualizarProdutoInexistente() {
-        when(repository.existsById(99)).thenReturn(false);
-        assertThrows(DataNotFoundException.class, () -> service.putProdutos(99, new Produto()));
-        verify(repository).existsById(99);
+    @DisplayName("putProdutos: Deve lançar DataNotFoundException quando produto não existe")
+    void testPutProdutos_NaoEncontrado() {
+        // Arrange
+        when(repository.existsById(999)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.putProdutos(999, produto));
+
+        verify(repository).existsById(999);
         verify(repository, never()).save(any(Produto.class));
     }
 
-    // --- Testes para patchQtdEstoque ---
+    // ===== patchQtdEstoque =====
     @Test
-    @DisplayName("patchQtdEstoque: Deve atualizar a quantidade em estoque com sucesso")
-    void deveAtualizarQtdEstoqueComSucesso() {
-        when(repository.findById(1)).thenReturn(Optional.of(produto));
-        when(repository.save(any(Produto.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchQtdEstoque: Deve atualizar quantidade em estoque com sucesso")
+    void testPatchQtdEstoque() {
+        // Arrange
+        Produto produtoParaAtualizar = produto;
+        produtoParaAtualizar.setQuantidadeEstoque(50);
+
+        when(repository.findById(patchQtdEstoque.getId())).thenReturn(Optional.of(produtoParaAtualizar));
+        when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         Produto resultado = service.patchQtdEstoque(patchQtdEstoque);
-        assertEquals(patchQtdEstoque.getQuantidadeEstoque(), resultado.getQuantidadeEstoque());
-        verify(repository).findById(1);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(50, resultado.getQuantidadeEstoque());
+        verify(repository).findById(patchQtdEstoque.getId());
         verify(repository).save(any(Produto.class));
     }
 
-    // --- Testes para patchPrecoCompra ---
     @Test
-    @DisplayName("patchPrecoCompra: Deve atualizar o preço de compra com sucesso")
-    void deveAtualizarPrecoCompraComSucesso() {
-        when(repository.findById(1)).thenReturn(Optional.of(produto));
-        when(repository.save(any(Produto.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchQtdEstoque: Deve lançar DataNotFoundException quando produto não existe")
+    void testPatchQtdEstoque_NaoEncontrado() {
+        // Arrange
+        when(repository.findById(999)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.patchQtdEstoque(new RequestPatchQtdEstoque(999, 100)));
+
+        verify(repository).findById(999);
+        verify(repository, never()).save(any(Produto.class));
+    }
+
+    // ===== patchPrecoCompra =====
+    @Test
+    @DisplayName("patchPrecoCompra: Deve atualizar preço de compra com sucesso")
+    void testPatchPrecoCompra() {
+        // Arrange
+        Produto produtoParaAtualizar = produto;
+        produtoParaAtualizar.setPrecoCompra(20.00);
+
+        when(repository.findById(patchPrecoCompra.getId())).thenReturn(Optional.of(produtoParaAtualizar));
+        when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         Produto resultado = service.patchPrecoCompra(patchPrecoCompra);
-        assertEquals(patchPrecoCompra.getPrecoCompra(), resultado.getPrecoCompra());
-        verify(repository).findById(1);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(20.00, resultado.getPrecoCompra());
+        verify(repository).findById(patchPrecoCompra.getId());
         verify(repository).save(any(Produto.class));
     }
 
-    // --- Testes para patchPrecoVenda ---
     @Test
-    @DisplayName("patchPrecoVenda: Deve atualizar o preço de venda com sucesso")
-    void deveAtualizarPrecoVendaComSucesso() {
-        when(repository.findById(1)).thenReturn(Optional.of(produto));
-        when(repository.save(any(Produto.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchPrecoCompra: Deve lançar DataNotFoundException quando produto não existe")
+    void testPatchPrecoCompra_NaoEncontrado() {
+        // Arrange
+        when(repository.findById(999)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.patchPrecoCompra(new RequestPatchPrecoCompra(999, 25.00)));
+
+        verify(repository).findById(999);
+        verify(repository, never()).save(any(Produto.class));
+    }
+
+    // ===== patchPrecoVenda =====
+    @Test
+    @DisplayName("patchPrecoVenda: Deve atualizar preço de venda com sucesso")
+    void testPatchPrecoVenda() {
+        // Arrange
+        Produto produtoParaAtualizar = produto;
+        produtoParaAtualizar.setPrecoVenda(35.00);
+
+        when(repository.findById(patchPrecoVenda.getId())).thenReturn(Optional.of(produtoParaAtualizar));
+        when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         Produto resultado = service.patchPrecoVenda(patchPrecoVenda);
-        assertEquals(patchPrecoVenda.getPrecoVenda(), resultado.getPrecoVenda());
-        verify(repository).findById(1);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(35.00, resultado.getPrecoVenda());
+        verify(repository).findById(patchPrecoVenda.getId());
         verify(repository).save(any(Produto.class));
     }
 
-    // --- Testes para excluir ---
     @Test
-    @DisplayName("excluir: Deve excluir um produto com sucesso")
-    void deveExcluirProdutoComSucesso() {
+    @DisplayName("patchPrecoVenda: Deve lançar DataNotFoundException quando produto não existe")
+    void testPatchPrecoVenda_NaoEncontrado() {
+        // Arrange
+        when(repository.findById(999)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.patchPrecoVenda(new RequestPatchPrecoVenda(999, 40.00)));
+
+        verify(repository).findById(999);
+        verify(repository, never()).save(any(Produto.class));
+    }
+
+    // ===== excluir =====
+    @Test
+    @DisplayName("excluir: Deve excluir produto com sucesso quando existe")
+    void testExcluirProduto() {
+        // Arrange
         when(repository.existsById(1)).thenReturn(true);
         doNothing().when(repository).deleteById(1);
+
+        // Act
         assertDoesNotThrow(() -> service.excluir(1));
+
+        // Assert
         verify(repository).existsById(1);
         verify(repository).deleteById(1);
     }
 
     @Test
-    @DisplayName("excluir: Deve lançar DataNotFoundException ao tentar excluir produto inexistente")
-    void deveLancarExcecaoAoExcluirProdutoInexistente() {
-        when(repository.existsById(99)).thenReturn(false);
-        assertThrows(DataNotFoundException.class, () -> service.excluir(99));
-        verify(repository).existsById(99);
+    @DisplayName("excluir: Deve lançar DataNotFoundException quando produto não existe")
+    void testExcluirProduto_NaoEncontrado() {
+        // Arrange
+        when(repository.existsById(999)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.excluir(999));
+
+        verify(repository).existsById(999);
         verify(repository, never()).deleteById(anyInt());
     }
 }

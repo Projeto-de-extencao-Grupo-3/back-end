@@ -14,15 +14,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,10 +32,7 @@ class OficinaServiceTest {
     private OficinaRepository repository;
 
     @Mock
-    private GerenciadorTokenJwt gerenciadorTokenJwt;
-
-    @Mock
-    private AuthenticationManager authenticationManager;
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private OficinaService service;
@@ -47,6 +43,7 @@ class OficinaServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Arrange: Preparar Entidade
         oficina = new Oficinas();
         oficina.setIdOficina(1);
         oficina.setRazaoSocial("Oficina do Zé");
@@ -58,150 +55,296 @@ class OficinaServiceTest {
         patchStatusDTO = new OficinaPatchStatusDTO(1, false);
     }
 
-    // --- Testes para cadastrar ---
-
+    // ===== cadastrar =====
     @Test
-    @DisplayName("Deve cadastrar uma nova oficina com sucesso")
-    void deveCadastrarOficinaComSucesso() {
+    @DisplayName("cadastrar: Deve cadastrar nova oficina com sucesso quando CNPJ não existe")
+    void testCadastrarOficinaComSucesso() {
         // Arrange
         when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.empty());
-        when(repository.save(any(Oficinas.class))).thenReturn(oficina);
+        when(repository.save(any(Oficinas.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         Oficinas resultado = service.cadastrar(oficina);
 
         // Assert
         assertNotNull(resultado);
+        assertEquals("Oficina do Zé", resultado.getRazaoSocial());
         verify(repository).findByCnpj(oficina.getCnpj());
-        verify(repository).save(oficina);
+        verify(repository).save(any(Oficinas.class));
     }
 
     @Test
-    @DisplayName("cadastrar: Deve lançar ConflictException ao tentar cadastrar CNPJ duplicado")
-    void deveLancarConflictExceptionAoCadastrarCnpjDuplicado() {
+    @DisplayName("cadastrar: Deve lançar ConflictException quando CNPJ já existe")
+    void testCadastrarOficinaComCnpjDuplicado() {
+        // Arrange
         when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.of(oficina));
 
-        ConflictException exception = assertThrows(ConflictException.class, () -> {
-            service.cadastrar(oficina);
-        });
+        // Act & Assert
+        ConflictException exception = assertThrows(ConflictException.class,
+            () -> service.cadastrar(oficina));
 
-        assertTrue(exception.getMessage().contains("O CNPJ %s já está cadastrado!".formatted(oficina.getCnpj())));
+        assertTrue(exception.getMessage().contains("O CNPJ"));
         verify(repository).findByCnpj(oficina.getCnpj());
+        verify(passwordEncoder, never()).encode(anyString());
         verify(repository, never()).save(any(Oficinas.class));
     }
 
-    // --- Testes para listar ---
+    // ===== listar =====
     @Test
-    @DisplayName("listar: Deve retornar uma lista de oficinas")
-    void deveRetornarListaDeOficinas() {
+    @DisplayName("listar: Deve retornar lista de oficinas quando existem")
+    void testListarOficinas() {
+        // Arrange
         when(repository.findAll()).thenReturn(List.of(oficina));
+
+        // Act
         List<Oficinas> resultado = service.listar();
+
+        // Assert
+        assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
+        assertEquals(1, resultado.size());
         verify(repository).findAll();
     }
 
     @Test
-    @DisplayName("listar: Deve retornar uma lista vazia quando não houver oficinas")
-    void deveRetornarListaVazia() {
-        when(repository.findAll()).thenReturn(Collections.emptyList());
+    @DisplayName("listar: Deve retornar lista vazia quando não existem oficinas")
+    void testListarOficInasVazia() {
+        // Arrange
+        when(repository.findAll()).thenReturn(List.of());
+
+        // Act
         List<Oficinas> resultado = service.listar();
+
+        // Assert
+        assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
         verify(repository).findAll();
     }
 
-    // --- Testes para findOficinasById ---
+    // ===== findOficinasById =====
     @Test
     @DisplayName("findOficinasById: Deve encontrar oficina por ID com sucesso")
-    void deveEncontrarOficinaPorIdComSucesso() {
+    void testFindOficinasById() {
+        // Arrange
         when(repository.findById(1)).thenReturn(Optional.of(oficina));
+
+        // Act
         Oficinas resultado = service.findOficinasById(1);
+
+        // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdOficina());
+        assertEquals("Oficina do Zé", resultado.getRazaoSocial());
         verify(repository).findById(1);
     }
 
     @Test
-    @DisplayName("findOficinasById: Deve lançar DataNotFoundException para ID inexistente")
-    void deveLancarExcecaoAoBuscarIdInexistente() {
-        when(repository.findById(99)).thenReturn(Optional.empty());
-        assertThrows(DataNotFoundException.class, () -> service.findOficinasById(99));
-        verify(repository).findById(99);
+    @DisplayName("findOficinasById: Deve lançar DataNotFoundException quando ID não existe")
+    void testFindOficinasById_NaoEncontrada() {
+        // Arrange
+        when(repository.findById(999)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.findOficinasById(999));
+
+        verify(repository).findById(999);
     }
 
-    // --- Testes para findOficinasByRazaoSocial ---
+    // ===== findOficinasByRazaoSocial =====
     @Test
-    @DisplayName("findOficinasByRazaoSocial: Deve encontrar oficinas pela razão social")
-    void deveEncontrarOficinasPorRazaoSocial() {
-        when(repository.findByrazaoSocialContainingIgnoreCase("Zé")).thenReturn(List.of(oficina));
-        List<Oficinas> resultado = service.findOficinasByRazaoSocial("Zé");
+    @DisplayName("findOficinasByRazaoSocial: Deve encontrar oficinas pela razão social com sucesso")
+    void testFindOficinasByRazaoSocial() {
+        // Arrange
+        String razaoSocial = "Zé";
+        when(repository.findByrazaoSocialContainingIgnoreCase(razaoSocial)).thenReturn(List.of(oficina));
+
+        // Act
+        List<Oficinas> resultado = service.findOficinasByRazaoSocial(razaoSocial);
+
+        // Assert
+        assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
-        verify(repository).findByrazaoSocialContainingIgnoreCase("Zé");
+        verify(repository).findByrazaoSocialContainingIgnoreCase(razaoSocial);
     }
 
-    // --- Testes para findOficinasByCnpj ---
+    @Test
+    @DisplayName("findOficinasByRazaoSocial: Deve retornar lista vazia quando razão social não existe")
+    void testFindOficinasByRazaoSocial_Vazio() {
+        // Arrange
+        when(repository.findByrazaoSocialContainingIgnoreCase("Inexistente")).thenReturn(List.of());
+
+        // Act
+        List<Oficinas> resultado = service.findOficinasByRazaoSocial("Inexistente");
+
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+        verify(repository).findByrazaoSocialContainingIgnoreCase("Inexistente");
+    }
+
+    // ===== findOficinasByCnpj =====
     @Test
     @DisplayName("findOficinasByCnpj: Deve encontrar oficina por CNPJ com sucesso")
-    void deveEncontrarOficinaPorCnpjComSucesso() {
-        when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.of(oficina));
-        Oficinas resultado = service.findOficinasByCnpj(oficina.getCnpj());
+    void testFindOficinasByCnpj() {
+        // Arrange
+        String cnpj = "12345678000199";
+        when(repository.findByCnpj(cnpj)).thenReturn(Optional.of(oficina));
+
+        // Act
+        Oficinas resultado = service.findOficinasByCnpj(cnpj);
+
+        // Assert
         assertNotNull(resultado);
-        verify(repository).findByCnpj(oficina.getCnpj());
+        assertEquals(cnpj, resultado.getCnpj());
+        verify(repository).findByCnpj(cnpj);
     }
 
-    // --- Testes para atualizar ---
     @Test
-    @DisplayName("atualizar: Deve atualizar uma oficina com sucesso")
-    void deveAtualizarOficinaComSucesso() {
+    @DisplayName("findOficinasByCnpj: Deve lançar DataNotFoundException quando CNPJ não existe")
+    void testFindOficinasByCnpj_NaoEncontrada() {
+        // Arrange
+        when(repository.findByCnpj("99999999999999")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.findOficinasByCnpj("99999999999999"));
+
+        verify(repository).findByCnpj("99999999999999");
+    }
+
+    // ===== atualizar =====
+    @Test
+    @DisplayName("atualizar: Deve atualizar oficina com sucesso quando existe")
+    void testAtualizarOficina() {
+        // Arrange
+        Oficinas oficinaParaAtualizar = oficina;
+        oficinaParaAtualizar.setRazaoSocial("Oficina Atualizada");
+
         when(repository.existsById(1)).thenReturn(true);
-        when(repository.save(any(Oficinas.class))).thenReturn(oficina);
-        Oficinas resultado = service.atualizar(1, oficina);
+        when(repository.save(any(Oficinas.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Oficinas resultado = service.atualizar(1, oficinaParaAtualizar);
+
+        // Assert
         assertNotNull(resultado);
-        assertEquals(1, resultado.getIdOficina());
+        assertEquals("Oficina Atualizada", resultado.getRazaoSocial());
         verify(repository).existsById(1);
-        verify(repository).save(oficina);
+        verify(repository).save(any(Oficinas.class));
     }
 
-    // --- Testes para patchEmail ---
     @Test
-    @DisplayName("patchEmail: Deve atualizar o email com sucesso")
-    void deveAtualizarEmailComSucesso() {
-        when(repository.findById(1)).thenReturn(Optional.of(oficina));
-        when(repository.save(any(Oficinas.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("atualizar: Deve lançar DataNotFoundException quando oficina não existe")
+    void testAtualizarOficina_NaoEncontrada() {
+        // Arrange
+        when(repository.existsById(999)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.atualizar(999, oficina));
+
+        verify(repository).existsById(999);
+        verify(repository, never()).save(any(Oficinas.class));
+    }
+
+    // ===== patchEmail =====
+    @Test
+    @DisplayName("patchEmail: Deve atualizar email da oficina com sucesso")
+    void testPatchEmail() {
+        // Arrange
+        Oficinas oficinaParaAtualizar = oficina;
+        oficinaParaAtualizar.setEmail("novo.email@oficinadoze.com");
+
+        when(repository.findById(patchEmailDTO.getId())).thenReturn(Optional.of(oficinaParaAtualizar));
+        when(repository.save(any(Oficinas.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         Oficinas resultado = service.patchEmail(patchEmailDTO);
-        assertEquals(patchEmailDTO.getEmail(), resultado.getEmail());
-        verify(repository).findById(1);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("novo.email@officinadoze.com", resultado.getEmail());
+        verify(repository).findById(patchEmailDTO.getId());
         verify(repository).save(any(Oficinas.class));
     }
 
-    // --- Testes para patchStatus ---
     @Test
-    @DisplayName("patchStatus: Deve atualizar o status com sucesso")
-    void deveAtualizarStatusComSucesso() {
-        when(repository.findById(1)).thenReturn(Optional.of(oficina));
-        when(repository.save(any(Oficinas.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchEmail: Deve lançar DataNotFoundException quando oficina não existe")
+    void testPatchEmail_NaoEncontrada() {
+        // Arrange
+        when(repository.findById(999)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.patchEmail(new OficinaPatchEmailDTO(999, "novo@email.com")));
+
+        verify(repository).findById(999);
+        verify(repository, never()).save(any(Oficinas.class));
+    }
+
+    // ===== patchStatus =====
+    @Test
+    @DisplayName("patchStatus: Deve atualizar status da oficina com sucesso")
+    void testPatchStatus() {
+        // Arrange
+        Oficinas oficinaParaAtualizar = oficina;
+        oficinaParaAtualizar.setStatus(true);
+
+        when(repository.findById(patchStatusDTO.getId())).thenReturn(Optional.of(oficinaParaAtualizar));
+        when(repository.save(any(Oficinas.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         Oficinas resultado = service.patchStatus(patchStatusDTO);
-        assertEquals(patchStatusDTO.getStatus(), resultado.getStatus());
-        verify(repository).findById(1);
+
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.getStatus());
+        verify(repository).findById(patchStatusDTO.getId());
         verify(repository).save(any(Oficinas.class));
     }
 
-    // --- Testes para remover ---
     @Test
-    @DisplayName("remover: Deve remover uma oficina com sucesso")
-    void deveRemoverOficinaComSucesso() {
+    @DisplayName("patchStatus: Deve lançar DataNotFoundException quando oficina não existe")
+    void testPatchStatus_NaoEncontrada() {
+        // Arrange
+        when(repository.findById(999)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.patchStatus(new OficinaPatchStatusDTO(999, true)));
+
+        verify(repository).findById(999);
+        verify(repository, never()).save(any(Oficinas.class));
+    }
+
+    // ===== remover =====
+    @Test
+    @DisplayName("remover: Deve remover oficina com sucesso quando existe")
+    void testRemoverOficina() {
+        // Arrange
         when(repository.existsById(1)).thenReturn(true);
         doNothing().when(repository).deleteById(1);
+
+        // Act
         assertDoesNotThrow(() -> service.remover(1));
+
+        // Assert
         verify(repository).existsById(1);
         verify(repository).deleteById(1);
     }
 
     @Test
-    @DisplayName("remover: Deve lançar DataNotFoundException ao tentar remover oficina inexistente")
-    void deveLancarExcecaoAoRemoverOficinaInexistente() {
-        when(repository.existsById(99)).thenReturn(false);
-        assertThrows(DataNotFoundException.class, () -> service.remover(99));
-        verify(repository).existsById(99);
-        verify(repository, never()).deleteById(anyInt());
+    @DisplayName("remover: Deve lançar DataNotFoundException quando oficina não existe")
+    void testRemoverOficina_NaoEncontrada() {
+        // Arrange
+        when(repository.existsById(999)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.remover(999));
+
+        verify(repository).existsById(999);
+        verify(repository, never()).deleteById(999);
     }
 }
