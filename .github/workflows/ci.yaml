@@ -62,8 +62,6 @@ jobs:
             dependency-check-data-${{ runner.os }}
 
       - name: OWASP Dependency Check
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         continue-on-error: false
         run: |
           echo "🔍 Iniciando OWASP Dependency Check..."
@@ -76,10 +74,11 @@ jobs:
             -Dformat=JSON \
             -Dformat=HTML \
             -DautoUpdate=true \
+            -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
             || {
-              echo "❌ Dependency Check encontrou vulnerabilidades críticas!"
-              exit 1
-            }
+            echo "❌ Dependency Check encontrou vulnerabilidades críticas!"
+            exit 1
+          }
           
           echo "✅ Verificação de vulnerabilidades concluída"
 
