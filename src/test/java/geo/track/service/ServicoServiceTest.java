@@ -14,10 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Testes do ServicosService")
+@DisplayName("Testes do ServicoService")
 class ServicoServiceTest {
 
     @Mock
@@ -30,126 +31,144 @@ class ServicoServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Arrange: Preparar Entidade
         servico = new Servico();
         servico.setIdServico(1);
         servico.setTituloServico("Troca de Óleo");
     }
 
-    // --- Testes para cadastrar ---
+    // ===== cadastrar =====
     @Test
-    @DisplayName("cadastrar: Deve cadastrar um serviço com sucesso")
-    void deveCadastrarServicoComSucesso() {
+    @DisplayName("cadastrar: Deve cadastrar novo serviço com sucesso quando título não existe")
+    void testCadastrarServicoComSucesso() {
+        // Arrange
         when(repository.existsByTituloServico(servico.getTituloServico())).thenReturn(false);
-        when(repository.save(any(Servico.class))).thenReturn(servico);
+        when(repository.save(any(Servico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+        // Act
         Servico resultado = service.cadastrar(servico);
 
+        // Assert
         assertNotNull(resultado);
-        assertEquals(servico.getTituloServico(), resultado.getTituloServico());
+        assertEquals("Troca de Óleo", resultado.getTituloServico());
         verify(repository).existsByTituloServico(servico.getTituloServico());
         verify(repository).save(any(Servico.class));
     }
 
     @Test
-    @DisplayName("cadastrar: Deve lançar ConflictException ao tentar cadastrar título duplicado")
-    void deveLancarConflictExceptionAoCadastrarTituloDuplicado() {
+    @DisplayName("cadastrar: Deve lançar ConflictException quando título já existe")
+    void testCadastrarServicoComTituloDuplicado() {
+        // Arrange
         when(repository.existsByTituloServico(servico.getTituloServico())).thenReturn(true);
 
-        ConflictException exception = assertThrows(ConflictException.class, () -> {
-            service.cadastrar(servico);
-        });
+        // Act & Assert
+        ConflictException exception = assertThrows(ConflictException.class,
+            () -> service.cadastrar(servico));
 
         assertEquals("Nome já existe", exception.getMessage());
         verify(repository).existsByTituloServico(servico.getTituloServico());
         verify(repository, never()).save(any(Servico.class));
     }
 
-    // --- Testes para buscarPorId ---
+    // ===== buscarPorId =====
     @Test
-    @DisplayName("buscarPorId: Deve buscar um serviço pelo ID com sucesso")
-    void deveBuscarServicoPorIdComSucesso() {
+    @DisplayName("buscarPorId: Deve buscar serviço por ID com sucesso")
+    void testBuscarServicoPorId() {
+        // Arrange
         when(repository.existsByIdServico(1)).thenReturn(true);
         when(repository.getByIdServico(1)).thenReturn(servico);
 
+        // Act
         Servico resultado = service.buscarPorId(1);
 
+        // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdServico());
+        assertEquals("Troca de Óleo", resultado.getTituloServico());
         verify(repository).existsByIdServico(1);
         verify(repository).getByIdServico(1);
     }
 
     @Test
-    @DisplayName("buscarPorId: Deve lançar DataNotFoundException ao buscar por ID inexistente")
-    void deveLancarDataNotFoundExceptionAoBuscarPorIdInexistente() {
-        when(repository.existsByIdServico(99)).thenReturn(false);
+    @DisplayName("buscarPorId: Deve lançar DataNotFoundException quando ID não existe")
+    void testBuscarServicoPorId_NaoEncontrado() {
+        // Arrange
+        when(repository.existsByIdServico(999)).thenReturn(false);
 
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.buscarPorId(99);
-        });
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.buscarPorId(999));
 
         assertEquals("Servico Não encontrado", exception.getMessage());
-        verify(repository).existsByIdServico(99);
+        verify(repository).existsByIdServico(999);
         verify(repository, never()).getByIdServico(anyInt());
     }
 
-    // --- Testes para atualizar ---
+    // ===== atualizar =====
     @Test
-    @DisplayName("atualizar: Deve atualizar um serviço com sucesso")
-    void deveAtualizarServicoComSucesso() {
+    @DisplayName("atualizar: Deve atualizar serviço com sucesso quando existe")
+    void testAtualizarServico() {
+        // Arrange
+        Servico servicoAtualizado = servico;
+        servicoAtualizado.setTituloServico("Troca de Óleo Sintético");
+
         when(repository.existsById(1)).thenReturn(true);
-        when(repository.save(any(Servico.class))).thenReturn(servico);
+        when(repository.save(any(Servico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Servico servicoAtualizado = new Servico();
-        servicoAtualizado.setTituloServico("Troca de Óleo");
-
+        // Act
         Servico resultado = service.atualizar(1, servicoAtualizado);
 
+        // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdServico());
-        assertEquals("Troca de Óleo", resultado.getTituloServico());
+        assertEquals("Troca de Óleo Sintético", resultado.getTituloServico());
         verify(repository).existsById(1);
         verify(repository).save(any(Servico.class));
     }
 
     @Test
-    @DisplayName("atualizar: Deve lançar DataNotFoundException ao tentar atualizar serviço inexistente")
-    void deveLancarDataNotFoundExceptionAoAtualizarServicoInexistente() {
-        when(repository.existsById(99)).thenReturn(false);
+    @DisplayName("atualizar: Deve lançar DataNotFoundException quando serviço não existe")
+    void testAtualizarServico_NaoEncontrado() {
+        // Arrange
+        when(repository.existsById(999)).thenReturn(false);
 
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.atualizar(99, new Servico());
-        });
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.atualizar(999, servico));
 
         assertEquals("Servico não encontrado", exception.getMessage());
-        verify(repository).existsById(99);
+        verify(repository).existsById(999);
         verify(repository, never()).save(any(Servico.class));
     }
 
-    // --- Testes para deletar ---
+    // ===== deletar =====
     @Test
-    @DisplayName("deletar: Deve deletar um serviço com sucesso")
-    void deveDeletarServicoComSucesso() {
+    @DisplayName("deletar: Deve deletar serviço com sucesso quando existe")
+    void testDeletarServico() {
+        // Arrange
         when(repository.existsById(1)).thenReturn(true);
         doNothing().when(repository).deleteById(1);
 
+        // Act
         assertDoesNotThrow(() -> service.deletar(1));
 
+        // Assert
         verify(repository).existsById(1);
         verify(repository).deleteById(1);
     }
 
     @Test
-    @DisplayName("deletar: Deve lançar DataNotFoundException ao tentar deletar serviço inexistente")
-    void deveLancarDataNotFoundExceptionAoDeletarServicoInexistente() {
-        when(repository.existsById(99)).thenReturn(false);
+    @DisplayName("deletar: Deve lançar DataNotFoundException quando serviço não existe")
+    void testDeletarServico_NaoEncontrado() {
+        // Arrange
+        when(repository.existsById(999)).thenReturn(false);
 
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.deletar(99);
-        });
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.deletar(999));
 
         assertEquals("Servico não encontrado", exception.getMessage());
-        verify(repository).existsById(99);
+        verify(repository).existsById(999);
         verify(repository, never()).deleteById(anyInt());
     }
 }

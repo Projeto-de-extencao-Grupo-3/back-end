@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,13 +25,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Testes do OrdemDeServicosService")
+@DisplayName("Testes do OrdemDeServicoService")
 class OrdemDeServicoServiceTest {
 
     @Mock
     private OrdemDeServicoRepository ordemRepository;
+
     @Mock
     private ItemServicoService itemServicoService;
+
     @Mock
     private RegistroEntradaService registroEntradaService;
 
@@ -51,6 +52,7 @@ class OrdemDeServicoServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Arrange: Preparar Entidades
         registroEntrada = new RegistroEntrada();
         registroEntrada.setIdRegistroEntrada(1);
 
@@ -72,153 +74,259 @@ class OrdemDeServicoServiceTest {
         requestPatchPagtoRealizado = new RequestPatchPagtoRealizado(1, 1, true);
     }
 
-    // --- Testes para postOrdem ---
+    // ===== postOrdem =====
     @Test
-    @DisplayName("postOrdem: Deve criar uma ordem de serviço com sucesso")
-    void deveCriarOrdemDeServicoComSucesso() {
+    @DisplayName("postOrdem: Deve criar ordem de serviço com sucesso")
+    void testPostOrdemComSucesso() {
+        // Arrange
         when(registroEntradaService.findRegistroById(1)).thenReturn(registroEntrada);
-        when(ordemRepository.save(any(OrdemDeServico.class))).thenReturn(ordemDeServicos);
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+        // Act
         OrdemDeServico resultado = service.postOrdem(postEntradaVeiculo);
 
+        // Assert
         assertNotNull(resultado);
-        assertEquals(postEntradaVeiculo.getValorTotal(), resultado.getValorTotal());
+        assertEquals(500.0, resultado.getValorTotal());
         verify(registroEntradaService).findRegistroById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
-    // --- Testes para findOrdem ---
+    // ===== findOrdem =====
     @Test
-    @DisplayName("findOrdem: Deve retornar uma lista de ordens de serviço")
-    void deveRetornarListaDeOrdens() {
+    @DisplayName("findOrdem: Deve retornar lista de ordens de serviço quando existem")
+    void testFindOrdemComResultados() {
+        // Arrange
         when(ordemRepository.findAll()).thenReturn(List.of(ordemDeServicos));
+
+        // Act
         List<OrdemDeServico> resultado = service.findOrdem();
+
+        // Assert
+        assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
         verify(ordemRepository).findAll();
     }
 
-    // --- Testes para findOrdemById ---
+    @Test
+    @DisplayName("findOrdem: Deve retornar lista vazia quando não existem ordens")
+    void testFindOrdemSemResultados() {
+        // Arrange
+        when(ordemRepository.findAll()).thenReturn(List.of());
+
+        // Act
+        List<OrdemDeServico> resultado = service.findOrdem();
+
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+        verify(ordemRepository).findAll();
+    }
+
+    // ===== findOrdemById =====
     @Test
     @DisplayName("findOrdemById: Deve encontrar ordem por ID com sucesso")
-    void deveEncontrarOrdemPorIdComSucesso() {
+    void testFindOrdemById() {
+        // Arrange
         when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
+
+        // Act
         OrdemDeServico resultado = service.findOrdemById(1);
+
+        // Assert
         assertNotNull(resultado);
+        assertEquals(1, resultado.getIdOrdemServico());
         verify(ordemRepository).findById(1);
     }
 
-    // --- Testes para putValorESaida ---
+    @Test
+    @DisplayName("findOrdemById: Deve lançar DataNotFoundException quando ID não existe")
+    void testFindOrdemById_NaoEncontrada() {
+        // Arrange
+        when(ordemRepository.findById(999)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.findOrdemById(999));
+
+        verify(ordemRepository).findById(999);
+    }
+
+    // ===== putValorESaida =====
     @Test
     @DisplayName("putValorESaida: Deve atualizar valor e data de saída com sucesso")
-    void deveAtualizarValorESaidaComSucesso() {
-        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
-        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(inv -> inv.getArgument(0));
+    void testPutValorESaidaComSucesso() {
+        // Arrange
+        OrdemDeServico ordemParaAtualizar = ordemDeServicos;
+        ordemParaAtualizar.setValorTotal(750.0);
+        ordemParaAtualizar.setDtSaidaPrevista(LocalDate.now().plusWeeks(5));
 
+        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         OrdemDeServico resultado = service.putValorESaida(requestPutValorESaida);
 
-        assertEquals(requestPutValorESaida.getValorTotal(), resultado.getValorTotal());
-        assertEquals(requestPutValorESaida.getSaidaPrevista(), resultado.getDtSaidaPrevista());
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(750.0, resultado.getValorTotal());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
-    // --- Testes para patchSaidaEfetiva ---
+    // ===== patchSaidaEfetiva =====
     @Test
-    @DisplayName("patchSaidaEfetiva: Deve atualizar a data de saída efetiva com sucesso")
-    void deveAtualizarSaidaEfetivaComSucesso() {
-        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
-        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchSaidaEfetiva: Deve atualizar data de saída efetiva com sucesso")
+    void testPatchSaidaEfetiva() {
+        // Arrange
+        LocalDate dataSaidaEfetiva = LocalDate.now().plusWeeks(6);
+        OrdemDeServico ordemParaAtualizar = ordemDeServicos;
+        ordemParaAtualizar.setDtSaidaEfetiva(dataSaidaEfetiva);
+
+        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         OrdemDeServico resultado = service.patchSaidaEfetiva(requestPatchSaidaEfetiva);
-        assertEquals(requestPatchSaidaEfetiva.getDtSaidaEfeiva(), resultado.getDtSaidaEfetiva());
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(dataSaidaEfetiva, resultado.getDtSaidaEfetiva());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
-    // --- Testes para patchStatus ---
+    // ===== patchStatus =====
     @Test
-    @DisplayName("patchStatus: Deve atualizar o status com sucesso")
-    void deveAtualizarStatusComSucesso() {
-        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
-        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchStatus: Deve atualizar status com sucesso")
+    void testPatchStatus() {
+        // Arrange
+        OrdemDeServico ordemParaAtualizar = ordemDeServicos;
+        ordemParaAtualizar.setStatus(StatusVeiculo.FINALIZADO);
+
+        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         OrdemDeServico resultado = service.patchStatus(requestPatchStatus);
-        assertEquals(requestPatchStatus.getStatus(), resultado.getStatus());
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(StatusVeiculo.FINALIZADO, resultado.getStatus());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
-    // --- Testes para patchSeguradora ---
+    // ===== patchSeguradora =====
     @Test
-    @DisplayName("patchSeguradora: Deve atualizar o status da seguradora com sucesso")
-    void deveAtualizarSeguradoraComSucesso() {
-        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
-        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchSeguradora: Deve atualizar status de seguradora com sucesso")
+    void testPatchSeguradora() {
+        // Arrange
+        OrdemDeServico ordemParaAtualizar = ordemDeServicos;
+        ordemParaAtualizar.setSeguradora(true);
+
+        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         OrdemDeServico resultado = service.patchSeguradora(requestPatchSeguradora);
-        assertEquals(requestPatchSeguradora.getSeguradora(), resultado.getSeguradora());
+
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.getSeguradora());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
-    // --- Testes para patchNfRealizada ---
+    // ===== patchNfRealizada =====
     @Test
-    @DisplayName("patchNfRealizada: Deve atualizar o status da NF com sucesso")
-    void deveAtualizarNfRealizadaComSucesso() {
-        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
-        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchNfRealizada: Deve atualizar status de NF com sucesso")
+    void testPatchNfRealizada() {
+        // Arrange
+        OrdemDeServico ordemParaAtualizar = ordemDeServicos;
+        ordemParaAtualizar.setNfRealizada(true);
+
+        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         OrdemDeServico resultado = service.patchNfRealizada(requestPatchNfRealizada);
-        assertEquals(requestPatchNfRealizada.getNfRealizada(), resultado.getNfRealizada());
+
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.getNfRealizada());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
-    // --- Testes para patchPagtoRealizado ---
+    // ===== patchPagtoRealizado =====
     @Test
-    @DisplayName("patchPagtoRealizado: Deve atualizar o status do pagamento com sucesso")
-    void deveAtualizarPagtoRealizadoComSucesso() {
-        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
-        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(inv -> inv.getArgument(0));
+    @DisplayName("patchPagtoRealizado: Deve atualizar status de pagamento com sucesso")
+    void testPatchPagtoRealizado() {
+        // Arrange
+        OrdemDeServico ordemParaAtualizar = ordemDeServicos;
+        ordemParaAtualizar.setPagtRealizado(true);
+
+        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
         OrdemDeServico resultado = service.patchPagtoRealizado(requestPatchPagtoRealizado);
-        assertEquals(requestPatchPagtoRealizado.getPagtoRealizado(), resultado.getPagtRealizado());
+
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.getPagtRealizado());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
-    // --- Testes para deleteOrdem ---
+    // ===== deleteOrdem =====
     @Test
-    @DisplayName("deleteOrdem: Deve deletar uma ordem de serviço com sucesso")
-    void deveDeletarOrdemComSucesso() {
+    @DisplayName("deleteOrdem: Deve deletar ordem com sucesso quando não possui serviços")
+    void testDeleteOrdemComSucesso() {
+        // Arrange
         when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
-        when(itemServicoService.listarPelaOrdemServico(ordemDeServicos)).thenReturn(Collections.emptyList());
+        when(itemServicoService.listarPelaOrdemServico(ordemDeServicos)).thenReturn(List.of());
         doNothing().when(ordemRepository).delete(ordemDeServicos);
 
+        // Act
         assertDoesNotThrow(() -> service.deleteOrdem(1));
 
+        // Assert
         verify(ordemRepository).findById(1);
         verify(itemServicoService).listarPelaOrdemServico(ordemDeServicos);
         verify(ordemRepository).delete(ordemDeServicos);
     }
 
     @Test
-    @DisplayName("deleteOrdem: Deve lançar BadRequestException ao tentar deletar ordem com serviços atrelados")
-    void deveLancarExcecaoAoDeletarOrdemComServicos() {
-        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
-        when(itemServicoService.listarPelaOrdemServico(ordemDeServicos)).thenReturn(List.of(new ItemServico()));
+    @DisplayName("deleteOrdem: Deve lançar BadRequestException quando ordem possui serviços")
+    void testDeleteOrdemComServicos() {
+        // Arrange
+        ItemServico itemServico = new ItemServico();
+        itemServico.setIdRegistroServico(1);
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            service.deleteOrdem(1);
-        });
+        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
+        when(itemServicoService.listarPelaOrdemServico(ordemDeServicos)).thenReturn(List.of(itemServico));
+
+        // Act & Assert
+        BadRequestException exception = assertThrows(BadRequestException.class,
+            () -> service.deleteOrdem(1));
 
         assertEquals("Não é possível deletar ordem de serviço que possui serviços anexados", exception.getMessage());
         verify(ordemRepository, never()).delete(any(OrdemDeServico.class));
     }
 
     @Test
-    @DisplayName("deleteOrdem: Deve lançar DataNotFoundException ao tentar deletar ordem inexistente")
-    void deveLancarExcecaoAoDeletarOrdemInexistente() {
-        when(ordemRepository.findById(99)).thenReturn(Optional.empty());
+    @DisplayName("deleteOrdem: Deve lançar DataNotFoundException quando ordem não existe")
+    void testDeleteOrdem_NaoEncontrada() {
+        // Arrange
+        when(ordemRepository.findById(999)).thenReturn(Optional.empty());
 
-        assertThrows(DataNotFoundException.class, () -> service.deleteOrdem(99));
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.deleteOrdem(999));
 
-        verify(ordemRepository).findById(99);
+        verify(ordemRepository).findById(999);
         verify(itemServicoService, never()).listarPelaOrdemServico(any());
         verify(ordemRepository, never()).delete(any());
     }

@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Testes do ClientesService")
+@DisplayName("Testes do ClienteService")
 class ClienteServiceTest {
 
     @Mock
@@ -42,21 +42,17 @@ class ClienteServiceTest {
     @InjectMocks
     private ClienteService service;
 
-    // Entidades
     private Cliente cliente;
     private Oficinas oficina;
     private Endereco endereco;
-
-    // DTOs de Requisição
     private RequestPostCliente requestPostCliente;
     private RequestPatchEmail requestPatchEmail;
     private RequestPatchTelefone requestPatchTelefone;
     private RequestPutCliente requestPutCliente;
 
-
     @BeforeEach
     void setUp() {
-        // Configuração de Entidades Mock
+        // Arrange: Preparar Entidades
         oficina = new Oficinas();
         oficina.setIdOficina(1);
         oficina.setRazaoSocial("Oficina do Zé");
@@ -74,320 +70,342 @@ class ClienteServiceTest {
         cliente.setFkOficina(oficina);
         cliente.setFkEndereco(endereco);
 
-        // Configuração de DTOs de Requisição
+        // DTOs usados apenas quando necessário (entrada de requisições)
         requestPostCliente = new RequestPostCliente(
                 "João da Silva",
                 "12345678901",
                 "11999999999",
                 "joao@example.com",
                 TipoCliente.PESSOA_FISICA,
-                1, // fkOficina
-                1  // fkEndereco
+                1,
+                1
         );
 
         requestPatchEmail = new RequestPatchEmail(1, "novo.email@example.com");
-
         requestPatchTelefone = new RequestPatchTelefone(1, "11888888888");
-
-        requestPutCliente = new RequestPutCliente(
-                1,
-                "João da Silva Santos",
-                "09876543210",
-                "11777777777",
-                "joao.santos@example.com"
-        );
+        requestPutCliente = new RequestPutCliente(1, "João Santos", "09876543210", "11777777777", "joao.santos@example.com");
     }
 
-    // --- Testes para postCliente ---
+    // ===== postCliente =====
     @Test
-    @DisplayName("postCliente: Deve criar um cliente com sucesso")
-    void deveCriarClienteComSucesso() {
-        // Configuração dos mocks (Arrange)
+    @DisplayName("postCliente: Deve criar cliente com sucesso quando CPF/CNPJ não existe")
+    void testPostClienteComSucesso() {
+        // Arrange
         when(repository.existsByCpfCnpj(requestPostCliente.getCpfCnpj())).thenReturn(false);
         when(oficinaService.findOficinasById(requestPostCliente.getFkOficina())).thenReturn(oficina);
         when(enderecoService.findEnderecoById(requestPostCliente.getFkEndereco())).thenReturn(endereco);
-        when(repository.save(any(Cliente.class))).thenReturn(cliente);
+        when(repository.save(any(Cliente.class))).thenAnswer(invocation -> {
+            Cliente arg = invocation.getArgument(0);
+            arg.setIdCliente(1);
+            return arg;
+        });
 
-        // Execução do método (Act)
-        Cliente resultadoCliente = service.postCliente(requestPostCliente);
+        // Act
+        Cliente resultado = service.postCliente(requestPostCliente);
 
-        // Verificações (Assert)
-        assertNotNull(resultadoCliente);
-        assertEquals(requestPostCliente.getNome(), resultadoCliente.getNome());
-        assertEquals(requestPostCliente.getCpfCnpj(), resultadoCliente.getCpfCnpj());
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("João da Silva", resultado.getNome());
+        assertEquals("12345678901", resultado.getCpfCnpj());
+        assertEquals(oficina.getIdOficina(), resultado.getFkOficina().getIdOficina());
+        assertEquals(endereco.getIdEndereco(), resultado.getFkEndereco().getIdEndereco());
         verify(repository).existsByCpfCnpj(requestPostCliente.getCpfCnpj());
-        verify(oficinaService).findOficinasById(requestPostCliente.getFkOficina());
-        verify(enderecoService).findEnderecoById(requestPostCliente.getFkEndereco());
         verify(repository).save(any(Cliente.class));
     }
 
     @Test
-    @DisplayName("postCliente: Deve lançar ConflictException ao tentar criar cliente com CPF/CNPJ já existente")
-    void deveLancarConflictExceptionAoCriarClienteComCpfCnpjExistente() {
+    @DisplayName("postCliente: Deve lançar ConflictException quando CPF/CNPJ já existe")
+    void testPostClienteComCpfCnpjDuplicado() {
+        // Arrange
         when(repository.existsByCpfCnpj(requestPostCliente.getCpfCnpj())).thenReturn(true);
-        // Execução do método (Act)
-        ConflictException resultadoCliente = assertThrows(ConflictException.class, () -> {
-            service.postCliente(requestPostCliente);
-        });
 
-        // Verificações (Assert)
-        assertNotNull(resultadoCliente);
-        assertEquals("O CPF do cliente informado já existe", resultadoCliente.getMessage());
-        assertEquals("Clientes", resultadoCliente.getDomain());
+        // Act & Assert
+        ConflictException exception = assertThrows(ConflictException.class,
+            () -> service.postCliente(requestPostCliente));
+
+        assertEquals("O CPF do cliente informado já existe", exception.getMessage());
+        assertEquals("Clientes", exception.getDomain());
         verify(repository).existsByCpfCnpj(requestPostCliente.getCpfCnpj());
-        verify(oficinaService, never()).findOficinasById(requestPostCliente.getFkOficina());
-        verify(enderecoService, never()).findEnderecoById(requestPostCliente.getFkEndereco());
         verify(repository, never()).save(any(Cliente.class));
+        verify(oficinaService, never()).findOficinasById(any());
+        verify(enderecoService, never()).findEnderecoById(any());
     }
 
-    // --- Testes para findClientes ---
+    // ===== findClientes =====
     @Test
-    @DisplayName("findClientes: Deve retornar uma lista de clientes")
-    void deveRetornarListaDeClientes() {
-        when(repository.findAll()).thenReturn(List.of(cliente, cliente));
+    @DisplayName("findClientes: Deve retornar lista de clientes quando existem")
+    void testFindClientesComResultados() {
+        // Arrange
+        when(repository.findAll()).thenReturn(List.of(cliente));
 
-        // Execução do método (Act)
-        List<Cliente> resultadoClientes = service.findClientes();
+        // Act
+        List<Cliente> resultado = service.findClientes();
 
-        // Verificações (Assert)
-        assertFalse(resultadoClientes.isEmpty());
+        // Assert
+        assertNotNull(resultado);
+        assertFalse(resultado.isEmpty());
+        assertEquals(1, resultado.size());
+        assertEquals(cliente.getIdCliente(), resultado.get(0).getIdCliente());
         verify(repository).findAll();
     }
 
     @Test
-    @DisplayName("findClientes: Deve retornar uma lista vazia quando não houver clientes")
-    void deveRetornarListaVaziaQuandoNaoHouverClientes() {
+    @DisplayName("findClientes: Deve retornar lista vazia quando não existem clientes")
+    void testFindClientesSemResultados() {
+        // Arrange
         when(repository.findAll()).thenReturn(List.of());
 
-        // Execução do método (Act)
-        List<Cliente> resultadoClientes = service.findClientes();
+        // Act
+        List<Cliente> resultado = service.findClientes();
 
-        // Verificações (Assert)
-        assertTrue(resultadoClientes.isEmpty());
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
         verify(repository).findAll();
     }
 
-    // --- Testes para findClienteById ---
+    // ===== findClienteById =====
     @Test
-    @DisplayName("findClienteById: Deve encontrar um cliente pelo ID com sucesso")
-    void deveEncontrarClientePorIdComSucesso() {
-        Integer idDesejado = 1;
+    @DisplayName("findClienteById: Deve encontrar cliente por ID com sucesso")
+    void testFindClienteByIdComSucesso() {
+        // Arrange
+        when(repository.findById(1)).thenReturn(Optional.of(cliente));
 
-        when(repository.findById(idDesejado)).thenReturn(Optional.of(cliente));
+        // Act
+        Cliente resultado = service.findClienteById(1);
 
-        // Execução do método (Act)
-        Cliente resultadoCliente = service.findClienteById(idDesejado);
-
-        // Verificações (Assert)
-        assertNotNull(resultadoCliente);
-        assertEquals(idDesejado, resultadoCliente.getIdCliente());
-        verify(repository).findById(idDesejado);
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(1, resultado.getIdCliente());
+        assertEquals("João da Silva", resultado.getNome());
+        verify(repository).findById(1);
     }
 
     @Test
-    @DisplayName("findClienteById: Deve lançar DataNotFoundException ao buscar por um ID inexistente")
-    void deveLancarDataNotFoundExceptionAoBuscarClientePorIdInexistente() {
-        Integer idDesejado = 2;
+    @DisplayName("findClienteById: Deve lançar DataNotFoundException quando ID não existe")
+    void testFindClienteByIdNaoEncontrado() {
+        // Arrange
+        when(repository.findById(999)).thenReturn(Optional.empty());
 
-        when(repository.findById(idDesejado)).thenReturn(Optional.empty());
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.findClienteById(999));
 
-        // Execução do método (Act)
-        DataNotFoundException resultadoCliente = assertThrows(DataNotFoundException.class, () -> {
-            service.findClienteById(idDesejado);
-        });
-
-        // Verificações (Assert)
-        assertNotNull(resultadoCliente);
-        assertEquals("O ID %d não foi encontrado".formatted(idDesejado), resultadoCliente.getMessage());
-        assertEquals("Clientes", resultadoCliente.getDomain());
-        verify(repository).findById(idDesejado);
+        assertEquals("O ID 999 não foi encontrado", exception.getMessage());
+        assertEquals("Clientes", exception.getDomain());
+        verify(repository).findById(999);
     }
 
-    // --- Testes para findClienteByNome ---
+    // ===== findClienteByNome =====
     @Test
-    @DisplayName("findClienteByNome: Deve encontrar clientes pelo nome com sucesso")
-    void deveEncontrarClientePorNomeComSucesso() {
-        String nomeDesejado = "João da Silva";
+    @DisplayName("findClienteByNome: Deve encontrar clientes por nome com sucesso")
+    void testFindClienteByNomeComSucesso() {
+        // Arrange
+        String nome = "João da Silva";
+        when(repository.findByNomeContainingIgnoreCase(nome)).thenReturn(List.of(cliente));
 
-        when(repository.findByNomeContainingIgnoreCase(nomeDesejado)).thenReturn(List.of(cliente));
+        // Act
+        List<Cliente> resultado = service.findClienteByNome(nome);
 
-        // Execução do método (Act)
-        List<Cliente> resultadoCliente = service.findClienteByNome(nomeDesejado);
-
-        // Verificações (Assert)
-        assertNotNull(resultadoCliente);
-        assertTrue(resultadoCliente.stream().anyMatch(c -> c.getNome().contains(nomeDesejado)));
-        verify(repository).findByNomeContainingIgnoreCase(nomeDesejado);
+        // Assert
+        assertNotNull(resultado);
+        assertFalse(resultado.isEmpty());
+        assertTrue(resultado.stream().anyMatch(c -> c.getNome().contains(nome)));
+        verify(repository).findByNomeContainingIgnoreCase(nome);
     }
 
     @Test
-    @DisplayName("findClienteByNome: Deve lançar DataNotFoundException ao buscar por um nome inexistente")
-    void deveLancarDataNotFoundExceptionAoBuscarClientePorNomeInexistente() {
-        String nomeDesejado = "João da Silva";
+    @DisplayName("findClienteByNome: Deve lançar DataNotFoundException quando nome não existe")
+    void testFindClienteByNomeNaoEncontrado() {
+        // Arrange
+        String nome = "Inexistente";
+        when(repository.findByNomeContainingIgnoreCase(nome)).thenReturn(List.of());
 
-        when(repository.findByNomeContainingIgnoreCase(nomeDesejado)).thenReturn(List.of());
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.findClienteByNome(nome));
 
-        // Execução do método (Act)
-        DataNotFoundException resultadoCliente = assertThrows(DataNotFoundException.class, () -> {
-            service.findClienteByNome(nomeDesejado);
-        });
-
-        // Verificações (Assert)
-        assertNotNull(resultadoCliente);
-        assertEquals("O nome %s não foi encontrado".formatted(nomeDesejado), resultadoCliente.getMessage());
-        assertEquals("Clientes", resultadoCliente.getDomain());
-        verify(repository).findByNomeContainingIgnoreCase(nomeDesejado);
+        assertEquals("O nome Inexistente não foi encontrado", exception.getMessage());
+        assertEquals("Clientes", exception.getDomain());
+        verify(repository).findByNomeContainingIgnoreCase(nome);
     }
 
-    // --- Testes para findClienteByCpfCnpj ---
+    // ===== findClienteByCpfCnpj =====
     @Test
-    @DisplayName("findClienteByCpfCnpj: Deve encontrar um cliente pelo CPF/CNPJ com sucesso")
-    void deveEncontrarClientePorCpfCnpjComSucesso() {
-        String cpfCnpjDesejado = "12345678901";
-        Integer idDesejado = 1;
+    @DisplayName("findClienteByCpfCnpj: Deve encontrar cliente por CPF/CNPJ com sucesso")
+    void testFindClienteByCpfCnpjComSucesso() {
+        // Arrange
+        String cpfCnpj = "12345678901";
+        when(repository.findByCpfCnpj(cpfCnpj)).thenReturn(Optional.of(cliente));
 
-        when(repository.findByCpfCnpj(cpfCnpjDesejado)).thenReturn(Optional.of(cliente));
+        // Act
+        Cliente resultado = service.findClienteByCpfCnpj(cpfCnpj);
 
-        Cliente resultadoCliente = service.findClienteByCpfCnpj(cpfCnpjDesejado);
-
-        assertEquals(idDesejado, resultadoCliente.getIdCliente());
-        verify(repository).findByCpfCnpj(cpfCnpjDesejado);
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(cpfCnpj, resultado.getCpfCnpj());
+        verify(repository).findByCpfCnpj(cpfCnpj);
     }
 
     @Test
-    @DisplayName("findClienteByCpfCnpj: Deve lançar DataNotFoundException ao buscar por um CPF/CNPJ inexistente")
-    void deveLancarDataNotFoundExceptionAoBuscarClientePorCpfCnpjInexistente() {
-        String cpfCnpjDesejado = "12345678901";
+    @DisplayName("findClienteByCpfCnpj: Deve lançar DataNotFoundException quando CPF/CNPJ não existe")
+    void testFindClienteByCpfCnpjNaoEncontrado() {
+        // Arrange
+        String cpfCnpj = "99999999999";
+        when(repository.findByCpfCnpj(cpfCnpj)).thenReturn(Optional.empty());
 
-        when(repository.findByCpfCnpj(cpfCnpjDesejado)).thenReturn(Optional.empty());
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.findClienteByCpfCnpj(cpfCnpj));
 
-        // Execução do método (Act)
-        DataNotFoundException resultadoCliente = assertThrows(DataNotFoundException.class, () -> {
-            service.findClienteByCpfCnpj(cpfCnpjDesejado);
-        });
-
-        // Verificações (Assert)
-        assertNotNull(resultadoCliente);
-        assertEquals("CPF %s não foi encontrado".formatted(cpfCnpjDesejado), resultadoCliente.getMessage());
-        assertEquals("Clientes", resultadoCliente.getDomain());
-        verify(repository).findByCpfCnpj(cpfCnpjDesejado);
+        assertEquals("CPF 99999999999 não foi encontrado", exception.getMessage());
+        assertEquals("Clientes", exception.getDomain());
+        verify(repository).findByCpfCnpj(cpfCnpj);
     }
 
-    // --- Testes para patchEmailCliente ---
+    // ===== patchEmailCliente =====
     @Test
-    @DisplayName("patchEmailCliente: Deve atualizar o email do cliente com sucesso")
-    void deveAtualizarEmailClienteComSucesso() {
-        when(repository.findById(requestPatchEmail.getId())).thenReturn(Optional.of(cliente));
+    @DisplayName("patchEmailCliente: Deve atualizar email do cliente com sucesso")
+    void testPatchEmailClienteComSucesso() {
+        // Arrange
+        Cliente clienteParaAtualizar = cliente;
+        clienteParaAtualizar.setEmail("novo.email@example.com");
+
+        when(repository.findById(requestPatchEmail.getId())).thenReturn(Optional.of(clienteParaAtualizar));
         when(repository.save(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Cliente clienteAtualizado = service.patchEmailCliente(requestPatchEmail);
+        // Act
+        Cliente resultado = service.patchEmailCliente(requestPatchEmail);
 
-        assertNotNull(clienteAtualizado);
-        assertEquals(requestPatchEmail.getEmail(), clienteAtualizado.getEmail());
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("novo.email@example.com", resultado.getEmail());
         verify(repository).findById(requestPatchEmail.getId());
         verify(repository).save(any(Cliente.class));
     }
 
     @Test
-    @DisplayName("patchEmailCliente: Deve lançar DataNotFoundException ao tentar atualizar email de cliente inexistente")
-    void deveLancarDataNotFoundExceptionAoAtualizarEmailDeClienteInexistente() {
+    @DisplayName("patchEmailCliente: Deve lançar DataNotFoundException quando cliente não existe")
+    void testPatchEmailClienteNaoEncontrado() {
+        // Arrange
         when(repository.findById(requestPatchEmail.getId())).thenReturn(Optional.empty());
 
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.patchEmailCliente(requestPatchEmail);
-        });
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.patchEmailCliente(requestPatchEmail));
 
         assertEquals("Não existe cliente com esse ID", exception.getMessage());
         verify(repository).findById(requestPatchEmail.getId());
         verify(repository, never()).save(any(Cliente.class));
     }
 
-    // --- Testes para patchTelefoneCliente ---
+    // ===== patchTelefoneCliente =====
     @Test
-    @DisplayName("patchTelefoneCliente: Deve atualizar o telefone do cliente com sucesso")
-    void deveAtualizarTelefoneClienteComSucesso() {
-        when(repository.findById(requestPatchTelefone.getId())).thenReturn(Optional.of(cliente));
+    @DisplayName("patchTelefoneCliente: Deve atualizar telefone do cliente com sucesso")
+    void testPatchTelefoneClienteComSucesso() {
+        // Arrange
+        Cliente clienteParaAtualizar = cliente;
+        clienteParaAtualizar.setTelefone("11888888888");
+
+        when(repository.findById(requestPatchTelefone.getId())).thenReturn(Optional.of(clienteParaAtualizar));
         when(repository.save(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Cliente clienteAtualizado = service.patchTelefoneCliente(requestPatchTelefone);
+        // Act
+        Cliente resultado = service.patchTelefoneCliente(requestPatchTelefone);
 
-        assertNotNull(clienteAtualizado);
-        assertEquals(requestPatchTelefone.getTelefone(), clienteAtualizado.getTelefone());
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("11888888888", resultado.getTelefone());
         verify(repository).findById(requestPatchTelefone.getId());
         verify(repository).save(any(Cliente.class));
     }
 
     @Test
-    @DisplayName("patchTelefoneCliente: Deve lançar DataNotFoundException ao tentar atualizar telefone de cliente inexistente")
-    void deveLancarDataNotFoundExceptionAoAtualizarTelefoneDeClienteInexistente() {
+    @DisplayName("patchTelefoneCliente: Deve lançar DataNotFoundException quando cliente não existe")
+    void testPatchTelefoneClienteNaoEncontrado() {
+        // Arrange
         when(repository.findById(requestPatchTelefone.getId())).thenReturn(Optional.empty());
 
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.patchTelefoneCliente(requestPatchTelefone);
-        });
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.patchTelefoneCliente(requestPatchTelefone));
 
         assertEquals("Não existe cliente com esse ID", exception.getMessage());
         verify(repository).findById(requestPatchTelefone.getId());
         verify(repository, never()).save(any(Cliente.class));
     }
 
-    // --- Testes para putCliente ---
+    // ===== putCliente =====
     @Test
-    @DisplayName("putCliente: Deve atualizar os dados de um cliente com sucesso")
-    void deveAtualizarDadosClienteComSucesso() {
-        when(repository.findById(requestPutCliente.getIdCliente())).thenReturn(Optional.of(cliente));
-        when(repository.save(any(Cliente.class))).thenReturn(cliente);
-        Cliente clienteAtualizado = service.putCliente(requestPutCliente);
+    @DisplayName("putCliente: Deve atualizar todos os dados do cliente com sucesso")
+    void testPutClienteComSucesso() {
+        // Arrange
+        Cliente clienteParaAtualizar = cliente;
+        clienteParaAtualizar.setNome("João Santos");
+        clienteParaAtualizar.setCpfCnpj("09876543210");
+        clienteParaAtualizar.setTelefone("11777777777");
+        clienteParaAtualizar.setEmail("joao.santos@example.com");
 
-        assertNotNull(clienteAtualizado);
-        assertEquals(requestPutCliente.getNome(), clienteAtualizado.getNome());
-        assertEquals(requestPutCliente.getCpfCnpj(), clienteAtualizado.getCpfCnpj());
-        assertEquals(requestPutCliente.getTelefone(), clienteAtualizado.getTelefone());
-        assertEquals(requestPutCliente.getEmail(), clienteAtualizado.getEmail());
+        when(repository.findById(requestPutCliente.getIdCliente())).thenReturn(Optional.of(clienteParaAtualizar));
+        when(repository.save(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Cliente resultado = service.putCliente(requestPutCliente);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("João Santos", resultado.getNome());
+        assertEquals("09876543210", resultado.getCpfCnpj());
+        assertEquals("11777777777", resultado.getTelefone());
+        assertEquals("joao.santos@example.com", resultado.getEmail());
         verify(repository).findById(requestPutCliente.getIdCliente());
         verify(repository).save(any(Cliente.class));
     }
 
     @Test
-    @DisplayName("putCliente: Deve lançar DataNotFoundException ao tentar atualizar um cliente inexistente")
-    void deveLancarDataNotFoundExceptionAoAtualizarDadosDeClienteInexistente() {
+    @DisplayName("putCliente: Deve lançar DataNotFoundException quando cliente não existe")
+    void testPutClienteNaoEncontrado() {
+        // Arrange
         when(repository.findById(requestPutCliente.getIdCliente())).thenReturn(Optional.empty());
 
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
-            service.putCliente(requestPutCliente);
-        });
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.putCliente(requestPutCliente));
 
         assertEquals("Não existe cliente com esse ID", exception.getMessage());
         verify(repository).findById(requestPutCliente.getIdCliente());
         verify(repository, never()).save(any(Cliente.class));
     }
 
-    // --- Testes para deletar ---
+    // ===== deletar =====
     @Test
-    @DisplayName("deletar: Deve deletar um cliente com sucesso")
-    void deveDeletarClienteComSucesso() {
+    @DisplayName("deletar: Deve deletar cliente com sucesso quando existe")
+    void testDeletarClienteComSucesso() {
+        // Arrange
         when(repository.existsById(1)).thenReturn(true);
         doNothing().when(repository).deleteById(1);
 
+        // Act
         assertDoesNotThrow(() -> service.deletar(1));
 
+        // Assert
         verify(repository).existsById(1);
         verify(repository).deleteById(1);
     }
 
     @Test
-    @DisplayName("deletar: Deve lançar exceção ao tentar deletar um cliente inexistente")
-    void deveLancarExcecaoAoTentarDeletarClienteInexistente() {
-        Integer idDesejado = 1;
+    @DisplayName("deletar: Deve lançar DataNotFoundException quando cliente não existe")
+    void testDeletarClienteNaoEncontrado() {
+        // Arrange
+        when(repository.existsById(999)).thenReturn(false);
 
-        when(repository.existsById(idDesejado)).thenReturn(false);
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.deletar(999));
 
-        DataNotFoundException resultadoCliente = assertThrows(DataNotFoundException.class, () -> {
-            service.deletar(idDesejado);
-        });
-
-        assertEquals("O ID %d não foi encontrado".formatted(idDesejado), resultadoCliente.getMessage());
-        assertEquals("Clientes", resultadoCliente.getDomain());
-        verify(repository, never()).deleteById(idDesejado);
+        assertEquals("O ID 999 não foi encontrado", exception.getMessage());
+        assertEquals("Clientes", exception.getDomain());
+        verify(repository).existsById(999);
+        verify(repository, never()).deleteById(999);
     }
 }

@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Testes do ItensServicosService")
+@DisplayName("Testes do ItemServicoService")
 class ItensServicoServiceTest {
 
     @Mock
@@ -33,6 +32,7 @@ class ItensServicoServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Arrange: Preparar Entidades
         ordemDeServicos = new OrdemDeServico();
         ordemDeServicos.setIdOrdemServico(1);
 
@@ -41,28 +41,34 @@ class ItensServicoServiceTest {
         itemServico.setFkOrdemServico(ordemDeServicos);
     }
 
-    // --- Testes para listarPelaOrdemServico ---
+    // ===== listarPelaOrdemServico =====
     @Test
-    @DisplayName("listarPelaOrdemServico: Deve retornar uma lista de itens de serviço com sucesso")
-    void deveRetornarListaDeItensDeServicoComSucesso() {
+    @DisplayName("listarPelaOrdemServico: Deve retornar lista de itens de serviço quando existem")
+    void testListarPelaOrdemServicoComResultados() {
+        // Arrange
         when(repository.findAllByFkOrdemServicoIdOrdemServico(1)).thenReturn(List.of(itemServico));
 
+        // Act
         List<ItemServico> resultado = service.listarPelaOrdemServico(ordemDeServicos);
 
+        // Assert
         assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
         assertEquals(1, resultado.size());
-        assertEquals(itemServico.getIdRegistroServico(), resultado.get(0).getIdRegistroServico());
+        assertEquals(1, resultado.get(0).getIdRegistroServico());
         verify(repository).findAllByFkOrdemServicoIdOrdemServico(1);
     }
 
     @Test
-    @DisplayName("listarPelaOrdemServico: Deve retornar uma lista vazia quando não houver itens para a ordem de serviço")
-    void deveRetornarListaVaziaQuandoNaoHouverItens() {
-        when(repository.findAllByFkOrdemServicoIdOrdemServico(1)).thenReturn(Collections.emptyList());
+    @DisplayName("listarPelaOrdemServico: Deve retornar lista vazia quando não existem itens")
+    void testListarPelaOrdemServicoSemResultados() {
+        // Arrange
+        when(repository.findAllByFkOrdemServicoIdOrdemServico(1)).thenReturn(List.of());
 
+        // Act
         List<ItemServico> resultado = service.listarPelaOrdemServico(ordemDeServicos);
 
+        // Assert
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
         verify(repository).findAllByFkOrdemServicoIdOrdemServico(1);
