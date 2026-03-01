@@ -61,46 +61,40 @@ jobs:
           restore-keys: |
             dependency-check-data-${{ runner.os }}
 
-      - name: Dependency Check
+      - name: OWASP Dependency Check
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        continue-on-error: true
+        continue-on-error: false
         run: |
-          echo "🔍 Iniciando Dependency Check..."
+          echo "🔍 Iniciando OWASP Dependency Check..."
           
-          # Definir dados directory para cache
-          export DEPENDENCY_CHECK_HOME="$HOME/.dependency-check"
-          mkdir -p "$DEPENDENCY_CHECK_HOME/data"
-          
-          # Configuração comum
-          COMMON_OPTS="-DskipProvidedScope=true -DskipRuntimeScope=false -DskipTestScope=true -DcacheDirectory=$DEPENDENCY_CHECK_HOME/data"
-          
-          # Tentar com API Key se disponível
-          if [ ! -z "$NVD_API_KEY" ]; then
-            echo "✓ NVD_API_KEY detectada. Tentando com API..."
-            mvn org.owasp:dependency-check-maven:check \
-              -DnvdApiKey=$NVD_API_KEY \
-              $COMMON_OPTS \
-              -DcveUrl12Modified=https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.json \
-              -DcveUrl20Modified=https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-modified.json \
-              -Dretriever=ASYNC && exit 0
-            echo "⚠️  Tentativa com API falhou. Tentando fallback..."
-          fi
-          
-          # Fallback: modo offline com cache
-          echo "📦 Rodando Dependency Check em modo offline..."
-          mvn org.owasp:dependency-check-maven:check \
-            $COMMON_OPTS \
+          # Configuração do OWASP
+          mvn clean org.owasp:dependency-check-maven:check \
+            -DskipProvidedScope=true \
+            -DskipTestScope=true \
+            -DfailBuildOnCVSS=7.0 \
             -Dformat=JSON \
-            -Dretriever=ASYNC || {
-            echo "⚠️  Dependency Check não conseguiu atualizar banco de dados."
-            echo "    Continuando build (será corrigido quando API Key for configurada)..."
-            exit 0
-          }
+            -Dformat=HTML \
+            -DautoUpdate=true \
+            || {
+              echo "❌ Dependency Check encontrou vulnerabilidades críticas!"
+              exit 1
+            }
+          
+          echo "✅ Verificação de vulnerabilidades concluída"
 
-      - name: Executar Build e Testes com Maven (JaCoCo)
-        # O verify garante que o JaCoCo gere o relatório xml antes do Sonar rodar
-        run: mvn clean verify -DskipTests=false
+      - name: Build e Testes com Maven (JaCoCo)
+        run: |
+          echo "🏗️  Compilando projeto..."
+          mvn clean compile
+          
+          echo "🧪 Executando testes..."
+          mvn verify -DskipTests=false || {
+            echo "❌ Build ou testes falharam!"
+            exit 1
+          }
+          
+          echo "✅ Build e testes concluídos com sucesso"
 
       - name: Validar Configuração SonarQube
         env:
@@ -130,6 +124,14 @@ jobs:
           -Dsonar.login=$SONAR_TOKEN 
           -Dsonar.sources=src/main/java 
           -Dsonar.tests=src/test/java
+
+      - name: Upload de Relatórios OWASP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-check-report
+          path: target/dependency-check-report.*
+          retention-days: 30
 
       - name: Upload do Relatório de Cobertura JaCoCo
         if: always()
