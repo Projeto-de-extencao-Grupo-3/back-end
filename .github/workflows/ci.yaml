@@ -9,9 +9,123 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  security-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
 
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Cache de Banco de Dados NVD (Dependency Check)
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: dependency-check-data-${{ runner.os }}
+          restore-keys: |
+            dependency-check-data-${{ runner.os }}
+
+      - name: OWASP Dependency Check
+        continue-on-error: false
+        run: |
+          echo "🔍 Iniciando OWASP Dependency Check..."
+          
+          mvn clean org.owasp:dependency-check-maven:check \
+            -DskipProvidedScope=true \
+            -DskipTestScope=true \
+            -DfailBuildOnCVSS=7.0 \
+            -Dformat=JSON \
+            -Dformat=HTML \
+            -DautoUpdate=true \
+            -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
+            || {
+            echo "❌ Dependency Check encontrou vulnerabilidades críticas!"
+            exit 1
+          }
+          
+          echo "✅ Verificação de vulnerabilidades concluída"
+
+      - name: Upload de Relatórios OWASP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-check-report
+          path: target/dependency-check-report.*
+          retention-days: 30
+
+  build-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    env:
+      SERVER_PORT: 8080
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: grotrack
+      DB_USERNAME: root
+      DB_PASSWORD: 123456
+      JWT_VALIDITY: 3600000
+      JWT_SECRET: "RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YXRhbWVudGUgcGFyYSBxdW..."
+
+    services:
+      mysql:
+        image: henriquedandrade/bd-grotrack-v2:bd
+        env:
+          MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: grotrack
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build e Testes com Maven (JaCoCo)
+        run: |
+          echo "🏗️  Compilando projeto..."
+          mvn clean compile
+          
+          echo "🧪 Executando testes..."
+          mvn verify -DskipTests=false || {
+            echo "❌ Build ou testes falharam!"
+            exit 1
+          }
+          
+          echo "✅ Build e testes concluídos com sucesso"
+
+      - name: Upload do Relatório de Cobertura JaCoCo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+          retention-days: 7
+
+  quality-sonarqube:
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write
@@ -44,7 +158,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Importante para o SonarQube analisar o histórico de commits
+          fetch-depth: 0
 
       - name: Configurar JDK 21
         uses: actions/setup-java@v4
@@ -52,48 +166,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
-
-      - name: Cache de Banco de Dados NVD (Dependency Check)
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: dependency-check-data-${{ runner.os }}
-          restore-keys: |
-            dependency-check-data-${{ runner.os }}
-
-      - name: OWASP Dependency Check
-        continue-on-error: false
-        run: |
-          echo "🔍 Iniciando OWASP Dependency Check..."
-          
-          # Configuração do OWASP
-          mvn clean org.owasp:dependency-check-maven:check \
-            -DskipProvidedScope=true \
-            -DskipTestScope=true \
-            -DfailBuildOnCVSS=7.0 \
-            -Dformat=JSON \
-            -Dformat=HTML \
-            -DautoUpdate=true \
-            -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
-            || {
-            echo "❌ Dependency Check encontrou vulnerabilidades críticas!"
-            exit 1
-          }
-          
-          echo "✅ Verificação de vulnerabilidades concluída"
-
-      - name: Build e Testes com Maven (JaCoCo)
-        run: |
-          echo "🏗️  Compilando projeto..."
-          mvn clean compile
-          
-          echo "🧪 Executando testes..."
-          mvn verify -DskipTests=false || {
-            echo "❌ Build ou testes falharam!"
-            exit 1
-          }
-          
-          echo "✅ Build e testes concluídos com sucesso"
 
       - name: Validar Configuração SonarQube
         env:
@@ -109,12 +181,14 @@ jobs:
           echo "✓ Organização: grotrack"
           echo "✓ Projeto: grotrack_back-end"
 
+      - name: Compilar projeto
+        run: mvn clean compile
+
       - name: Executar SonarQube Scan
-        if: always() # Garante que o scan rode mesmo se um teste falhar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: true
+        continue-on-error: false
         run: >
           mvn sonar:sonar 
           -Dsonar.projectKey=grotrack_back-end 
@@ -123,19 +197,3 @@ jobs:
           -Dsonar.login=$SONAR_TOKEN 
           -Dsonar.sources=src/main/java 
           -Dsonar.tests=src/test/java
-
-      - name: Upload de Relatórios OWASP
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: owasp-dependency-check-report
-          path: target/dependency-check-report.*
-          retention-days: 30
-
-      - name: Upload do Relatório de Cobertura JaCoCo
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: target/site/jacoco/
-          retention-days: 7
