@@ -15,4 +15,6 @@ public enum LadosVeiculo {
     DIANTEIRO_ESQUERDO,
     TRASEIRO_DIREITO,
     TRASEIRO_ESQUERDO,
+
+    SAIA
 }

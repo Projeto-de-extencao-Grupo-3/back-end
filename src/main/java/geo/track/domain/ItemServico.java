@@ -1,5 +1,6 @@
 package geo.track.domain;
 
+import geo.track.enums.Servico;
 import geo.track.enums.servico.LadosVeiculo;
 import geo.track.enums.servico.PartesVeiculo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,17 +31,16 @@ public class ItemServico {
     @Schema(description = "Preço cobrado", example = "99.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double precoCobrado;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Schema(description = "Parte que será reparada no veiculo", example = "Parachoque/Parabrisa/Janelas", requiredMode = Schema.RequiredMode.REQUIRED)
     private PartesVeiculo parteVeiculo;
 
-    @NotBlank
+    @NotNull
     @Schema(description = "Lado no qual será executado o reparo", example = "Latera Esquerda/Transeira", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
     private LadosVeiculo ladoVeiculo;
 
-    @NotBlank
     @Schema(description = "Cor do Veiculo", example = "Ciano/Vermelho", requiredMode = Schema.RequiredMode.REQUIRED)
     private String cor;
 
@@ -51,10 +51,10 @@ public class ItemServico {
     @Schema(description = "Campo para colocar alguma observação se necessário", example = "Desconto de 10%, pois a peça nova X foi danificada", requiredMode = Schema.RequiredMode.REQUIRED)
     private String observacoesItem;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_servico")
-    @Schema(description = "FK do serviço ")
-    private Servico fkServico;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Schema(description = "Tipo serviço ")
+    private Servico tipoServico;
 
     @ManyToOne
     @JoinColumn(name = "fk_ordem_servico")

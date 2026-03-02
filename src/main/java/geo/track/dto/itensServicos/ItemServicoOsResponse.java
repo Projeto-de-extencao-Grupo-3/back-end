@@ -1,8 +1,8 @@
 package geo.track.dto.itensServicos;
 
+import geo.track.enums.Servico;
 import geo.track.enums.servico.LadosVeiculo;
 import geo.track.enums.servico.PartesVeiculo;
-import geo.track.enums.servico.TipoServico;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
@@ -22,6 +22,6 @@ public class ItemServicoOsResponse {
     // Campos de Servico
     private String nomeServico;
     @Enumerated(EnumType.STRING)
-    private TipoServico tipoServico;
+    private Servico tipoServico;
     private Integer tempoBase;
 }

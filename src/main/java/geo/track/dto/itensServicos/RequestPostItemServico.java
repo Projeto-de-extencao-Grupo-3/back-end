@@ -1,13 +1,15 @@
 package geo.track.dto.itensServicos;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import geo.track.enums.Servico;
 import geo.track.enums.servico.LadosVeiculo;
 import geo.track.enums.servico.PartesVeiculo;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Data
 public class RequestPostItemServico {
     @NotNull
@@ -16,14 +18,14 @@ public class RequestPostItemServico {
     private PartesVeiculo parteVeiculo;
     @NotNull
     private LadosVeiculo ladoVeiculo;
-    @NotBlank
+
     private String cor;
     @NotBlank
     private String especificacaoServico;
     @NotBlank
     private String observacoesItem;
     @NotNull
-    private Integer fkServico;
+    private Servico tipoServico;
     @NotNull
     private Integer fkOrdemServico;
 }

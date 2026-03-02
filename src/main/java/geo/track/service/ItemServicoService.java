@@ -20,9 +20,6 @@ public class ItemServicoService {
     private final ItemServicoRepository ITEM_SERVICO_REPOSITORY;
 
     public ItemServico cadastrar(ItemServico itemServico){
-        if (ITEM_SERVICO_REPOSITORY.existsById(itemServico.getIdRegistroServico())){
-            throw new ConflictException(GlobalExceptionMessages.ID_JA_EXISTE, EnumDomains.ITEM_SERVICO); // Using generic ID_JA_EXISTE
-        }
         return ITEM_SERVICO_REPOSITORY.save(itemServico);
     }
 
@@ -56,7 +53,7 @@ public class ItemServicoService {
         existente.setEspecificacaoServico(updatedItens.getEspecificacaoServico());
         existente.setObservacoesItem(updatedItens.getObservacoesItem());
 
-        existente.setFkServico(updatedItens.getFkServico());
+        existente.setTipoServico(updatedItens.getTipoServico());
         existente.setFkOrdemServico(updatedItens.getFkOrdemServico());
 
         return ITEM_SERVICO_REPOSITORY.save(existente);
