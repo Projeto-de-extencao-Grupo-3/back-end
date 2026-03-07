@@ -86,7 +86,7 @@ public class OrdemDeServico {
     private OrdemDeServico(Builder builder) {
         this.idOrdemServico = builder.idOrdemServico;
         this.dataSaidaPrevista = builder.dtSaidaPrevista;
-        this.dataSaidaEfetiva = builder.dtSaidaEfetiva;
+        this.dataSaidaEfetiva = builder.dataSaidaEfetiva;
         this.status = builder.status;
         this.seguradora = builder.seguradora;
         this.nfRealizada = builder.nfRealizada;
@@ -104,7 +104,7 @@ public class OrdemDeServico {
         private Integer idOrdemServico;
         private Double valorTotal;
         private LocalDate dtSaidaPrevista;
-        private LocalDate dtSaidaEfetiva;
+        private LocalDate dataSaidaEfetiva;
         @Enumerated(EnumType.STRING)
         private StatusVeiculo status;
         private Boolean seguradora;
@@ -130,8 +130,8 @@ public class OrdemDeServico {
             return this;
         }
 
-        public Builder dtSaidaEfetiva(LocalDate dtSaidaEfetiva) {
-            this.dtSaidaEfetiva = dtSaidaEfetiva;
+        public Builder dataSaidaEfetiva(LocalDate dataSaidaEfetiva) {
+            this.dataSaidaEfetiva = dataSaidaEfetiva;
             return this;
         }
 

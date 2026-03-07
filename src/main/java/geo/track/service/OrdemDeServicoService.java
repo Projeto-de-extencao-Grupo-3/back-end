@@ -36,7 +36,7 @@ public class OrdemDeServicoService {
         OrdemDeServico ordem = OrdemDeServico.builder()
                 .status(body.getStatus())
                 .dtSaidaPrevista(null)
-                .dtSaidaEfetiva(null)
+                .dataSaidaEfetiva(null)
                 .seguradora(false)
                 .nfRealizada(false)
                 .pagtRealizado(false)
@@ -85,7 +85,7 @@ public class OrdemDeServicoService {
         
         OrdemDeServico ordem = ordemOPT.get();
         
-        ordem.setDataSaidaEfetiva(body.getDtSaidaEfeiva());
+        ordem.setDataSaidaEfetiva(body.getDataSaidaEfetiva());
         
         return ORDEM_REPOSITORY.save(ordem);
     }

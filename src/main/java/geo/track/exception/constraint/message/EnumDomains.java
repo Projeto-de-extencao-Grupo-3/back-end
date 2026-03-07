@@ -12,5 +12,5 @@ public enum EnumDomains {
     PRODUTO,
     REGISTRO_ENTRADA,
     SERVICO,
-    VEICULO
+    ARQUIVO, VEICULO
 }

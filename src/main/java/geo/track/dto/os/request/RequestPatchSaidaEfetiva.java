@@ -10,5 +10,5 @@ import java.time.LocalDate;
 public class RequestPatchSaidaEfetiva {
     private Integer idOrdem;
     private Integer fkVeiculo;
-    private LocalDate dtSaidaEfeiva;
+    private LocalDate dataSaidaEfetiva;
 }
