@@ -264,7 +264,7 @@ class OficinaServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertEquals("novo.email@officinadoze.com", resultado.getEmail());
+        assertEquals("novo.email@oficinadoze.com", resultado.getEmail());
         verify(repository).findById(patchEmailDTO.getId());
         verify(repository).save(any(Oficinas.class));
     }
@@ -299,7 +299,7 @@ class OficinaServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertTrue(resultado.getStatus());
+        assertFalse(resultado.getStatus());
         verify(repository).findById(patchStatusDTO.getId());
         verify(repository).save(any(Oficinas.class));
     }

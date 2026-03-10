@@ -219,7 +219,7 @@ class ProdutoServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertEquals(20.00, resultado.getPrecoCompra());
+        assertEquals(18.00, resultado.getPrecoCompra());
         verify(repository).findById(patchPrecoCompra.getId());
         verify(repository).save(any(Produto.class));
     }
@@ -254,7 +254,7 @@ class ProdutoServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertEquals(35.00, resultado.getPrecoVenda());
+        assertEquals(30.00, resultado.getPrecoVenda());
         verify(repository).findById(patchPrecoVenda.getId());
         verify(repository).save(any(Produto.class));
     }

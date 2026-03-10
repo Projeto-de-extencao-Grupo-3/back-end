@@ -6,6 +6,7 @@ import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.RegistroEntradaRepository;
+import geo.track.repository.VeiculoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,9 @@ class RegistroEntradaServiceTest {
     @Mock
     private VeiculoService veiculoService;
 
+    @Mock
+    private OrdemDeServicoService ORDEM_SERVICO_SERVICE;
+
     @InjectMocks
     private RegistroEntradaService service;
 
@@ -59,7 +63,7 @@ class RegistroEntradaServiceTest {
                 "João Responsável",
                 "123.456.789-00",
                 1, 1, 1, 1, 1, 1, 1, 1,
-                1, ""
+                1
         );
     }
 
@@ -93,7 +97,7 @@ class RegistroEntradaServiceTest {
         when(repository.findAll()).thenReturn(List.of(registroEntrada));
 
         // Act
-        List<RegistroEntrada> resultado = service.findRegistros();
+        List<RegistroEntrada> resultado = service.listarEntradas();
 
         // Assert
         assertNotNull(resultado);
@@ -109,7 +113,7 @@ class RegistroEntradaServiceTest {
         when(repository.findAll()).thenReturn(List.of());
 
         // Act
-        List<RegistroEntrada> resultado = service.findRegistros();
+        List<RegistroEntrada> resultado = service.listarEntradas();
 
         // Assert
         assertNotNull(resultado);
@@ -125,7 +129,7 @@ class RegistroEntradaServiceTest {
         when(repository.findById(1)).thenReturn(Optional.of(registroEntrada));
 
         // Act
-        RegistroEntrada resultado = service.findRegistroById(1);
+        RegistroEntrada resultado = service.buscarEntradaPorId(1);
 
         // Assert
         assertNotNull(resultado);
@@ -141,7 +145,7 @@ class RegistroEntradaServiceTest {
 
         // Act & Assert
         assertThrows(DataNotFoundException.class,
-            () -> service.findRegistroById(999));
+            () -> service.buscarEntradaPorId(999));
 
         verify(repository).findById(999);
     }
@@ -175,7 +179,7 @@ class RegistroEntradaServiceTest {
         // Arrange
         when(repository.findById(999)).thenReturn(Optional.empty());
         RequestPutRegistroEntrada requestComIdInvalido = new RequestPutRegistroEntrada(
-                999, LocalDate.now(), "Nome", "CPF", 1, 1, 1, 1, 1, 1, 1, 1, 1, ""
+                999, LocalDate.now(), "Nome", "CPF", 1, 1, 1, 1, 1, 1, 1, 1, 1
         );
 
         // Act & Assert
@@ -195,7 +199,7 @@ class RegistroEntradaServiceTest {
         doNothing().when(repository).deleteById(1);
 
         // Act
-        assertDoesNotThrow(() -> service.deletarRegistro(1));
+        assertDoesNotThrow(() -> service.deletarEntrada(1));
 
         // Assert
         verify(repository).existsById(1);
@@ -210,9 +214,9 @@ class RegistroEntradaServiceTest {
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-            () -> service.deletarRegistro(999));
+            () -> service.deletarEntrada(999));
 
-        assertEquals("Registro de Entrada não encontrado", exception.getMessage());
+        assertEquals("Registro de Entrada não encontrado ou não pertence a esta oficina", exception.getMessage());
         verify(repository).existsById(999);
         verify(repository, never()).deleteById(anyInt());
     }

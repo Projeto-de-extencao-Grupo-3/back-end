@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,6 +25,9 @@ class FuncionarioServiceTest {
     @Mock
     private FuncionarioRepository repository;
 
+    @Mock
+    private PasswordEncoder PASSWORD_ENCODER;
+
     @InjectMocks
     private FuncionarioService service;
 
@@ -36,6 +40,7 @@ class FuncionarioServiceTest {
         funcionario.setIdFuncionario(1);
         funcionario.setNome("João da Silva Santos");
         funcionario.setCargo("Mecânico");
+        funcionario.setEmail("joao@email.com");
         funcionario.setTelefone("11987654321");
     }
 
@@ -44,31 +49,30 @@ class FuncionarioServiceTest {
     @DisplayName("cadastrar: Deve cadastrar novo funcionário com sucesso quando nome não existe")
     void testCadastrarFuncionarioComSucesso() {
         // Arrange
-        when(repository.existsByNome(funcionario.getNome())).thenReturn(false);
+        when(repository.existsByEmail(funcionario.getEmail())).thenReturn(false);
         when(repository.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
+        when(PASSWORD_ENCODER.encode(any())).thenReturn("senha_criptografada");
         // Act
         Funcionario resultado = service.cadastrar(funcionario);
 
         // Assert
         assertNotNull(resultado);
-        assertEquals("João da Silva Santos", resultado.getNome());
-        verify(repository).existsByNome(funcionario.getNome());
+        assertEquals("joao@email.com", resultado.getEmail());
+        verify(repository).existsByEmail(funcionario.getEmail());
         verify(repository).save(any(Funcionario.class));
     }
 
     @Test
-    @DisplayName("cadastrar: Deve lançar ConflictException quando nome já existe")
-    void testCadastrarFuncionarioComNomeDuplicado() {
+    @DisplayName("cadastrar: Deve lançar ConflictException quando email já existe")
+    void testCadastrarFuncionarioComEmailDuplicado() {
         // Arrange
-        when(repository.existsByNome(funcionario.getNome())).thenReturn(true);
-
+        when(repository.existsByEmail(anyString())).thenReturn(true);
         // Act & Assert
         ConflictException exception = assertThrows(ConflictException.class,
             () -> service.cadastrar(funcionario));
 
-        assertEquals("Nome já existe", exception.getMessage());
-        verify(repository).existsByNome(funcionario.getNome());
+        assertEquals("Email já cadastrado", exception.getMessage());
+        verify(repository).existsByEmail(funcionario.getEmail());
         verify(repository, never()).save(any(Funcionario.class));
     }
 
@@ -101,7 +105,7 @@ class FuncionarioServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.buscarPorId(999));
 
-        assertEquals("Funcionario Não encontrado", exception.getMessage());
+        assertEquals("Funcionário não encontrado", exception.getMessage());
         verify(repository).existsByIdFuncionario(999);
         verify(repository, never()).getByIdFuncionario(anyInt());
     }
@@ -140,7 +144,7 @@ class FuncionarioServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.atualizar(999, funcionario));
 
-        assertEquals("Funcionario não encontrado", exception.getMessage());
+        assertEquals("Funcionário não encontrado", exception.getMessage());
         verify(repository).existsById(999);
         verify(repository, never()).save(any(Funcionario.class));
     }
@@ -171,7 +175,7 @@ class FuncionarioServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.deletar(999));
 
-        assertEquals("Funcionario não encontrado", exception.getMessage());
+        assertEquals("Funcionário não encontrado", exception.getMessage());
         verify(repository).existsById(999);
         verify(repository, never()).deleteById(anyInt());
     }

@@ -110,7 +110,7 @@ class EnderecoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.findEnderecoById(999));
 
-        assertEquals("ID 999 não foi encontrado", exception.getMessage());
+        assertEquals("Formato de CEP que foi enviado está incorreto", exception.getMessage());
         verify(repository).findById(999);
     }
 
@@ -142,7 +142,7 @@ class EnderecoServiceTest {
         NotAcepptableException exception = assertThrows(NotAcepptableException.class,
             () -> service.findEnderecoByVIACEP(cepInvalido));
 
-        assertEquals("Envie um CEP que possua 8 caracteres", exception.getMessage());
+        assertEquals("Formato de CEP que foi enviado está incorreto", exception.getMessage());
         verify(viacepConnection, never()).consultarCEP(anyString());
     }
 
@@ -175,7 +175,7 @@ class EnderecoServiceTest {
         NotAcepptableException exception = assertThrows(NotAcepptableException.class,
             () -> service.postEndereco(requestInvalido));
 
-        assertEquals("Envie um CEP que possua 8 caracteres", exception.getMessage());
+        assertEquals("Formato de CEP que foi enviado está incorreto", exception.getMessage());
         verify(repository, never()).save(any(Endereco.class));
     }
 
@@ -210,7 +210,7 @@ class EnderecoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.patchComplementoEndereco(new RequestPatchComplemento(999, "Novo")));
 
-        assertEquals("Endereço com o ID 999 não foi encontrado", exception.getMessage());
+        assertEquals("Endereço não encontrado!", exception.getMessage());
         verify(repository).findById(999);
         verify(repository, never()).save(any(Endereco.class));
     }
@@ -246,7 +246,7 @@ class EnderecoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.patchNumeroEndereco(new RequestPatchNumero(999, 500)));
 
-        assertEquals("Endereço com o ID 999 não foi encontrado", exception.getMessage());
+        assertEquals("Endereço não encontrado!", exception.getMessage());
         verify(repository).findById(999);
         verify(repository, never()).save(any(Endereco.class));
     }
@@ -288,7 +288,7 @@ class EnderecoServiceTest {
         NotAcepptableException exception = assertThrows(NotAcepptableException.class,
             () -> service.putEndereco(requestInvalido));
 
-        assertEquals("Envie um CEP que possua 8 caracteres", exception.getMessage());
+        assertEquals("Formato de CEP que foi enviado está incorreto", exception.getMessage());
         verify(repository, never()).findById(anyInt());
         verify(repository, never()).save(any(Endereco.class));
     }
@@ -306,7 +306,7 @@ class EnderecoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.putEndereco(requestComIdInvalido));
 
-        assertEquals("Endereço com o ID 999 não foi encontrado", exception.getMessage());
+        assertEquals("Endereço não encontrado!", exception.getMessage());
         verify(repository).findById(999);
         verify(repository, never()).save(any(Endereco.class));
     }

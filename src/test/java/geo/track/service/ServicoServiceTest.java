@@ -99,7 +99,7 @@ class ServicoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.buscarPorId(999));
 
-        assertEquals("Servico Não encontrado", exception.getMessage());
+        assertEquals("Serviço não encontrado", exception.getMessage());
         verify(repository).existsByIdServico(999);
         verify(repository, never()).getByIdServico(anyInt());
     }
@@ -136,7 +136,7 @@ class ServicoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.atualizar(999, servico));
 
-        assertEquals("Servico não encontrado", exception.getMessage());
+        assertEquals("Serviço não encontrado", exception.getMessage());
         verify(repository).existsById(999);
         verify(repository, never()).save(any(Servico.class));
     }
@@ -167,7 +167,7 @@ class ServicoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.deletar(999));
 
-        assertEquals("Servico não encontrado", exception.getMessage());
+        assertEquals("Serviço não encontrado", exception.getMessage());
         verify(repository).existsById(999);
         verify(repository, never()).deleteById(anyInt());
     }

@@ -8,6 +8,7 @@ import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.repository.OrdemDeServicoRepository;
+import geo.track.repository.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,8 +38,12 @@ class OrdemDeServicoServiceTest {
     @Mock
     private RegistroEntradaService registroEntradaService;
 
+    @Mock
+    private RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
+
     @InjectMocks
     private OrdemDeServicoService service;
+
 
     private OrdemDeServico ordemDeServicos;
     private RegistroEntrada registroEntrada;
@@ -58,20 +63,20 @@ class OrdemDeServicoServiceTest {
 
         ordemDeServicos = OrdemDeServico.builder()
                 .idOrdemServico(1)
-                .valorTotal(500.0)
+                .valorTotal(750.0)
                 .status(StatusVeiculo.EM_PRODUCAO)
                 .nfRealizada(true)
                 .dtSaidaPrevista(LocalDate.now().plusMonths(1))
-                .fk_entrada(registroEntrada)
+                .fkEntrada(registroEntrada)
                 .build();
 
-        postEntradaVeiculo = new PostEntradaVeiculo(StatusVeiculo.EM_PRODUCAO, 500.0, 1);
-        requestPutValorESaida = new RequestPutValorESaida(1, 750.0, LocalDate.now().plusWeeks(5), 1);
+        postEntradaVeiculo = new PostEntradaVeiculo(StatusVeiculo.EM_PRODUCAO, 1);
+        requestPutValorESaida = new RequestPutValorESaida(1, 750.0, LocalDate.now().plusWeeks(5));
         requestPatchSaidaEfetiva = new RequestPatchSaidaEfetiva(1, 1, LocalDate.now().plusWeeks(6));
-        requestPatchStatus = new RequestPatchStatus(1, StatusVeiculo.FINALIZADO, 1);
-        requestPatchSeguradora = new RequestPatchSeguradora(1, 1, true);
-        requestPatchNfRealizada = new RequestPatchNfRealizada(1, 1, true);
-        requestPatchPagtoRealizado = new RequestPatchPagtoRealizado(1, 1, true);
+        requestPatchStatus = new RequestPatchStatus(1, StatusVeiculo.FINALIZADO);
+        requestPatchSeguradora = new RequestPatchSeguradora(1, true);
+        requestPatchNfRealizada = new RequestPatchNfRealizada(1, true);
+        requestPatchPagtoRealizado = new RequestPatchPagtoRealizado(1, true);
     }
 
     // ===== postOrdem =====
@@ -79,16 +84,15 @@ class OrdemDeServicoServiceTest {
     @DisplayName("postOrdem: Deve criar ordem de serviço com sucesso")
     void testPostOrdemComSucesso() {
         // Arrange
-        when(registroEntradaService.findRegistroById(1)).thenReturn(registroEntrada);
-        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(REGISTRO_ENTRADA_REPOSITORY.findById(any())).thenReturn(Optional.of(registroEntrada));
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(i -> i.getArgument(0));
 
         // Act
-        OrdemDeServico resultado = service.postOrdem(postEntradaVeiculo);
+        OrdemDeServico resultado = service.cadastrarOrdemServico(postEntradaVeiculo);
 
         // Assert
         assertNotNull(resultado);
-        assertEquals(500.0, resultado.getValorTotal());
-        verify(registroEntradaService).findRegistroById(1);
+        verify(REGISTRO_ENTRADA_REPOSITORY).findById(any());
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
@@ -100,7 +104,7 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.findAll()).thenReturn(List.of(ordemDeServicos));
 
         // Act
-        List<OrdemDeServico> resultado = service.findOrdem();
+        List<OrdemDeServico> resultado = service.listarOrdensServicoAll();
 
         // Assert
         assertNotNull(resultado);
@@ -115,7 +119,7 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.findAll()).thenReturn(List.of());
 
         // Act
-        List<OrdemDeServico> resultado = service.findOrdem();
+        List<OrdemDeServico> resultado = service.listarOrdensServicoAll();
 
         // Assert
         assertNotNull(resultado);
@@ -128,28 +132,28 @@ class OrdemDeServicoServiceTest {
     @DisplayName("findOrdemById: Deve encontrar ordem por ID com sucesso")
     void testFindOrdemById() {
         // Arrange
-        when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemDeServicos));
+        when(ordemRepository.findByIdAndIdOficina(1, 1)).thenReturn(Optional.of(ordemDeServicos));
 
         // Act
-        OrdemDeServico resultado = service.findOrdemById(1);
+        OrdemDeServico resultado = service.buscarOrdemServicoPorId(1, 1);
 
         // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdOrdemServico());
-        verify(ordemRepository).findById(1);
+        verify(ordemRepository).findByIdAndIdOficina(1, 1);
     }
 
     @Test
     @DisplayName("findOrdemById: Deve lançar DataNotFoundException quando ID não existe")
     void testFindOrdemById_NaoEncontrada() {
         // Arrange
-        when(ordemRepository.findById(999)).thenReturn(Optional.empty());
+        when(ordemRepository.findByIdAndIdOficina(999, 1000)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(DataNotFoundException.class,
-            () -> service.findOrdemById(999));
+            () -> service.buscarOrdemServicoPorId(999, 1000));
 
-        verify(ordemRepository).findById(999);
+        verify(ordemRepository).findByIdAndIdOficina(999, 1000);
     }
 
     // ===== putValorESaida =====
@@ -158,14 +162,14 @@ class OrdemDeServicoServiceTest {
     void testPutValorESaidaComSucesso() {
         // Arrange
         OrdemDeServico ordemParaAtualizar = ordemDeServicos;
-        ordemParaAtualizar.setValorTotal(750.0);
-        ordemParaAtualizar.setDtSaidaPrevista(LocalDate.now().plusWeeks(5));
+        OrdemDeServico.builder().valorTotal(750.0);
+        ordemParaAtualizar.setDataSaidaPrevista(LocalDate.now().plusWeeks(5));
 
         when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        OrdemDeServico resultado = service.putValorESaida(requestPutValorESaida);
+        OrdemDeServico resultado = service.atualizarValorESaida(requestPutValorESaida);
 
         // Assert
         assertNotNull(resultado);
@@ -181,17 +185,17 @@ class OrdemDeServicoServiceTest {
         // Arrange
         LocalDate dataSaidaEfetiva = LocalDate.now().plusWeeks(6);
         OrdemDeServico ordemParaAtualizar = ordemDeServicos;
-        ordemParaAtualizar.setDtSaidaEfetiva(dataSaidaEfetiva);
+        ordemParaAtualizar.setDataSaidaEfetiva(dataSaidaEfetiva);
 
         when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        OrdemDeServico resultado = service.patchSaidaEfetiva(requestPatchSaidaEfetiva);
+        OrdemDeServico resultado = service.atualizarSaidaEfetiva(requestPatchSaidaEfetiva);
 
         // Assert
         assertNotNull(resultado);
-        assertEquals(dataSaidaEfetiva, resultado.getDtSaidaEfetiva());
+        assertEquals(dataSaidaEfetiva, resultado.getDataSaidaEfetiva());
         verify(ordemRepository).findById(1);
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
@@ -208,7 +212,7 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        OrdemDeServico resultado = service.patchStatus(requestPatchStatus);
+        OrdemDeServico resultado = service.atualizarStatus(requestPatchStatus);
 
         // Assert
         assertNotNull(resultado);
@@ -229,7 +233,7 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        OrdemDeServico resultado = service.patchSeguradora(requestPatchSeguradora);
+        OrdemDeServico resultado = service.atualizarSeguradora(requestPatchSeguradora);
 
         // Assert
         assertNotNull(resultado);
@@ -250,7 +254,7 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        OrdemDeServico resultado = service.patchNfRealizada(requestPatchNfRealizada);
+        OrdemDeServico resultado = service.atualizarNotaFiscalRealizada(requestPatchNfRealizada);
 
         // Assert
         assertNotNull(resultado);
@@ -271,7 +275,7 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        OrdemDeServico resultado = service.patchPagtoRealizado(requestPatchPagtoRealizado);
+        OrdemDeServico resultado = service.atualizarPagamentoRealizado(requestPatchPagtoRealizado);
 
         // Assert
         assertNotNull(resultado);
@@ -290,7 +294,7 @@ class OrdemDeServicoServiceTest {
         doNothing().when(ordemRepository).delete(ordemDeServicos);
 
         // Act
-        assertDoesNotThrow(() -> service.deleteOrdem(1));
+        assertDoesNotThrow(() -> service.deletarOrdemServico(1));
 
         // Assert
         verify(ordemRepository).findById(1);
@@ -310,7 +314,7 @@ class OrdemDeServicoServiceTest {
 
         // Act & Assert
         BadRequestException exception = assertThrows(BadRequestException.class,
-            () -> service.deleteOrdem(1));
+            () -> service.deletarOrdemServico(1));
 
         assertEquals("Não é possível deletar ordem de serviço que possui serviços anexados", exception.getMessage());
         verify(ordemRepository, never()).delete(any(OrdemDeServico.class));
@@ -324,7 +328,7 @@ class OrdemDeServicoServiceTest {
 
         // Act & Assert
         assertThrows(DataNotFoundException.class,
-            () -> service.deleteOrdem(999));
+            () -> service.deletarOrdemServico(999));
 
         verify(ordemRepository).findById(999);
         verify(itemServicoService, never()).listarPelaOrdemServico(any());

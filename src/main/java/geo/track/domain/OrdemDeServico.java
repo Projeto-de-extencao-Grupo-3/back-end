@@ -22,9 +22,9 @@ public class OrdemDeServico {
     @Schema(description = "Identificador único da ordem de serviço", example = "101")
     private Integer idOrdemServico;
 
-//    @NotNull
-//    @Schema(description = "Valor total da ordem de serviço", example = "850.00")
-//    private Double valorTotal;
+    @NotNull
+    @Schema(description = "Valor total da ordem de serviço", example = "850.00")
+    private Double valorTotal;
 
     @Schema(description = "Data prevista de saída do veículo", example = "2025-11-05")
     private LocalDate dataSaidaPrevista;
@@ -88,6 +88,7 @@ public class OrdemDeServico {
         this.dataSaidaPrevista = builder.dtSaidaPrevista;
         this.dataSaidaEfetiva = builder.dtSaidaEfetiva;
         this.status = builder.status;
+        this.valorTotal = builder.valorTotal;
         this.seguradora = builder.seguradora;
         this.nfRealizada = builder.nfRealizada;
         this.pagtRealizado = builder.pagtRealizado;
@@ -99,6 +100,7 @@ public class OrdemDeServico {
     public static Builder builder() {
         return new Builder();
     }
+
 
     public static class Builder {
         private Integer idOrdemServico;
