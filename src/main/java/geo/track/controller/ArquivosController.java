@@ -33,9 +33,10 @@ public class ArquivosController{
         Integer idUsuario = usuario.getIdOficina();
         OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrcamento, idUsuario);
 
-        GATEWAY_EXPORT_DATA_RABBIT_MQ.solicitarArquivo(OrdemDeServicoMapper.toResponse(orcamento));
+        GATEWAY_EXPORT_DATA_RABBIT_MQ.solicitarArquivo(OrdemDeServicoMapper.toResponse(orcamento), Template.ORCAMENTO);
 
         return ResponseEntity.status(201)
+                .header("x-template-arquivo", Template.ORCAMENTO.toString())
                 .body(null);
     }
 
