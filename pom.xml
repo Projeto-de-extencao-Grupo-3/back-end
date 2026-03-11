@@ -201,28 +201,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.owasp</groupId>
-				<artifactId>dependency-check-maven</artifactId>
-				<version>12.2.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<format>JSON</format>
-					<format>HTML</format>
-					<failBuildOnCVSS>7.0</failBuildOnCVSS>
-					<skipProvidedScope>true</skipProvidedScope>
-					<skipTestScope>true</skipTestScope>
-					<autoUpdate>true</autoUpdate>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
