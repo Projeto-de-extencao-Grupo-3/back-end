@@ -1,8 +1,8 @@
 package geo.track.dto.itensServicos;
 
 import geo.track.enums.Servico;
-import geo.track.enums.servico.LadosVeiculo;
-import geo.track.enums.servico.PartesVeiculo;
+import geo.track.enums.servico.LadoVeiculo;
+import geo.track.enums.servico.ParteVeiculo;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
@@ -12,9 +12,9 @@ public class ItemServicoOsResponse {
     private Integer idRegistroServico;
     private Double precoCobrado;
     @Enumerated(EnumType.STRING)
-    private PartesVeiculo parteVeiculo;
+    private ParteVeiculo parteVeiculo;
     @Enumerated(EnumType.STRING)
-    private LadosVeiculo ladoVeiculo;
+    private LadoVeiculo ladoVeiculo;
     private String cor;
     private String especificacaoServico;
     private String observacoesItem;

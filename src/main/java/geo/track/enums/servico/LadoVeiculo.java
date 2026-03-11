@@ -1,6 +1,6 @@
 package geo.track.enums.servico;
 
-public enum LadosVeiculo {
+public enum LadoVeiculo {
     // Posições
     DIANTEIRO,
     TRASEIRO,

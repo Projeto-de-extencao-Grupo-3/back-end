@@ -1,6 +1,6 @@
 package geo.track.enums.servico;
 
-public enum PartesVeiculo {
+public enum ParteVeiculo {
     // Componentes Gerais
     PARACHOQUE,
     GRADE,

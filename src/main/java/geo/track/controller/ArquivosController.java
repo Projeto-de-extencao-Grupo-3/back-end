@@ -7,7 +7,7 @@ import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.enums.Template;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.ArquivoExceptionMessages;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.gateway.GatewayExporData;
 import geo.track.mapper.ArquivoMapper;
 import geo.track.mapper.OrdemDeServicoMapper;
@@ -45,7 +45,7 @@ public class ArquivosController{
         Optional<Arquivo> arquivo = ARQUIVO_REPOSITORY.findByFkOrdemServicoAndTemplate(idOrcamento, Template.ORDEM_SERVICO);
 
         if (arquivo.isEmpty()) {
-            throw new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, EnumDomains.ARQUIVO);
+            throw new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO);
         }
 
         return ResponseEntity.status(201)

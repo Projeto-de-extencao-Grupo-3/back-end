@@ -4,7 +4,7 @@ import geo.track.exception.DataNotFoundException;
 import geo.track.dto.viacep.request.RequestViacep;
 import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.exception.constraint.message.EnderecoExceptionMessages;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,7 +19,7 @@ public class ViacepConnection {
 
 
         if (viacep.getErro() != null) {
-            throw new DataNotFoundException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, EnumDomains.ENDERECO);
+            throw new DataNotFoundException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, Domains.ENDERECO);
         }
 
         ResponseViacep responseViacep = new ResponseViacep(viacep.getCep() ,viacep.getLogradouro(), viacep.getBairro(), viacep.getLocalidade(), viacep.getUf());

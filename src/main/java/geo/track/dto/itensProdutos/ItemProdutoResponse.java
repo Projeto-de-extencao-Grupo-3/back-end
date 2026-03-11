@@ -12,4 +12,5 @@ public class ItemProdutoResponse {
     private Boolean baixado;
     private Integer idPeca;
     private Integer idOrdemServico;
+    private Boolean visivelOrcamento;
 }

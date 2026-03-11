@@ -5,7 +5,7 @@ import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ProdutoExceptionMessages;
 import geo.track.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class ProdutoService {
 
     public Produto findProdutoById(Integer id) {
         return PRODUTO_REPOSITORY.findById(id).orElseThrow(
-                () -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO)
+                () -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO)
         );
     }
 
@@ -40,14 +40,14 @@ public class ProdutoService {
             return prod;
         }
 
-        throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+        throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
     }
 
     public Produto patchQtdEstoque(RequestPatchQtdEstoque produtoAtt){
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
@@ -59,7 +59,7 @@ public class ProdutoService {
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
@@ -71,7 +71,7 @@ public class ProdutoService {
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
@@ -81,7 +81,7 @@ public class ProdutoService {
 
     public void excluir(Integer id){
         if(!PRODUTO_REPOSITORY.existsById(id)){
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
 
         PRODUTO_REPOSITORY.deleteById(id);
