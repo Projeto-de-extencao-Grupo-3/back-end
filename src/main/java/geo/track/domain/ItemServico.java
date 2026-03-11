@@ -1,8 +1,8 @@
 package geo.track.domain;
 
 import geo.track.enums.Servico;
-import geo.track.enums.servico.LadosVeiculo;
-import geo.track.enums.servico.PartesVeiculo;
+import geo.track.enums.servico.LadoVeiculo;
+import geo.track.enums.servico.ParteVeiculo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -34,12 +34,12 @@ public class ItemServico {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Schema(description = "Parte que será reparada no veiculo", example = "Parachoque/Parabrisa/Janelas", requiredMode = Schema.RequiredMode.REQUIRED)
-    private PartesVeiculo parteVeiculo;
+    private ParteVeiculo parteVeiculo;
 
     @NotNull
     @Schema(description = "Lado no qual será executado o reparo", example = "Latera Esquerda/Transeira", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
-    private LadosVeiculo ladoVeiculo;
+    private LadoVeiculo ladoVeiculo;
 
     @Schema(description = "Cor do Veiculo", example = "Ciano/Vermelho", requiredMode = Schema.RequiredMode.REQUIRED)
     private String cor;

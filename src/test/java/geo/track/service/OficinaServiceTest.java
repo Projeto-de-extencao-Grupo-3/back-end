@@ -1,11 +1,15 @@
 package geo.track.service;
 
+import geo.track.domain.Funcionario;
 import geo.track.domain.Oficinas;
 import geo.track.config.GerenciadorTokenJwt;
+import geo.track.dto.autenticacao.UsuarioLoginDto;
+import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +18,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -32,7 +40,14 @@ class OficinaServiceTest {
     private OficinaRepository repository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder; // This mock is not used in OficinaService, but was present in FuncionarioServiceTest
+    @Mock
+    private GerenciadorTokenJwt gerenciadorTokenJwt;
+    @Mock
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private FuncionarioRepository funcionarioRepository;
+
 
     @InjectMocks
     private OficinaService service;
@@ -40,6 +55,8 @@ class OficinaServiceTest {
     private Oficinas oficina;
     private OficinaPatchEmailDTO patchEmailDTO;
     private OficinaPatchStatusDTO patchStatusDTO;
+    private UsuarioLoginDto usuarioLoginDto;
+    private Funcionario funcionario;
 
     @BeforeEach
     void setUp() {
@@ -53,6 +70,15 @@ class OficinaServiceTest {
 
         patchEmailDTO = new OficinaPatchEmailDTO(1, "novo.email@oficinadoze.com");
         patchStatusDTO = new OficinaPatchStatusDTO(1, false);
+
+        usuarioLoginDto = new UsuarioLoginDto("test@example.com", "password");
+
+        funcionario = new Funcionario();
+        funcionario.setIdFuncionario(1);
+        funcionario.setEmail("test@example.com");
+        funcionario.setSenha("encodedPassword");
+        funcionario.setNome("Test User");
+        funcionario.setFkOficina(oficina);
     }
 
     // ===== cadastrar =====
@@ -85,8 +111,61 @@ class OficinaServiceTest {
 
         assertTrue(exception.getMessage().contains("O CNPJ"));
         verify(repository).findByCnpj(oficina.getCnpj());
-        verify(passwordEncoder, never()).encode(anyString());
         verify(repository, never()).save(any(Oficinas.class));
+    }
+
+    // ===== autenticar =====
+    @Test
+    @DisplayName("autenticar: Deve autenticar usuário com sucesso e retornar token")
+    void testAutenticarComSucesso() {
+        // Arrange
+        Authentication authentication = mock(Authentication.class);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(funcionarioRepository.findByEmail(usuarioLoginDto.getEmail())).thenReturn(Optional.of(funcionario));
+        when(gerenciadorTokenJwt.generateToken(authentication, funcionario)).thenReturn("mocked-jwt-token");
+
+        // Act
+        UsuarioTokenDto resultado = service.autenticar(usuarioLoginDto);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("mocked-jwt-token", resultado.getToken());
+        assertEquals(funcionario.getEmail(), resultado.getEmail());
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(funcionarioRepository).findByEmail(usuarioLoginDto.getEmail());
+        verify(gerenciadorTokenJwt).generateToken(authentication, funcionario);
+    }
+
+    @Test
+    @DisplayName("autenticar: Deve lançar BadCredentialsException para credenciais inválidas")
+    void testAutenticarComCredenciaisInvalidas() {
+        // Arrange
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException("Credenciais inválidas"));
+
+        // Act & Assert
+        assertThrows(BadCredentialsException.class, () -> service.autenticar(usuarioLoginDto));
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(funcionarioRepository, never()).findByEmail(anyString());
+        verify(gerenciadorTokenJwt, never()).generateToken(any(), any());
+    }
+
+    @Test
+    @DisplayName("autenticar: Deve lançar DataNotFoundException se funcionário não encontrado após autenticação")
+    void testAutenticarFuncionarioNaoEncontradoAposAutenticacao() {
+        // Arrange
+        Authentication authentication = mock(Authentication.class);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(funcionarioRepository.findByEmail(usuarioLoginDto.getEmail())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+                () -> service.autenticar(usuarioLoginDto));
+
+        assertEquals("Email do usuário não cadastrado", exception.getMessage());
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(funcionarioRepository).findByEmail(usuarioLoginDto.getEmail());
+        verify(gerenciadorTokenJwt, never()).generateToken(any(), any());
     }
 
     // ===== listar =====
@@ -264,7 +343,7 @@ class OficinaServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertEquals("novo.email@officinadoze.com", resultado.getEmail());
+        assertEquals("novo.email@oficinadoze.com", resultado.getEmail()); // Fixed typo here
         verify(repository).findById(patchEmailDTO.getId());
         verify(repository).save(any(Oficinas.class));
     }
@@ -299,7 +378,7 @@ class OficinaServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertTrue(resultado.getStatus());
+        assertFalse(resultado.getStatus());
         verify(repository).findById(patchStatusDTO.getId());
         verify(repository).save(any(Oficinas.class));
     }

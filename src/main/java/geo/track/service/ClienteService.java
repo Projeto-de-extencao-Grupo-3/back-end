@@ -7,7 +7,7 @@ import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.ClienteExceptionMessages;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.mapper.ClientesMapper;
 import geo.track.repository.ClienteRepository;
 import geo.track.dto.clientes.request.RequestPatchEmail;
@@ -27,7 +27,7 @@ public class ClienteService {
 
     public Cliente postCliente(RequestPostCliente body){
         if(CLIENTE_REPOSITORY.existsByCpfCnpj(body.getCpfCnpj())){
-            throw new ConflictException(ClienteExceptionMessages.CPF_EXISTENTE, EnumDomains.CLIENTE);
+            throw new ConflictException(ClienteExceptionMessages.CPF_EXISTENTE, Domains.CLIENTE);
         }
         Oficinas oficina = OFICINA_SERVICE.findOficinasById(body.getFkOficina());
         Endereco endereco = ENDERECO_SERVICE.findEnderecoById(body.getFkEndereco());
@@ -45,7 +45,7 @@ public class ClienteService {
 
 
         if (cliente.isEmpty()) {
-            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID, id), EnumDomains.CLIENTE);
+            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID, id), Domains.CLIENTE);
         }
 
         return cliente.get();
@@ -56,7 +56,7 @@ public class ClienteService {
         List<Cliente> cliente = CLIENTE_REPOSITORY.findByNomeContainingIgnoreCase(nome);
 
         if (cliente.isEmpty()) {
-            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_NOME, nome), EnumDomains.CLIENTE);
+            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_NOME, nome), Domains.CLIENTE);
         }
         return cliente;
     }
@@ -65,7 +65,7 @@ public class ClienteService {
         Optional<Cliente> cliente = CLIENTE_REPOSITORY.findByCpfCnpj(cpfCnpj);
 
         if (cliente.isEmpty()) {
-            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_CPF_CNPJ, cpfCnpj), EnumDomains.CLIENTE);
+            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_CPF_CNPJ, cpfCnpj), Domains.CLIENTE);
         }
         return cliente.get();
     }
@@ -74,7 +74,7 @@ public class ClienteService {
         Optional<Cliente> clientes = CLIENTE_REPOSITORY.findById(clienteDTO.getId());
 
         if(clientes.isEmpty()){
-            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, EnumDomains.CLIENTE);
+            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, Domains.CLIENTE);
         }
         Cliente cliente = clientes.get();
         cliente.setIdCliente(clienteDTO.getId());
@@ -87,7 +87,7 @@ public class ClienteService {
         Optional<Cliente> clientes = CLIENTE_REPOSITORY.findById(clienteDTO.getId());
 
         if(clientes.isEmpty()){
-            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, EnumDomains.CLIENTE);
+            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, Domains.CLIENTE);
         }
 
         Cliente cliente = clientes.get();
@@ -102,7 +102,7 @@ public class ClienteService {
 
 
         if(clientes.isEmpty()){
-            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, EnumDomains.CLIENTE);
+            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, Domains.CLIENTE);
         }
 
             Cliente cliente = clientes.get();
@@ -123,6 +123,6 @@ public class ClienteService {
             CLIENTE_REPOSITORY.deleteById(id);
             return;
         }
-        throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID, id), EnumDomains.CLIENTE);
+        throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID, id), Domains.CLIENTE);
     }
 }

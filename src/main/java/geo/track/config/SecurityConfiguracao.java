@@ -116,7 +116,7 @@ public class SecurityConfiguracao {
     public CorsConfigurationSource corsConfigurationSource(@Value("${url.frontend}") String frontendUrl) {
         CorsConfiguration configuracao = new CorsConfiguration();
 
-        configuracao.setAllowedOrigins(List.of(frontendUrl));
+        configuracao.addAllowedOrigin("http://localhost:5173");
 
         configuracao.setAllowedMethods(
                 Arrays.asList(

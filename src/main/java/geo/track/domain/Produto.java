@@ -51,7 +51,7 @@ public class Produto {
     @NotNull
     @Positive
     @Schema(description = "Visibilidade de item em Orçamento", example = "45")
-    private Boolean viavelOrcamento;
+    private Boolean visivelOrcamento;
 
     @OneToMany(mappedBy = "fkPeca")
     @Schema(description = "Lista de produtos associados à uma lista de produtos")

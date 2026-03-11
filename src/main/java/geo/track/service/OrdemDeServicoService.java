@@ -9,7 +9,7 @@ import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.ForbiddenException;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.exception.constraint.message.RegistroEntradaExceptionMessages;
 import geo.track.repository.OrdemDeServicoRepository;
@@ -31,11 +31,11 @@ public class OrdemDeServicoService {
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
 
     public OrdemDeServico cadastrarOrdemServico(@Valid @RequestBody PostEntradaVeiculo body) {
-        RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.findById(body.getFkEntrada()).orElseThrow(()-> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, EnumDomains.REGISTRO_ENTRADA));
+        RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.findById(body.getFkEntrada()).orElseThrow(()-> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA));
 
         OrdemDeServico ordem = OrdemDeServico.builder()
                 .status(body.getStatus())
-                .dtSaidaPrevista(null)
+                .dataSaidaPrevista(null)
                 .dataSaidaEfetiva(null)
                 .seguradora(false)
                 .nfRealizada(false)
@@ -55,7 +55,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordem = ORDEM_REPOSITORY.findByIdAndIdOficina(idOrdem, idOficina);
 
         if (ordem.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
         }
         return ordem.get();
     }
@@ -64,7 +64,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ordemOPT.get();
@@ -80,7 +80,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
         }
         
         OrdemDeServico ordem = ordemOPT.get();
@@ -94,7 +94,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ordemOPT.get();
@@ -108,7 +108,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ordemOPT.get();
@@ -122,7 +122,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ordemOPT.get();
@@ -136,7 +136,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
 
         if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ordemOPT.get();
@@ -149,7 +149,7 @@ public class OrdemDeServicoService {
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(idOrdem);
 
         if (ordemOPT.isEmpty()) {
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO);
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ordemOPT.get();
@@ -158,11 +158,11 @@ public class OrdemDeServicoService {
         List<ItemServico> servicos = ITEM_SERVICO_SERVICE.listarPelaOrdemServico(ordem);
 
         if (!servicos.isEmpty()) {
-            throw new BadRequestException(OrdemDeServicoExceptionMessages.ORDEM_NAO_PODE_SER_DELETADA_COM_SERVICOS, EnumDomains.ORDEM_DE_SERVICO);
+            throw new BadRequestException(OrdemDeServicoExceptionMessages.ORDEM_NAO_PODE_SER_DELETADA_COM_SERVICOS, Domains.ORDEM_DE_SERVICO);
         }
 
         if (entrada == null){
-            throw new ForbiddenException(OrdemDeServicoExceptionMessages.SOLICITACAO_RECUSADA, EnumDomains.ORDEM_DE_SERVICO);
+            throw new ForbiddenException(OrdemDeServicoExceptionMessages.SOLICITACAO_RECUSADA, Domains.ORDEM_DE_SERVICO);
         }
 
         // verificar se tem serviços atrelado
@@ -184,7 +184,7 @@ public class OrdemDeServicoService {
     }
 
     public Boolean existeOrdemServicoPorEntrada(Integer idRegistroEtrada) {
-        RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.findById(idRegistroEtrada).orElseThrow(()-> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, EnumDomains.REGISTRO_ENTRADA));
+        RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.findById(idRegistroEtrada).orElseThrow(()-> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA));
         return ORDEM_REPOSITORY.existsByFkEntrada(entrada);
     }
 

@@ -9,7 +9,7 @@ import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadBusinessRuleException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.RegistroEntradaExceptionMessages;
 import geo.track.repository.RegistroEntradaRepository;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +76,7 @@ public class RegistroEntradaService{
         Optional<RegistroEntrada> registro = REGISTRO_ENTRADA_REPOSITORY.findById(idRegistro);
 
         if (registro.isEmpty()){
-            throw new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, EnumDomains.REGISTRO_ENTRADA);
+            throw new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA);
         }
 
         return registro.get();
@@ -85,7 +85,7 @@ public class RegistroEntradaService{
     public RegistroEntrada atualizarEntradaVeiculoAgendado(RequestPutRegistroEntrada body) {
         // Busca o registro ou lança a exceção diretamente (Clean Code)
         RegistroEntrada registro = REGISTRO_ENTRADA_REPOSITORY.findById(body.getIdRegistro())
-                .orElseThrow(() -> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, EnumDomains.REGISTRO_ENTRADA));
+                .orElseThrow(() -> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA));
 
         // Verifica cada campo antes de atualizar
         if (body.getDtEntradaEfetiva() != null) {
@@ -137,7 +137,7 @@ public class RegistroEntradaService{
 
     public void deletarEntrada(Integer idRegistro){
         if (!REGISTRO_ENTRADA_REPOSITORY.existsById(idRegistro)){
-            throw new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, EnumDomains.REGISTRO_ENTRADA);
+            throw new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA);
         }
 
         REGISTRO_ENTRADA_REPOSITORY.deleteById(idRegistro);
@@ -145,7 +145,7 @@ public class RegistroEntradaService{
 
     private void validarExistenciaOrdemServicoEmAndamentoVeiculo(Integer idVeiculo) {
         if (REGISTRO_ENTRADA_REPOSITORY.existsOrdensNaoFinalizadas(idVeiculo)){
-            throw new BadBusinessRuleException(RegistroEntradaExceptionMessages.VEICULO_JA_POSSUI_ENTRADA_EM_ANDAMENTO, EnumDomains.REGISTRO_ENTRADA);
+            throw new BadBusinessRuleException(RegistroEntradaExceptionMessages.VEICULO_JA_POSSUI_ENTRADA_EM_ANDAMENTO, Domains.REGISTRO_ENTRADA);
         }
     }
 }
