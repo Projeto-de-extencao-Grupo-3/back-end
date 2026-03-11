@@ -75,6 +75,7 @@ jobs:
           fi
 
   quality-sonarqube:
+    needs: build-test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -158,3 +159,35 @@ jobs:
           else
             echo "❌ **Falha:** Não foi possível enviar os dados de análise para o SonarCloud." >> $GITHUB_STEP_SUMMARY
           fi
+
+  build-push-docker-image:
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: gabrielpacificooo/grotrack:${{ secrets.DOCKERHUB_IMAGE_TAG}}
+
+      - name: Exibir resumo de Sucesso
+        if: success()
+        run: |
+          echo "### ✅ Build e Push Concluídos!" >> $GITHUB_STEP_SUMMARY
+          echo "A imagem Docker do GROTrack (\`gabrielpacificooo/grotrack:${{ secrets.DOCKERHUB_IMAGE_TAG}}\`) foi gerada e enviada com sucesso para o Docker Hub." >> $GITHUB_STEP_SUMMARY
+
+      - name: Exibir resumo de Falha
+        if: failure()
+        run: |
+          echo "### ❌ Falha no Build ou Push" >> $GITHUB_STEP_SUMMARY
+          echo "Não foi possível gerar ou enviar a imagem Docker. Verifique os logs do passo **Build and push** para entender o que quebrou." >> $GITHUB_STEP_SUMMARY
