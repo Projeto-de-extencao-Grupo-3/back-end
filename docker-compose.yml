@@ -46,6 +46,21 @@ services:
       retries: 5
       interval: 10s
 
+  frontend:
+    image: gabrielpacificooo/grotrack:front-end
+    container_name: front-end-grotrack
+    depends_on:
+      backend:
+        condition: service_started
+    environment:
+      VITE_API_URL: "http://api:8000"
+      VITE_APP_NAME: "grotrack"
+    ports:
+      - "3000:3000"
+    networks:
+      - grotrack-network
+    restart: unless-stopped
+
 volumes:
   mysql-data:
     driver: local

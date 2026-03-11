@@ -4,9 +4,7 @@ import geo.track.enums.os.StatusVeiculo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,8 +12,10 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @Table(name = "ordem_de_servicos")
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrdemDeServico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,102 +81,5 @@ public class OrdemDeServico {
         this.fkEntrada = fkEntrada;
         this.produtos = produtos;
         this.servicos = servicos;
-    }
-
-    private OrdemDeServico(Builder builder) {
-        this.idOrdemServico = builder.idOrdemServico;
-        this.dataSaidaPrevista = builder.dtSaidaPrevista;
-        this.dataSaidaEfetiva = builder.dtSaidaEfetiva;
-        this.status = builder.status;
-        this.seguradora = builder.seguradora;
-        this.nfRealizada = builder.nfRealizada;
-        this.pagtRealizado = builder.pagtRealizado;
-        this.fkEntrada = builder.fkEntrada;
-        this.produtos = builder.produtos;
-        this.servicos = builder.servicos;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private Integer idOrdemServico;
-        private Double valorTotal;
-        private LocalDate dtSaidaPrevista;
-        private LocalDate dtSaidaEfetiva;
-        @Enumerated(EnumType.STRING)
-        private StatusVeiculo status;
-        private Boolean seguradora;
-        private Boolean nfRealizada;
-        private Boolean pagtRealizado;
-        private Boolean ativo;
-        private RegistroEntrada fkEntrada;
-        private List<ItemProduto> produtos;
-        private List<ItemServico> servicos;
-
-        public Builder idOrdemServico(Integer idOrdemServico) {
-            this.idOrdemServico = idOrdemServico;
-            return this;
-        }
-
-        public Builder valorTotal(Double valorTotal) {
-            this.valorTotal = valorTotal;
-            return this;
-        }
-
-        public Builder dtSaidaPrevista(LocalDate dtSaidaPrevista) {
-            this.dtSaidaPrevista = dtSaidaPrevista;
-            return this;
-        }
-
-        public Builder dtSaidaEfetiva(LocalDate dtSaidaEfetiva) {
-            this.dtSaidaEfetiva = dtSaidaEfetiva;
-            return this;
-        }
-
-        public Builder status(StatusVeiculo status) {
-            this.status = status;
-            return this;
-        }
-
-        public Builder seguradora(Boolean seguradora) {
-            this.seguradora = seguradora;
-            return this;
-        }
-
-        public Builder nfRealizada(Boolean nfRealizada) {
-            this.nfRealizada = nfRealizada;
-            return this;
-        }
-
-        public Builder pagtRealizado(Boolean pagtRealizado) {
-            this.pagtRealizado = pagtRealizado;
-            return this;
-        }
-
-        public Builder ativo(Boolean ativo) {
-            this.ativo = ativo;
-            return this;
-        }
-
-        public Builder fkEntrada(RegistroEntrada fkEntrada) {
-            this.fkEntrada = fkEntrada;
-            return this;
-        }
-
-        public Builder produtos(List<ItemProduto> produtos) {
-            this.produtos = produtos;
-            return this;
-        }
-
-        public Builder servicos(List<ItemServico> servicos) {
-            this.servicos = servicos;
-            return this;
-        }
-
-        public OrdemDeServico build() {
-            return new OrdemDeServico(this);
-        }
     }
 }

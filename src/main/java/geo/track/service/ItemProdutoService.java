@@ -8,7 +8,7 @@ import geo.track.dto.itensProdutos.RequestPutItemProduto;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ItemProdutoExceptionMessages;
 import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.exception.constraint.message.ProdutoExceptionMessages;
@@ -29,8 +29,8 @@ public class ItemProdutoService {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     public ItemProduto cadastrarRegistro(RequestPostItemProduto body) {
-        OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(body.fkOrdemServico()).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, EnumDomains.ORDEM_DE_SERVICO));
-        Produto produto = PRODUTO_REPOSITORY.findById(body.fkProduto()).orElseThrow(() -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO));
+        OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(body.fkOrdemServico()).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO));
+        Produto produto = PRODUTO_REPOSITORY.findById(body.fkProduto()).orElseThrow(() -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO));
 
         ItemProduto registroProduto = ItemProdutoMapper.toEntity(null, body.quantidade(), body.precoProduto(), false, produto, ordemServico);
 
@@ -42,7 +42,7 @@ public class ItemProdutoService {
     }
 
     public ItemProduto buscarRegistroPorID(Integer id) {
-        ItemProduto registroProduto = ITEM_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(ItemProdutoExceptionMessages.ITEM_PRODUTO_NAO_ENCONTRADO, EnumDomains.ITEM_SERVICO));
+        ItemProduto registroProduto = ITEM_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(ItemProdutoExceptionMessages.ITEM_PRODUTO_NAO_ENCONTRADO, Domains.ITEM_SERVICO));
         return registroProduto;
     }
 
@@ -52,10 +52,10 @@ public class ItemProdutoService {
     }
 
     public ItemProduto atualizarRegistro(Integer id, RequestPutItemProduto body) {
-        ItemProduto registroDesejado = ITEM_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(ItemProdutoExceptionMessages.ITEM_PRODUTO_NAO_ENCONTRADO, EnumDomains.ITEM_SERVICO));
+        ItemProduto registroDesejado = ITEM_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(ItemProdutoExceptionMessages.ITEM_PRODUTO_NAO_ENCONTRADO, Domains.ITEM_SERVICO));
 
         if (body.baixado() != null && body.baixado().equals(false)) {
-            throw new BadRequestException("Não é possível retirar a baixa do sistema!", EnumDomains.ITEM_SERVICO);
+            throw new BadRequestException("Não é possível retirar a baixa do sistema!", Domains.ITEM_SERVICO);
         }
 
         // Pra quem não entender isso daqui abstrai aqueles IF's feios dms e tira a responsabilidade da service de mapear
@@ -65,7 +65,7 @@ public class ItemProdutoService {
             Produto estoqueProduto = registroAtualizado.getFkPeca();
 
             if (estoqueProduto.getQuantidadeEstoque() - body.quantidade() < 0) {
-                throw new ConflictException("Não é possível diminuir esta quantidade do estoque!", EnumDomains.ITEM_SERVICO);
+                throw new ConflictException("Não é possível diminuir esta quantidade do estoque!", Domains.ITEM_SERVICO);
             }
 
             estoqueProduto.setQuantidadeEstoque(estoqueProduto.getQuantidadeEstoque() - registroAtualizado.getQuantidade());

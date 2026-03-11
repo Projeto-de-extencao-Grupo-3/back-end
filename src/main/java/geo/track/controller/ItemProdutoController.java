@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/itensProdutos")
+@RequestMapping("/itens-produtos")
 @RequiredArgsConstructor
 public class ItemProdutoController implements ItemProdutoSwagger {
     private final ItemProdutoService ITEM_PRODUTO_SERVICE;

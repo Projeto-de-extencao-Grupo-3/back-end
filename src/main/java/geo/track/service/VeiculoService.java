@@ -3,7 +3,7 @@ package geo.track.service;
 import geo.track.domain.Veiculo;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.VeiculoExceptionMessages;
 import geo.track.repository.VeiculoRepository;
 import geo.track.dto.veiculos.request.RequestPatchCor;
@@ -27,7 +27,7 @@ public class VeiculoService {
         veiculo.setIdVeiculo(null);
 
         if(VEICULO_REPOSITORY.existsByPlacaIgnoreCase(veiculo.getPlaca())){
-            throw new ConflictException(VeiculoExceptionMessages.PLACA_EXISTENTE, EnumDomains.VEICULO);
+            throw new ConflictException(VeiculoExceptionMessages.PLACA_EXISTENTE, Domains.VEICULO);
         }
 
         return VEICULO_REPOSITORY.save(veiculo);
@@ -39,7 +39,7 @@ public class VeiculoService {
 
     public Veiculo findVeiculoById(@PathVariable Integer id){
         return VEICULO_REPOSITORY.findById(id).orElseThrow(
-                () -> new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO)
+                () -> new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO)
         );
     }
 
@@ -54,20 +54,20 @@ public class VeiculoService {
             return veic;
         }
 
-        throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO);
+        throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO);
     }
 
     public Veiculo patchPlaca(RequestPatchPlaca veiculoDTO){
         Optional<Veiculo> veiculoOpt = VEICULO_REPOSITORY.findById(veiculoDTO.getIdVeiculo());
 
         if(veiculoOpt.isEmpty()){
-            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO);
+            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO);
         }
 
         Veiculo veiculo = veiculoOpt.get();
 
         if(VEICULO_REPOSITORY.existsByPlacaIgnoreCase(veiculoDTO.getPlaca())){
-            throw new ConflictException(VeiculoExceptionMessages.PLACA_JA_EXISTE_OUTRO_VEICULO, EnumDomains.VEICULO);
+            throw new ConflictException(VeiculoExceptionMessages.PLACA_JA_EXISTE_OUTRO_VEICULO, Domains.VEICULO);
         }
 
         veiculo.setPlaca(veiculoDTO.getPlaca());
@@ -79,7 +79,7 @@ public class VeiculoService {
         Optional<Veiculo> veiculoOpt = VEICULO_REPOSITORY.findById(veiculoDTO.getIdVeiculo());
 
         if(veiculoOpt.isEmpty()){
-            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO);
+            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO);
         }
 
         Veiculo veiculo = veiculoOpt.get();
@@ -91,7 +91,7 @@ public class VeiculoService {
 
      public void deleteVeiculoById(@PathVariable Integer id){
          if(!VEICULO_REPOSITORY.existsById(id)){
-             throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, EnumDomains.VEICULO);
+             throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO);
          }
 
          VEICULO_REPOSITORY.deleteById(id);
@@ -100,7 +100,7 @@ public class VeiculoService {
 
     public void deleteVeiculoByPlaca(@PathVariable String placa){
         if(!VEICULO_REPOSITORY.existsByPlacaIgnoreCase(placa)){
-            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, EnumDomains.VEICULO);
+            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, Domains.VEICULO);
         }
 
         // For now, I'll just delete by ID after finding it, which is safer.
@@ -109,7 +109,7 @@ public class VeiculoService {
         if (veiculoToDelete.isPresent()) {
             VEICULO_REPOSITORY.deleteById(veiculoToDelete.get().getIdVeiculo());
         } else {
-            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, EnumDomains.VEICULO);
+            throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, Domains.VEICULO);
         }
     }
 }

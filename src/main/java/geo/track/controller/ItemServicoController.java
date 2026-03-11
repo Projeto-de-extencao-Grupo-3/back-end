@@ -2,14 +2,13 @@ package geo.track.controller;
 
 import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
-import geo.track.domain.Servico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.mapper.ItemServicoMapper;
 import geo.track.service.ItemServicoService;
 import geo.track.service.OrdemDeServicoService;
-import geo.track.service.ServicoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,20 +17,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/itensServico")
+@RequestMapping("/itens-servicos")
 @RequiredArgsConstructor
 public class ItemServicoController {
     private final ItemServicoService ITEM_SERVICO_SERVICE;
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
-    private final ServicoService SERVICO_SERVICE;
 
     @PostMapping
-    public ResponseEntity<ItemServicoResponse> cadastrar(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestBody RequestPostItemServico body) {
+    public ResponseEntity<ItemServicoResponse> cadastrar(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestBody @Valid RequestPostItemServico body) {
         Integer idOficina = usuario.getIdOficina();
 
+        System.out.println(idOficina);
+
         OrdemDeServico ordemServico = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.getFkOrdemServico(), idOficina);
-        Servico servico = SERVICO_SERVICE.buscarPorId(body.getFkServico());
-        ItemServico item = ItemServicoMapper.toDomain(body, ordemServico, servico);
+
+        ItemServico item = ItemServicoMapper.toDomain(body, ordemServico, body.getTipoServico());
+
+        System.out.println(item);
 
         ItemServico itemServico = ITEM_SERVICO_SERVICE.cadastrar(item);
         return ResponseEntity.status(201).body(ItemServicoMapper.toResponse(itemServico));

@@ -2,10 +2,8 @@ package geo.track.service;
 
 import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
-import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.EnumDomains;
-import geo.track.exception.constraint.message.GlobalExceptionMessages; // Assuming a generic ID_JA_EXISTE
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ItemServicoExceptionMessages;
 import geo.track.repository.ItemServicoRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +18,6 @@ public class ItemServicoService {
     private final ItemServicoRepository ITEM_SERVICO_REPOSITORY;
 
     public ItemServico cadastrar(ItemServico itemServico){
-        if (ITEM_SERVICO_REPOSITORY.existsById(itemServico.getIdRegistroServico())){
-            throw new ConflictException(GlobalExceptionMessages.ID_JA_EXISTE, EnumDomains.ITEM_SERVICO); // Using generic ID_JA_EXISTE
-        }
         return ITEM_SERVICO_REPOSITORY.save(itemServico);
     }
 
@@ -34,7 +29,7 @@ public class ItemServicoService {
         Optional<ItemServico> ordem = ITEM_SERVICO_REPOSITORY.findById(id);
 
         if (ordem.isEmpty()){
-            throw new DataNotFoundException(ItemServicoExceptionMessages.ITEM_SERVICO_NAO_ENCONTRADO, EnumDomains.ITEM_SERVICO);
+            throw new DataNotFoundException(ItemServicoExceptionMessages.ITEM_SERVICO_NAO_ENCONTRADO, Domains.ITEM_SERVICO);
         }
         return ordem.get();
     }
@@ -47,7 +42,7 @@ public class ItemServicoService {
 
     public ItemServico atualizar(Integer id, ItemServico updatedItens) {
         ItemServico existente = ITEM_SERVICO_REPOSITORY.findById(id)
-                .orElseThrow(() -> new DataNotFoundException(ItemServicoExceptionMessages.ITEM_SERVICO_NAO_ENCONTRADO, EnumDomains.ITEM_SERVICO));
+                .orElseThrow(() -> new DataNotFoundException(ItemServicoExceptionMessages.ITEM_SERVICO_NAO_ENCONTRADO, Domains.ITEM_SERVICO));
 
         existente.setPrecoCobrado(updatedItens.getPrecoCobrado());
         existente.setParteVeiculo(updatedItens.getParteVeiculo());
@@ -56,7 +51,7 @@ public class ItemServicoService {
         existente.setEspecificacaoServico(updatedItens.getEspecificacaoServico());
         existente.setObservacoesItem(updatedItens.getObservacoesItem());
 
-        existente.setFkServico(updatedItens.getFkServico());
+        existente.setTipoServico(updatedItens.getTipoServico());
         existente.setFkOrdemServico(updatedItens.getFkOrdemServico());
 
         return ITEM_SERVICO_REPOSITORY.save(existente);

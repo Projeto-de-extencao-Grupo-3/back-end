@@ -1,6 +1,6 @@
 package geo.track.exception.constraint.message;
 
-public enum EnumDomains {
+public enum Domains {
     CLIENTE,
     ENDERECO,
     FUNCIONARIO,
@@ -12,5 +12,5 @@ public enum EnumDomains {
     PRODUTO,
     REGISTRO_ENTRADA,
     SERVICO,
-    VEICULO
+    ARQUIVO, VEICULO
 }

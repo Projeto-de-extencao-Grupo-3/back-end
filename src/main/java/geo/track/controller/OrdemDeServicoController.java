@@ -8,7 +8,7 @@ import geo.track.dto.os.response.*;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.ConflictException;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.service.OrdemDeServicoService;
@@ -31,7 +31,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 //    Criação de Ordem de Servico é feito automaticamente na entrada
     public ResponseEntity<OrdemDeServicoResponse> postOrdem(@RequestBody PostEntradaVeiculo ordemDTO) {
         if (ORDEM_SERVICO_SERVICE.existeOrdemServicoPorEntrada(ordemDTO.getFkEntrada())) {
-            throw new ConflictException(OrdemDeServicoExceptionMessages.ORDEM_JA_EXISTE_PARA_REGISTRO_ENTRADA, EnumDomains.ORDEM_DE_SERVICO);
+            throw new ConflictException(OrdemDeServicoExceptionMessages.ORDEM_JA_EXISTE_PARA_REGISTRO_ENTRADA, Domains.ORDEM_DE_SERVICO);
         }
 
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(ordemDTO);
@@ -68,7 +68,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
         boolean isValid = validStatus.contains(status.toUpperCase());
 
         if (!isValid) {
-            throw new BadRequestException("Status inválido. Os permitidos são: %s".formatted(Arrays.toString(StatusVeiculo.values())), EnumDomains.ORDEM_DE_SERVICO);
+            throw new BadRequestException("Status inválido. Os permitidos são: %s".formatted(Arrays.toString(StatusVeiculo.values())), Domains.ORDEM_DE_SERVICO);
         }
 
         StatusVeiculo statusEnum = StatusVeiculo.valueOf(status.toUpperCase());

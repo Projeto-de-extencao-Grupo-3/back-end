@@ -1,6 +1,6 @@
 package geo.track.exception;
 
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ConflictException extends RuntimeException{
     private String domain;
 
-    public ConflictException(String message, EnumDomains domain) {
+    public ConflictException(String message, Domains domain) {
         super(message);
         this.domain = domain.toString();
     }
