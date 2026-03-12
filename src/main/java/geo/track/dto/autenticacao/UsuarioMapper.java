@@ -27,7 +27,8 @@ public class UsuarioMapper {
 
         usuarioTokenDto.setIdOficina(funcionario.getFkOficina().getIdOficina());
         usuarioTokenDto.setCnpj(funcionario.getFkOficina().getCnpj());
-        usuarioTokenDto.setNome(funcionario.getFkOficina().getRazaoSocial());
+        usuarioTokenDto.setNome(funcionario.getNome());
+        usuarioTokenDto.setCargo(funcionario.getCargo());
         usuarioTokenDto.setEmail(funcionario.getEmail());
         usuarioTokenDto.setToken(token);
 

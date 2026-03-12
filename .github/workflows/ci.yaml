@@ -1,4 +1,4 @@
-name: Build & Test (OWASP Segurança & Qualidade)
+name: Build & Test
 
 on:
   push:

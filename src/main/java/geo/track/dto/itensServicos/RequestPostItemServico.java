@@ -16,6 +16,7 @@ public class RequestPostItemServico {
     private Double precoCobrado;
     @NotNull
     private ParteVeiculo parteVeiculo;
+
     @NotNull
     private LadoVeiculo ladoVeiculo;
 

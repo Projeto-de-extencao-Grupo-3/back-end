@@ -33,4 +33,6 @@ build/
 .vscode/
 
 ### logs ###
-./logs
+.idea
+logs
+.run
