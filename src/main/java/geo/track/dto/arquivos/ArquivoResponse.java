@@ -6,6 +6,7 @@ public record ArquivoResponse(
         String formato,
         String url,
         String dataCriacao,
-        String dataAtualizacao
+        String dataAtualizacao,
+        String status
 ) {
 }
