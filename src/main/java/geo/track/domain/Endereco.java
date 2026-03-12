@@ -1,6 +1,7 @@
 package geo.track.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -17,9 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Objeto utilizado para enviar ou receber") // 1. Descrição do objeto
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "idEndereco")
+@JsonIgnoreProperties({"enderecoLista", "handler", "hibernateLazyInitializer"})
 @Table(name = "enderecos")
 public class Endereco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

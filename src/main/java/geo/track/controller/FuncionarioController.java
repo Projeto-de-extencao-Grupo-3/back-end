@@ -24,6 +24,18 @@ public class FuncionarioController implements FuncionarioSwagger {
         return ResponseEntity.status(201).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
+
+    @GetMapping
+    public ResponseEntity<List<FuncionarioResponse>> findAllFuncionarios() {
+        List<Funcionario> funcionarios = FUNCIONARIO_SERVICE.findFuncionarios();
+
+        if (funcionarios.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        List<FuncionarioResponse> response = FuncionarioMapper.toResponse(funcionarios);
+        return ResponseEntity.status(200).body(response);
+    }
+
     @Override
     @GetMapping("/oficina/{idOficina}")
     public ResponseEntity<List<FuncionarioResponse>> findByOficina(@PathVariable Integer idOficina) {

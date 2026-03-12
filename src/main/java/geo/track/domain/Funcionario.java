@@ -1,6 +1,7 @@
 package geo.track.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -16,9 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "idFuncionario")
+@JsonIgnoreProperties({"funcionarioLista", "handler", "hibernateLazyInitializer"})
 @Schema(description = "Representa um Funcionário do sistema.")
 @Table(name = "funcionarios")
 public class Funcionario {

@@ -1,5 +1,6 @@
 package geo.track.service;
 
+import geo.track.domain.Cliente;
 import geo.track.domain.Funcionario;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
@@ -26,6 +27,10 @@ public class FuncionarioService {
 
         body.setSenha(PASSWORD_ENCODER.encode(body.getSenha()));
         return FUNCIONARIO_REPOSITORY.save(body);
+    }
+
+    public List<Funcionario> findFuncionarios(){
+        return FUNCIONARIO_REPOSITORY.findAll();
     }
 
     public List<Funcionario> buscarPorOficina(Integer idOficina) {

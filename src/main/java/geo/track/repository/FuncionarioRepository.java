@@ -10,6 +10,7 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Intege
     List<Funcionario> findByNomeContainingIgnoreCase(String valor);
     List<Funcionario> findByFkOficina_IdOficina(Integer idOficina);
     Funcionario getByIdFuncionario (Integer id);
+    List<Funcionario> findAll();
     Boolean existsByEmail(String email);
     Boolean existsByNome(String nome);
     Boolean existsByIdFuncionario (Integer id);
