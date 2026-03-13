@@ -7,7 +7,7 @@ import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.dto.oficinas.response.OficinaResponse;
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 import geo.track.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -90,7 +90,7 @@ public interface OficinaSwagger {
     })
     @SecurityRequirement(name = "Bearer")
     @PutMapping("/{id}")
-    ResponseEntity<OficinaResponse> atualizarEmpresa(@PathVariable Integer id, @RequestBody Oficinas empresa);
+    ResponseEntity<OficinaResponse> atualizarEmpresa(@PathVariable Integer id, @RequestBody Oficina empresa);
 
     @Operation(summary = "Atualizar o email de uma Oficina")
     @ApiResponses(value = {

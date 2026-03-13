@@ -6,6 +6,8 @@ import geo.track.enums.Servico;
 import geo.track.enums.servico.LadoVeiculo;
 import geo.track.enums.servico.ParteVeiculo;
 import geo.track.exception.DataNotFoundException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.ItemServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +30,9 @@ class ItensServicoServiceTest {
 
     @Mock
     private ItemServicoRepository repository;
+
+    @Mock
+    private LogImplementation log;
 
     @InjectMocks
     private ItemServicoService service;

@@ -2,6 +2,7 @@ package geo.track.service;
 
 import geo.track.domain.Funcionario;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
+import geo.track.log.Log;
 import geo.track.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,15 +16,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AutenticacaoService implements UserDetailsService {
     private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
+    private final Log log;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Funcionario> funcionarioOpt = FUNCIONARIO_REPOSITORY.findByEmail(email.toLowerCase());
 
         if (funcionarioOpt.isEmpty()) {
+            log.warn("Falha na autenticação: usuário com email {} não encontrado", email);
             throw new UsernameNotFoundException(String.format("usuario: %s nao encontrado", email));
         }
-
         return new UsuarioDetalhesDto(funcionarioOpt.get().getFkOficina(), funcionarioOpt.get());
     }
 }

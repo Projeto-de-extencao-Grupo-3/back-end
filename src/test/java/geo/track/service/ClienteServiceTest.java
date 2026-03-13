@@ -2,7 +2,7 @@ package geo.track.service;
 
 import geo.track.domain.Cliente;
 import geo.track.domain.Endereco;
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPostCliente;
@@ -11,6 +11,8 @@ import geo.track.enums.cliente.TipoCliente;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.ClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,13 +40,16 @@ class ClienteServiceTest {
     private OficinaService oficinaService;
 
     @Mock
+    private LogImplementation log;
+
+    @Mock
     private EnderecoService enderecoService;
 
     @InjectMocks
     private ClienteService service;
 
     private Cliente cliente;
-    private Oficinas oficina;
+    private Oficina oficina;
     private Endereco endereco;
     private RequestPostCliente requestPostCliente;
     private RequestPatchEmail requestPatchEmail;
@@ -54,7 +59,7 @@ class ClienteServiceTest {
     @BeforeEach
     void setUp() {
         // Arrange: Preparar Entidades
-        oficina = new Oficinas();
+        oficina = new Oficina();
         oficina.setIdOficina(1);
         oficina.setRazaoSocial("Oficina do Zé");
 

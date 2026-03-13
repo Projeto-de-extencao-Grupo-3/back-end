@@ -5,6 +5,8 @@ import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.exception.DataNotFoundException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.ProdutoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +30,9 @@ class ProdutoServiceTest {
 
     @Mock
     private ProdutoRepository repository;
+
+    @Mock
+    private LogImplementation log;
 
     @InjectMocks
     private ProdutoService service;

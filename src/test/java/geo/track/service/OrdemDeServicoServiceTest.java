@@ -11,6 +11,8 @@ import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.OrdemDeServicoRepository;
 import geo.track.repository.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +37,9 @@ class OrdemDeServicoServiceTest {
 
     @Mock
     private OrdemDeServicoRepository ordemRepository;
+
+    @Mock
+    private LogImplementation log;
 
     @Mock
     private ItemServicoService itemServicoService;

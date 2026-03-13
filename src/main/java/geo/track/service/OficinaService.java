@@ -2,7 +2,7 @@ package geo.track.service;
 
 import geo.track.config.GerenciadorTokenJwt;
 import geo.track.domain.Funcionario;
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 import geo.track.dto.autenticacao.UsuarioLoginDto;
 import geo.track.dto.autenticacao.UsuarioMapper;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
@@ -12,10 +12,10 @@ import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.OficinaExceptionMessages;
+import geo.track.log.Log;
 import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OficinaService {
@@ -33,14 +32,15 @@ public class OficinaService {
     private final GerenciadorTokenJwt GERENCIADOR_TOKEN_JWT;
     private final AuthenticationManager AUTHENTICATION_MANAGER;
     private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
+    private final Log log;
 
-    public Oficinas cadastrar(Oficinas Oficinas){
-        log.info("Iniciando persistência de nova oficina: {}", Oficinas.getRazaoSocial());
-        if (OFICINA_REPOSITORY.findByCnpj(Oficinas.getCnpj()).isPresent()){
-            log.error("Falha ao cadastrar: CNPJ {} já existe no sistema.", Oficinas.getCnpj());
-            throw new ConflictException(String.format(OficinaExceptionMessages.CNPJ_JA_CADASTRADO, Oficinas.getCnpj()), Domains.OFICINA);
+    public Oficina cadastrar(Oficina body){
+        log.info("Iniciando persistência de nova oficina: {}", body.getRazaoSocial());
+        if (OFICINA_REPOSITORY.findByCnpj(body.getCnpj()).isPresent()){
+            log.error("Falha ao cadastrar: CNPJ {} já existe no sistema.", body.getCnpj());
+            throw new ConflictException(String.format(OficinaExceptionMessages.CNPJ_JA_CADASTRADO, body.getCnpj()), Domains.OFICINA);
         }
-        Oficinas salva = OFICINA_REPOSITORY.save(Oficinas);
+        Oficina salva = OFICINA_REPOSITORY.save(body);
         log.info("Oficina salva com sucesso. ID gerado: {}", salva.getIdOficina());
         return salva;
     }
@@ -70,12 +70,12 @@ public class OficinaService {
         return UsuarioMapper.of(funcionarioAutenticado, token);
     }
 
-    public List<Oficinas> listar(){
+    public List<Oficina> listar(){
         log.info("Buscando lista completa de oficinas no banco de dados.");
         return OFICINA_REPOSITORY.findAll();
     }
 
-    public Oficinas findOficinasById(Integer id){
+    public Oficina findOficinasById(Integer id){
         log.info("Pesquisando oficina por ID: {}", id);
         return OFICINA_REPOSITORY.findById(id).orElseThrow(() -> {
             log.warn("Oficina com ID {} não foi encontrada.", id);
@@ -83,12 +83,12 @@ public class OficinaService {
         });
     }
 
-    public List<Oficinas> findOficinasByRazaoSocial(String razaoSocial){
+    public List<Oficina> findOficinasByRazaoSocial(String razaoSocial){
         log.info("Pesquisando oficinas contendo a razão social: {}", razaoSocial);
         return OFICINA_REPOSITORY.findByrazaoSocialContainingIgnoreCase(razaoSocial);
     }
 
-    public Oficinas findOficinasByCnpj(String cnpj){
+    public Oficina findOficinasByCnpj(String cnpj){
         log.info("Pesquisando oficina pelo CNPJ: {}", cnpj);
         return OFICINA_REPOSITORY.findByCnpj(cnpj).orElseThrow(() -> {
             log.warn("Nenhuma oficina encontrada para o CNPJ: {}", cnpj);
@@ -96,11 +96,11 @@ public class OficinaService {
         });
     }
 
-    public Oficinas atualizar(Integer id, Oficinas oficinas){
+    public Oficina atualizar(Integer id, Oficina body){
         log.info("Iniciando atualização completa da oficina ID: {}", id);
         if (OFICINA_REPOSITORY.existsById(id)){
-            oficinas.setIdOficina(id);
-            Oficinas empSalva = OFICINA_REPOSITORY.save(oficinas);
+            body.setIdOficina(id);
+            Oficina empSalva = OFICINA_REPOSITORY.save(body);
             log.info("Dados da oficina ID {} atualizados com sucesso.", id);
             return empSalva;
         }
@@ -108,15 +108,15 @@ public class OficinaService {
         throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, id), Domains.OFICINA);
     }
 
-    public Oficinas patchEmail(OficinaPatchEmailDTO dto){
+    public Oficina patchEmail(OficinaPatchEmailDTO dto){
         log.info("Iniciando atualização parcial de email para oficina ID: {}", dto.getId());
-        Optional<Oficinas> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
+        Optional<Oficina> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
 
         if(Oficinas.isEmpty()){
             log.warn("Falha no patch: Oficina ID {} não encontrada.", dto.getId());
             throw new DataNotFoundException(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, Domains.OFICINA);
         }
-        Oficinas emp = Oficinas.get();
+        Oficina emp = Oficinas.get();
 
         emp.setIdOficina(dto.getId());
         emp.setEmail(dto.getEmail());
@@ -125,15 +125,15 @@ public class OficinaService {
     }
 
 
-    public Oficinas patchStatus(OficinaPatchStatusDTO dto){
+    public Oficina patchStatus(OficinaPatchStatusDTO dto){
         log.info("Iniciando atualização de status para oficina ID: {}", dto.getId());
-        Optional<Oficinas> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
+        Optional<Oficina> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
 
         if(Oficinas.isEmpty()){
             log.warn("Falha no patch status: Oficina ID {} não encontrada.", dto.getId());
             throw new DataNotFoundException(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, Domains.OFICINA);
         }
-        Oficinas emp = Oficinas.get();
+        Oficina emp = Oficinas.get();
 
         emp.setIdOficina(dto.getId());
         emp.setStatus(dto.getStatus());
