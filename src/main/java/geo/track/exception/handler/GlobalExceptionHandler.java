@@ -2,6 +2,8 @@ package geo.track.exception.handler;
 
 import geo.track.exception.*;
 import geo.track.exception.constraint.message.Domains;
+import geo.track.log.Log;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +18,11 @@ import org.springframework.web.client.HttpServerErrorException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+    private final Log log;
+
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ExceptionBody> DataNotFoundException(DataNotFoundException e) {
         log.error("Erro {} - ({}) {}", 404, e.getDomain(), e.getMessage());
