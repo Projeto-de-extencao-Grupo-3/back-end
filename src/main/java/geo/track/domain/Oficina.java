@@ -21,7 +21,7 @@ import java.util.List;
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "idOficina")
 @Table(name = "oficinas")
-public class Oficinas {
+public class Oficina {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

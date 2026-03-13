@@ -63,7 +63,7 @@ public class OrdemDeServico {
     private List<ItemServico> servicos;
 
     @Transient
-    public Oficinas getOficina() {
+    public Oficina getOficina() {
         if (fkEntrada != null && fkEntrada.getFkVeiculo() != null && fkEntrada.getFkVeiculo().getFkCliente() != null) {
             return fkEntrada.getFkVeiculo().getFkCliente().getFkOficina();
         }
