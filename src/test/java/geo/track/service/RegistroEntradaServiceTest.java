@@ -7,6 +7,8 @@ import geo.track.dto.os.request.PostEntradaVeiculo;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +33,9 @@ class RegistroEntradaServiceTest {
 
     @Mock
     private RegistroEntradaRepository repository;
+
+    @Mock
+    private LogImplementation log;
 
     @Mock
     private VeiculoService veiculoService;

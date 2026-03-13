@@ -20,16 +20,12 @@ public class AutenticacaoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info("Iniciando tentativa de carregamento de usuário pelo email: {}", email);
-
         Optional<Funcionario> funcionarioOpt = FUNCIONARIO_REPOSITORY.findByEmail(email.toLowerCase());
 
         if (funcionarioOpt.isEmpty()) {
             log.warn("Falha na autenticação: usuário com email {} não encontrado", email);
             throw new UsernameNotFoundException(String.format("usuario: %s nao encontrado", email));
         }
-
-        log.info("Usuário {} encontrado com sucesso. Retornando detalhes do usuário.", email);
         return new UsuarioDetalhesDto(funcionarioOpt.get().getFkOficina(), funcionarioOpt.get());
     }
 }
