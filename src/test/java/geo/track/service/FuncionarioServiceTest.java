@@ -15,9 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+<<<<<<< HEAD
+=======
 
 import java.util.Collections;
 import java.util.List;
+>>>>>>> main
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,10 +36,14 @@ class FuncionarioServiceTest {
     private FuncionarioRepository repository;
 
     @Mock
+<<<<<<< HEAD
+    private PasswordEncoder PASSWORD_ENCODER;
+=======
     private PasswordEncoder passwordEncoder;
 
     @Mock
     private LogImplementation log;
+>>>>>>> main
 
     @InjectMocks
     private FuncionarioService service;
@@ -56,6 +63,7 @@ class FuncionarioServiceTest {
         funcionario.setNome("João da Silva Santos");
         funcionario.setEmail("joao.santos@example.com"); // Added email
         funcionario.setCargo("Mecânico");
+        funcionario.setEmail("joao@email.com");
         funcionario.setTelefone("11987654321");
         funcionario.setSenha("password123"); // Added password
         funcionario.setFkOficina(oficina); // Set the fkOficina
@@ -67,18 +75,26 @@ class FuncionarioServiceTest {
     void testCadastrarFuncionarioComSucesso() {
         // Arrange
         when(repository.existsByEmail(funcionario.getEmail())).thenReturn(false);
+<<<<<<< HEAD
+=======
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+>>>>>>> main
         when(repository.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
+        when(PASSWORD_ENCODER.encode(any())).thenReturn("senha_criptografada");
         // Act
         Funcionario resultado = service.cadastrar(funcionario);
 
         // Assert
         assertNotNull(resultado);
+<<<<<<< HEAD
+        assertEquals("joao@email.com", resultado.getEmail());
+        verify(repository).existsByEmail(funcionario.getEmail());
+=======
         assertEquals("João da Silva Santos", resultado.getNome());
         assertEquals("encodedPassword", resultado.getSenha());
         verify(repository).existsByEmail(funcionario.getEmail());
         verify(passwordEncoder).encode("password123");
+>>>>>>> main
         verify(repository).save(any(Funcionario.class));
     }
 
@@ -86,8 +102,12 @@ class FuncionarioServiceTest {
     @DisplayName("cadastrar: Deve lançar ConflictException quando email já existe")
     void testCadastrarFuncionarioComEmailDuplicado() {
         // Arrange
+<<<<<<< HEAD
+        when(repository.existsByEmail(anyString())).thenReturn(true);
+=======
         when(repository.existsByEmail(funcionario.getEmail())).thenReturn(true);
 
+>>>>>>> main
         // Act & Assert
         ConflictException exception = assertThrows(ConflictException.class,
             () -> service.cadastrar(funcionario));

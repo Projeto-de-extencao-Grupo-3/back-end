@@ -57,6 +57,10 @@ public class OrdemDeServicoService {
         return ORDEM_REPOSITORY.findAllByIdOficina(idOficina);
     }
 
+    public List<OrdemDeServico> listarOrdensServicoAll(){
+        return ORDEM_REPOSITORY.findAll();
+    }
+
     public OrdemDeServico buscarOrdemServicoPorId(Integer idOrdem, Integer idOficina){
         Log.info("Buscando Ordem de Serviço ID: {} para a oficina ID: {}", idOrdem, idOficina);
         Optional<OrdemDeServico> ordem = ORDEM_REPOSITORY.findByIdAndIdOficina(idOrdem, idOficina);

@@ -10,6 +10,7 @@ import geo.track.exception.DataNotFoundException;
 import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.RegistroEntradaRepository;
+import geo.track.repository.VeiculoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,9 @@ class RegistroEntradaServiceTest {
     
     @Mock
     private OrdemDeServicoService ordemDeServicoService; // Mock adicionado
+
+    @Mock
+    private OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
     @InjectMocks
     private RegistroEntradaService service;

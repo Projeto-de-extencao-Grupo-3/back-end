@@ -348,7 +348,11 @@ class OficinaServiceTest {
 
         // Assert
         assertNotNull(resultado);
+<<<<<<< HEAD
+        assertEquals("novo.email@oficinadoze.com", resultado.getEmail());
+=======
         assertEquals("novo.email@oficinadoze.com", resultado.getEmail()); // Fixed typo here
+>>>>>>> main
         verify(repository).findById(patchEmailDTO.getId());
         verify(repository).save(any(Oficina.class));
     }

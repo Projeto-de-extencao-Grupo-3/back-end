@@ -8,11 +8,12 @@ import java.util.Optional;
 
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Integer> {
     List<Funcionario> findByNomeContainingIgnoreCase(String valor);
-    Boolean existsByEmail(String email);
     List<Funcionario> findByFkOficina_IdOficina(Integer idOficina);
-    Boolean existsByIdFuncionario (Integer id);
     Funcionario getByIdFuncionario (Integer id);
-
+    List<Funcionario> findAll();
+    Boolean existsByEmail(String email);
+    Boolean existsByNome(String nome);
+    Boolean existsByIdFuncionario (Integer id);
     Optional<Funcionario> findByEmail(String cnpj);
 
 //    @Query("SELECT p FROM Clientes p JOIN p.cliente c WHERE c.idEmpresa = :idEmpresa")

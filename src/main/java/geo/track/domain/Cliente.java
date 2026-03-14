@@ -1,6 +1,7 @@
 package geo.track.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import geo.track.enums.cliente.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema; // Import adicionado
@@ -22,9 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 @Schema(description = "Representa a entidade Cliente no sistema") // Adicionado
 @Table(name = "clientes")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "idCliente")
+@JsonIgnoreProperties({"clienteLista", "handler", "hibernateLazyInitializer"})
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

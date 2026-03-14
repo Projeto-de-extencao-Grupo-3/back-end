@@ -31,8 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+<<<<<<< HEAD
+.logs/
+=======
 
 ### logs ###
 .idea
 logs
 .run
+>>>>>>> main

@@ -45,13 +45,10 @@ public class Produto {
     private Double precoVenda;
 
     @NotNull
-    @Positive
     @Schema(description = "Quantidade disponível em estoque", example = "45")
     private Integer quantidadeEstoque;
 
-    @NotNull
-    @Positive
-    @Schema(description = "Visibilidade de item em Orçamento", example = "45")
+    @Schema(description = "Visibilidade de item em Orçamento", example = "true")
     private Boolean visivelOrcamento;
 
     @OneToMany(mappedBy = "fkProduto")

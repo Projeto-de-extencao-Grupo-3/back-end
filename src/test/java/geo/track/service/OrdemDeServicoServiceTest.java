@@ -47,8 +47,12 @@ class OrdemDeServicoServiceTest {
     @Mock
     private RegistroEntradaRepository registroEntradaRepository;
 
+    @Mock
+    private RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
+
     @InjectMocks
     private OrdemDeServicoService service;
+
 
     private OrdemDeServico ordemDeServicos;
     private RegistroEntrada registroEntrada;
@@ -68,9 +72,16 @@ class OrdemDeServicoServiceTest {
 
         ordemDeServicos = OrdemDeServico.builder()
                 .idOrdemServico(1)
+<<<<<<< HEAD
+                .valorTotal(750.0)
+                .status(StatusVeiculo.EM_PRODUCAO)
+                .nfRealizada(true)
+                .dtSaidaPrevista(LocalDate.now().plusMonths(1))
+=======
                 .status(StatusVeiculo.EM_PRODUCAO)
                 .nfRealizada(true)
                 .dataSaidaPrevista(LocalDate.now().plusMonths(1))
+>>>>>>> main
                 .fkEntrada(registroEntrada)
                 .build();
 
@@ -88,14 +99,22 @@ class OrdemDeServicoServiceTest {
     @DisplayName("cadastrarOrdemServico: Deve criar ordem de serviço com sucesso")
     void testCadastrarOrdemServicoComSucesso() {
         // Arrange
+<<<<<<< HEAD
+        when(REGISTRO_ENTRADA_REPOSITORY.findById(any())).thenReturn(Optional.of(registroEntrada));
+        when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(i -> i.getArgument(0));
+=======
         when(registroEntradaRepository.findById(1)).thenReturn(Optional.of(registroEntrada));
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
+>>>>>>> main
 
         // Act
         OrdemDeServico resultado = service.cadastrarOrdemServico(postEntradaVeiculo);
 
         // Assert
         assertNotNull(resultado);
+<<<<<<< HEAD
+        verify(REGISTRO_ENTRADA_REPOSITORY).findById(any());
+=======
         assertEquals(StatusVeiculo.EM_PRODUCAO, resultado.getStatus());
         assertNull(resultado.getDataSaidaPrevista());
         assertNull(resultado.getDataSaidaEfetiva());
@@ -105,6 +124,7 @@ class OrdemDeServicoServiceTest {
         assertTrue(resultado.getAtivo());
         assertEquals(registroEntrada, resultado.getFkEntrada());
         verify(registroEntradaRepository).findById(1);
+>>>>>>> main
         verify(ordemRepository).save(any(OrdemDeServico.class));
     }
 
@@ -132,7 +152,11 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.findAllByIdOficina(1)).thenReturn(List.of(ordemDeServicos));
 
         // Act
+<<<<<<< HEAD
+        List<OrdemDeServico> resultado = service.listarOrdensServicoAll();
+=======
         List<OrdemDeServico> resultado = service.listarOrdensServico(1);
+>>>>>>> main
 
         // Assert
         assertNotNull(resultado);
@@ -147,7 +171,11 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.findAllByIdOficina(1)).thenReturn(List.of());
 
         // Act
+<<<<<<< HEAD
+        List<OrdemDeServico> resultado = service.listarOrdensServicoAll();
+=======
         List<OrdemDeServico> resultado = service.listarOrdensServico(1);
+>>>>>>> main
 
         // Assert
         assertNotNull(resultado);
@@ -175,6 +203,15 @@ class OrdemDeServicoServiceTest {
     @DisplayName("buscarOrdemServicoPorId: Deve lançar DataNotFoundException quando ID não existe")
     void testBuscarOrdemServicoPorId_NaoEncontrada() {
         // Arrange
+<<<<<<< HEAD
+        when(ordemRepository.findByIdAndIdOficina(999, 1000)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(DataNotFoundException.class,
+            () -> service.buscarOrdemServicoPorId(999, 1000));
+
+        verify(ordemRepository).findByIdAndIdOficina(999, 1000);
+=======
         when(ordemRepository.findByIdAndIdOficina(999, 1)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -182,6 +219,7 @@ class OrdemDeServicoServiceTest {
             () -> service.buscarOrdemServicoPorId(999, 1));
 
         verify(ordemRepository).findByIdAndIdOficina(999, 1);
+>>>>>>> main
     }
 
     // ===== buscarOrdemServicoPorPlaca =====
@@ -367,6 +405,10 @@ class OrdemDeServicoServiceTest {
     void testAtualizarValorESaidaComSucesso() {
         // Arrange
         OrdemDeServico ordemParaAtualizar = ordemDeServicos;
+<<<<<<< HEAD
+        OrdemDeServico.builder().valorTotal(750.0);
+=======
+>>>>>>> main
         ordemParaAtualizar.setDataSaidaPrevista(LocalDate.now().plusWeeks(5));
 
         when(ordemRepository.findById(1)).thenReturn(Optional.of(ordemParaAtualizar));

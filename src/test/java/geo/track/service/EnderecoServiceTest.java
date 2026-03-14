@@ -115,7 +115,10 @@ class EnderecoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.findEnderecoById(999));
 
+<<<<<<< HEAD
+=======
         // Corrected assertion message to match the service's implementation
+>>>>>>> main
         assertEquals("Formato de CEP que foi enviado está incorreto", exception.getMessage());
         verify(repository).findById(999);
     }

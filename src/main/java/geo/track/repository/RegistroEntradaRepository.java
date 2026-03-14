@@ -4,9 +4,11 @@ import geo.track.domain.RegistroEntrada;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface RegistroEntradaRepository extends JpaRepository<RegistroEntrada, Integer> {
     // Existing method, might need adaptation if fkVeiculo_IdVeiculo is not unique per office
     List<RegistroEntrada> findAllByFkVeiculo_IdVeiculo(Long id);

@@ -130,7 +130,11 @@ class ClienteServiceTest {
             () -> service.postCliente(requestPostCliente));
 
         assertEquals("O CPF do cliente informado já existe para esta oficina", exception.getMessage());
+<<<<<<< HEAD
+        assertEquals("CLIENTE", exception.getDomain());
+=======
         assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).existsByCpfCnpj(requestPostCliente.getCpfCnpj());
         verify(repository, never()).save(any(Cliente.class));
         verify(oficinaService, never()).findOficinasById(any());
@@ -239,7 +243,11 @@ class ClienteServiceTest {
             () -> service.findClienteById(999));
 
         assertEquals("O ID 999 não foi encontrado ou não pertence a esta oficina", exception.getMessage());
+<<<<<<< HEAD
+        assertEquals("CLIENTE", exception.getDomain());
+=======
         assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).findById(999);
     }
 
@@ -273,7 +281,11 @@ class ClienteServiceTest {
             () -> service.findClienteByNome(nome));
 
         assertEquals("O nome não foi encontrado para esta oficina", exception.getMessage());
+<<<<<<< HEAD
+        assertEquals("CLIENTE", exception.getDomain());
+=======
         assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).findByNomeContainingIgnoreCase(nome);
     }
 
@@ -306,7 +318,11 @@ class ClienteServiceTest {
             () -> service.findClienteByCpfCnpj(cpfCnpj));
 
         assertEquals("CPF não foi encontrado para esta oficina", exception.getMessage());
+<<<<<<< HEAD
+        assertEquals("CLIENTE", exception.getDomain());
+=======
         assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).findByCpfCnpj(cpfCnpj);
     }
 
@@ -451,7 +467,11 @@ class ClienteServiceTest {
             () -> service.deletar(999));
 
         assertEquals("O ID 999 não foi encontrado ou não pertence a esta oficina", exception.getMessage());
+<<<<<<< HEAD
+        assertEquals("CLIENTE", exception.getDomain());
+=======
         assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).existsById(999);
         verify(repository, never()).deleteById(999);
     }
