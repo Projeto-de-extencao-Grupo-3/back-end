@@ -18,8 +18,9 @@ public class ItemProdutoMapper {
             return null;
         }
 
+
         ItemProdutoResponse response = new ItemProdutoResponse();
-        response.setId_transacao_produto(entity.getIdRegistroPeca());
+        response.setIdTransacaoProduto(entity.getIdRegistroPeca());
         response.setNomeProduto(entity.getFkPeca().getNome());
         response.setFornecedorNf(entity.getFkPeca().getFornecedorNf());
         response.setPrecoCompra(entity.getFkPeca().getPrecoCompra().toString());
@@ -28,6 +29,7 @@ public class ItemProdutoMapper {
         response.setQuantidade(entity.getQuantidade());
         response.setPrecoPeca(entity.getPrecoPeca());
         response.setBaixado(entity.getBaixado());
+        response.setPossivelRegistrarSaida(entity.possivelRealizarBaixaNoEstoque());
 
         return response;
     }
@@ -52,7 +54,6 @@ public class ItemProdutoMapper {
         response.setPrecoPeca(entity.getPrecoPeca());
         response.setBaixado(entity.getBaixado());
 
-        // Safe access to nested properties
         Optional.ofNullable(entity.getFkPeca()).ifPresent(fkPeca -> {
             response.setNomeProduto(fkPeca.getNome());
             response.setVisivelOrcamento(fkPeca.getVisivelOrcamento());

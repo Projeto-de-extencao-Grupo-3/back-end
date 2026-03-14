@@ -98,7 +98,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     }
 
     @Override
-    @PatchMapping("/saidaEfetiva")
+    @PatchMapping("/saida-efetiva")
     public ResponseEntity<OrdemDeServicoResponse> patchSaidaEfetiva(@RequestBody RequestPatchSaidaEfetiva ordemDTO) {
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarSaidaEfetiva(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
@@ -119,14 +119,14 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     }
 
     @Override
-    @PatchMapping("/nfRealizada")
+    @PatchMapping("/nf-realizada")
     public ResponseEntity<OrdemDeServicoResponse> patchNfRealizada(@RequestBody RequestPatchNfRealizada ordemDTO) {
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarNotaFiscalRealizada(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
-    @PatchMapping("/pagtoRealizado")
+    @PatchMapping("/pagto-realizado")
     public ResponseEntity<OrdemDeServicoResponse> patchPagtoRealizado(@RequestBody RequestPatchPagtoRealizado ordemDTO) {
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarPagamentoRealizado(ordemDTO);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));

@@ -43,4 +43,7 @@ public class ItemProduto {
     @Schema(description = "FK da ordem de serviço ")
     private OrdemDeServico fkOrdemServico;
 
+    public Boolean possivelRealizarBaixaNoEstoque() {
+        return this.fkPeca.getQuantidadeEstoque() >= this.quantidade;
+    }
 }

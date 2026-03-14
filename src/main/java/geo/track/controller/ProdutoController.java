@@ -53,21 +53,21 @@ public class ProdutoController implements ProdutoSwagger {
     }
 
     @Override
-    @PatchMapping("/quantidadeEstoque")
+    @PatchMapping("/quantidade-estoque")
     public ResponseEntity<ProdutoResponse>patchQtdEstoque(@RequestBody RequestPatchQtdEstoque produtoAtt){
         Produto prod = PRODUTO_SERVICE.patchQtdEstoque(produtoAtt);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
-    @PatchMapping("/precoCompra")
+    @PatchMapping("/preco-compra")
     public ResponseEntity<ProdutoResponse>patchPrecoCompra(@RequestBody RequestPatchPrecoCompra produtoAtt){
         Produto prod = PRODUTO_SERVICE.patchPrecoCompra(produtoAtt);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
-    @PatchMapping("/precoVenda")
+    @PatchMapping("/preco-venda")
     public ResponseEntity<ProdutoResponse>patchPrecoVenda(@RequestBody RequestPatchPrecoVenda produtoAtt){
         Produto prod = PRODUTO_SERVICE.patchPrecoVenda(produtoAtt);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
