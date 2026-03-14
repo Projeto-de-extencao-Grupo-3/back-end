@@ -26,26 +26,28 @@ public class ProdutoService {
     public Produto cadastrar(ProdutoRequest body){
         log.info("Cadastrando novo produto: {}", body.getNome());
         Produto produto = ProdutoMapper.toEntity(body);
+        produto.setAtivo(true);
         return PRODUTO_REPOSITORY.save(produto);
     }
 
     public List<Produto> listar(){
         log.info("Listando todos os produtos");
-        return PRODUTO_REPOSITORY.findAll();
+        return PRODUTO_REPOSITORY.findByAtivoTrue();
     }
 
     public Produto findProdutoById(Integer id) {
         log.info("Buscando produto com ID: {}", id);
-        return PRODUTO_REPOSITORY.findById(id).orElseThrow(
+        return PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(id).orElseThrow(
                 () -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO)
         );
     }
 
     public Produto putProdutos(Integer id, ProdutoRequest body) {
-        if(PRODUTO_REPOSITORY.existsById(id)){
+        if(PRODUTO_REPOSITORY.existsByIdProdutoAndAtivoTrue(id)){
             log.info("Atualizando produto (PUT) ID: {}", id);
             Produto produto = ProdutoMapper.toEntity(body);
             produto.setIdProduto(id);
+            produto.setAtivo(true);
             return PRODUTO_REPOSITORY.save(produto);
         }
 
@@ -54,7 +56,7 @@ public class ProdutoService {
     }
 
     public Produto patchQtdEstoque(RequestPatchQtdEstoque body){
-        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(body.getId());
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(body.getId());
 
         if(produtoOpt.isEmpty()){
             log.error("Falha ao atualizar estoque: Produto ID {} não encontrado", body.getId());
@@ -68,7 +70,7 @@ public class ProdutoService {
     }
 
     public Produto patchPrecoCompra(RequestPatchPrecoCompra body){
-        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(body.getId());
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(body.getId());
 
         if(produtoOpt.isEmpty()){
             log.error("Falha ao atualizar preço de compra: Produto ID {} não encontrado", body.getId());
@@ -82,7 +84,7 @@ public class ProdutoService {
     }
 
     public Produto patchPrecoVenda(RequestPatchPrecoVenda body){
-        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(body.getId());
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(body.getId());
 
         if(produtoOpt.isEmpty()){
             log.error("Falha ao atualizar preço de venda: Produto ID {} não encontrado", body.getId());
@@ -96,12 +98,14 @@ public class ProdutoService {
     }
 
     public void excluir(Integer id){
-        if(!PRODUTO_REPOSITORY.existsById(id)){
+        if(!PRODUTO_REPOSITORY.existsByIdProdutoAndAtivoTrue(id)){
             log.error("Falha ao excluir: Produto ID {} não encontrado", id);
             throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
+        Produto produto = PRODUTO_REPOSITORY.findById(id).get();
 
         log.info("Excluindo produto ID: {}", id);
-        PRODUTO_REPOSITORY.deleteById(id);
+        produto.setAtivo(false);
+        PRODUTO_REPOSITORY.save(produto);
     }
 }

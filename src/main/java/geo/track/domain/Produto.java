@@ -48,4 +48,7 @@ public class Produto {
     @Schema(description = "Tipo serviço", example = "PINTURA")
     @Enumerated(EnumType.STRING)
     private Servico tipoServico;
+
+    @Schema(description = "Ativo ou inativo", example = "True")
+    private Boolean ativo;
 }
