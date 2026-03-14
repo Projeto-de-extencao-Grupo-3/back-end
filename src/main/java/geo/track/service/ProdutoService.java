@@ -5,8 +5,9 @@ import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ProdutoExceptionMessages;
+import geo.track.log.Log;
 import geo.track.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,72 +19,86 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProdutoService {
     private final ProdutoRepository PRODUTO_REPOSITORY;
+    private final Log log;
 
-    public Produto cadastrar(Produto prod){
-        return PRODUTO_REPOSITORY.save(prod);
+    public Produto cadastrar(Produto body){
+        log.info("Cadastrando novo produto: {}", body.getNome());
+        return PRODUTO_REPOSITORY.save(body);
     }
 
     public List<Produto> listar(){
+        log.info("Listando todos os produtos");
         return PRODUTO_REPOSITORY.findAll();
     }
 
     public Produto findProdutoById(Integer id) {
+        log.info("Buscando produto com ID: {}", id);
         return PRODUTO_REPOSITORY.findById(id).orElseThrow(
-                () -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO)
+                () -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO)
         );
     }
 
-    public Produto putProdutos(Integer id, Produto produtoAtt) {
+    public Produto putProdutos(Integer id, Produto body) {
         if(PRODUTO_REPOSITORY.existsById(id)){
-            produtoAtt.setIdProduto(id);
-            Produto prod = PRODUTO_REPOSITORY.save(produtoAtt);
+            log.info("Atualizando produto (PUT) ID: {}", id);
+            body.setIdProduto(id);
+            Produto prod = PRODUTO_REPOSITORY.save(body);
             return prod;
         }
 
-        throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+        log.error("Falha ao atualizar produto: ID {} não encontrado", id);
+        throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
     }
 
-    public Produto patchQtdEstoque(RequestPatchQtdEstoque produtoAtt){
-        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
+    public Produto patchQtdEstoque(RequestPatchQtdEstoque body){
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(body.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+            log.error("Falha ao atualizar estoque: Produto ID {} não encontrado", body.getId());
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
-        prod.setQuantidadeEstoque(produtoAtt.getQuantidadeEstoque());
+        prod.setQuantidadeEstoque(body.getQuantidadeEstoque());
+        log.info("Quantidade em estoque atualizada para o produto ID: {}. Nova quantidade: {}", prod.getIdProduto(), prod.getQuantidadeEstoque());
         return PRODUTO_REPOSITORY.save(prod);
     }
 
-    public Produto patchPrecoCompra(RequestPatchPrecoCompra produtoAtt){
-        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
+    public Produto patchPrecoCompra(RequestPatchPrecoCompra body){
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(body.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+            log.error("Falha ao atualizar preço de compra: Produto ID {} não encontrado", body.getId());
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
-        prod.setPrecoCompra(produtoAtt.getPrecoCompra());
+        prod.setPrecoCompra(body.getPrecoCompra());
+        log.info("Preço de compra atualizado para o produto ID: {}", prod.getIdProduto());
         return PRODUTO_REPOSITORY.save(prod);
     }
 
-    public Produto patchPrecoVenda(RequestPatchPrecoVenda produtoAtt){
-        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(produtoAtt.getId());
+    public Produto patchPrecoVenda(RequestPatchPrecoVenda body){
+        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findById(body.getId());
 
         if(produtoOpt.isEmpty()){
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+            log.error("Falha ao atualizar preço de venda: Produto ID {} não encontrado", body.getId());
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
 
         Produto prod = produtoOpt.get();
-        prod.setPrecoVenda(produtoAtt.getPrecoVenda());
+        prod.setPrecoVenda(body.getPrecoVenda());
+        log.info("Preço de venda atualizado para o produto ID: {}", prod.getIdProduto());
         return PRODUTO_REPOSITORY.save(prod);
     }
 
     public void excluir(Integer id){
         if(!PRODUTO_REPOSITORY.existsById(id)){
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, EnumDomains.PRODUTO);
+            log.error("Falha ao excluir: Produto ID {} não encontrado", id);
+            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
         }
 
+        log.info("Excluindo produto ID: {}", id);
         PRODUTO_REPOSITORY.deleteById(id);
     }
 }

@@ -2,7 +2,7 @@ package geo.track.service;
 
 import geo.track.domain.Cliente;
 import geo.track.domain.Endereco;
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPostCliente;
@@ -10,6 +10,9 @@ import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.enums.cliente.TipoCliente;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.Domains;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.ClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,13 +40,16 @@ class ClienteServiceTest {
     private OficinaService oficinaService;
 
     @Mock
+    private LogImplementation log;
+
+    @Mock
     private EnderecoService enderecoService;
 
     @InjectMocks
     private ClienteService service;
 
     private Cliente cliente;
-    private Oficinas oficina;
+    private Oficina oficina;
     private Endereco endereco;
     private RequestPostCliente requestPostCliente;
     private RequestPatchEmail requestPatchEmail;
@@ -53,7 +59,7 @@ class ClienteServiceTest {
     @BeforeEach
     void setUp() {
         // Arrange: Preparar Entidades
-        oficina = new Oficinas();
+        oficina = new Oficina();
         oficina.setIdOficina(1);
         oficina.setRazaoSocial("Oficina do Zé");
 
@@ -124,11 +130,56 @@ class ClienteServiceTest {
             () -> service.postCliente(requestPostCliente));
 
         assertEquals("O CPF do cliente informado já existe para esta oficina", exception.getMessage());
+<<<<<<< HEAD
         assertEquals("CLIENTE", exception.getDomain());
+=======
+        assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).existsByCpfCnpj(requestPostCliente.getCpfCnpj());
         verify(repository, never()).save(any(Cliente.class));
         verify(oficinaService, never()).findOficinasById(any());
         verify(enderecoService, never()).findEnderecoById(any());
+    }
+
+    @Test
+    @DisplayName("postCliente: Deve lançar DataNotFoundException quando Oficina não existe")
+    void testPostClienteOficinaNaoEncontrada() {
+        // Arrange
+        when(repository.existsByCpfCnpj(requestPostCliente.getCpfCnpj())).thenReturn(false);
+        when(oficinaService.findOficinasById(requestPostCliente.getFkOficina()))
+                .thenThrow(new DataNotFoundException("Oficina não encontrada", Domains.OFICINA));
+
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+                () -> service.postCliente(requestPostCliente));
+
+        assertEquals("Oficina não encontrada", exception.getMessage());
+        assertEquals("OFICINA", exception.getDomain());
+        verify(repository).existsByCpfCnpj(requestPostCliente.getCpfCnpj());
+        verify(oficinaService).findOficinasById(requestPostCliente.getFkOficina());
+        verify(enderecoService, never()).findEnderecoById(any());
+        verify(repository, never()).save(any(Cliente.class));
+    }
+
+    @Test
+    @DisplayName("postCliente: Deve lançar DataNotFoundException quando Endereco não existe")
+    void testPostClienteEnderecoNaoEncontrado() {
+        // Arrange
+        when(repository.existsByCpfCnpj(requestPostCliente.getCpfCnpj())).thenReturn(false);
+        when(oficinaService.findOficinasById(requestPostCliente.getFkOficina())).thenReturn(oficina);
+        when(enderecoService.findEnderecoById(requestPostCliente.getFkEndereco()))
+                .thenThrow(new DataNotFoundException("Endereço não encontrado", Domains.ENDERECO));
+
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+                () -> service.postCliente(requestPostCliente));
+
+        assertEquals("Endereço não encontrado", exception.getMessage());
+        assertEquals(Domains.ENDERECO.name(), exception.getDomain());
+        verify(repository).existsByCpfCnpj(requestPostCliente.getCpfCnpj());
+        verify(oficinaService).findOficinasById(requestPostCliente.getFkOficina());
+        verify(enderecoService).findEnderecoById(requestPostCliente.getFkEndereco());
+        verify(repository, never()).save(any(Cliente.class));
     }
 
     // ===== findClientes =====
@@ -192,7 +243,11 @@ class ClienteServiceTest {
             () -> service.findClienteById(999));
 
         assertEquals("O ID 999 não foi encontrado ou não pertence a esta oficina", exception.getMessage());
+<<<<<<< HEAD
         assertEquals("CLIENTE", exception.getDomain());
+=======
+        assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).findById(999);
     }
 
@@ -226,7 +281,11 @@ class ClienteServiceTest {
             () -> service.findClienteByNome(nome));
 
         assertEquals("O nome não foi encontrado para esta oficina", exception.getMessage());
+<<<<<<< HEAD
         assertEquals("CLIENTE", exception.getDomain());
+=======
+        assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).findByNomeContainingIgnoreCase(nome);
     }
 
@@ -259,7 +318,11 @@ class ClienteServiceTest {
             () -> service.findClienteByCpfCnpj(cpfCnpj));
 
         assertEquals("CPF não foi encontrado para esta oficina", exception.getMessage());
+<<<<<<< HEAD
         assertEquals("CLIENTE", exception.getDomain());
+=======
+        assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).findByCpfCnpj(cpfCnpj);
     }
 
@@ -404,7 +467,11 @@ class ClienteServiceTest {
             () -> service.deletar(999));
 
         assertEquals("O ID 999 não foi encontrado ou não pertence a esta oficina", exception.getMessage());
+<<<<<<< HEAD
         assertEquals("CLIENTE", exception.getDomain());
+=======
+        assertEquals(Domains.CLIENTE.name(), exception.getDomain());
+>>>>>>> main
         verify(repository).existsById(999);
         verify(repository, never()).deleteById(999);
     }

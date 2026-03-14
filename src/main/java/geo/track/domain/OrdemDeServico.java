@@ -4,9 +4,7 @@ import geo.track.enums.os.StatusVeiculo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,8 +12,10 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @Table(name = "ordem_de_servicos")
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrdemDeServico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,7 +63,7 @@ public class OrdemDeServico {
     private List<ItemServico> servicos;
 
     @Transient
-    public Oficinas getOficina() {
+    public Oficina getOficina() {
         if (fkEntrada != null && fkEntrada.getFkVeiculo() != null && fkEntrada.getFkVeiculo().getFkCliente() != null) {
             return fkEntrada.getFkVeiculo().getFkCliente().getFkOficina();
         }
@@ -82,6 +82,7 @@ public class OrdemDeServico {
         this.produtos = produtos;
         this.servicos = servicos;
     }
+<<<<<<< HEAD
 
     private OrdemDeServico(Builder builder) {
         this.idOrdemServico = builder.idOrdemServico;
@@ -181,4 +182,6 @@ public class OrdemDeServico {
             return new OrdemDeServico(this);
         }
     }
+=======
+>>>>>>> main
 }

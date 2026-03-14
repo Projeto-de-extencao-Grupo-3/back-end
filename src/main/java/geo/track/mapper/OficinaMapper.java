@@ -1,6 +1,6 @@
 package geo.track.mapper;
 
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 import geo.track.dto.oficinas.response.OficinaResponse;
 
 import java.util.Collections;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OficinaMapper {
-    public static OficinaResponse toResponse(Oficinas entity) {
+    public static OficinaResponse toResponse(Oficina entity) {
         if (entity == null) {
             return null;
         }
@@ -24,7 +24,7 @@ public class OficinaMapper {
         return response;
     }
 
-    public static List<OficinaResponse> toResponse(List<Oficinas> entities) {
+    public static List<OficinaResponse> toResponse(List<Oficina> entities) {
         if (entities == null) {
             return Collections.emptyList();
         }

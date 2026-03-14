@@ -8,6 +8,8 @@ import geo.track.dto.enderecos.request.RequestPutEndereco;
 import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.NotAcepptableException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.EnderecoRepository;
 import geo.track.util.ViacepConnection;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +37,9 @@ class EnderecoServiceTest {
 
     @Mock
     private ViacepConnection viacepConnection;
+
+    @Mock
+    private LogImplementation log;
 
     @InjectMocks
     private EnderecoService service;
@@ -110,6 +115,10 @@ class EnderecoServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.findEnderecoById(999));
 
+<<<<<<< HEAD
+=======
+        // Corrected assertion message to match the service's implementation
+>>>>>>> main
         assertEquals("Formato de CEP que foi enviado está incorreto", exception.getMessage());
         verify(repository).findById(999);
     }
@@ -144,6 +153,21 @@ class EnderecoServiceTest {
 
         assertEquals("Formato de CEP que foi enviado está incorreto", exception.getMessage());
         verify(viacepConnection, never()).consultarCEP(anyString());
+    }
+
+    @Test
+    @DisplayName("findEnderecoByVIACEP: Deve lançar DataNotFoundException quando CEP não é encontrado pelo VIACEP")
+    void testFindEnderecoByVIACEP_NaoEncontradoPeloViacep() {
+        // Arrange
+        String cep = "99999999";
+        when(viacepConnection.consultarCEP(cep)).thenReturn(null); // Simulate Viacep returning null
+
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+                () -> service.findEnderecoByVIACEP(cep));
+
+        assertEquals("Formato de CEP que foi enviado está incorreto", exception.getMessage()); // Service throws this for null response
+        verify(viacepConnection).consultarCEP(cep);
     }
 
     // ===== postEndereco =====
@@ -187,7 +211,7 @@ class EnderecoServiceTest {
         Endereco enderecoParaAtualizar = endereco;
         enderecoParaAtualizar.setComplemento("Novo Complemento");
 
-        when(repository.findById(requestPatchComplemento.getId())).thenReturn(Optional.of(enderecoParaAtualizar));
+        when(repository.findById(requestPatchComplemento.getIdEndereco())).thenReturn(Optional.of(enderecoParaAtualizar));
         when(repository.save(any(Endereco.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -196,7 +220,7 @@ class EnderecoServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("Novo Complemento", resultado.getComplemento());
-        verify(repository).findById(requestPatchComplemento.getId());
+        verify(repository).findById(requestPatchComplemento.getIdEndereco());
         verify(repository).save(any(Endereco.class));
     }
 
@@ -261,7 +285,7 @@ class EnderecoServiceTest {
         enderecoParaAtualizar.setLogradouro("Av. Brigadeiro Faria Lima");
         enderecoParaAtualizar.setNumero(1571);
 
-        when(repository.findById(requestPutEndereco.getId())).thenReturn(Optional.of(enderecoParaAtualizar));
+        when(repository.findById(requestPutEndereco.getIdEndereco())).thenReturn(Optional.of(enderecoParaAtualizar));
         when(repository.save(any(Endereco.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -272,7 +296,7 @@ class EnderecoServiceTest {
         assertEquals("04538133", resultado.getCep());
         assertEquals("Av. Brigadeiro Faria Lima", resultado.getLogradouro());
         assertEquals(1571, resultado.getNumero());
-        verify(repository).findById(requestPutEndereco.getId());
+        verify(repository).findById(requestPutEndereco.getIdEndereco());
         verify(repository).save(any(Endereco.class));
     }
 

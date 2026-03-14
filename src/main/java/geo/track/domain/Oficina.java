@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties({"oficinaLista", "handler", "hibernateLazyInitializer"})
 @Table(name = "oficinas")
-public class Oficinas {
+public class Oficina {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

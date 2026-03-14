@@ -22,8 +22,8 @@ public class ItemProdutoMapper {
         response.setQuantidade(entity.getQuantidade());
         response.setPrecoPeca(entity.getPrecoPeca());
         response.setBaixado(entity.getBaixado());
+        response.setVisivelOrcamento(entity.getFkPeca().getVisivelOrcamento());
 
-        // Safe access to nested properties
         Optional.ofNullable(entity.getFkPeca())
                 .map(Produto::getIdProduto)
                 .ifPresent(response::setIdPeca);
@@ -54,7 +54,7 @@ public class ItemProdutoMapper {
         // Safe access to nested properties
         Optional.ofNullable(entity.getFkPeca()).ifPresent(fkPeca -> {
             response.setNomeProduto(fkPeca.getNome());
-            response.setViavelOrcamento(fkPeca.getViavelOrcamento());
+            response.setVisivelOrcamento(fkPeca.getVisivelOrcamento());
             response.setPrecoCompra(fkPeca.getPrecoCompra());
             response.setPrecoVenda(fkPeca.getPrecoVenda());
         });

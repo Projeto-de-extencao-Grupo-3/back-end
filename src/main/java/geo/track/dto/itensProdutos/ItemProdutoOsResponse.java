@@ -11,7 +11,7 @@ public class ItemProdutoOsResponse {
 
     // Campos de Produto
     private String nomeProduto;
-    private Boolean viavelOrcamento;
+    private Boolean visivelOrcamento;
     private Double precoCompra;
     private Double precoVenda;
 }

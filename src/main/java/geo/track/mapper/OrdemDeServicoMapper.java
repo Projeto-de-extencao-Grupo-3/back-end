@@ -8,8 +8,12 @@ import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.os.response.CardOrdemDeServicoResponse;
 import geo.track.dto.os.response.OrdemDeServicoResponse;
-import geo.track.dto.os.response.ServicoProdutoOrdemResponse;
+import geo.track.dto.os.response.ResumoOrdemServicoResponse;
+import geo.track.dto.os.response.TelaOrdemServicoResponse;
+import geo.track.dto.veiculos.response.VeiculoResponse;
+import geo.track.enums.os.StatusVeiculo;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,15 +71,47 @@ public class OrdemDeServicoMapper {
                 .collect(Collectors.toList());
     }
 
-    public static ServicoProdutoOrdemResponse toServicoProdutoResponse(OrdemDeServico entity) {
+    public static TelaOrdemServicoResponse toTelaOrdemServicoResponse(OrdemDeServico entity) {
         if (entity == null) {
             return null;
         }
 
+        Integer idOrdemServico = entity.getIdOrdemServico();
+        ClienteResponse cliente = ClientesMapper.toResponse(entity.getFkEntrada().getFkVeiculo().getFkCliente());
+        VeiculoResponse veiculo = VeiculoMapper.toResponse(entity.getFkEntrada().getFkVeiculo());
+        StatusVeiculo status = entity.getStatus();
+
+        LocalDate dataEntradaPrevista = entity.getFkEntrada().getDataEntradaPrevista();
+        LocalDate dataEntradaEfetiva = entity.getFkEntrada().getDataEntradaEfetiva();
+        LocalDate dataSaidaPrevista = entity.getDataSaidaPrevista();
+        LocalDate dataSaidaEfetiva = entity.getDataSaidaEfetiva();
+
+        ResumoOrdemServicoResponse resumo = OrdemDeServicoMapper.toResumo(entity);
+
         List<ItemServicoResponse> servicos = entity.getServicos().stream().map(ItemServicoMapper::toResponse).toList();
         List<ItemProdutoResponse> produtos = entity.getProdutos().stream().map(ItemProdutoMapper::toResponse).toList();
 
-        return new ServicoProdutoOrdemResponse(servicos, produtos);
+        return new TelaOrdemServicoResponse(idOrdemServico, status, cliente, veiculo, dataEntradaPrevista, dataEntradaEfetiva, dataSaidaPrevista, dataSaidaEfetiva, resumo, servicos, produtos);
+    }
+
+    private static ResumoOrdemServicoResponse toResumo(OrdemDeServico entity) {
+        Double totalServicos = entity.getServicos().stream()
+                .mapToDouble(ItemServico::getPrecoCobrado)
+                .sum();
+
+        Double totalProdutos = entity.getProdutos().stream()
+                .mapToDouble(p -> p.getPrecoPeca() * p.getQuantidade())
+                .sum();
+
+        Double totalGeral = totalServicos + totalProdutos;
+
+        Integer produtosSaidaEstoqueRealizada = entity.getProdutos().stream().filter(ItemProduto::getBaixado).toList().size();
+        Integer produtosSaidaEstoquePendente = entity.getProdutos().stream().filter(p -> !p.getBaixado()).toList().size();
+
+        Boolean pagamentoRealizado = entity.getPagtRealizado();
+        Boolean notaFiscalRealizada = entity.getNfRealizada();
+
+        return new ResumoOrdemServicoResponse(totalGeral, totalServicos, totalProdutos, produtosSaidaEstoqueRealizada, produtosSaidaEstoquePendente, pagamentoRealizado, notaFiscalRealizada    );
     }
 
     public static List<CardOrdemDeServicoResponse> toCard(List<OrdemDeServico> ordem) {

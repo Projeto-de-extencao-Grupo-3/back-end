@@ -48,8 +48,14 @@ public class Produto {
     private Integer quantidadeEstoque;
 
     @NotNull
+<<<<<<< HEAD
     @Schema(description = "Visibilidade de item em Orçamento", example = "true")
     private Boolean viavelOrcamento;
+=======
+    @Positive
+    @Schema(description = "Visibilidade de item em Orçamento", example = "45")
+    private Boolean visivelOrcamento;
+>>>>>>> main
 
     @OneToMany(mappedBy = "fkPeca")
     @Schema(description = "Lista de produtos associados à uma lista de produtos")

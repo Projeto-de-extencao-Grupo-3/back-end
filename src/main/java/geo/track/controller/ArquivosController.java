@@ -1,102 +1,89 @@
 package geo.track.controller;
 
+import geo.track.config.rabbitMQ.RabbitMQConfig;
+import geo.track.domain.Arquivo;
 import geo.track.domain.OrdemDeServico;
-import geo.track.dto.arquivos.RequestGetArquivoOrcamento;
+import geo.track.dto.arquivos.ArquivoResponse;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
-import geo.track.exception.BadRequestException;
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.enums.Formato;
+import geo.track.enums.StatusArquivo;
+import geo.track.enums.Template;
+import geo.track.exception.AcceptedException;
+import geo.track.exception.DataNotFoundException;
+import geo.track.exception.ServiceUnavailableException;
+import geo.track.exception.constraint.message.ArquivoExceptionMessages;
+import geo.track.exception.constraint.message.Domains;
+import geo.track.gateway.GatewayExporData;
+import geo.track.mapper.ArquivoMapper;
 import geo.track.mapper.OrdemDeServicoMapper;
-import geo.track.gateway.GatewayExportData;
+import geo.track.repository.ArquivoRepository;
 import geo.track.service.OrdemDeServicoService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/arquivos")
-public class ArquivosController{
-    private final GatewayExportData GATEWAY_EXPORT_DATA;
+public class ArquivosController {
+    private final GatewayExporData GATEWAY_EXPORT_DATA_RABBIT_MQ;
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
+    private final ArquivoRepository ARQUIVO_REPOSITORY;
 
-    @GetMapping("/orcamento/{idOrcamento}")
+    @PostMapping("/ordem_servico/{idOrcamento}")
     public ResponseEntity<byte[]> post(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token, @PathVariable Integer idOrcamento) {
         Integer idUsuario = usuario.getIdOficina();
         OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrcamento, idUsuario);
 
-        byte[] pdfContent = GATEWAY_EXPORT_DATA.getArquivoOrcamento(token, OrdemDeServicoMapper.toResponse(orcamento));
+        if (!ARQUIVO_REPOSITORY.existsByFkOrdemServicoAndTemplate(orcamento.getIdOrdemServico(), Template.ORDEM_SERVICO)) ARQUIVO_REPOSITORY.save(Arquivo.builder().formato(Formato.PDF).fkOrdemServico(orcamento.getIdOrdemServico()).template(Template.ORDEM_SERVICO).status(StatusArquivo.A_FAZER).build());
+        Boolean sucess = GATEWAY_EXPORT_DATA_RABBIT_MQ.solicitarArquivo(OrdemDeServicoMapper.toResponse(orcamento), RabbitMQConfig.ROUTING_KEY_ORDEM_SERVICO);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-
-        StringBuilder nome = new StringBuilder();
-        String[] nomeCompleto = orcamento.getFkEntrada().getFkVeiculo().getFkCliente().getNome().toUpperCase().split(" ");
-        for (String palavra : nomeCompleto) {
-            nome.append(String.format("%s_", palavra));
+        if (!sucess) {
+            throw new ServiceUnavailableException(Domains.ARQUIVO, ArquivoExceptionMessages.INDISPONIBILIDADE_SERVICO);
         }
-        DecimalFormat df = new DecimalFormat("0000");
-        headers.setContentDispositionFormData("attachment", String.format("ORC%s_%s%s.pdf", df.format(orcamento.getIdOrdemServico()), nome, orcamento.getFkEntrada().getFkVeiculo().getPlaca()));
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(pdfContent);
+        return ResponseEntity.status(201)
+                .body(null);
     }
 
-    @GetMapping("/ordem_servico/{idOrdemServico}")
-    public ResponseEntity<byte[]> posta(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token,@PathVariable Integer idOrdemServico) {
-        Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdemServico, idOficina);
+    @PostMapping("/orcamento/{idOrcamento}")
+    public ResponseEntity<byte[]> postC(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token, @PathVariable Integer idOrcamento) {
+        Integer idUsuario = usuario.getIdOficina();
+        OrdemDeServico orcamento = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrcamento, idUsuario);
 
-        if (orcamento.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", EnumDomains.ORDEM_DE_SERVICO);
-        if (orcamento.getDataSaidaEfetiva() == null) orcamento.setDataSaidaEfetiva(LocalDate.now());
+        if (!ARQUIVO_REPOSITORY.existsByFkOrdemServicoAndTemplate(orcamento.getIdOrdemServico(), Template.ORCAMENTO)) ARQUIVO_REPOSITORY.save(Arquivo.builder().formato(Formato.PDF).fkOrdemServico(orcamento.getIdOrdemServico()).template(Template.ORCAMENTO).status(StatusArquivo.A_FAZER).build());
+        Boolean sucess = GATEWAY_EXPORT_DATA_RABBIT_MQ.solicitarArquivo(OrdemDeServicoMapper.toResponse(orcamento), RabbitMQConfig.ROUTING_KEY_ORCAMENTO);
 
-        byte[] pdfContent = GATEWAY_EXPORT_DATA.getArquivoOrdemServico(token, OrdemDeServicoMapper.toResponse(orcamento));
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-
-        StringBuilder nome = new StringBuilder();
-        String[] nomeCompleto = orcamento.getFkEntrada().getFkVeiculo().getFkCliente().getNome().toUpperCase().split(" ");
-        for (String palavra : nomeCompleto) {
-            nome.append(String.format("%s_", palavra));
+        if (!sucess) {
+            throw new ServiceUnavailableException(Domains.ARQUIVO, ArquivoExceptionMessages.INDISPONIBILIDADE_SERVICO);
         }
-        DecimalFormat df = new DecimalFormat("0000");
-        headers.setContentDispositionFormData("attachment", String.format("OS%s_%s%s.pdf", df.format(orcamento.getIdOrdemServico()), nome, orcamento.getFkEntrada().getFkVeiculo().getPlaca()));
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(pdfContent);
+        return ResponseEntity.status(201)
+                .body(null);
     }
 
-    @GetMapping("/ordem_servico_csv/{idOrdemServico}")
-    public ResponseEntity<byte[]> poste(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token,@PathVariable Integer idOrdemServico) {
-        Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico ordemDeServico = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdemServico, idOficina);
+    @GetMapping("/orcamento/{idOrcamento}")
+    public ResponseEntity<ArquivoResponse> get(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token, @PathVariable Integer idOrcamento) {
+        Arquivo arquivo = ARQUIVO_REPOSITORY.findByFkOrdemServicoAndTemplate(idOrcamento, Template.ORCAMENTO).orElseThrow(() -> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
 
-        if (ordemDeServico.getServicos().isEmpty()) throw new BadRequestException("Este orçamento não possui serviços", EnumDomains.ORDEM_DE_SERVICO);
-
-        byte[] csvContent = GATEWAY_EXPORT_DATA.getCsvOrdemServico(token, OrdemDeServicoMapper.toResponse(ordemDeServico));
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-
-        StringBuilder nome = new StringBuilder();
-        String[] nomeCompleto = ordemDeServico.getFkEntrada().getFkVeiculo().getFkCliente().getNome().toUpperCase().split(" ");
-        for (String palavra : nomeCompleto) {
-            nome.append(String.format("%s_", palavra));
+        if (!arquivo.getStatus().equals(StatusArquivo.CONCLUIDO)) {
+            throw new AcceptedException(ArquivoExceptionMessages.ARQUIVO_NAO_CONCLUIDO, Domains.ARQUIVO);
         }
-        DecimalFormat df = new DecimalFormat("0000");
-        headers.setContentDispositionFormData("attachment", String.format("OS%s_%s%s.pdf", df.format(ordemDeServico.getIdOrdemServico()), nome, ordemDeServico.getFkEntrada().getFkVeiculo().getPlaca()));
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(csvContent);
+        return ResponseEntity.status(200)
+                .body(ArquivoMapper.toResponse(arquivo));
+    }
+
+    @GetMapping("/ordem_servico/{idOrcamento}")
+    public ResponseEntity<ArquivoResponse> getB(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestHeader("authorization") String token, @PathVariable Integer idOrcamento) {
+        Arquivo arquivo = ARQUIVO_REPOSITORY.findByFkOrdemServicoAndTemplate(idOrcamento, Template.ORDEM_SERVICO).orElseThrow(() -> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
+
+        if (!arquivo.getStatus().equals(StatusArquivo.CONCLUIDO)) {
+            throw new AcceptedException(ArquivoExceptionMessages.ARQUIVO_NAO_CONCLUIDO, Domains.ARQUIVO);
+        }
+
+        return ResponseEntity.status(200)
+                .body(ArquivoMapper.toResponse(arquivo));
     }
 }

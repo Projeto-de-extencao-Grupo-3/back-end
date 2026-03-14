@@ -5,6 +5,8 @@ import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.exception.DataNotFoundException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.ProdutoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +31,9 @@ class ProdutoServiceTest {
     @Mock
     private ProdutoRepository repository;
 
+    @Mock
+    private LogImplementation log;
+
     @InjectMocks
     private ProdutoService service;
 
@@ -48,8 +53,8 @@ class ProdutoServiceTest {
         produto.setPrecoVenda(30.00);
 
         patchQtdEstoque = new RequestPatchQtdEstoque(1, 50);
-        patchPrecoCompra = new RequestPatchPrecoCompra(1, 18.00);
-        patchPrecoVenda = new RequestPatchPrecoVenda(1, 30.00);
+        patchPrecoCompra = new RequestPatchPrecoCompra(1, 20.00); // Ajuste: Alinhado com o valor esperado no teste (20.0)
+        patchPrecoVenda = new RequestPatchPrecoVenda(1, 35.00); // Ajuste: Alinhado com o valor esperado no teste (35.0)
     }
 
     // ===== cadastrar =====
@@ -136,10 +141,11 @@ class ProdutoServiceTest {
     @DisplayName("putProdutos: Deve atualizar produto com sucesso quando existe")
     void testPutProdutos() {
         // Arrange
-        Produto produtoAtualizado = produto;
+        Produto produtoAtualizado = new Produto();
+        produtoAtualizado.setIdProduto(1);
         produtoAtualizado.setNome("Filtro de Óleo Sintético");
         produtoAtualizado.setPrecoVenda(35.00);
-
+        
         when(repository.existsById(1)).thenReturn(true);
         when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -173,10 +179,8 @@ class ProdutoServiceTest {
     @DisplayName("patchQtdEstoque: Deve atualizar quantidade em estoque com sucesso")
     void testPatchQtdEstoque() {
         // Arrange
-        Produto produtoParaAtualizar = produto;
-        produtoParaAtualizar.setQuantidadeEstoque(50);
-
-        when(repository.findById(patchQtdEstoque.getId())).thenReturn(Optional.of(produtoParaAtualizar));
+        // Mock precisa retornar o produto original antes da alteração
+        when(repository.findById(patchQtdEstoque.getId())).thenReturn(Optional.of(produto));
         when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -208,10 +212,9 @@ class ProdutoServiceTest {
     @DisplayName("patchPrecoCompra: Deve atualizar preço de compra com sucesso")
     void testPatchPrecoCompra() {
         // Arrange
-        Produto produtoParaAtualizar = produto;
-        produtoParaAtualizar.setPrecoCompra(20.00);
-
-        when(repository.findById(patchPrecoCompra.getId())).thenReturn(Optional.of(produtoParaAtualizar));
+        // Importante: No teste, 'produto' tem preço 18.0. 'patchPrecoCompra' tem 20.0 (corrigido no setUp).
+        // O service recupera o 'produto', atualiza com o valor do 'patch', e salva.
+        when(repository.findById(patchPrecoCompra.getId())).thenReturn(Optional.of(produto));
         when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -243,10 +246,8 @@ class ProdutoServiceTest {
     @DisplayName("patchPrecoVenda: Deve atualizar preço de venda com sucesso")
     void testPatchPrecoVenda() {
         // Arrange
-        Produto produtoParaAtualizar = produto;
-        produtoParaAtualizar.setPrecoVenda(35.00);
-
-        when(repository.findById(patchPrecoVenda.getId())).thenReturn(Optional.of(produtoParaAtualizar));
+        // Importante: No teste, 'produto' tem preço 30.0. 'patchPrecoVenda' tem 35.0 (corrigido no setUp).
+        when(repository.findById(patchPrecoVenda.getId())).thenReturn(Optional.of(produto));
         when(repository.save(any(Produto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act

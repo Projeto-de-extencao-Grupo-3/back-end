@@ -1,10 +1,14 @@
 package geo.track.service;
 
+import geo.track.domain.OrdemDeServico;
 import geo.track.domain.RegistroEntrada;
 import geo.track.domain.Veiculo;
+import geo.track.dto.os.request.PostEntradaVeiculo;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.RegistroEntradaRepository;
 import geo.track.repository.VeiculoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +36,13 @@ class RegistroEntradaServiceTest {
     private RegistroEntradaRepository repository;
 
     @Mock
+    private LogImplementation log;
+
+    @Mock
     private VeiculoService veiculoService;
+    
+    @Mock
+    private OrdemDeServicoService ordemDeServicoService; // Mock adicionado
 
     @Mock
     private OrdemDeServicoService ORDEM_SERVICO_SERVICE;
@@ -73,11 +83,17 @@ class RegistroEntradaServiceTest {
     void testRealizarAgendamentoVeiculo() {
         // Arrange
         when(veiculoService.findVeiculoById(1)).thenReturn(veiculo);
+        
+        // Simula o salvamento e retorna o objeto com ID
         when(repository.save(any(RegistroEntrada.class))).thenAnswer(invocation -> {
             RegistroEntrada re = invocation.getArgument(0);
-            re.setIdRegistroEntrada(1);
+            if(re.getIdRegistroEntrada() == null) re.setIdRegistroEntrada(1);
             return re;
         });
+        
+        // Mock do serviço de OS que estava faltando
+        when(ordemDeServicoService.cadastrarOrdemServico(any(PostEntradaVeiculo.class)))
+                .thenReturn(new OrdemDeServico());
 
         // Act
         RegistroEntrada resultado = service.realizarAgendamentoVeiculo(postRegistroEntrada);
@@ -86,13 +102,15 @@ class RegistroEntradaServiceTest {
         assertNotNull(resultado);
         assertEquals(LocalDate.now().plusDays(1), resultado.getDataEntradaPrevista());
         verify(veiculoService).findVeiculoById(1);
-        verify(repository).save(any(RegistroEntrada.class));
+        // O método realizarAgendamentoVeiculo chama save duas vezes: uma para criar e outra para atualizar com a OS
+        verify(repository, times(2)).save(any(RegistroEntrada.class));
+        verify(ordemDeServicoService).cadastrarOrdemServico(any(PostEntradaVeiculo.class));
     }
 
-    // ===== findRegistros =====
+    // ===== listarEntradas =====
     @Test
-    @DisplayName("findRegistros: Deve retornar lista de registros quando existem")
-    void testFindRegistrosComResultados() {
+    @DisplayName("listarEntradas: Deve retornar lista de registros quando existem")
+    void testListarEntradasComResultados() {
         // Arrange
         when(repository.findAll()).thenReturn(List.of(registroEntrada));
 
@@ -107,8 +125,8 @@ class RegistroEntradaServiceTest {
     }
 
     @Test
-    @DisplayName("findRegistros: Deve retornar lista vazia quando não existem registros")
-    void testFindRegistrosSemResultados() {
+    @DisplayName("listarEntradas: Deve retornar lista vazia quando não existem registros")
+    void testListarEntradasSemResultados() {
         // Arrange
         when(repository.findAll()).thenReturn(List.of());
 
@@ -121,10 +139,10 @@ class RegistroEntradaServiceTest {
         verify(repository).findAll();
     }
 
-    // ===== findRegistroById =====
+    // ===== buscarEntradaPorId =====
     @Test
-    @DisplayName("findRegistroById: Deve encontrar registro por ID com sucesso")
-    void testFindRegistroById() {
+    @DisplayName("buscarEntradaPorId: Deve encontrar registro por ID com sucesso")
+    void testBuscarEntradaPorId() {
         // Arrange
         when(repository.findById(1)).thenReturn(Optional.of(registroEntrada));
 
@@ -138,8 +156,8 @@ class RegistroEntradaServiceTest {
     }
 
     @Test
-    @DisplayName("findRegistroById: Deve lançar DataNotFoundException quando ID não existe")
-    void testFindRegistroById_NaoEncontrado() {
+    @DisplayName("buscarEntradaPorId: Deve lançar DataNotFoundException quando ID não existe")
+    void testBuscarEntradaPorId_NaoEncontrado() {
         // Arrange
         when(repository.findById(999)).thenReturn(Optional.empty());
 
@@ -150,10 +168,10 @@ class RegistroEntradaServiceTest {
         verify(repository).findById(999);
     }
 
-    // ===== putRegistro =====
+    // ===== atualizarEntradaVeiculoAgendado =====
     @Test
-    @DisplayName("putRegistro: Deve atualizar registro com sucesso quando existe")
-    void testPutRegistro() {
+    @DisplayName("atualizarEntradaVeiculoAgendado: Deve atualizar registro com sucesso quando existe")
+    void testAtualizarEntradaVeiculoAgendado() {
         // Arrange
         RegistroEntrada registroParaAtualizar = registroEntrada;
         registroParaAtualizar.setResponsavel("João Responsável");
@@ -163,7 +181,7 @@ class RegistroEntradaServiceTest {
         when(repository.save(any(RegistroEntrada.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        RegistroEntrada resultado = service.putRegistro(putRegistroEntrada);
+        RegistroEntrada resultado = service.atualizarEntradaVeiculoAgendado(putRegistroEntrada);
 
         // Assert
         assertNotNull(resultado);
@@ -174,8 +192,8 @@ class RegistroEntradaServiceTest {
     }
 
     @Test
-    @DisplayName("putRegistro: Deve lançar DataNotFoundException quando registro não existe")
-    void testPutRegistro_NaoEncontrado() {
+    @DisplayName("atualizarEntradaVeiculoAgendado: Deve lançar DataNotFoundException quando registro não existe")
+    void testAtualizarEntradaVeiculoAgendado_NaoEncontrado() {
         // Arrange
         when(repository.findById(999)).thenReturn(Optional.empty());
         RequestPutRegistroEntrada requestComIdInvalido = new RequestPutRegistroEntrada(
@@ -184,16 +202,16 @@ class RegistroEntradaServiceTest {
 
         // Act & Assert
         assertThrows(DataNotFoundException.class,
-            () -> service.putRegistro(requestComIdInvalido));
+            () -> service.atualizarEntradaVeiculoAgendado(requestComIdInvalido));
 
         verify(repository).findById(999);
         verify(repository, never()).save(any(RegistroEntrada.class));
     }
 
-    // ===== deletarRegistro =====
+    // ===== deletarEntrada =====
     @Test
-    @DisplayName("deletarRegistro: Deve deletar registro com sucesso quando existe")
-    void testDeletarRegistro() {
+    @DisplayName("deletarEntrada: Deve deletar registro com sucesso quando existe")
+    void testDeletarEntrada() {
         // Arrange
         when(repository.existsById(1)).thenReturn(true);
         doNothing().when(repository).deleteById(1);
@@ -207,8 +225,8 @@ class RegistroEntradaServiceTest {
     }
 
     @Test
-    @DisplayName("deletarRegistro: Deve lançar DataNotFoundException quando registro não existe")
-    void testDeletarRegistro_NaoEncontrado() {
+    @DisplayName("deletarEntrada: Deve lançar DataNotFoundException quando registro não existe")
+    void testDeletarEntrada_NaoEncontrado() {
         // Arrange
         when(repository.existsById(999)).thenReturn(false);
 

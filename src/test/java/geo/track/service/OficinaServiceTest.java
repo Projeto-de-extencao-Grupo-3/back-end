@@ -1,11 +1,17 @@
 package geo.track.service;
 
-import geo.track.domain.Oficinas;
+import geo.track.domain.Funcionario;
+import geo.track.domain.Oficina;
 import geo.track.config.GerenciadorTokenJwt;
+import geo.track.dto.autenticacao.UsuarioLoginDto;
+import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
+import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +20,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -32,19 +42,31 @@ class OficinaServiceTest {
     private OficinaRepository repository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private LogImplementation log;
+
+    @Mock
+    private PasswordEncoder passwordEncoder; // This mock is not used in OficinaService, but was present in FuncionarioServiceTest
+    @Mock
+    private GerenciadorTokenJwt gerenciadorTokenJwt;
+    @Mock
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private FuncionarioRepository funcionarioRepository;
+
 
     @InjectMocks
     private OficinaService service;
 
-    private Oficinas oficina;
+    private Oficina oficina;
     private OficinaPatchEmailDTO patchEmailDTO;
     private OficinaPatchStatusDTO patchStatusDTO;
+    private UsuarioLoginDto usuarioLoginDto;
+    private Funcionario funcionario;
 
     @BeforeEach
     void setUp() {
         // Arrange: Preparar Entidade
-        oficina = new Oficinas();
+        oficina = new Oficina();
         oficina.setIdOficina(1);
         oficina.setRazaoSocial("Oficina do Zé");
         oficina.setCnpj("12345678000199");
@@ -53,6 +75,15 @@ class OficinaServiceTest {
 
         patchEmailDTO = new OficinaPatchEmailDTO(1, "novo.email@oficinadoze.com");
         patchStatusDTO = new OficinaPatchStatusDTO(1, false);
+
+        usuarioLoginDto = new UsuarioLoginDto("test@example.com", "password");
+
+        funcionario = new Funcionario();
+        funcionario.setIdFuncionario(1);
+        funcionario.setEmail("test@example.com");
+        funcionario.setSenha("encodedPassword");
+        funcionario.setNome("Test User");
+        funcionario.setFkOficina(oficina);
     }
 
     // ===== cadastrar =====
@@ -61,16 +92,16 @@ class OficinaServiceTest {
     void testCadastrarOficinaComSucesso() {
         // Arrange
         when(repository.findByCnpj(oficina.getCnpj())).thenReturn(Optional.empty());
-        when(repository.save(any(Oficinas.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(repository.save(any(Oficina.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Oficinas resultado = service.cadastrar(oficina);
+        Oficina resultado = service.cadastrar(oficina);
 
         // Assert
         assertNotNull(resultado);
         assertEquals("Oficina do Zé", resultado.getRazaoSocial());
         verify(repository).findByCnpj(oficina.getCnpj());
-        verify(repository).save(any(Oficinas.class));
+        verify(repository).save(any(Oficina.class));
     }
 
     @Test
@@ -85,8 +116,61 @@ class OficinaServiceTest {
 
         assertTrue(exception.getMessage().contains("O CNPJ"));
         verify(repository).findByCnpj(oficina.getCnpj());
-        verify(passwordEncoder, never()).encode(anyString());
-        verify(repository, never()).save(any(Oficinas.class));
+        verify(repository, never()).save(any(Oficina.class));
+    }
+
+    // ===== autenticar =====
+    @Test
+    @DisplayName("autenticar: Deve autenticar usuário com sucesso e retornar token")
+    void testAutenticarComSucesso() {
+        // Arrange
+        Authentication authentication = mock(Authentication.class);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(funcionarioRepository.findByEmail(usuarioLoginDto.getEmail())).thenReturn(Optional.of(funcionario));
+        when(gerenciadorTokenJwt.generateToken(authentication, funcionario)).thenReturn("mocked-jwt-token");
+
+        // Act
+        UsuarioTokenDto resultado = service.autenticar(usuarioLoginDto);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals("mocked-jwt-token", resultado.getToken());
+        assertEquals(funcionario.getEmail(), resultado.getEmail());
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(funcionarioRepository).findByEmail(usuarioLoginDto.getEmail());
+        verify(gerenciadorTokenJwt).generateToken(authentication, funcionario);
+    }
+
+    @Test
+    @DisplayName("autenticar: Deve lançar BadCredentialsException para credenciais inválidas")
+    void testAutenticarComCredenciaisInvalidas() {
+        // Arrange
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException("Credenciais inválidas"));
+
+        // Act & Assert
+        assertThrows(BadCredentialsException.class, () -> service.autenticar(usuarioLoginDto));
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(funcionarioRepository, never()).findByEmail(anyString());
+        verify(gerenciadorTokenJwt, never()).generateToken(any(), any());
+    }
+
+    @Test
+    @DisplayName("autenticar: Deve lançar DataNotFoundException se funcionário não encontrado após autenticação")
+    void testAutenticarFuncionarioNaoEncontradoAposAutenticacao() {
+        // Arrange
+        Authentication authentication = mock(Authentication.class);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(funcionarioRepository.findByEmail(usuarioLoginDto.getEmail())).thenReturn(Optional.empty());
+
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+                () -> service.autenticar(usuarioLoginDto));
+
+        assertEquals("Email do usuário não cadastrado", exception.getMessage());
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(funcionarioRepository).findByEmail(usuarioLoginDto.getEmail());
+        verify(gerenciadorTokenJwt, never()).generateToken(any(), any());
     }
 
     // ===== listar =====
@@ -97,7 +181,7 @@ class OficinaServiceTest {
         when(repository.findAll()).thenReturn(List.of(oficina));
 
         // Act
-        List<Oficinas> resultado = service.listar();
+        List<Oficina> resultado = service.listar();
 
         // Assert
         assertNotNull(resultado);
@@ -113,7 +197,7 @@ class OficinaServiceTest {
         when(repository.findAll()).thenReturn(List.of());
 
         // Act
-        List<Oficinas> resultado = service.listar();
+        List<Oficina> resultado = service.listar();
 
         // Assert
         assertNotNull(resultado);
@@ -129,7 +213,7 @@ class OficinaServiceTest {
         when(repository.findById(1)).thenReturn(Optional.of(oficina));
 
         // Act
-        Oficinas resultado = service.findOficinasById(1);
+        Oficina resultado = service.findOficinasById(1);
 
         // Assert
         assertNotNull(resultado);
@@ -160,7 +244,7 @@ class OficinaServiceTest {
         when(repository.findByrazaoSocialContainingIgnoreCase(razaoSocial)).thenReturn(List.of(oficina));
 
         // Act
-        List<Oficinas> resultado = service.findOficinasByRazaoSocial(razaoSocial);
+        List<Oficina> resultado = service.findOficinasByRazaoSocial(razaoSocial);
 
         // Assert
         assertNotNull(resultado);
@@ -175,7 +259,7 @@ class OficinaServiceTest {
         when(repository.findByrazaoSocialContainingIgnoreCase("Inexistente")).thenReturn(List.of());
 
         // Act
-        List<Oficinas> resultado = service.findOficinasByRazaoSocial("Inexistente");
+        List<Oficina> resultado = service.findOficinasByRazaoSocial("Inexistente");
 
         // Assert
         assertNotNull(resultado);
@@ -192,7 +276,7 @@ class OficinaServiceTest {
         when(repository.findByCnpj(cnpj)).thenReturn(Optional.of(oficina));
 
         // Act
-        Oficinas resultado = service.findOficinasByCnpj(cnpj);
+        Oficina resultado = service.findOficinasByCnpj(cnpj);
 
         // Assert
         assertNotNull(resultado);
@@ -218,20 +302,20 @@ class OficinaServiceTest {
     @DisplayName("atualizar: Deve atualizar oficina com sucesso quando existe")
     void testAtualizarOficina() {
         // Arrange
-        Oficinas oficinaParaAtualizar = oficina;
+        Oficina oficinaParaAtualizar = oficina;
         oficinaParaAtualizar.setRazaoSocial("Oficina Atualizada");
 
         when(repository.existsById(1)).thenReturn(true);
-        when(repository.save(any(Oficinas.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(repository.save(any(Oficina.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Oficinas resultado = service.atualizar(1, oficinaParaAtualizar);
+        Oficina resultado = service.atualizar(1, oficinaParaAtualizar);
 
         // Assert
         assertNotNull(resultado);
         assertEquals("Oficina Atualizada", resultado.getRazaoSocial());
         verify(repository).existsById(1);
-        verify(repository).save(any(Oficinas.class));
+        verify(repository).save(any(Oficina.class));
     }
 
     @Test
@@ -245,7 +329,7 @@ class OficinaServiceTest {
             () -> service.atualizar(999, oficina));
 
         verify(repository).existsById(999);
-        verify(repository, never()).save(any(Oficinas.class));
+        verify(repository, never()).save(any(Oficina.class));
     }
 
     // ===== patchEmail =====
@@ -253,20 +337,24 @@ class OficinaServiceTest {
     @DisplayName("patchEmail: Deve atualizar email da oficina com sucesso")
     void testPatchEmail() {
         // Arrange
-        Oficinas oficinaParaAtualizar = oficina;
+        Oficina oficinaParaAtualizar = oficina;
         oficinaParaAtualizar.setEmail("novo.email@oficinadoze.com");
 
         when(repository.findById(patchEmailDTO.getId())).thenReturn(Optional.of(oficinaParaAtualizar));
-        when(repository.save(any(Oficinas.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(repository.save(any(Oficina.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Oficinas resultado = service.patchEmail(patchEmailDTO);
+        Oficina resultado = service.patchEmail(patchEmailDTO);
 
         // Assert
         assertNotNull(resultado);
+<<<<<<< HEAD
         assertEquals("novo.email@oficinadoze.com", resultado.getEmail());
+=======
+        assertEquals("novo.email@oficinadoze.com", resultado.getEmail()); // Fixed typo here
+>>>>>>> main
         verify(repository).findById(patchEmailDTO.getId());
-        verify(repository).save(any(Oficinas.class));
+        verify(repository).save(any(Oficina.class));
     }
 
     @Test
@@ -280,7 +368,7 @@ class OficinaServiceTest {
             () -> service.patchEmail(new OficinaPatchEmailDTO(999, "novo@email.com")));
 
         verify(repository).findById(999);
-        verify(repository, never()).save(any(Oficinas.class));
+        verify(repository, never()).save(any(Oficina.class));
     }
 
     // ===== patchStatus =====
@@ -288,20 +376,20 @@ class OficinaServiceTest {
     @DisplayName("patchStatus: Deve atualizar status da oficina com sucesso")
     void testPatchStatus() {
         // Arrange
-        Oficinas oficinaParaAtualizar = oficina;
+        Oficina oficinaParaAtualizar = oficina;
         oficinaParaAtualizar.setStatus(true);
 
         when(repository.findById(patchStatusDTO.getId())).thenReturn(Optional.of(oficinaParaAtualizar));
-        when(repository.save(any(Oficinas.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(repository.save(any(Oficina.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Oficinas resultado = service.patchStatus(patchStatusDTO);
+        Oficina resultado = service.patchStatus(patchStatusDTO);
 
         // Assert
         assertNotNull(resultado);
         assertFalse(resultado.getStatus());
         verify(repository).findById(patchStatusDTO.getId());
-        verify(repository).save(any(Oficinas.class));
+        verify(repository).save(any(Oficina.class));
     }
 
     @Test
@@ -315,7 +403,7 @@ class OficinaServiceTest {
             () -> service.patchStatus(new OficinaPatchStatusDTO(999, true)));
 
         verify(repository).findById(999);
-        verify(repository, never()).save(any(Oficinas.class));
+        verify(repository, never()).save(any(Oficina.class));
     }
 
     // ===== remover =====

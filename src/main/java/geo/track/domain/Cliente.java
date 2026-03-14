@@ -61,7 +61,7 @@ public class Cliente {
     @ManyToOne
     @JoinColumn(name = "fk_oficina")
     @Schema(description = "Oficina associada a este cliente") // Adicionado
-    private Oficinas fkOficina;
+    private Oficina fkOficina;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_endereco")
@@ -73,7 +73,7 @@ public class Cliente {
     @Schema(description = "Lista de veículos pertencentes a este cliente") // Adicionado
     private List<Veiculo> veiculos;
 
-    public Cliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, TipoCliente tipoCliente, Oficinas fkOficina, Endereco fkEndereco) {
+    public Cliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, TipoCliente tipoCliente, Oficina fkOficina, Endereco fkEndereco) {
         this.idCliente = idCliente;
         this.nome = nome;
         this.cpfCnpj = cpfCnpj;

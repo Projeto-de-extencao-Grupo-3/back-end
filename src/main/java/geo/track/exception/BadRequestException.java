@@ -1,11 +1,11 @@
 package geo.track.exception;
 
-import geo.track.exception.constraint.message.EnumDomains;
+import geo.track.exception.constraint.message.Domains;
 
 public class BadRequestException extends RuntimeException {
     private String domain;
 
-    public BadRequestException(String message, EnumDomains domain) {
+    public BadRequestException(String message, Domains domain) {
         super(message);
         this.domain = domain.toString();
     }
