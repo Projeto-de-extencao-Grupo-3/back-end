@@ -1,5 +1,7 @@
 package geo.track.exception.handler;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.google.common.base.CaseFormat;
 import geo.track.exception.*;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.log.Log;
@@ -98,8 +100,9 @@ public class GlobalExceptionHandler {
         String mensagem = "O corpo da requisição possui campos inválidos";
         List<InvalidField> camposInvalidos = e.getFieldErrors().stream().map(f -> {
             String rejectValue = f.getRejectedValue() == null ? "" : f.getRejectedValue().toString();
+            String field = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, f.getField());
 
-            var body = new InvalidField(f.getField(), rejectValue, f.getDefaultMessage());
+            var body = new InvalidField(field, rejectValue, f.getDefaultMessage());
             return body;
         }).toList();
 
@@ -115,14 +118,15 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ExceptionBody> httpMessageNotReadableException(HttpMessageNotReadableException e) {
-        String mensagem = "O corpo não pode estar vazio!";
+    @ExceptionHandler(InvalidFormatException.class)
+    public ResponseEntity<ExceptionBody> httpMessageNotReadableException(InvalidFormatException e) {
+        // Excecao de campo invalido esperado que o ENUM possui
+        String mensagem = "O corpo da requisição possui campos inválidos";
         log.error("Erro {} - {}", 400, mensagem);
         return ResponseEntity.status(400)
                 .body(ExceptionBody
                         .builder()
-                        .mensagem(mensagem)
+                        .mensagem(e.getMessage())
                         .codigo(HttpStatus.BAD_REQUEST.value())
                         .momento(LocalDateTime.now())
                         .excecao(e.getClass().getSimpleName())

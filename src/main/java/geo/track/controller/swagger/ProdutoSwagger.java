@@ -1,6 +1,7 @@
 package geo.track.controller.swagger;
 
 import geo.track.domain.Produto;
+import geo.track.dto.produtos.ProdutoRequest;
 import geo.track.dto.produtos.ProdutoResponse;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
@@ -33,7 +34,7 @@ public interface ProdutoSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PostMapping
-    ResponseEntity<ProdutoResponse> cadastrar(@Valid @RequestBody Produto prod);
+    ResponseEntity<ProdutoResponse> cadastrar(@Valid @RequestBody ProdutoRequest prod);
 
     @Operation(summary = "Listar todos os produtos")
     @ApiResponses(value = {
@@ -67,7 +68,7 @@ public interface ProdutoSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PutMapping("/{id}")
-    ResponseEntity<ProdutoResponse> putProdutos(@PathVariable Integer id, @RequestBody Produto produtoAtt);
+    ResponseEntity<ProdutoResponse> putProdutos(@PathVariable Integer id, @RequestBody ProdutoRequest produtoAtt);
 
     @Operation(summary = "Atualizar quantidade em estoque do produto")
     @ApiResponses(value = {

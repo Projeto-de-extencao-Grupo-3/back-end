@@ -1,6 +1,7 @@
 package geo.track.mapper;
 
 import geo.track.domain.Produto;
+import geo.track.dto.produtos.ProdutoRequest;
 import geo.track.dto.produtos.ProdutoResponse;
 
 import java.util.Collections;
@@ -33,5 +34,22 @@ public class ProdutoMapper {
         return entities.stream()
                 .map(ProdutoMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public static Produto toEntity(ProdutoRequest request) {
+        if (request == null) {
+            return null;
+        }
+
+        Produto entity = new Produto();
+        entity.setNome(request.getNome());
+        entity.setFornecedorNf(request.getFornecedorNf());
+        entity.setPrecoCompra(request.getPrecoCompra());
+        entity.setPrecoVenda(request.getPrecoVenda());
+        entity.setQuantidadeEstoque(request.getQuantidadeEstoque());
+        entity.setVisivelOrcamento(request.getVisivelOrcamento());
+        entity.setTipoServico(request.getTipoServico());
+
+        return entity;
     }
 }

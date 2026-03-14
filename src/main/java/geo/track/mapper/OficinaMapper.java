@@ -18,7 +18,7 @@ public class OficinaMapper {
         response.setRazaoSocial(entity.getRazaoSocial());
         response.setCnpj(entity.getCnpj());
         response.setEmail(entity.getEmail());
-        response.setDtCriacao(entity.getDtCriacao());
+        response.setDtCriacao(entity.getDataCriacao());
         response.setStatus(entity.getStatus());
 
         return response;

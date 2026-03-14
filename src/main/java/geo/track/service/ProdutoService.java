@@ -1,6 +1,7 @@
 package geo.track.service;
 
 import geo.track.domain.Produto;
+import geo.track.dto.produtos.ProdutoRequest;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
@@ -8,6 +9,7 @@ import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ProdutoExceptionMessages;
 import geo.track.log.Log;
+import geo.track.mapper.ProdutoMapper;
 import geo.track.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,10 @@ public class ProdutoService {
     private final ProdutoRepository PRODUTO_REPOSITORY;
     private final Log log;
 
-    public Produto cadastrar(Produto body){
+    public Produto cadastrar(ProdutoRequest body){
         log.info("Cadastrando novo produto: {}", body.getNome());
-        return PRODUTO_REPOSITORY.save(body);
+        Produto produto = ProdutoMapper.toEntity(body);
+        return PRODUTO_REPOSITORY.save(produto);
     }
 
     public List<Produto> listar(){
@@ -38,12 +41,12 @@ public class ProdutoService {
         );
     }
 
-    public Produto putProdutos(Integer id, Produto body) {
+    public Produto putProdutos(Integer id, ProdutoRequest body) {
         if(PRODUTO_REPOSITORY.existsById(id)){
             log.info("Atualizando produto (PUT) ID: {}", id);
-            body.setIdProduto(id);
-            Produto prod = PRODUTO_REPOSITORY.save(body);
-            return prod;
+            Produto produto = ProdutoMapper.toEntity(body);
+            produto.setIdProduto(id);
+            return PRODUTO_REPOSITORY.save(produto);
         }
 
         log.error("Falha ao atualizar produto: ID {} não encontrado", id);

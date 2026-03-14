@@ -38,7 +38,7 @@ public class Oficina {
     private String email;
 
     @Schema(description = "Data e hora de criação do cadastro")
-    private LocalDateTime dtCriacao;
+    private LocalDateTime dataCriacao;
 
     @Schema(description = "Status atual da oficina", example = "ATIVO")
     private Boolean status;

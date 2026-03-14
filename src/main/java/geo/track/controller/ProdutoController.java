@@ -2,6 +2,7 @@ package geo.track.controller;
 
 import geo.track.controller.swagger.ProdutoSwagger;
 import geo.track.domain.Produto;
+import geo.track.dto.produtos.ProdutoRequest;
 import geo.track.dto.produtos.ProdutoResponse;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
@@ -22,7 +23,7 @@ public class ProdutoController implements ProdutoSwagger {
 
     @Override
     @PostMapping
-    public ResponseEntity<ProdutoResponse>cadastrar(@Valid @RequestBody Produto body){
+    public ResponseEntity<ProdutoResponse>cadastrar(@Valid @RequestBody ProdutoRequest body){
         Produto novoProduto = PRODUTO_SERVICE.cadastrar(body);
         return ResponseEntity.status(201).body(ProdutoMapper.toResponse(novoProduto));
     }
@@ -47,7 +48,7 @@ public class ProdutoController implements ProdutoSwagger {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponse>putProdutos(@PathVariable Integer id, @RequestBody Produto body){
+    public ResponseEntity<ProdutoResponse>putProdutos(@PathVariable Integer id, @Valid @RequestBody ProdutoRequest body){
         Produto prod = PRODUTO_SERVICE.putProdutos(id,body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
