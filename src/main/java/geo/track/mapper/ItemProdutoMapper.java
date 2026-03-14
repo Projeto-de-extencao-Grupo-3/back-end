@@ -21,14 +21,15 @@ public class ItemProdutoMapper {
 
         ItemProdutoResponse response = new ItemProdutoResponse();
         response.setIdTransacaoProduto(entity.getIdRegistroPeca());
-        response.setNomeProduto(entity.getFkPeca().getNome());
-        response.setFornecedorNf(entity.getFkPeca().getFornecedorNf());
-        response.setPrecoCompra(entity.getFkPeca().getPrecoCompra().toString());
-        response.setPrecoVenda(entity.getFkPeca().getPrecoVenda().toString());
-        response.setVisivelOrcamentoCliente(entity.getFkPeca().getVisivelOrcamento());
+        response.setNomeProduto(entity.getFkProduto().getNome());
+        response.setFornecedorNf(entity.getFkProduto().getFornecedorNf());
+        response.setPrecoCompra(entity.getFkProduto().getPrecoCompra().toString());
+        response.setPrecoVenda(entity.getFkProduto().getPrecoVenda().toString());
+        response.setVisivelOrcamentoCliente(entity.getFkProduto().getVisivelOrcamento());
         response.setQuantidade(entity.getQuantidade());
         response.setPrecoPeca(entity.getPrecoPeca());
         response.setBaixado(entity.getBaixado());
+        response.setTipoServico(entity.getFkProduto().getTipoServico().toString());
         response.setPossivelRegistrarSaida(entity.possivelRealizarBaixaNoEstoque());
 
         return response;
@@ -54,7 +55,7 @@ public class ItemProdutoMapper {
         response.setPrecoPeca(entity.getPrecoPeca());
         response.setBaixado(entity.getBaixado());
 
-        Optional.ofNullable(entity.getFkPeca()).ifPresent(fkPeca -> {
+        Optional.ofNullable(entity.getFkProduto()).ifPresent(fkPeca -> {
             response.setNomeProduto(fkPeca.getNome());
             response.setVisivelOrcamento(fkPeca.getVisivelOrcamento());
             response.setPrecoCompra(fkPeca.getPrecoCompra());

@@ -34,9 +34,9 @@ public class ItemProduto {
     private Boolean baixado;
 
     @ManyToOne
-    @JoinColumn(name = "fk_peca")
-    @Schema(description = "FK do produto ")
-    private Produto fkPeca;
+    @JoinColumn(name = "fk_produto")
+    @Schema(description = "FK do produto")
+    private Produto fkProduto;
 
     @ManyToOne
     @JoinColumn(name = "fk_ordem_servico")
@@ -44,6 +44,6 @@ public class ItemProduto {
     private OrdemDeServico fkOrdemServico;
 
     public Boolean possivelRealizarBaixaNoEstoque() {
-        return this.fkPeca.getQuantidadeEstoque() >= this.quantidade;
+        return this.fkProduto.getQuantidadeEstoque() >= this.quantidade;
     }
 }

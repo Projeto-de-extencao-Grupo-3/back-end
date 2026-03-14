@@ -16,5 +16,6 @@ public class ItemProdutoResponse {
     private Integer quantidade;
     private Double precoPeca;
     private Boolean baixado;
+    private String tipoServico;
     private Boolean possivelRegistrarSaida;
 }

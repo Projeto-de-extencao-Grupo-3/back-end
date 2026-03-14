@@ -6,8 +6,6 @@ import geo.track.domain.Produto;
 import geo.track.dto.itensProdutos.RequestPostItemProduto;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
 import geo.track.exception.BadBusinessRuleException;
-import geo.track.exception.BadRequestException;
-import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ItemProdutoExceptionMessages;
@@ -87,11 +85,11 @@ public class ItemProdutoService {
             throw new BadBusinessRuleException(ItemProdutoExceptionMessages.BAIXA_JA_REALIZADA, Domains.ITEM_SERVICO);
         } else if (!itemProduto.possivelRealizarBaixaNoEstoque()) {
             log.warn("Falha ao realizar baixa: Estoque insuficiente para o produto ID {}. Requerido: {}, Disponível: {}",
-                itemProduto.getFkPeca().getIdProduto(), itemProduto.getQuantidade(), itemProduto.getFkPeca().getQuantidadeEstoque());
+                itemProduto.getFkProduto().getIdProduto(), itemProduto.getQuantidade(), itemProduto.getFkProduto().getQuantidadeEstoque());
             throw new BadBusinessRuleException(ItemProdutoExceptionMessages.QUANTIDADE_INSUFICIENTE, Domains.ITEM_SERVICO);
         }
 
-        Produto estoqueProduto = itemProduto.getFkPeca();
+        Produto estoqueProduto = itemProduto.getFkProduto();
         log.info("Reduzindo {} unidades do produto ID: {}", itemProduto.getQuantidade(), estoqueProduto.getIdProduto());
         estoqueProduto.setQuantidadeEstoque(estoqueProduto.getQuantidadeEstoque() - itemProduto.getQuantidade());
         itemProduto.setBaixado(true);
