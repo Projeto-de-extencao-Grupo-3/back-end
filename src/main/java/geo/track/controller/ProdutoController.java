@@ -31,7 +31,7 @@ public class ProdutoController implements ProdutoSwagger {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoResponse>> listarContains(@RequestParam String nome) {
+    public ResponseEntity<List<ProdutoResponse>> listarContains(@RequestParam(required = false) String nome) {
         List<Produto> produtos = PRODUTO_SERVICE.listar();
         if (nome != null) {
             produtos = produtos.stream().filter(p -> p.getNome().contains(nome)).toList();

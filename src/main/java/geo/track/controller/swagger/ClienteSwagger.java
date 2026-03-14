@@ -30,7 +30,7 @@ public interface ClienteSwagger {
             @ApiResponse(responseCode = "200", description = "Clientes listados com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ClienteResponse.class)))),
             @ApiResponse(responseCode = "204", description = "Nenhum cliente cadastrado", content = @Content)
     })
-    ResponseEntity<List<ClienteResponse>> findAllClientes();
+    ResponseEntity<List<ClienteResponse>> findAllClientes(@RequestParam String nome);
 
     @Operation(
             summary = "Cadastrar novo cliente",

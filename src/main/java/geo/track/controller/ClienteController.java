@@ -25,8 +25,12 @@ public class ClienteController implements ClienteSwagger {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<ClienteResponse>> findAllClientes() {
+    public ResponseEntity<List<ClienteResponse>> findAllClientes(@RequestParam(required = false) String nome) {
         List<Cliente> clientes = CLIENTE_SERVICE.findClientes();
+
+        if (nome != null) {
+            clientes = clientes.stream().filter(c -> c.getNome().contains(nome)).toList();
+        }
 
         if (clientes.isEmpty()) {
             return ResponseEntity.status(204).build();

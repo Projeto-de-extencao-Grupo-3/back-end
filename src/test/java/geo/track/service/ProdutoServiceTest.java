@@ -55,7 +55,7 @@ class ProdutoServiceTest {
         produto.setPrecoCompra(18.00);
         produto.setPrecoVenda(30.00);
         produto.setVisivelOrcamento(true);
-        produto.setTipoServico(Servico.TROCA_DE_OLEO);
+        produto.setTipoServico(Servico.MECANICA);
 
         produtoRequest = new ProdutoRequest();
         produtoRequest.setNome("Filtro de Óleo");
@@ -63,7 +63,7 @@ class ProdutoServiceTest {
         produtoRequest.setPrecoCompra(18.00);
         produtoRequest.setPrecoVenda(30.00);
         produtoRequest.setVisivelOrcamento(true);
-        produtoRequest.setTipoServico(Servico.TROCA_DE_OLEO);
+        produtoRequest.setTipoServico(Servico.MECANICA);
 
         patchQtdEstoque = new RequestPatchQtdEstoque(1, 50);
         patchPrecoCompra = new RequestPatchPrecoCompra(1, 20.00); // Ajuste: Alinhado com o valor esperado no teste (20.0)
