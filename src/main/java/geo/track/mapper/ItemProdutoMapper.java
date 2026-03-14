@@ -19,14 +19,15 @@ public class ItemProdutoMapper {
         }
 
         ItemProdutoResponse response = new ItemProdutoResponse();
+        response.setId_transacao_produto(entity.getIdRegistroPeca());
+        response.setNomeProduto(entity.getFkPeca().getNome());
+        response.setFornecedorNf(entity.getFkPeca().getFornecedorNf());
+        response.setPrecoCompra(entity.getFkPeca().getPrecoCompra().toString());
+        response.setPrecoVenda(entity.getFkPeca().getPrecoVenda().toString());
+        response.setVisivelOrcamentoCliente(entity.getFkPeca().getVisivelOrcamento());
         response.setQuantidade(entity.getQuantidade());
         response.setPrecoPeca(entity.getPrecoPeca());
         response.setBaixado(entity.getBaixado());
-        response.setVisivelOrcamento(entity.getFkPeca().getVisivelOrcamento());
-
-        Optional.ofNullable(entity.getFkPeca())
-                .map(Produto::getIdProduto)
-                .ifPresent(response::setIdPeca);
 
         return response;
     }

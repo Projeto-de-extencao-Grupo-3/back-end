@@ -91,7 +91,7 @@ public class OrdemDeServicoMapper {
         List<ItemServicoResponse> servicos = entity.getServicos().stream().map(ItemServicoMapper::toResponse).toList();
         List<ItemProdutoResponse> produtos = entity.getProdutos().stream().map(ItemProdutoMapper::toResponse).toList();
 
-        return new TelaOrdemServicoResponse(idOrdemServico, status, cliente, veiculo, dataEntradaPrevista, dataEntradaEfetiva, dataSaidaPrevista, dataSaidaEfetiva, resumo, servicos, produtos);
+        return new TelaOrdemServicoResponse(idOrdemServico, status, dataEntradaPrevista, dataEntradaEfetiva, dataSaidaPrevista, dataSaidaEfetiva, cliente, veiculo, resumo, servicos, produtos);
     }
 
     private static ResumoOrdemServicoResponse toResumo(OrdemDeServico entity) {
@@ -111,7 +111,7 @@ public class OrdemDeServicoMapper {
         Boolean pagamentoRealizado = entity.getPagtRealizado();
         Boolean notaFiscalRealizada = entity.getNfRealizada();
 
-        return new ResumoOrdemServicoResponse(totalGeral, totalServicos, totalProdutos, produtosSaidaEstoqueRealizada, produtosSaidaEstoquePendente, pagamentoRealizado, notaFiscalRealizada    );
+        return new ResumoOrdemServicoResponse(totalGeral, totalServicos, totalProdutos, pagamentoRealizado, notaFiscalRealizada, produtosSaidaEstoqueRealizada, produtosSaidaEstoquePendente);
     }
 
     public static List<CardOrdemDeServicoResponse> toCard(List<OrdemDeServico> ordem) {

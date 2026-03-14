@@ -13,12 +13,12 @@ import java.util.List;
 public record TelaOrdemServicoResponse(
         Integer idOrdemServico,
         StatusVeiculo status,
-        ClienteResponse cliente,
-        VeiculoResponse veiculo,
         LocalDate dataEntradaPrevista,
         LocalDate dataEntradaEfetiva,
         LocalDate dataSaidaPrevista,
         LocalDate dataSaidaEfetiva,
+        ClienteResponse cliente,
+        VeiculoResponse veiculo,
         ResumoOrdemServicoResponse resumo,
         List<ItemServicoResponse> servicos,
         List<ItemProdutoResponse> produtos
