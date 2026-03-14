@@ -20,6 +20,7 @@ public class ProdutoMapper {
         response.setPrecoCompra(entity.getPrecoCompra());
         response.setPrecoVenda(entity.getPrecoVenda());
         response.setQuantidadeEstoque(entity.getQuantidadeEstoque());
+        response.setTipoServico(entity.getTipoServico());
         // Assuming fkOficina is not directly mapped to response, or handled elsewhere if needed.
 
         return response;
