@@ -1,6 +1,5 @@
 package geo.track.service;
 
-import geo.track.domain.OrdemDeServico;
 import geo.track.domain.RegistroEntrada;
 import geo.track.domain.Veiculo;
 import geo.track.dto.os.request.PostEntradaVeiculo;
@@ -10,16 +9,10 @@ import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadBusinessRuleException;
 import geo.track.exception.DataNotFoundException;
-<<<<<<< HEAD
-import geo.track.exception.constraint.message.EnumDomains;
-import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
-=======
 import geo.track.exception.constraint.message.Domains;
->>>>>>> main
 import geo.track.exception.constraint.message.RegistroEntradaExceptionMessages;
 import geo.track.log.Log;
 import geo.track.repository.RegistroEntradaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,38 +28,21 @@ public class RegistroEntradaService{
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final Log log;
 
-    @Transactional
     public RegistroEntrada realizarAgendamentoVeiculo(RequestPostEntradaAgendada body){
-<<<<<<< HEAD
-=======
         log.info("Iniciando agendamento de entrada para o veículo ID: {}", body.getFkVeiculo());
->>>>>>> main
         validarExistenciaOrdemServicoEmAndamentoVeiculo(body.getFkVeiculo());
 
+        RegistroEntrada registro = new RegistroEntrada();
         Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(body.getFkVeiculo());
 
-        RegistroEntrada registro = new RegistroEntrada();
+        registro.setIdRegistroEntrada(null);
         registro.setDataEntradaPrevista(body.getDtEntradaPrevista());
         registro.setFkVeiculo(veiculo);
 
-        // Salva apenas UMA vez para gerar o ID necessário para a Ordem de Serviço
         RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.save(registro);
-<<<<<<< HEAD
-
-        // Cria a OS. O ID da entrada já existe aqui.
-        OrdemDeServico os = ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(
-                new PostEntradaVeiculo(StatusVeiculo.AGUARDANDO_ENTRADA, entrada.getIdRegistroEntrada())
-        );
-
-        // Atualiza a referência em memória.
-        entrada.setOrdemDeServicos(os);
-
-        return entrada;
-=======
         registro.setOrdemDeServicos(ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(new PostEntradaVeiculo(StatusVeiculo.AGUARDANDO_ENTRADA, entrada.getIdRegistroEntrada())));
         log.info("Agendamento realizado com sucesso para o veículo ID: {}. Registro ID: {}", body.getFkVeiculo(), entrada.getIdRegistroEntrada());
         return REGISTRO_ENTRADA_REPOSITORY.save(entrada);
->>>>>>> main
     }
 
     public RegistroEntrada realizarEntradaVeiculo(RequestPostEntrada body){
@@ -183,19 +159,5 @@ public class RegistroEntradaService{
             log.warn("Tentativa de entrada negada: Veículo ID {} já possui ordem de serviço em andamento.", idVeiculo);
             throw new BadBusinessRuleException(RegistroEntradaExceptionMessages.VEICULO_JA_POSSUI_ENTRADA_EM_ANDAMENTO, Domains.REGISTRO_ENTRADA);
         }
-    }
-
-    public RegistroEntrada putRegistro(RequestPutRegistroEntrada putRegistroEntrada) {
-        Optional<RegistroEntrada> entradaOPT = REGISTRO_ENTRADA_REPOSITORY.findById(putRegistroEntrada.getIdRegistro());
-
-        if (entradaOPT.isEmpty()){
-            throw new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, EnumDomains.ORDEM_DE_SERVICO);
-        }
-
-        RegistroEntrada entrada = entradaOPT.get();
-
-        entrada.setResponsavel(putRegistroEntrada.getResponsavel());
-
-        return REGISTRO_ENTRADA_REPOSITORY.save(entrada);
     }
 }
