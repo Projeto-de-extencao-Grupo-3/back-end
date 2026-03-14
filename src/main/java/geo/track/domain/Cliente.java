@@ -72,7 +72,7 @@ public class Cliente {
     @Getter()
     @OneToMany(mappedBy = "fkCliente")
     @Schema(description = "Lista de veículos pertencentes a este cliente") // Adicionado
-    private List<Veiculo> veiculos;
+    private List<Veiculo> veiculo;
 
     public Cliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, TipoCliente tipoCliente, Oficina fkOficina, Endereco fkEndereco) {
         this.idCliente = idCliente;

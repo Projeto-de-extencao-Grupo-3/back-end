@@ -7,6 +7,7 @@ import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.dto.clientes.response.ClienteResponse;
+import geo.track.dto.clientes.response.ClienteVeiculoResponse;
 import geo.track.mapper.ClientesMapper;
 import geo.track.service.ClienteService;
 import jakarta.validation.Valid;
@@ -92,5 +93,14 @@ public class ClienteController implements ClienteSwagger {
     public ResponseEntity<Void> removerCliente(@PathVariable Integer id) {
         CLIENTE_SERVICE.deletar(id);
         return ResponseEntity.status(204).build();
+    }
+
+    @GetMapping("/placa/{placa}")
+    public ResponseEntity<ClienteVeiculoResponse> buscarClientePorPlaca(String placa) {
+        Cliente cliente = CLIENTE_SERVICE.buscarClientePorPlaca(placa);
+
+        ClienteVeiculoResponse response = ClientesMapper.toResponseVeiculo(cliente, placa);
+
+        return ResponseEntity.status(200).body(response);
     }
 }

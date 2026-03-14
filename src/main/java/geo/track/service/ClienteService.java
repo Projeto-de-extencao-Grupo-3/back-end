@@ -150,4 +150,9 @@ public class ClienteService {
         log.error("Falha ao deletar: Cliente ID {} não existe", id);
         throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID, id), Domains.CLIENTE);
     }
+
+    public Cliente buscarClientePorPlaca(String placa) {
+        log.info("Buscando cliente pelo número de placa: {}", placa);
+        return CLIENTE_REPOSITORY.findByVeiculosPlaca(placa).orElseThrow(() -> new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_PLACA, Domains.CLIENTE));
+    }
 }

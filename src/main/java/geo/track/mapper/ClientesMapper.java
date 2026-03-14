@@ -5,6 +5,8 @@ import geo.track.domain.Endereco;
 import geo.track.domain.Oficina;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.response.ClienteResponse;
+import geo.track.dto.clientes.response.ClienteVeiculoResponse;
+import geo.track.dto.veiculos.response.VeiculoResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +35,16 @@ public class ClientesMapper {
         }
 
         return response;
+    }
+
+    public static ClienteVeiculoResponse toResponseVeiculo(Cliente cliente, String placa) {
+        if (cliente == null) {
+            return null;
+        }
+
+        VeiculoResponse veiculoResponse = VeiculoMapper.toResponse(cliente.getVeiculo().stream().filter(v -> v.getPlaca().equals(placa)).findFirst().get());
+
+        return new ClienteVeiculoResponse(cliente.getIdCliente(), cliente.getNome(), cliente.getCpfCnpj(), cliente.getTelefone(), cliente.getEmail(), cliente.getTipoCliente(), veiculoResponse);
     }
 
     public static List<ClienteResponse> toResponse(List<Cliente> entities) {
