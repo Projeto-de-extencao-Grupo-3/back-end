@@ -7,6 +7,7 @@ import geo.track.dto.itensProdutos.RequestPostItemProduto;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
 import geo.track.mapper.ItemProdutoMapper;
 import geo.track.service.ItemProdutoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class ItemProdutoController implements ItemProdutoSwagger {
 
     @Override
     @PostMapping
-    public ResponseEntity<ItemProdutoResponse> save(@RequestBody RequestPostItemProduto body) {
+    public ResponseEntity<ItemProdutoResponse> save(@RequestBody @Valid RequestPostItemProduto body) {
         ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.cadastrarRegistro(body);
         return ResponseEntity.status(201).body(ItemProdutoMapper.toResponse(registroProduto));
     }
@@ -45,7 +46,7 @@ public class ItemProdutoController implements ItemProdutoSwagger {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<ItemProdutoResponse> put(@PathVariable Integer id, @RequestBody RequestPutItemProduto body) {
+    public ResponseEntity<ItemProdutoResponse> put(@PathVariable Integer id, @RequestBody @Valid RequestPutItemProduto body) {
         ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.atualizarRegistro(id, body);
         return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(registroProduto));
     }
@@ -55,5 +56,11 @@ public class ItemProdutoController implements ItemProdutoSwagger {
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         ITEM_PRODUTO_SERVICE.deletarRegistro(id);
         return ResponseEntity.status(204).build();
+    }
+
+    @PatchMapping("/baixa-estoque/{id}")
+    public ResponseEntity<ItemProdutoResponse> patchBaixaEstoque(@PathVariable Integer id) {
+        ITEM_PRODUTO_SERVICE.realizarBaixaEstoque(id);
+        return ResponseEntity.status(200).body(null);
     }
 }

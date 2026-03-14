@@ -25,6 +25,7 @@ public class ItemServicoMapper {
         response.setCor(entity.getCor());
         response.setEspecificacaoServico(entity.getEspecificacaoServico());
         response.setObservacoesItem(entity.getObservacoesItem());
+        response.setTipoServico(entity.getTipoServico());
 
         return response;
     }

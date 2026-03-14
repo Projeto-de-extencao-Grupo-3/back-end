@@ -22,8 +22,8 @@ public class ProdutoController implements ProdutoSwagger {
 
     @Override
     @PostMapping
-    public ResponseEntity<ProdutoResponse>cadastrar(@Valid @RequestBody Produto prod){
-        Produto novoProduto = PRODUTO_SERVICE.cadastrar(prod);
+    public ResponseEntity<ProdutoResponse>cadastrar(@Valid @RequestBody Produto body){
+        Produto novoProduto = PRODUTO_SERVICE.cadastrar(body);
         return ResponseEntity.status(201).body(ProdutoMapper.toResponse(novoProduto));
     }
 
@@ -47,29 +47,29 @@ public class ProdutoController implements ProdutoSwagger {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponse>putProdutos(@PathVariable Integer id, @RequestBody Produto produtoAtt){
-        Produto prod = PRODUTO_SERVICE.putProdutos(id,produtoAtt);
+    public ResponseEntity<ProdutoResponse>putProdutos(@PathVariable Integer id, @RequestBody Produto body){
+        Produto prod = PRODUTO_SERVICE.putProdutos(id,body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
-    @PatchMapping("/quantidadeEstoque")
-    public ResponseEntity<ProdutoResponse>patchQtdEstoque(@RequestBody RequestPatchQtdEstoque produtoAtt){
-        Produto prod = PRODUTO_SERVICE.patchQtdEstoque(produtoAtt);
+    @PatchMapping("/quantidade-estoque")
+    public ResponseEntity<ProdutoResponse>patchQtdEstoque(@RequestBody @Valid RequestPatchQtdEstoque body){
+        Produto prod = PRODUTO_SERVICE.patchQtdEstoque(body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
-    @PatchMapping("/precoCompra")
-    public ResponseEntity<ProdutoResponse>patchPrecoCompra(@RequestBody RequestPatchPrecoCompra produtoAtt){
-        Produto prod = PRODUTO_SERVICE.patchPrecoCompra(produtoAtt);
+    @PatchMapping("/preco-compra")
+    public ResponseEntity<ProdutoResponse>patchPrecoCompra(@RequestBody @Valid RequestPatchPrecoCompra body){
+        Produto prod = PRODUTO_SERVICE.patchPrecoCompra(body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
-    @PatchMapping("/precoVenda")
-    public ResponseEntity<ProdutoResponse>patchPrecoVenda(@RequestBody RequestPatchPrecoVenda produtoAtt){
-        Produto prod = PRODUTO_SERVICE.patchPrecoVenda(produtoAtt);
+    @PatchMapping("/preco-venda")
+    public ResponseEntity<ProdutoResponse>patchPrecoVenda(@RequestBody @Valid RequestPatchPrecoVenda body){
+        Produto prod = PRODUTO_SERVICE.patchPrecoVenda(body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 

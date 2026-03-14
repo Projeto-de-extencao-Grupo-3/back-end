@@ -12,6 +12,7 @@ import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.mapper.OrdemDeServicoMapper;
 import geo.track.service.OrdemDeServicoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -92,43 +93,43 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 
     @Override
     @PutMapping("/atualizar")
-    public ResponseEntity<OrdemDeServicoResponse> putValorESaida(@RequestBody RequestPutValorESaida ordemDTO) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarValorESaida(ordemDTO);
+    public ResponseEntity<OrdemDeServicoResponse> putValorESaida(@RequestBody @Valid RequestPutValorESaida body) {
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarValorESaida(body);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
-    @PatchMapping("/saidaEfetiva")
-    public ResponseEntity<OrdemDeServicoResponse> patchSaidaEfetiva(@RequestBody RequestPatchSaidaEfetiva ordemDTO) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarSaidaEfetiva(ordemDTO);
+    @PatchMapping("/saida-efetiva")
+    public ResponseEntity<OrdemDeServicoResponse> patchSaidaEfetiva(@RequestBody @Valid RequestPatchSaidaEfetiva body) {
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarSaidaEfetiva(body);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @PatchMapping("/status")
-    public ResponseEntity<OrdemDeServicoResponse> patchStatus(@RequestBody RequestPatchStatus ordemDTO) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarStatus(ordemDTO);
+    public ResponseEntity<OrdemDeServicoResponse> patchStatus(@RequestBody @Valid RequestPatchStatus body) {
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarStatus(body);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
     @PatchMapping("/seguradora")
-    public ResponseEntity<OrdemDeServicoResponse> patchSeguradora(@RequestBody RequestPatchSeguradora ordemDTO) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarSeguradora(ordemDTO);
+    public ResponseEntity<OrdemDeServicoResponse> patchSeguradora(@RequestBody @Valid RequestPatchSeguradora body) {
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarSeguradora(body);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
-    @PatchMapping("/nfRealizada")
-    public ResponseEntity<OrdemDeServicoResponse> patchNfRealizada(@RequestBody RequestPatchNfRealizada ordemDTO) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarNotaFiscalRealizada(ordemDTO);
+    @PatchMapping("/nf-realizada")
+    public ResponseEntity<OrdemDeServicoResponse> patchNfRealizada(@RequestBody @Valid RequestPatchNfRealizada body) {
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarNotaFiscalRealizada(body);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @Override
-    @PatchMapping("/pagtoRealizado")
-    public ResponseEntity<OrdemDeServicoResponse> patchPagtoRealizado(@RequestBody RequestPatchPagtoRealizado ordemDTO) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarPagamentoRealizado(ordemDTO);
+    @PatchMapping("/pagto-realizado")
+    public ResponseEntity<OrdemDeServicoResponse> patchPagtoRealizado(@RequestBody @Valid RequestPatchPagtoRealizado body) {
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarPagamentoRealizado(body);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 

@@ -22,8 +22,8 @@ public class VeiculoController implements VeiculoSwagger {
 
     @Override
     @PostMapping
-    public ResponseEntity<VeiculoResponse>cadastrar(@Valid @RequestBody Veiculo veiculo){
-        Veiculo veicCadastrado = VEICULO_SERVICE.cadastrar(veiculo);
+    public ResponseEntity<VeiculoResponse>cadastrar(@Valid @RequestBody Veiculo body){
+        Veiculo veicCadastrado = VEICULO_SERVICE.cadastrar(body);
         return ResponseEntity.status(201).body(VeiculoMapper.toResponse(veicCadastrado));
     }
 
@@ -60,26 +60,25 @@ public class VeiculoController implements VeiculoSwagger {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<VeiculoResponse>putVeiculo(@PathVariable Integer id, @RequestBody Veiculo veiculoAtt){
-        Veiculo veic = VEICULO_SERVICE.putEndereco(id, veiculoAtt);
+    public ResponseEntity<VeiculoResponse>putVeiculo(@PathVariable Integer id, @RequestBody Veiculo body){
+        Veiculo veic = VEICULO_SERVICE.putEndereco(id, body);
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
     @Override
     @PatchMapping("/placa")
-    public ResponseEntity<VeiculoResponse>patchPlaca(@RequestBody RequestPatchPlaca veiculoDTO){
-        Veiculo veic = VEICULO_SERVICE.patchPlaca(veiculoDTO);
+    public ResponseEntity<VeiculoResponse>patchPlaca(@RequestBody @Valid RequestPatchPlaca body){
+        Veiculo veic = VEICULO_SERVICE.patchPlaca(body);
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
     @Override
     @PatchMapping("/cor")
-    public ResponseEntity<VeiculoResponse>patchCor(@RequestBody RequestPatchCor veiculoDTO){
+    public ResponseEntity<VeiculoResponse>patchCor(@RequestBody @Valid RequestPatchCor veiculoDTO){
         Veiculo veic = VEICULO_SERVICE.patchCor(veiculoDTO);
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
-    // ...existing code...
     @DeleteMapping("/{id}")
     public ResponseEntity<Void>deleteVeiculoById(@PathVariable Integer id){
         VEICULO_SERVICE.deleteVeiculoById(id);

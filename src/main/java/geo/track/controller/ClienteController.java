@@ -7,6 +7,7 @@ import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.dto.clientes.response.ClienteResponse;
+import geo.track.dto.clientes.response.ClienteVeiculoResponse;
 import geo.track.mapper.ClientesMapper;
 import geo.track.service.ClienteService;
 import jakarta.validation.Valid;
@@ -68,21 +69,21 @@ public class ClienteController implements ClienteSwagger {
 
     @Override
     @PatchMapping("/email")
-    public ResponseEntity<ClienteResponse> patchEmailCliente(@RequestBody RequestPatchEmail clienteDTO) {
+    public ResponseEntity<ClienteResponse> patchEmailCliente(@RequestBody @Valid RequestPatchEmail clienteDTO) {
         Cliente cliente = CLIENTE_SERVICE.patchEmailCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
     @Override
     @PatchMapping("/telefone")
-    public ResponseEntity<ClienteResponse> patchTelefoneCliente(@RequestBody RequestPatchTelefone clienteDTO) {
+    public ResponseEntity<ClienteResponse> patchTelefoneCliente(@RequestBody @Valid RequestPatchTelefone clienteDTO) {
         Cliente cliente = CLIENTE_SERVICE.patchTelefoneCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
     @Override
     @PutMapping()
-    public ResponseEntity<ClienteResponse> putCliente(@RequestBody RequestPutCliente clienteDTO) {
+    public ResponseEntity<ClienteResponse> putCliente(@RequestBody @Valid RequestPutCliente clienteDTO) {
         Cliente cliente = CLIENTE_SERVICE.putCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
@@ -92,5 +93,14 @@ public class ClienteController implements ClienteSwagger {
     public ResponseEntity<Void> removerCliente(@PathVariable Integer id) {
         CLIENTE_SERVICE.deletar(id);
         return ResponseEntity.status(204).build();
+    }
+
+    @GetMapping("/placa/{placa}")
+    public ResponseEntity<ClienteVeiculoResponse> buscarClientePorPlaca(String placa) {
+        Cliente cliente = CLIENTE_SERVICE.buscarClientePorPlaca(placa);
+
+        ClienteVeiculoResponse response = ClientesMapper.toResponseVeiculo(cliente, placa);
+
+        return ResponseEntity.status(200).body(response);
     }
 }

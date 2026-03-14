@@ -6,11 +6,16 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemProdutoResponse {
-    private Integer idItensProdutos;
+    private Integer idTransacaoProduto;
+    //produto
+    private String nomeProduto;
+    private String fornecedorNf;
+    private String precoCompra;
+    private String precoVenda;
+    private Boolean visivelOrcamentoCliente;
     private Integer quantidade;
     private Double precoPeca;
     private Boolean baixado;
-    private Integer idPeca;
-    private Integer idOrdemServico;
-    private Boolean visivelOrcamento;
+    private String tipoServico;
+    private Boolean possivelRegistrarSaida;
 }
