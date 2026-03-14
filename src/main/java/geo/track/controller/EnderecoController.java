@@ -10,6 +10,7 @@ import geo.track.dto.enderecos.response.EnderecoResponse;
 import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.mapper.EnderecoMapper;
 import geo.track.service.EnderecoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,29 +47,29 @@ public class EnderecoController implements EnderecoSwagger {
 
     @Override
     @PostMapping()
-    public ResponseEntity<EnderecoResponse> postEndereco(@RequestBody RequestPostEndereco endereco) {
-        Endereco novoEndereco = ENDERECO_SERVICE.postEndereco(endereco);
+    public ResponseEntity<EnderecoResponse> postEndereco(@RequestBody @Valid RequestPostEndereco body) {
+        Endereco novoEndereco = ENDERECO_SERVICE.postEndereco(body);
         return ResponseEntity.status(201).body(EnderecoMapper.toResponse(novoEndereco));
     }
 
     @Override
     @PatchMapping("/complemento")
-    public ResponseEntity<EnderecoResponse> patchComplementoEndereco(@RequestBody RequestPatchComplemento enderecoDTO) {
-        Endereco endereco = ENDERECO_SERVICE.patchComplementoEndereco(enderecoDTO);
+    public ResponseEntity<EnderecoResponse> patchComplementoEndereco(@RequestBody @Valid RequestPatchComplemento body) {
+        Endereco endereco = ENDERECO_SERVICE.patchComplementoEndereco(body);
         return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
     }
 
     @Override
     @PatchMapping("/numero")
-    public ResponseEntity<EnderecoResponse> patchNumeroEndereco(@RequestBody RequestPatchNumero enderecoDTO) {
-        Endereco endereco = ENDERECO_SERVICE.patchNumeroEndereco(enderecoDTO);
+    public ResponseEntity<EnderecoResponse> patchNumeroEndereco(@RequestBody @Valid RequestPatchNumero body) {
+        Endereco endereco = ENDERECO_SERVICE.patchNumeroEndereco(body);
         return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
     }
 
     @Override
     @PutMapping()
-    public ResponseEntity<EnderecoResponse> putEndereco(@RequestBody RequestPutEndereco enderecoDTO) {
-        Endereco endereco = ENDERECO_SERVICE.putEndereco(enderecoDTO);
+    public ResponseEntity<EnderecoResponse> putEndereco(@RequestBody @Valid RequestPutEndereco body) {
+        Endereco endereco = ENDERECO_SERVICE.putEndereco(body);
         return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
     }
 }

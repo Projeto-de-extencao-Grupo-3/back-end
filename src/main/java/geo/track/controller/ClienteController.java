@@ -69,21 +69,21 @@ public class ClienteController implements ClienteSwagger {
 
     @Override
     @PatchMapping("/email")
-    public ResponseEntity<ClienteResponse> patchEmailCliente(@RequestBody RequestPatchEmail clienteDTO) {
+    public ResponseEntity<ClienteResponse> patchEmailCliente(@RequestBody @Valid RequestPatchEmail clienteDTO) {
         Cliente cliente = CLIENTE_SERVICE.patchEmailCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
     @Override
     @PatchMapping("/telefone")
-    public ResponseEntity<ClienteResponse> patchTelefoneCliente(@RequestBody RequestPatchTelefone clienteDTO) {
+    public ResponseEntity<ClienteResponse> patchTelefoneCliente(@RequestBody @Valid RequestPatchTelefone clienteDTO) {
         Cliente cliente = CLIENTE_SERVICE.patchTelefoneCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 
     @Override
     @PutMapping()
-    public ResponseEntity<ClienteResponse> putCliente(@RequestBody RequestPutCliente clienteDTO) {
+    public ResponseEntity<ClienteResponse> putCliente(@RequestBody @Valid RequestPutCliente clienteDTO) {
         Cliente cliente = CLIENTE_SERVICE.putCliente(clienteDTO);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }

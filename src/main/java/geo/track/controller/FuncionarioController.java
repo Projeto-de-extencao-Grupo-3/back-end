@@ -19,8 +19,8 @@ public class FuncionarioController implements FuncionarioSwagger {
 
     @Override
     @PostMapping
-    public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody Funcionario funcionario){
-        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.cadastrar(funcionario);
+    public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody Funcionario body){
+        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.cadastrar(body);
         return ResponseEntity.status(201).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
@@ -40,8 +40,8 @@ public class FuncionarioController implements FuncionarioSwagger {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Integer id, @RequestBody Funcionario funcionario){
-        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.atualizar(id, funcionario);
+    public ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Integer id, @RequestBody Funcionario body){
+        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.atualizar(id, body);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
