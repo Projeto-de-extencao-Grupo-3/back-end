@@ -9,5 +9,7 @@ public class ProdutoResponse {
     private String fornecedorNf;
     private Double precoCompra;
     private Double precoVenda;
+    private Boolean visivelOrcamento;
+    private String tipoServico;
     private Integer quantidadeEstoque;
 }
