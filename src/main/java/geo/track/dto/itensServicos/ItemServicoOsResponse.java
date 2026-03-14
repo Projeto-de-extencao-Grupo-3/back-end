@@ -20,8 +20,6 @@ public class ItemServicoOsResponse {
     private String observacoesItem;
 
     // Campos de Servico
-    private String nomeServico;
     @Enumerated(EnumType.STRING)
     private Servico tipoServico;
-    private Integer tempoBase;
 }

@@ -1,9 +1,11 @@
 package geo.track.service;
 
 import geo.track.domain.Funcionario;
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.FuncionarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,16 +35,19 @@ class FuncionarioServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private LogImplementation log;
+
     @InjectMocks
     private FuncionarioService service;
 
     private Funcionario funcionario;
-    private Oficinas oficina;
+    private Oficina oficina;
 
     @BeforeEach
     void setUp() {
         // Arrange: Preparar Entidade
-        oficina = new Oficinas();
+        oficina = new Oficina();
         oficina.setIdOficina(1);
         oficina.setRazaoSocial("Oficina Teste");
 

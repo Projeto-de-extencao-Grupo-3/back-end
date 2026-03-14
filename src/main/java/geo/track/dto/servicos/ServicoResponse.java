@@ -11,6 +11,5 @@ public class ServicoResponse {
     @Enumerated(EnumType.STRING)
     private Servico tipoServico;
     private String tituloServico;
-    private Integer tempoBase;
     private boolean ativo;
 }

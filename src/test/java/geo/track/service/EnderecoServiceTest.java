@@ -8,6 +8,8 @@ import geo.track.dto.enderecos.request.RequestPutEndereco;
 import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.NotAcepptableException;
+import geo.track.log.Log;
+import geo.track.log.LogImplementation;
 import geo.track.repository.EnderecoRepository;
 import geo.track.util.ViacepConnection;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +37,9 @@ class EnderecoServiceTest {
 
     @Mock
     private ViacepConnection viacepConnection;
+
+    @Mock
+    private LogImplementation log;
 
     @InjectMocks
     private EnderecoService service;
@@ -203,7 +208,7 @@ class EnderecoServiceTest {
         Endereco enderecoParaAtualizar = endereco;
         enderecoParaAtualizar.setComplemento("Novo Complemento");
 
-        when(repository.findById(requestPatchComplemento.getId())).thenReturn(Optional.of(enderecoParaAtualizar));
+        when(repository.findById(requestPatchComplemento.getIdEndereco())).thenReturn(Optional.of(enderecoParaAtualizar));
         when(repository.save(any(Endereco.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -212,7 +217,7 @@ class EnderecoServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("Novo Complemento", resultado.getComplemento());
-        verify(repository).findById(requestPatchComplemento.getId());
+        verify(repository).findById(requestPatchComplemento.getIdEndereco());
         verify(repository).save(any(Endereco.class));
     }
 
@@ -277,7 +282,7 @@ class EnderecoServiceTest {
         enderecoParaAtualizar.setLogradouro("Av. Brigadeiro Faria Lima");
         enderecoParaAtualizar.setNumero(1571);
 
-        when(repository.findById(requestPutEndereco.getId())).thenReturn(Optional.of(enderecoParaAtualizar));
+        when(repository.findById(requestPutEndereco.getIdEndereco())).thenReturn(Optional.of(enderecoParaAtualizar));
         when(repository.save(any(Endereco.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -288,7 +293,7 @@ class EnderecoServiceTest {
         assertEquals("04538133", resultado.getCep());
         assertEquals("Av. Brigadeiro Faria Lima", resultado.getLogradouro());
         assertEquals(1571, resultado.getNumero());
-        verify(repository).findById(requestPutEndereco.getId());
+        verify(repository).findById(requestPutEndereco.getIdEndereco());
         verify(repository).save(any(Endereco.class));
     }
 

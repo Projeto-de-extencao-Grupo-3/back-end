@@ -2,7 +2,7 @@ package geo.track.mapper;
 
 import geo.track.domain.Cliente;
 import geo.track.domain.Endereco;
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.response.ClienteResponse;
 
@@ -44,7 +44,7 @@ public class ClientesMapper {
                 .collect(Collectors.toList());
     }
 
-    public static Cliente toEntity(RequestPostCliente dto, Oficinas oficina, Endereco endereco) {
+    public static Cliente toEntity(RequestPostCliente dto, Oficina oficina, Endereco endereco) {
         // Assuming dto is validated before reaching here.
         // oficina and endereco can be null if the FKs are nullable in the database.
         // The responsibility to provide non-null oficina/endereco if they are mandatory

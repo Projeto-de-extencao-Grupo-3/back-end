@@ -54,7 +54,7 @@ public class ItemProdutoMapper {
         // Safe access to nested properties
         Optional.ofNullable(entity.getFkPeca()).ifPresent(fkPeca -> {
             response.setNomeProduto(fkPeca.getNome());
-            response.setViavelOrcamento(fkPeca.getVisivelOrcamento());
+            response.setVisivelOrcamento(fkPeca.getVisivelOrcamento());
             response.setPrecoCompra(fkPeca.getPrecoCompra());
             response.setPrecoVenda(fkPeca.getPrecoVenda());
         });

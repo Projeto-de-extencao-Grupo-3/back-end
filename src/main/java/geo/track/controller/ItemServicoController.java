@@ -27,13 +27,9 @@ public class ItemServicoController {
     public ResponseEntity<ItemServicoResponse> cadastrar(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestBody @Valid RequestPostItemServico body) {
         Integer idOficina = usuario.getIdOficina();
 
-        System.out.println(idOficina);
-
         OrdemDeServico ordemServico = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.getFkOrdemServico(), idOficina);
 
         ItemServico item = ItemServicoMapper.toDomain(body, ordemServico, body.getTipoServico());
-
-        System.out.println(item);
 
         ItemServico itemServico = ITEM_SERVICO_SERVICE.cadastrar(item);
         return ResponseEntity.status(201).body(ItemServicoMapper.toResponse(itemServico));

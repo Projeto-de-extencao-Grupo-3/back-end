@@ -1,11 +1,11 @@
 package geo.track.dto.autenticacao;
 
 import geo.track.domain.Funcionario;
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 
 public class UsuarioMapper {
-    public static Oficinas of(UsuarioCriacaoDto usuarioCriacaoDto) {
-        Oficinas usuario = new Oficinas();
+    public static Oficina of(UsuarioCriacaoDto usuarioCriacaoDto) {
+        Oficina usuario = new Oficina();
         usuario.setRazaoSocial(usuarioCriacaoDto.getRazaoSocial());
         usuario.setCnpj(usuarioCriacaoDto.getCnpj());
         usuario.setEmail(usuarioCriacaoDto.getEmail());
@@ -14,8 +14,8 @@ public class UsuarioMapper {
         return usuario;
     }
 
-    public static Oficinas of(UsuarioLoginDto usuarioLoginDto) {
-        Oficinas usuario = new Oficinas();
+    public static Oficina of(UsuarioLoginDto usuarioLoginDto) {
+        Oficina usuario = new Oficina();
 
         usuario.setEmail(usuarioLoginDto.getEmail());
 
@@ -27,14 +27,15 @@ public class UsuarioMapper {
 
         usuarioTokenDto.setIdOficina(funcionario.getFkOficina().getIdOficina());
         usuarioTokenDto.setCnpj(funcionario.getFkOficina().getCnpj());
-        usuarioTokenDto.setNome(funcionario.getFkOficina().getRazaoSocial());
+        usuarioTokenDto.setNome(funcionario.getNome());
+        usuarioTokenDto.setCargo(funcionario.getCargo());
         usuarioTokenDto.setEmail(funcionario.getEmail());
         usuarioTokenDto.setToken(token);
 
         return usuarioTokenDto;
     }
 
-    public static UsuarioListarDto of(Oficinas beneficiario) {
+    public static UsuarioListarDto of(Oficina beneficiario) {
         UsuarioListarDto usuarioListarDto = new UsuarioListarDto();
 
         usuarioListarDto.setIdCliente(beneficiario.getIdOficina());

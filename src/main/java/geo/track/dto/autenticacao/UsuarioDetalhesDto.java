@@ -1,7 +1,7 @@
 package geo.track.dto.autenticacao;
 
 import geo.track.domain.Funcionario;
-import geo.track.domain.Oficinas;
+import geo.track.domain.Oficina;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,7 +19,7 @@ public class UsuarioDetalhesDto implements UserDetails {
         return idOficina;
     }
 
-    public UsuarioDetalhesDto(Oficinas oficina, Funcionario funcionario) {
+    public UsuarioDetalhesDto(Oficina oficina, Funcionario funcionario) {
         this.nome = funcionario.getNome();
         this.email = funcionario.getEmail();
         this.cnpj = oficina.getCnpj();
