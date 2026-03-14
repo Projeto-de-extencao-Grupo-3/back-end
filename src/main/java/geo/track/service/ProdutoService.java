@@ -5,6 +5,7 @@ import geo.track.dto.produtos.ProdutoRequest;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
+import geo.track.enums.Servico;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ProdutoExceptionMessages;
@@ -14,6 +15,8 @@ import geo.track.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +36,19 @@ public class ProdutoService {
     public List<Produto> listar(){
         log.info("Listando todos os produtos");
         return PRODUTO_REPOSITORY.findByAtivoTrue();
+    }
+
+    public HashMap<String, List<Produto>> listarProdutosPorStatus(){
+        log.info("Listando todos os produtos por status");
+        HashMap<String, List<Produto>> response = new HashMap<>();
+
+        List<Servico> tipoServicos = Arrays.stream(Servico.values()).toList();
+
+        tipoServicos.forEach(t -> {
+            response.put(t.name(), PRODUTO_REPOSITORY.findByTipoServico(t));
+        });
+
+        return response;
     }
 
     public Produto findProdutoById(Integer id) {

@@ -13,6 +13,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -37,6 +39,18 @@ public class ProdutoController implements ProdutoSwagger {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(produtos));
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<HashMap<String, List<ProdutoResponse>>>listarPorStatus(){
+        HashMap<String, List<Produto>> produtos = PRODUTO_SERVICE.listarProdutosPorStatus();
+
+        HashMap<String, List<ProdutoResponse>> response = ProdutoMapper.toResponse(produtos);
+
+        if(produtos.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(response);
     }
 
     @Override
