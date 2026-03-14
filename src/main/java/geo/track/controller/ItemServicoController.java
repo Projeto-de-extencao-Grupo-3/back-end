@@ -51,8 +51,8 @@ public class ItemServicoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItemServicoResponse> atualizar(@PathVariable Integer id, @RequestBody ItemServico itens) {
-        ItemServico itemServico = ITEM_SERVICO_SERVICE.atualizar(id, itens);
+    public ResponseEntity<ItemServicoResponse> atualizar(@PathVariable Integer id, @RequestBody @Valid ItemServico body) {
+        ItemServico itemServico = ITEM_SERVICO_SERVICE.atualizar(id, body);
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
 

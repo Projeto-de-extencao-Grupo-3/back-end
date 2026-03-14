@@ -18,15 +18,19 @@ public class ItemProdutoMapper {
             return null;
         }
 
+
         ItemProdutoResponse response = new ItemProdutoResponse();
+        response.setIdTransacaoProduto(entity.getIdRegistroPeca());
+        response.setNomeProduto(entity.getFkProduto().getNome());
+        response.setFornecedorNf(entity.getFkProduto().getFornecedorNf());
+        response.setPrecoCompra(entity.getFkProduto().getPrecoCompra().toString());
+        response.setPrecoVenda(entity.getFkProduto().getPrecoVenda().toString());
+        response.setVisivelOrcamentoCliente(entity.getFkProduto().getVisivelOrcamento());
         response.setQuantidade(entity.getQuantidade());
         response.setPrecoPeca(entity.getPrecoPeca());
         response.setBaixado(entity.getBaixado());
-        response.setVisivelOrcamento(entity.getFkPeca().getVisivelOrcamento());
-
-        Optional.ofNullable(entity.getFkPeca())
-                .map(Produto::getIdProduto)
-                .ifPresent(response::setIdPeca);
+        response.setTipoServico(entity.getFkProduto().getTipoServico().toString());
+        response.setPossivelRegistrarSaida(entity.possivelRealizarBaixaNoEstoque());
 
         return response;
     }
@@ -51,8 +55,7 @@ public class ItemProdutoMapper {
         response.setPrecoPeca(entity.getPrecoPeca());
         response.setBaixado(entity.getBaixado());
 
-        // Safe access to nested properties
-        Optional.ofNullable(entity.getFkPeca()).ifPresent(fkPeca -> {
+        Optional.ofNullable(entity.getFkProduto()).ifPresent(fkPeca -> {
             response.setNomeProduto(fkPeca.getNome());
             response.setVisivelOrcamento(fkPeca.getVisivelOrcamento());
             response.setPrecoCompra(fkPeca.getPrecoCompra());

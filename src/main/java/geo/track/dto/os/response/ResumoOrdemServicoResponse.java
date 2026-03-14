@@ -4,9 +4,9 @@ public record ResumoOrdemServicoResponse(
         Double totalGeral,
         Double totalServico,
         Double totalProdutos,
-        Integer produtosSaidaEstoqueRealizada,
-        Integer produtosSaidaEstoquePendente,
         Boolean pagamentoRealizado,
-        Boolean notaFiscalRealizada
-) {
+        Boolean notaFiscalRealizada,
+        Integer produtosSaidaEstoqueConcluida,
+        Integer produtosSaidaEstoquePendente
+        ) {
 }

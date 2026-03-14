@@ -90,7 +90,7 @@ public class OficinaController implements OficinaSwagger {
 
     @Override
     @PatchMapping("/email")
-    public ResponseEntity<OficinaResponse> patchEmail(@RequestBody OficinaPatchEmailDTO dto){
+    public ResponseEntity<OficinaResponse> patchEmail(@RequestBody @Valid OficinaPatchEmailDTO dto){
         log.info("Atualizando email da oficina ID: {}", dto.getId());
         Oficina emp = OFICINA_SERVICE.patchEmail(dto);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(emp));
@@ -98,7 +98,7 @@ public class OficinaController implements OficinaSwagger {
 
     @Override
     @PatchMapping("/status")
-    public ResponseEntity<OficinaResponse> patchStatus(@RequestBody OficinaPatchStatusDTO dto){
+    public ResponseEntity<OficinaResponse> patchStatus(@RequestBody @Valid OficinaPatchStatusDTO dto){
         log.info("Alterando status da oficina ID: {}", dto.getId());
         Oficina emp = OFICINA_SERVICE.patchStatus(dto);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(emp));

@@ -9,6 +9,7 @@ import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;
 import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
 import geo.track.mapper.RegistroEntradaMapper;
 import geo.track.service.RegistroEntradaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,21 +24,21 @@ public class RegistroEntradaController implements RegistroEntradaSwagger {
 
     @Override
     @PostMapping("/agendamento")
-    public ResponseEntity<RegistroEntradaResponse> realizarAgendamentoVeiculo(@RequestBody RequestPostEntradaAgendada registroDTO) {
+    public ResponseEntity<RegistroEntradaResponse> realizarAgendamentoVeiculo(@RequestBody @Valid RequestPostEntradaAgendada registroDTO) {
         RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.realizarAgendamentoVeiculo(registroDTO);
         return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponse(registro));
     }
 
     @Override
     @PostMapping()
-    public ResponseEntity<RegistroEntradaCriacaoResponse> realizarEntradaVeiculo(@RequestBody RequestPostEntrada registroDTO) {
+    public ResponseEntity<RegistroEntradaCriacaoResponse> realizarEntradaVeiculo(@RequestBody @Valid RequestPostEntrada registroDTO) {
         RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.realizarEntradaVeiculo(registroDTO);
         return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponsePost(registro));
     }
 
     @Override
     @PutMapping("/atualizar")
-    public ResponseEntity<RegistroEntradaResponse> atualizarEntradaVeiculoAgendado(@RequestBody RequestPutRegistroEntrada registroDTO) {
+    public ResponseEntity<RegistroEntradaResponse> atualizarEntradaVeiculoAgendado(@RequestBody @Valid RequestPutRegistroEntrada registroDTO) {
         RegistroEntrada registro = REGISTRO_ENTRADA_SERVICE.atualizarEntradaVeiculoAgendado(registroDTO);
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(registro));
     }

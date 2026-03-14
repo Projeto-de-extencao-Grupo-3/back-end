@@ -41,9 +41,9 @@ public class ResponseGetCliente {
 
     @JsonIgnore
     @OneToMany(mappedBy = "fkCliente")
-    private List<Veiculo> veiculos;
+    private List<Veiculo> veiculo;
 
-    public ResponseGetCliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, Integer fkOficina, Endereco fkEndereco, List<Veiculo> veiculos) {
+    public ResponseGetCliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, Integer fkOficina, Endereco fkEndereco, List<Veiculo> veiculo) {
         this.idCliente = idCliente;
         this.nome = nome;
         this.cpfCnpj = cpfCnpj;
@@ -51,6 +51,6 @@ public class ResponseGetCliente {
         this.email = email;
         this.fkOficina = fkOficina;
         this.fkEndereco = fkEndereco;
-        this.veiculos = veiculos;
+        this.veiculo = veiculo;
     }
 }

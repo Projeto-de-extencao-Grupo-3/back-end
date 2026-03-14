@@ -1,5 +1,6 @@
 package geo.track.domain;
 
+import geo.track.enums.Servico;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -50,8 +51,12 @@ public class Produto {
     @Schema(description = "Visibilidade de item em Orçamento", example = "true")
     private Boolean visivelOrcamento;
 
-    @OneToMany(mappedBy = "fkPeca")
+    @OneToMany(mappedBy = "fkProduto")
     @Schema(description = "Lista de produtos associados à uma lista de produtos")
     private List<ItemProduto> produtos;
+
+    @Schema(description = "Tipo serviço", example = "PINTURA")
+    @Enumerated(EnumType.STRING)
+    private Servico tipoServico;
 }
 
