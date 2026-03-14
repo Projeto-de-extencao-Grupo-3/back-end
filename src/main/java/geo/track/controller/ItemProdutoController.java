@@ -56,4 +56,10 @@ public class ItemProdutoController implements ItemProdutoSwagger {
         ITEM_PRODUTO_SERVICE.deletarRegistro(id);
         return ResponseEntity.status(204).build();
     }
+
+    @PatchMapping("/baixa-estoque/{id}")
+    public ResponseEntity<ItemProdutoResponse> patchBaixaEstoque(@PathVariable Integer id) {
+        ITEM_PRODUTO_SERVICE.realizarBaixaEstoque(id);
+        return ResponseEntity.status(200).body(null);
+    }
 }
