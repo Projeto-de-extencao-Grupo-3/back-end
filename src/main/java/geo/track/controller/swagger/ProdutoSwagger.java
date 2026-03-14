@@ -45,7 +45,7 @@ public interface ProdutoSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @GetMapping
-    ResponseEntity<List<ProdutoResponse>> listar();
+    ResponseEntity<List<ProdutoResponse>> listarContains(@RequestParam String nome);
 
     @Operation(summary = "Buscar produto por ID")
     @ApiResponses(value = {
