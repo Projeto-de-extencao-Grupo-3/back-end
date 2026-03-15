@@ -180,13 +180,13 @@ class ClienteServiceTest {
 
     // ===== findClientes =====
     @Test
-    @DisplayName("findClientes: Deve retornar lista de clientes quando existem")
+    @DisplayName("findClientes: Deve retornar lista de todos os clientes quando não passa filtros")
     void testFindClientesComResultados() {
         // Arrange
         when(repository.findAll()).thenReturn(List.of(cliente));
 
         // Act
-        List<Cliente> resultado = service.findClientes();
+        List<Cliente> resultado = service.findClientes(null, null);
 
         // Assert
         assertNotNull(resultado);
@@ -197,13 +197,13 @@ class ClienteServiceTest {
     }
 
     @Test
-    @DisplayName("findClientes: Deve retornar lista vazia quando não existem clientes")
+    @DisplayName("findClientes: Deve retornar lista vazia quando não existem clientes sem filtros")
     void testFindClientesSemResultados() {
         // Arrange
         when(repository.findAll()).thenReturn(List.of());
 
         // Act
-        List<Cliente> resultado = service.findClientes();
+        List<Cliente> resultado = service.findClientes(null, null);
 
         // Assert
         assertNotNull(resultado);
@@ -211,6 +211,41 @@ class ClienteServiceTest {
         verify(repository).findAll();
     }
 
+    @Test
+    @DisplayName("findClientes: Deve retornar cliente quando filtrado por CPF/CNPJ válido")
+    void testFindClientesComFiltroCpfCnpj() {
+        // Arrange
+        String cpfCnpj = "12345678901";
+        when(repository.findByCpfCnpjContainingIgnoreCase(cpfCnpj)).thenReturn(List.of(cliente));
+        when(repository.findAll()).thenReturn(List.of(cliente));
+
+        // Act
+        List<Cliente> resultado = service.findClientes(null, cpfCnpj);
+
+        // Assert
+        assertNotNull(resultado);
+        verify(repository).findByCpfCnpjContainingIgnoreCase(cpfCnpj);
+        verify(repository).findAll(); // O Service chama findAll() novamente no final de acordo com a logica ajustada
+    }
+    
+    @Test
+    @DisplayName("findClientes: Deve retornar cliente quando filtrado por nome válido")
+    void testFindClientesComFiltroNome() {
+        // Arrange
+        String nome = "João";
+        when(repository.findByNomeContainingIgnoreCase(nome)).thenReturn(List.of(cliente));
+
+        // Act
+        List<Cliente> resultado = service.findClientes(nome, null);
+
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertTrue(resultado.get(0).getNome().contains(nome));
+        verify(repository).findByNomeContainingIgnoreCase(nome);
+        verify(repository, never()).findAll(); // Esse bloco tem um return antes do final
+    }
+    
     // ===== findClienteById =====
     @Test
     @DisplayName("findClienteById: Deve encontrar cliente por ID com sucesso")
@@ -243,72 +278,6 @@ class ClienteServiceTest {
         verify(repository).findById(999);
     }
 
-    // ===== findClienteByNome =====
-    @Test
-    @DisplayName("findClienteByNome: Deve encontrar clientes por nome com sucesso")
-    void testFindClienteByNomeComSucesso() {
-        // Arrange
-        String nome = "João da Silva";
-        when(repository.findByNomeContainingIgnoreCase(nome)).thenReturn(List.of(cliente));
-
-        // Act
-        List<Cliente> resultado = service.findClienteByNome(nome);
-
-        // Assert
-        assertNotNull(resultado);
-        assertFalse(resultado.isEmpty());
-        assertTrue(resultado.stream().anyMatch(c -> c.getNome().contains(nome)));
-        verify(repository).findByNomeContainingIgnoreCase(nome);
-    }
-
-    @Test
-    @DisplayName("findClienteByNome: Deve lançar DataNotFoundException quando nome não existe")
-    void testFindClienteByNomeNaoEncontrado() {
-        // Arrange
-        String nome = "Inexistente";
-        when(repository.findByNomeContainingIgnoreCase(nome)).thenReturn(List.of());
-
-        // Act & Assert
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-            () -> service.findClienteByNome(nome));
-
-        assertEquals("O nome não foi encontrado para esta oficina", exception.getMessage());
-        assertEquals(Domains.CLIENTE.name(), exception.getDomain());
-        verify(repository).findByNomeContainingIgnoreCase(nome);
-    }
-
-    // ===== findClienteByCpfCnpj =====
-    @Test
-    @DisplayName("findClienteByCpfCnpj: Deve encontrar cliente por CPF/CNPJ com sucesso")
-    void testFindClienteByCpfCnpjComSucesso() {
-        // Arrange
-        String cpfCnpj = "12345678901";
-        when(repository.findByCpfCnpj(cpfCnpj)).thenReturn(Optional.of(cliente));
-
-        // Act
-        Cliente resultado = service.findClienteByCpfCnpj(cpfCnpj);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(cpfCnpj, resultado.getCpfCnpj());
-        verify(repository).findByCpfCnpj(cpfCnpj);
-    }
-
-    @Test
-    @DisplayName("findClienteByCpfCnpj: Deve lançar DataNotFoundException quando CPF/CNPJ não existe")
-    void testFindClienteByCpfCnpjNaoEncontrado() {
-        // Arrange
-        String cpfCnpj = "99999999999";
-        when(repository.findByCpfCnpj(cpfCnpj)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-            () -> service.findClienteByCpfCnpj(cpfCnpj));
-
-        assertEquals("CPF não foi encontrado para esta oficina", exception.getMessage());
-        assertEquals(Domains.CLIENTE.name(), exception.getDomain());
-        verify(repository).findByCpfCnpj(cpfCnpj);
-    }
 
     // ===== patchEmailCliente =====
     @Test

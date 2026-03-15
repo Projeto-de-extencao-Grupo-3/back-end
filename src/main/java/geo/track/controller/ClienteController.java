@@ -25,12 +25,11 @@ public class ClienteController implements ClienteSwagger {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<ClienteResponse>> findAllClientes(@RequestParam(required = false) String nome) {
-        List<Cliente> clientes = CLIENTE_SERVICE.findClientes();
-
-        if (nome != null) {
-            clientes = clientes.stream().filter(c -> c.getNome().contains(nome)).toList();
-        }
+    public ResponseEntity<List<ClienteResponse>> findAllClientes(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cpfCnpj
+    ) {
+        List<Cliente> clientes = CLIENTE_SERVICE.findClientes(nome, cpfCnpj);
 
         if (clientes.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -51,23 +50,6 @@ public class ClienteController implements ClienteSwagger {
     public ResponseEntity<ClienteResponse> getClienteById(@PathVariable Integer id) {
         Cliente cliente = CLIENTE_SERVICE.findClienteById(id);
 
-        return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
-    }
-
-    @Override
-    @GetMapping("/nome")
-    public ResponseEntity<List<ClienteResponse>> getClienteByNome(@RequestParam String nome) {
-        List<Cliente> clientes = CLIENTE_SERVICE.findClienteByNome(nome);
-        if (clientes.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-        return ResponseEntity.status(200).body(ClientesMapper.toResponse(clientes));
-    }
-
-    @Override
-    @GetMapping("/cpfCnpj")
-    public ResponseEntity<ClienteResponse> getClienteByCpfCnpj(@RequestParam String cpfCnpj) {
-        Cliente cliente = CLIENTE_SERVICE.findClienteByCpfCnpj(cpfCnpj);
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
 

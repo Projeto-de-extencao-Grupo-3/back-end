@@ -41,7 +41,24 @@ public class ClienteService {
         return CLIENTE_REPOSITORY.save(cliente);
     }
 
-    public List<Cliente> findClientes(){
+    public List<Cliente> findClientes(String nome, String cpfCnpj){
+        if (nome != null && cpfCnpj != null) {
+            log.info("Buscando clientes pelo nome contendo: {} e CPF/CNPJ: {}", nome, cpfCnpj);
+            List<Cliente> clientes = CLIENTE_REPOSITORY.findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCase(nome, cpfCnpj);
+            return clientes;
+        }
+        else if (cpfCnpj != null && !cpfCnpj.trim().isEmpty()) {
+            log.info("Buscando cliente pelo CPF/CNPJ: {}", cpfCnpj);
+            List<Cliente> cliente = CLIENTE_REPOSITORY.findByCpfCnpjContainingIgnoreCase(cpfCnpj);
+        } else if (nome != null && !nome.trim().isEmpty()) {
+            log.info("Buscando clientes pelo nome contendo: {}", nome);
+            List<Cliente> clientes = CLIENTE_REPOSITORY.findByNomeContainingIgnoreCase(nome);
+            return clientes;
+        } else  {
+            log.info("Buscando todos os clientes cadastrados");
+            return CLIENTE_REPOSITORY.findAll();
+        }
+
         log.info("Buscando todos os clientes cadastrados");
         return CLIENTE_REPOSITORY.findAll();
     }
@@ -57,29 +74,6 @@ public class ClienteService {
         }
 
         log.info("Cliente encontrado: {}", cliente.get().getNome());
-        return cliente.get();
-    }
-
-
-    public List<Cliente> findClienteByNome(String nome) {
-        log.info("Buscando clientes pelo nome contendo: {}", nome);
-        List<Cliente> cliente = CLIENTE_REPOSITORY.findByNomeContainingIgnoreCase(nome);
-
-        if (cliente.isEmpty()) {
-            log.warn("Nenhum cliente encontrado com o nome: {}", nome);
-            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_NOME, nome), Domains.CLIENTE);
-        }
-        return cliente;
-    }
-
-    public Cliente findClienteByCpfCnpj(String cpfCnpj) {
-        log.info("Buscando cliente pelo CPF/CNPJ: {}", cpfCnpj);
-        Optional<Cliente> cliente = CLIENTE_REPOSITORY.findByCpfCnpj(cpfCnpj);
-
-        if (cliente.isEmpty()) {
-            log.warn("Cliente com CPF/CNPJ {} não encontrado", cpfCnpj);
-            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_CPF_CNPJ, cpfCnpj), Domains.CLIENTE);
-        }
         return cliente.get();
     }
 

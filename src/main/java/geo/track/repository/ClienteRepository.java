@@ -9,7 +9,8 @@ import java.util.Optional;
 public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     List<Cliente> findByNomeContainingIgnoreCase(String nome);
-    Optional<Cliente> findByCpfCnpj(String cpfCnpj);
+    List<Cliente> findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCase(String nome, String cpfCnpj);
+    List<Cliente> findByCpfCnpjContainingIgnoreCase(String cpfCnpj);
 
     Boolean existsByNome(String nome);
     Boolean existsByCpfCnpj(String cpfCnpj);

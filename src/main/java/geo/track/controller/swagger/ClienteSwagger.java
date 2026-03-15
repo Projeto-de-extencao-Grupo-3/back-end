@@ -25,12 +25,16 @@ import java.util.List;
 public interface ClienteSwagger {
 
     @GetMapping
-    @Operation(summary = "Listar todos os clientes")
+    @Operation(summary = "Listar clientes, podendo filtrar por nome ou CPF/CNPJ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Clientes listados com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ClienteResponse.class)))),
-            @ApiResponse(responseCode = "204", description = "Nenhum cliente cadastrado", content = @Content)
+            @ApiResponse(responseCode = "204", description = "Nenhum cliente encontrado", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado (quando filtrado por CPF/CNPJ ou Nome)", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
     })
-    ResponseEntity<List<ClienteResponse>> findAllClientes(@RequestParam String nome);
+    ResponseEntity<List<ClienteResponse>> findAllClientes(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cpfCnpj
+    );
 
     @Operation(
             summary = "Cadastrar novo cliente",
@@ -51,22 +55,6 @@ public interface ClienteSwagger {
     })
     @GetMapping("/{id}")
     ResponseEntity<ClienteResponse> getClienteById(@PathVariable Integer id);
-
-    @Operation(summary = "Buscar clientes pelo nome (parcial ou completo)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Clientes encontrados com sucesso", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClienteResponse.class)))}),
-            @ApiResponse(responseCode = "204", description = "Nenhum cliente encontrado para o nome fornecido", content = @Content)
-    })
-    @GetMapping("/nome")
-    ResponseEntity<List<ClienteResponse>> getClienteByNome(@RequestParam String nome);
-
-    @Operation(summary = "Buscar cliente pelo CPF ou CNPJ")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente encontrado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado para o CPF/CNPJ", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
-    @GetMapping("/cpfCnpj")
-    ResponseEntity<ClienteResponse> getClienteByCpfCnpj(@RequestParam String cpfCnpj);
 
     @Operation(summary = "Atualizar o e-mail de um cliente")
     @ApiResponses(value = {
