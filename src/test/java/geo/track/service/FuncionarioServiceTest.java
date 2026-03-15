@@ -2,9 +2,10 @@ package geo.track.service;
 
 import geo.track.domain.Funcionario;
 import geo.track.domain.Oficina;
+import geo.track.dto.funcionarios.request.RequestPostFuncionario;
+import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.FuncionarioRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,11 +42,26 @@ class FuncionarioServiceTest {
     @InjectMocks
     private FuncionarioService service;
 
+    private RequestPostFuncionario funcionarioCadastrar;
+    private RequestPutFuncionario funcionarioAtualizar;
     private Funcionario funcionario;
     private Oficina oficina;
 
     @BeforeEach
     void setUp() {
+        funcionarioCadastrar = new RequestPostFuncionario();
+        funcionarioCadastrar.setNome("João da Silva Santos");
+        funcionarioCadastrar.setEmail("joao.santos@example.com");
+        funcionarioCadastrar.setCargo("Mecânico");
+        funcionarioCadastrar.setTelefone("11987654321");
+        funcionarioCadastrar.setSenha("password123");
+        funcionarioCadastrar.setFkOficina(1);
+
+        funcionarioAtualizar = new RequestPutFuncionario();
+        funcionarioAtualizar.setId(1);
+        funcionarioAtualizar.setNome("João da Silva Santos");
+        funcionarioAtualizar.setCargo("Mecânico Sênior");
+
         // Arrange: Preparar Entidade
         oficina = new Oficina();
         oficina.setIdOficina(1);
@@ -66,18 +82,18 @@ class FuncionarioServiceTest {
     @DisplayName("cadastrar: Deve cadastrar novo funcionário com sucesso quando email não existe")
     void testCadastrarFuncionarioComSucesso() {
         // Arrange
-        when(repository.existsByEmail(funcionario.getEmail())).thenReturn(false);
+        when(repository.existsByEmail(funcionarioCadastrar.getEmail())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(repository.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Funcionario resultado = service.cadastrar(funcionario);
+        Funcionario resultado = service.cadastrar(funcionarioCadastrar);
 
         // Assert
         assertNotNull(resultado);
         assertEquals("João da Silva Santos", resultado.getNome());
         assertEquals("encodedPassword", resultado.getSenha());
-        verify(repository).existsByEmail(funcionario.getEmail());
+        verify(repository).existsByEmail(funcionarioCadastrar.getEmail());
         verify(passwordEncoder).encode("password123");
         verify(repository).save(any(Funcionario.class));
     }
@@ -86,14 +102,14 @@ class FuncionarioServiceTest {
     @DisplayName("cadastrar: Deve lançar ConflictException quando email já existe")
     void testCadastrarFuncionarioComEmailDuplicado() {
         // Arrange
-        when(repository.existsByEmail(funcionario.getEmail())).thenReturn(true);
+        when(repository.existsByEmail(funcionarioCadastrar.getEmail())).thenReturn(true);
 
         // Act & Assert
         ConflictException exception = assertThrows(ConflictException.class,
-            () -> service.cadastrar(funcionario));
+            () -> service.cadastrar(funcionarioCadastrar));
 
-        assertEquals("Email já cadastrado", exception.getMessage());
-        verify(repository).existsByEmail(funcionario.getEmail());
+        assertEquals("FUNCIONARIO", exception.getDomain());
+        verify(repository).existsByEmail(funcionarioCadastrar.getEmail());
         verify(repository, never()).save(any(Funcionario.class));
     }
 
@@ -160,7 +176,7 @@ class FuncionarioServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.buscarPorId(999));
 
-        assertEquals("Funcionário não encontrado", exception.getMessage());
+        assertEquals("FUNCIONARIO", exception.getDomain());
         verify(repository).existsByIdFuncionario(999);
         verify(repository, never()).getByIdFuncionario(anyInt());
     }
@@ -170,39 +186,64 @@ class FuncionarioServiceTest {
     @DisplayName("atualizar: Deve atualizar funcionário com sucesso quando existe")
     void testAtualizarFuncionario() {
         // Arrange
-        Funcionario funcionarioAtualizado = funcionario;
-        funcionarioAtualizado.setNome("João da Silva Santos");
-        funcionarioAtualizado.setCargo("Mecânico Sênior");
-
-        when(repository.existsById(1)).thenReturn(true);
+        // Note: The service calls this.buscarPorId, which uses the repository directly.
+        // We shouldn't mock service.buscarPorId when injecting mocks, instead mock the repository calls it makes.
+        when(repository.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(true);
+        when(repository.getByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(funcionario);
+        
+        when(repository.existsById(funcionarioAtualizar.getId())).thenReturn(true);
         when(repository.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Funcionario resultado = service.atualizar(1, funcionarioAtualizado);
+        Funcionario resultado = service.atualizar(funcionarioAtualizar);
 
         // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdFuncionario());
         assertEquals("João da Silva Santos", resultado.getNome());
         assertEquals("Mecânico Sênior", resultado.getCargo());
-        verify(repository).existsById(1);
+        verify(repository).existsByIdFuncionario(funcionarioAtualizar.getId());
+        verify(repository).getByIdFuncionario(funcionarioAtualizar.getId());
+        verify(repository).existsById(funcionarioAtualizar.getId());
         verify(repository).save(any(Funcionario.class));
     }
 
     @Test
-    @DisplayName("atualizar: Deve lançar DataNotFoundException quando funcionário não existe")
-    void testAtualizarFuncionario_NaoEncontrado() {
+    @DisplayName("atualizar: Deve lançar DataNotFoundException quando funcionário não existe na busca inicial")
+    void testAtualizarFuncionario_NaoEncontradoBusca() {
         // Arrange
-        when(repository.existsById(999)).thenReturn(false);
+        when(repository.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(false);
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-            () -> service.atualizar(999, funcionario));
+            () -> service.atualizar(funcionarioAtualizar));
 
-        assertEquals("Funcionário não encontrado", exception.getMessage());
-        verify(repository).existsById(999);
+        assertEquals("FUNCIONARIO", exception.getDomain());
+        verify(repository).existsByIdFuncionario(funcionarioAtualizar.getId());
+        verify(repository, never()).getByIdFuncionario(anyInt());
+        verify(repository, never()).existsById(any());
         verify(repository, never()).save(any(Funcionario.class));
     }
+    
+    @Test
+    @DisplayName("atualizar: Deve lançar DataNotFoundException quando funcionário não existe na validação final")
+    void testAtualizarFuncionario_NaoEncontradoValidacaoFinal() {
+        // Arrange
+        when(repository.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(true);
+        when(repository.getByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(funcionario);
+        when(repository.existsById(funcionarioAtualizar.getId())).thenReturn(false);
+
+        // Act & Assert
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+            () -> service.atualizar(funcionarioAtualizar));
+
+        assertEquals("FUNCIONARIO", exception.getDomain());
+        verify(repository).existsByIdFuncionario(funcionarioAtualizar.getId());
+        verify(repository).getByIdFuncionario(funcionarioAtualizar.getId());
+        verify(repository).existsById(funcionarioAtualizar.getId());
+        verify(repository, never()).save(any(Funcionario.class));
+    }
+
 
     // ===== deletar =====
     @Test
@@ -230,7 +271,7 @@ class FuncionarioServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.deletar(999));
 
-        assertEquals("Funcionário não encontrado", exception.getMessage());
+        assertEquals("FUNCIONARIO", exception.getDomain());
         verify(repository).existsById(999);
         verify(repository, never()).deleteById(anyInt());
     }

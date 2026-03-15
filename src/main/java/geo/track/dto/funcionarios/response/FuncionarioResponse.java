@@ -1,4 +1,4 @@
-package geo.track.dto.funcionarios;
+package geo.track.dto.funcionarios.response;
 
 import lombok.Data;
 

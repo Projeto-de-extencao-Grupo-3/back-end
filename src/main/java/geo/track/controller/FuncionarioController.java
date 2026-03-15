@@ -2,9 +2,12 @@ package geo.track.controller;
 
 import geo.track.controller.swagger.FuncionarioSwagger;
 import geo.track.domain.Funcionario;
-import geo.track.dto.funcionarios.FuncionarioResponse;
+import geo.track.dto.funcionarios.request.RequestPostFuncionario;
+import geo.track.dto.funcionarios.response.FuncionarioResponse;
+import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.mapper.FuncionarioMapper;
 import geo.track.service.FuncionarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,7 @@ public class FuncionarioController implements FuncionarioSwagger {
 
     @Override
     @PostMapping
-    public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody Funcionario body){
+    public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody @Valid RequestPostFuncionario body){
         Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.cadastrar(body);
         return ResponseEntity.status(201).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
@@ -39,9 +42,9 @@ public class FuncionarioController implements FuncionarioSwagger {
     }
 
     @Override
-    @PutMapping("/{id}")
-    public ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Integer id, @RequestBody Funcionario body){
-        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.atualizar(id, body);
+    @PutMapping()
+    public ResponseEntity<FuncionarioResponse> atualizar(@RequestBody @Valid RequestPutFuncionario body){
+        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.atualizar(body);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 

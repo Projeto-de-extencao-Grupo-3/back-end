@@ -1,11 +1,14 @@
 package geo.track.service;
 
 import geo.track.domain.Funcionario;
+import geo.track.dto.funcionarios.request.RequestPostFuncionario;
+import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.FuncionarioExceptionMessages;
 import geo.track.log.Log;
+import geo.track.mapper.FuncionarioMapper;
 import geo.track.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,16 +23,18 @@ public class FuncionarioService {
     private final PasswordEncoder PASSWORD_ENCODER;
     private final Log log;
 
-    public Funcionario cadastrar(Funcionario body){
+    public Funcionario cadastrar(RequestPostFuncionario body){
         log.info("Iniciando cadastro de novo funcionário com email: {}", body.getEmail());
         if (FUNCIONARIO_REPOSITORY.existsByEmail(body.getEmail())){
             log.warn("Falha ao cadastrar: Email {} já existe no sistema", body.getEmail());
             throw new ConflictException(FuncionarioExceptionMessages.EMAIL_JA_CADASTRADO, Domains.FUNCIONARIO);
         }
 
-        body.setSenha(PASSWORD_ENCODER.encode(body.getSenha()));
+        Funcionario funcionario = FuncionarioMapper.toEntity(body);
+
+        funcionario.setSenha(PASSWORD_ENCODER.encode(body.getSenha()));
         log.info("Funcionário cadastrado com sucesso para o email: {}", body.getEmail());
-        return FUNCIONARIO_REPOSITORY.save(body);
+        return FUNCIONARIO_REPOSITORY.save(funcionario);
     }
 
     public List<Funcionario> buscarPorOficina(Integer idOficina) {
@@ -46,14 +51,18 @@ public class FuncionarioService {
         return FUNCIONARIO_REPOSITORY.getByIdFuncionario(id);
     }
 
-    public Funcionario atualizar(Integer id, Funcionario body){
-        log.info("Iniciando atualização do funcionário ID: {}", id);
-        body.setIdFuncionario(id);
-        if (!FUNCIONARIO_REPOSITORY.existsById(id)){
-            log.error("Falha na atualização: Funcionário ID {} não existe", id);
+    public Funcionario atualizar(RequestPutFuncionario body){
+        log.info("Iniciando atualização do funcionário ID: {}", body.getId());
+        Funcionario funcionario = this.buscarPorId(body.getId());
+        funcionario = FuncionarioMapper.toEntityUpdate(funcionario, body);
+
+        if (!FUNCIONARIO_REPOSITORY.existsById(body.getId())){
+            log.error("Falha na atualização: Funcionário ID {} não existe", body.getId());
             throw new DataNotFoundException(FuncionarioExceptionMessages.FUNCIONARIO_NAO_ENCONTRADO_GENERICO, Domains.FUNCIONARIO);
         }
-        return FUNCIONARIO_REPOSITORY.save(body);
+
+        log.info("Funcionário ID {} atualizado com sucesso", body.getId());
+        return FUNCIONARIO_REPOSITORY.save(funcionario);
     }
 
     public void deletar(Integer id){

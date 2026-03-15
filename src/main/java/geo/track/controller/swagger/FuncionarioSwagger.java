@@ -1,7 +1,8 @@
 package geo.track.controller.swagger;
 
-import geo.track.domain.Funcionario;
-import geo.track.dto.funcionarios.FuncionarioResponse;
+import geo.track.dto.funcionarios.request.RequestPostFuncionario;
+import geo.track.dto.funcionarios.request.RequestPutFuncionario;
+import geo.track.dto.funcionarios.response.FuncionarioResponse;
 import geo.track.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -29,7 +30,7 @@ public interface FuncionarioSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PostMapping
-    ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody Funcionario funcionario);
+    ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody RequestPostFuncionario funcionario);
 
     @Operation(summary = "Buscar o funcionário pela fkOficina")
     @ApiResponses(value = {
@@ -62,8 +63,8 @@ public interface FuncionarioSwagger {
             @ApiResponse(responseCode = "404", description = "Funcionário não encontrado", content = @Content(schema = @Schema(implementation = ExceptionBody.class))),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
-    @PutMapping("/{id}")
-    ResponseEntity<FuncionarioResponse> atualizar(@PathVariable Integer id, @RequestBody Funcionario funcionario);
+    @PutMapping()
+    ResponseEntity<FuncionarioResponse> atualizar(@RequestBody RequestPutFuncionario funcionario);
 
     @Operation(summary = "Excluir um funcionário pelo ID")
     @ApiResponses(value = {
