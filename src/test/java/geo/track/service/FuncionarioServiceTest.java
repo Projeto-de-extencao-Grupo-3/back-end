@@ -6,8 +6,8 @@ import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.log.LogImplementation;
 import geo.track.repository.FuncionarioRepository;
+import geo.track.repository.OficinaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,13 +32,16 @@ import static org.mockito.Mockito.*;
 class FuncionarioServiceTest {
 
     @Mock
-    private FuncionarioRepository repository;
+    private FuncionarioRepository FUNCIONARIO_REPOSITORY;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private OficinaRepository OFICINA_RESPOSITORY;
 
     @Mock
-    private LogImplementation log;
+    private PasswordEncoder PASSWORD_ENCODER;
+
+    @Mock
+    private geo.track.log.Log log;
 
     @InjectMocks
     private FuncionarioService service;
@@ -70,11 +74,11 @@ class FuncionarioServiceTest {
         funcionario = new Funcionario();
         funcionario.setIdFuncionario(1);
         funcionario.setNome("João da Silva Santos");
-        funcionario.setEmail("joao.santos@example.com"); // Added email
+        funcionario.setEmail("joao.santos@example.com");
         funcionario.setCargo("Mecânico");
         funcionario.setTelefone("11987654321");
-        funcionario.setSenha("password123"); // Added password
-        funcionario.setFkOficina(oficina); // Set the fkOficina
+        funcionario.setSenha("password123");
+        funcionario.setFkOficina(oficina);
     }
 
     // ===== cadastrar =====
@@ -82,9 +86,10 @@ class FuncionarioServiceTest {
     @DisplayName("cadastrar: Deve cadastrar novo funcionário com sucesso quando email não existe")
     void testCadastrarFuncionarioComSucesso() {
         // Arrange
-        when(repository.existsByEmail(funcionarioCadastrar.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        when(repository.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(FUNCIONARIO_REPOSITORY.existsByEmail(funcionarioCadastrar.getEmail())).thenReturn(false);
+        when(OFICINA_RESPOSITORY.findById(funcionarioCadastrar.getFkOficina())).thenReturn(Optional.of(oficina));
+        when(PASSWORD_ENCODER.encode(anyString())).thenReturn("encodedPassword");
+        when(FUNCIONARIO_REPOSITORY.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         Funcionario resultado = service.cadastrar(funcionarioCadastrar);
@@ -93,24 +98,26 @@ class FuncionarioServiceTest {
         assertNotNull(resultado);
         assertEquals("João da Silva Santos", resultado.getNome());
         assertEquals("encodedPassword", resultado.getSenha());
-        verify(repository).existsByEmail(funcionarioCadastrar.getEmail());
-        verify(passwordEncoder).encode("password123");
-        verify(repository).save(any(Funcionario.class));
+        verify(FUNCIONARIO_REPOSITORY).existsByEmail(funcionarioCadastrar.getEmail());
+        verify(OFICINA_RESPOSITORY).findById(funcionarioCadastrar.getFkOficina());
+        verify(PASSWORD_ENCODER).encode("password123");
+        verify(FUNCIONARIO_REPOSITORY).save(any(Funcionario.class));
     }
 
     @Test
     @DisplayName("cadastrar: Deve lançar ConflictException quando email já existe")
     void testCadastrarFuncionarioComEmailDuplicado() {
         // Arrange
-        when(repository.existsByEmail(funcionarioCadastrar.getEmail())).thenReturn(true);
+        when(FUNCIONARIO_REPOSITORY.existsByEmail(funcionarioCadastrar.getEmail())).thenReturn(true);
 
         // Act & Assert
         ConflictException exception = assertThrows(ConflictException.class,
             () -> service.cadastrar(funcionarioCadastrar));
 
         assertEquals("FUNCIONARIO", exception.getDomain());
-        verify(repository).existsByEmail(funcionarioCadastrar.getEmail());
-        verify(repository, never()).save(any(Funcionario.class));
+        verify(FUNCIONARIO_REPOSITORY).existsByEmail(funcionarioCadastrar.getEmail());
+        verify(OFICINA_RESPOSITORY, never()).findById(anyInt());
+        verify(FUNCIONARIO_REPOSITORY, never()).save(any(Funcionario.class));
     }
 
     // ===== buscarPorOficina =====
@@ -119,7 +126,7 @@ class FuncionarioServiceTest {
     void testBuscarPorOficinaComResultados() {
         // Arrange
         List<Funcionario> funcionariosDaOficina = Collections.singletonList(funcionario);
-        when(repository.findByFkOficina_IdOficina(oficina.getIdOficina())).thenReturn(funcionariosDaOficina);
+        when(FUNCIONARIO_REPOSITORY.findByFkOficina_IdOficina(oficina.getIdOficina())).thenReturn(funcionariosDaOficina);
 
         // Act
         List<Funcionario> resultado = service.buscarPorOficina(oficina.getIdOficina());
@@ -128,15 +135,15 @@ class FuncionarioServiceTest {
         assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
         assertEquals(1, resultado.size());
-        assertEquals(funcionario.getIdFuncionario(), resultado.get(0).getIdFuncionario());
-        verify(repository).findByFkOficina_IdOficina(oficina.getIdOficina());
+        assertEquals(funcionario.getIdFuncionario(), resultado.getFirst().getIdFuncionario());
+        verify(FUNCIONARIO_REPOSITORY).findByFkOficina_IdOficina(oficina.getIdOficina());
     }
 
     @Test
     @DisplayName("buscarPorOficina: Deve retornar lista vazia quando não há funcionários para a oficina")
     void testBuscarPorOficinaSemResultados() {
         // Arrange
-        when(repository.findByFkOficina_IdOficina(oficina.getIdOficina())).thenReturn(Collections.emptyList());
+        when(FUNCIONARIO_REPOSITORY.findByFkOficina_IdOficina(oficina.getIdOficina())).thenReturn(Collections.emptyList());
 
         // Act
         List<Funcionario> resultado = service.buscarPorOficina(oficina.getIdOficina());
@@ -144,7 +151,7 @@ class FuncionarioServiceTest {
         // Assert
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
-        verify(repository).findByFkOficina_IdOficina(oficina.getIdOficina());
+        verify(FUNCIONARIO_REPOSITORY).findByFkOficina_IdOficina(oficina.getIdOficina());
     }
 
     // ===== buscarPorId =====
@@ -152,8 +159,8 @@ class FuncionarioServiceTest {
     @DisplayName("buscarPorId: Deve buscar funcionário por ID com sucesso")
     void testBuscarFuncionarioPorId() {
         // Arrange
-        when(repository.existsByIdFuncionario(1)).thenReturn(true);
-        when(repository.getByIdFuncionario(1)).thenReturn(funcionario);
+        when(FUNCIONARIO_REPOSITORY.existsByIdFuncionario(1)).thenReturn(true);
+        when(FUNCIONARIO_REPOSITORY.getByIdFuncionario(1)).thenReturn(funcionario);
 
         // Act
         Funcionario resultado = service.buscarPorId(1);
@@ -162,23 +169,23 @@ class FuncionarioServiceTest {
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdFuncionario());
         assertEquals("João da Silva Santos", resultado.getNome());
-        verify(repository).existsByIdFuncionario(1);
-        verify(repository).getByIdFuncionario(1);
+        verify(FUNCIONARIO_REPOSITORY).existsByIdFuncionario(1);
+        verify(FUNCIONARIO_REPOSITORY).getByIdFuncionario(1);
     }
 
     @Test
     @DisplayName("buscarPorId: Deve lançar DataNotFoundException quando ID não existe")
     void testBuscarFuncionarioPorId_NaoEncontrado() {
         // Arrange
-        when(repository.existsByIdFuncionario(999)).thenReturn(false);
+        when(FUNCIONARIO_REPOSITORY.existsByIdFuncionario(999)).thenReturn(false);
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.buscarPorId(999));
 
         assertEquals("FUNCIONARIO", exception.getDomain());
-        verify(repository).existsByIdFuncionario(999);
-        verify(repository, never()).getByIdFuncionario(anyInt());
+        verify(FUNCIONARIO_REPOSITORY).existsByIdFuncionario(999);
+        verify(FUNCIONARIO_REPOSITORY, never()).getByIdFuncionario(anyInt());
     }
 
     // ===== atualizar =====
@@ -186,13 +193,10 @@ class FuncionarioServiceTest {
     @DisplayName("atualizar: Deve atualizar funcionário com sucesso quando existe")
     void testAtualizarFuncionario() {
         // Arrange
-        // Note: The service calls this.buscarPorId, which uses the repository directly.
-        // We shouldn't mock service.buscarPorId when injecting mocks, instead mock the repository calls it makes.
-        when(repository.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(true);
-        when(repository.getByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(funcionario);
-        
-        when(repository.existsById(funcionarioAtualizar.getId())).thenReturn(true);
-        when(repository.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(FUNCIONARIO_REPOSITORY.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(true);
+        when(FUNCIONARIO_REPOSITORY.getByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(funcionario);
+        when(FUNCIONARIO_REPOSITORY.existsById(funcionarioAtualizar.getId())).thenReturn(true);
+        when(FUNCIONARIO_REPOSITORY.save(any(Funcionario.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         Funcionario resultado = service.atualizar(funcionarioAtualizar);
@@ -202,46 +206,46 @@ class FuncionarioServiceTest {
         assertEquals(1, resultado.getIdFuncionario());
         assertEquals("João da Silva Santos", resultado.getNome());
         assertEquals("Mecânico Sênior", resultado.getCargo());
-        verify(repository).existsByIdFuncionario(funcionarioAtualizar.getId());
-        verify(repository).getByIdFuncionario(funcionarioAtualizar.getId());
-        verify(repository).existsById(funcionarioAtualizar.getId());
-        verify(repository).save(any(Funcionario.class));
+        verify(FUNCIONARIO_REPOSITORY).existsByIdFuncionario(funcionarioAtualizar.getId());
+        verify(FUNCIONARIO_REPOSITORY).getByIdFuncionario(funcionarioAtualizar.getId());
+        verify(FUNCIONARIO_REPOSITORY).existsById(funcionarioAtualizar.getId());
+        verify(FUNCIONARIO_REPOSITORY).save(any(Funcionario.class));
     }
 
     @Test
     @DisplayName("atualizar: Deve lançar DataNotFoundException quando funcionário não existe na busca inicial")
     void testAtualizarFuncionario_NaoEncontradoBusca() {
         // Arrange
-        when(repository.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(false);
+        when(FUNCIONARIO_REPOSITORY.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(false);
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.atualizar(funcionarioAtualizar));
 
         assertEquals("FUNCIONARIO", exception.getDomain());
-        verify(repository).existsByIdFuncionario(funcionarioAtualizar.getId());
-        verify(repository, never()).getByIdFuncionario(anyInt());
-        verify(repository, never()).existsById(any());
-        verify(repository, never()).save(any(Funcionario.class));
+        verify(FUNCIONARIO_REPOSITORY).existsByIdFuncionario(funcionarioAtualizar.getId());
+        verify(FUNCIONARIO_REPOSITORY, never()).getByIdFuncionario(anyInt());
+        verify(FUNCIONARIO_REPOSITORY, never()).existsById(any());
+        verify(FUNCIONARIO_REPOSITORY, never()).save(any(Funcionario.class));
     }
     
     @Test
     @DisplayName("atualizar: Deve lançar DataNotFoundException quando funcionário não existe na validação final")
     void testAtualizarFuncionario_NaoEncontradoValidacaoFinal() {
         // Arrange
-        when(repository.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(true);
-        when(repository.getByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(funcionario);
-        when(repository.existsById(funcionarioAtualizar.getId())).thenReturn(false);
+        when(FUNCIONARIO_REPOSITORY.existsByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(true);
+        when(FUNCIONARIO_REPOSITORY.getByIdFuncionario(funcionarioAtualizar.getId())).thenReturn(funcionario);
+        when(FUNCIONARIO_REPOSITORY.existsById(funcionarioAtualizar.getId())).thenReturn(false);
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.atualizar(funcionarioAtualizar));
 
         assertEquals("FUNCIONARIO", exception.getDomain());
-        verify(repository).existsByIdFuncionario(funcionarioAtualizar.getId());
-        verify(repository).getByIdFuncionario(funcionarioAtualizar.getId());
-        verify(repository).existsById(funcionarioAtualizar.getId());
-        verify(repository, never()).save(any(Funcionario.class));
+        verify(FUNCIONARIO_REPOSITORY).existsByIdFuncionario(funcionarioAtualizar.getId());
+        verify(FUNCIONARIO_REPOSITORY).getByIdFuncionario(funcionarioAtualizar.getId());
+        verify(FUNCIONARIO_REPOSITORY).existsById(funcionarioAtualizar.getId());
+        verify(FUNCIONARIO_REPOSITORY, never()).save(any(Funcionario.class));
     }
 
 
@@ -250,29 +254,29 @@ class FuncionarioServiceTest {
     @DisplayName("deletar: Deve deletar funcionário com sucesso quando existe")
     void testDeletarFuncionario() {
         // Arrange
-        when(repository.existsById(1)).thenReturn(true);
-        doNothing().when(repository).deleteById(1);
+        when(FUNCIONARIO_REPOSITORY.existsById(1)).thenReturn(true);
+        doNothing().when(FUNCIONARIO_REPOSITORY).deleteById(1);
 
         // Act
         assertDoesNotThrow(() -> service.deletar(1));
 
         // Assert
-        verify(repository).existsById(1);
-        verify(repository).deleteById(1);
+        verify(FUNCIONARIO_REPOSITORY).existsById(1);
+        verify(FUNCIONARIO_REPOSITORY).deleteById(1);
     }
 
     @Test
     @DisplayName("deletar: Deve lançar DataNotFoundException quando funcionário não existe")
     void testDeletarFuncionario_NaoEncontrado() {
         // Arrange
-        when(repository.existsById(999)).thenReturn(false);
+        when(FUNCIONARIO_REPOSITORY.existsById(999)).thenReturn(false);
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.deletar(999));
 
         assertEquals("FUNCIONARIO", exception.getDomain());
-        verify(repository).existsById(999);
-        verify(repository, never()).deleteById(anyInt());
+        verify(FUNCIONARIO_REPOSITORY).existsById(999);
+        verify(FUNCIONARIO_REPOSITORY, never()).deleteById(anyInt());
     }
 }

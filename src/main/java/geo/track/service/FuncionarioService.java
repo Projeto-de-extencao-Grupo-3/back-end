@@ -68,12 +68,9 @@ public class FuncionarioService {
     public Funcionario atualizar(RequestPutFuncionario body){
         log.info("Iniciando atualização do funcionário ID: {}", body.getId());
         Funcionario funcionario = this.buscarPorId(body.getId());
+
         funcionario = FuncionarioMapper.toEntityUpdate(funcionario, body);
 
-        Oficina oficina = OFICINA_RESPOSITORY.findById(body.getFkOficina())
-                .orElseThrow(() -> new DataNotFoundException("Oficina não encontrada", Domains.OFICINA));
-
-        funcionario.setFkOficina(oficina);
         if (!FUNCIONARIO_REPOSITORY.existsById(body.getId())){
             log.error("Falha na atualização: Funcionário ID {} não existe", body.getId());
             throw new DataNotFoundException(FuncionarioExceptionMessages.FUNCIONARIO_NAO_ENCONTRADO_GENERICO, Domains.FUNCIONARIO);
