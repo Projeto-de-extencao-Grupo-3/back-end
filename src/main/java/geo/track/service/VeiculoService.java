@@ -25,7 +25,7 @@ public class VeiculoService {
     private final VeiculoRepository VEICULO_REPOSITORY;
     private final Log log;
 
-    public Veiculo cadastrar(@RequestBody Veiculo body){
+    public Veiculo cadastrar(Veiculo body){
         log.info("Iniciando cadastro de novo veículo com placa: {}", body.getPlaca());
         body.setIdVeiculo(null);
 

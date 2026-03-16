@@ -31,5 +31,6 @@ public record RequestPostEntrada(
         @PositiveOrZero
         Integer quantidadeSomDvd,
         @PositiveOrZero
-        Integer quantidadeCaixaFerramentas
+        Integer quantidadeCaixaFerramentas,
+        String observacoes
 ) {}

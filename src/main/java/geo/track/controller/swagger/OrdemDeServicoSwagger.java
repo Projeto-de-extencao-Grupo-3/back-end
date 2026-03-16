@@ -43,7 +43,7 @@ public interface OrdemDeServicoSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @GetMapping
-    ResponseEntity<List<OrdemDeServicoResponse>> findOrdem(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario);
+    ResponseEntity<List<OrdemDeServicoResponse>> listOrdens(@RequestParam(required = false) Integer intervalo , @Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario);
 
     @Operation(summary = "Buscar Ordem de Serviço por ID")
     @ApiResponses(value = {

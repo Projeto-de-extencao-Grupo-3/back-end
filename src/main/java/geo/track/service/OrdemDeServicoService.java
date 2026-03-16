@@ -237,4 +237,10 @@ public class OrdemDeServicoService {
         Log.info("Filtrando Ordens por NF: {}, Pagamento: {} na oficina ID: {}", nfRealizada, pagtRealizado, idOficina);
         return ORDEM_REPOSITORY.findByNfRealizadaAndPagtRealizadoAndIdOficinaAndIsFinalizado(nfRealizada, pagtRealizado, idOficina);
     }
+
+    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer intervalo, Integer idOficina) {
+        LocalDate dataInferiorIntervalo = LocalDate.now().minusMonths(intervalo);
+
+        return ORDEM_REPOSITORY.findAllByIntervaloMeses(dataInferiorIntervalo, idOficina);
+    }
 }

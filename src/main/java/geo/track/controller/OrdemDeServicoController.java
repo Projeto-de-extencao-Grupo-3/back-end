@@ -41,9 +41,14 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<OrdemDeServicoResponse>> findOrdem(@AuthenticationPrincipal UsuarioDetalhesDto usuario) {
+    public ResponseEntity<List<OrdemDeServicoResponse>> listOrdens(@RequestParam Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
-        List<OrdemDeServico> ordem = ORDEM_SERVICO_SERVICE.listarOrdensServico(idOficina);
+
+        List<OrdemDeServico> ordem;
+
+        if (intervalo != null) ordem = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(intervalo, idOficina);
+        else ordem = ORDEM_SERVICO_SERVICE.listarOrdensServico(idOficina);
+
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
         }

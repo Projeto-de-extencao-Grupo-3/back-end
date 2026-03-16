@@ -56,4 +56,7 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
             @Param("nfRealizada") Boolean nfRealizada,
             @Param("pagtRealizado") Boolean pagtRealizado,
             @Param("idOficina") Integer idOficina);
+
+    @Query(value = "SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v JOIN v.fkCliente c JOIN c.fkOficina ofi WHERE ofi.idOficina = :idOficina AND o.dataSaidaEfetiva >= :intervalo AND o.status = 'FINALIZADO'")
+    List<OrdemDeServico> findAllByIntervaloMeses(@Param("intervalo") LocalDate intervalo, @Param("idOficina") Integer idOficina);
 }

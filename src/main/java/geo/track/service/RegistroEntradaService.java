@@ -64,6 +64,7 @@ public class RegistroEntradaService{
         registro.setEstepe(body.quantidadeEstepe());
         registro.setSomDvd(body.quantidadeSomDvd());
         registro.setCaixaFerramentas(body.quantidadeCaixaFerramentas());
+        registro.setObservacoes(body.observacoes());
         registro.setFkVeiculo(veiculo);
 
         RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.save(registro);
