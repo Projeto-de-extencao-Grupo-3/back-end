@@ -2,13 +2,16 @@ package geo.track.controller;
 
 import geo.track.controller.swagger.FuncionarioSwagger;
 import geo.track.domain.Funcionario;
+import geo.track.domain.Oficina;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.response.FuncionarioResponse;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.mapper.FuncionarioMapper;
+import geo.track.mapper.OficinaMapper;
 import geo.track.service.FuncionarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Log4j2
 @RequestMapping(path = "/funcionarios")
 public class FuncionarioController implements FuncionarioSwagger {
     private final FuncionarioService FUNCIONARIO_SERVICE;
@@ -25,6 +29,15 @@ public class FuncionarioController implements FuncionarioSwagger {
     public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody @Valid RequestPostFuncionario body){
         Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.cadastrar(body);
         return ResponseEntity.status(201).body(FuncionarioMapper.toResponse(funcionarioResposta));
+    }
+
+    @Override
+    @GetMapping()
+    public ResponseEntity<List<FuncionarioResponse>> listarFuncionarios(){
+        log.info("Listando todas os funcionários cadastradas.");
+        List<Funcionario> lista = FUNCIONARIO_SERVICE.listar();
+        log.info("Total de funcionários encontradas: {}", lista.size());
+        return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(lista));
     }
 
     @Override

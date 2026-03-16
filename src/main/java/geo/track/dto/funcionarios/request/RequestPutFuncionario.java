@@ -13,4 +13,5 @@ public class RequestPutFuncionario {
     private String telefone;
     private String senha;
     private String email;
+    private Integer fkOficina;
 }

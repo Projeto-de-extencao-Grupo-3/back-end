@@ -3,6 +3,7 @@ package geo.track.controller.swagger;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.dto.funcionarios.response.FuncionarioResponse;
+import geo.track.dto.oficinas.response.OficinaResponse;
 import geo.track.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -42,6 +43,15 @@ public interface FuncionarioSwagger {
     })
     @GetMapping("/oficina/{idOficina}")
     ResponseEntity<List<FuncionarioResponse>> findByOficina(@PathVariable Integer idOficina);
+
+    @Operation(summary = "Listar todas os Funcionários cadastrados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de Oficinas retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = OficinaResponse.class)))),
+            @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
+    })
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping()
+    ResponseEntity<List<FuncionarioResponse>> listarFuncionarios();
 
     @Operation(summary = "Buscar o funcionário pelo ID")
     @ApiResponses(value = {

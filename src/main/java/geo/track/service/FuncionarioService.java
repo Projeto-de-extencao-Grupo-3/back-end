@@ -1,6 +1,7 @@
 package geo.track.service;
 
 import geo.track.domain.Funcionario;
+import geo.track.domain.Oficina;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.exception.ConflictException;
@@ -10,6 +11,7 @@ import geo.track.exception.constraint.message.FuncionarioExceptionMessages;
 import geo.track.log.Log;
 import geo.track.mapper.FuncionarioMapper;
 import geo.track.repository.FuncionarioRepository;
+import geo.track.repository.OficinaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FuncionarioService {
     private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
+    private final OficinaRepository OFICINA_RESPOSITORY;
     private final PasswordEncoder PASSWORD_ENCODER;
     private final Log log;
 
@@ -32,9 +35,20 @@ public class FuncionarioService {
 
         Funcionario funcionario = FuncionarioMapper.toEntity(body);
 
+        Oficina oficina = OFICINA_RESPOSITORY.findById(body.getFkOficina())
+                .orElseThrow(() -> new RuntimeException("Oficina não encontrada com ID: " + body.getFkOficina()));
+
+        // ASSOCIAÇÃO: Agora o objeto funcionário sabe a qual oficina pertence
+        funcionario.setFkOficina(oficina);
+
         funcionario.setSenha(PASSWORD_ENCODER.encode(body.getSenha()));
         log.info("Funcionário cadastrado com sucesso para o email: {}", body.getEmail());
         return FUNCIONARIO_REPOSITORY.save(funcionario);
+    }
+
+    public List<Funcionario> listar(){
+        log.info("Buscando lista completa de funcionários no banco de dados.");
+        return FUNCIONARIO_REPOSITORY.findAll();
     }
 
     public List<Funcionario> buscarPorOficina(Integer idOficina) {
@@ -56,6 +70,10 @@ public class FuncionarioService {
         Funcionario funcionario = this.buscarPorId(body.getId());
         funcionario = FuncionarioMapper.toEntityUpdate(funcionario, body);
 
+        Oficina oficina = OFICINA_RESPOSITORY.findById(body.getFkOficina())
+                .orElseThrow(() -> new DataNotFoundException("Oficina não encontrada", Domains.OFICINA));
+
+        funcionario.setFkOficina(oficina);
         if (!FUNCIONARIO_REPOSITORY.existsById(body.getId())){
             log.error("Falha na atualização: Funcionário ID {} não existe", body.getId());
             throw new DataNotFoundException(FuncionarioExceptionMessages.FUNCIONARIO_NAO_ENCONTRADO_GENERICO, Domains.FUNCIONARIO);
