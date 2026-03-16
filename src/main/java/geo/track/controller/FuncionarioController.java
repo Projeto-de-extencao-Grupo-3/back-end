@@ -19,7 +19,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Log4j2
 @RequestMapping(path = "/funcionarios")
 public class FuncionarioController implements FuncionarioSwagger {
     private final FuncionarioService FUNCIONARIO_SERVICE;
@@ -34,9 +33,7 @@ public class FuncionarioController implements FuncionarioSwagger {
     @Override
     @GetMapping()
     public ResponseEntity<List<FuncionarioResponse>> listarFuncionarios(){
-        log.info("Listando todas os funcionários cadastradas.");
         List<Funcionario> lista = FUNCIONARIO_SERVICE.listar();
-        log.info("Total de funcionários encontradas: {}", lista.size());
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(lista));
     }
 
