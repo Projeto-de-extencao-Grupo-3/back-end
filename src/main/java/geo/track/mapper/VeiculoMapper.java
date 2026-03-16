@@ -1,6 +1,8 @@
 package geo.track.mapper;
 
 import geo.track.domain.Veiculo;
+import geo.track.dto.veiculos.request.RequestPostVeiculo;
+import geo.track.dto.veiculos.request.RequestPutVeiculo;
 import geo.track.dto.veiculos.response.VeiculoResponse;
 
 import java.util.Collections;
@@ -30,5 +32,29 @@ public class VeiculoMapper {
         return entities.stream()
                 .map(VeiculoMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public static Veiculo toEntity(RequestPostVeiculo dto) {
+        if (dto == null) {
+            return null;
+        }
+        Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(dto.getPlaca());
+        veiculo.setMarca(dto.getMarca());
+        veiculo.setModelo(dto.getModelo());
+        veiculo.setPrefixo(dto.getPrefixo());
+        veiculo.setAnoModelo(dto.getAnoModelo());
+        return veiculo;
+    }
+
+    public static Veiculo toEntityUpdate(Veiculo existente, RequestPutVeiculo dto) {
+        if (dto == null) {
+            return existente;
+        }
+        if (dto.getMarca() != null) existente.setMarca(dto.getMarca());
+        if (dto.getModelo() != null) existente.setModelo(dto.getModelo());
+        if (dto.getPrefixo() != null) existente.setPrefixo(dto.getPrefixo());
+        if (dto.getAnoModelo() != null) existente.setAnoModelo(dto.getAnoModelo());
+        return existente;
     }
 }

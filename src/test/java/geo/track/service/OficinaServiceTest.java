@@ -7,6 +7,7 @@ import geo.track.dto.autenticacao.UsuarioLoginDto;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
+import geo.track.dto.oficinas.request.RequestPutOficina;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.log.Log;
@@ -302,19 +303,22 @@ class OficinaServiceTest {
     @DisplayName("atualizar: Deve atualizar oficina com sucesso quando existe")
     void testAtualizarOficina() {
         // Arrange
-        Oficina oficinaParaAtualizar = oficina;
-        oficinaParaAtualizar.setRazaoSocial("Oficina Atualizada");
+        RequestPutOficina oficinaParaAtualizar = new RequestPutOficina();
+        oficinaParaAtualizar.setIdOficina(1);
+        oficinaParaAtualizar.setStatus(false);
 
         when(repository.existsById(1)).thenReturn(true);
+        when(repository.findById(1)).thenReturn(Optional.of(oficina));
         when(repository.save(any(Oficina.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Oficina resultado = service.atualizar(1, oficinaParaAtualizar);
+        Oficina resultado = service.atualizar(oficinaParaAtualizar);
 
         // Assert
         assertNotNull(resultado);
-        assertEquals("Oficina Atualizada", resultado.getRazaoSocial());
+        assertEquals(false, resultado.getStatus());
         verify(repository).existsById(1);
+        verify(repository).findById(1);
         verify(repository).save(any(Oficina.class));
     }
 
@@ -322,11 +326,13 @@ class OficinaServiceTest {
     @DisplayName("atualizar: Deve lançar DataNotFoundException quando oficina não existe")
     void testAtualizarOficina_NaoEncontrada() {
         // Arrange
+        RequestPutOficina oficinaParaAtualizar = new RequestPutOficina();
+        oficinaParaAtualizar.setIdOficina(999);
         when(repository.existsById(999)).thenReturn(false);
 
         // Act & Assert
         assertThrows(DataNotFoundException.class,
-            () -> service.atualizar(999, oficina));
+            () -> service.atualizar(oficinaParaAtualizar));
 
         verify(repository).existsById(999);
         verify(repository, never()).save(any(Oficina.class));
@@ -348,7 +354,7 @@ class OficinaServiceTest {
 
         // Assert
         assertNotNull(resultado);
-        assertEquals("novo.email@oficinadoze.com", resultado.getEmail()); // Fixed typo here
+        assertEquals("novo.email@oficinadoze.com", resultado.getEmail());
         verify(repository).findById(patchEmailDTO.getId());
         verify(repository).save(any(Oficina.class));
     }

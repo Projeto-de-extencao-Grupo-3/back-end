@@ -1,17 +1,18 @@
 package geo.track.service;
 
-import geo.track.config.GerenciadorTokenJwt;
-import geo.track.domain.Funcionario;
 import geo.track.domain.Oficina;
+import geo.track.config.GerenciadorTokenJwt;
 import geo.track.dto.autenticacao.UsuarioLoginDto;
 import geo.track.dto.autenticacao.UsuarioMapper;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
-import geo.track.exception.constraint.message.Domains;
+import geo.track.dto.oficinas.request.RequestPutOficina;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.OficinaExceptionMessages;
+import geo.track.mapper.OficinaMapper;
 import geo.track.log.Log;
 import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;
@@ -52,17 +53,17 @@ public class OficinaService {
                 body.getEmail(), body.getSenha());
 
         final Authentication authentication = this.AUTHENTICATION_MANAGER.authenticate(credentials);
+        log.info("Credenciais válidas para: {}", body.getEmail());
 
-        Funcionario funcionarioAutenticado =
+        var funcionarioAutenticado =
                 FUNCIONARIO_REPOSITORY.findByEmail(body.getEmail())
-                        .orElseThrow(
-                                () -> {
-                                    log.error("Usuário não encontrado após autenticação: {}", body.getEmail());
-                                    return new DataNotFoundException(OficinaExceptionMessages.EMAIL_NAO_CADASTRADO, Domains.FUNCIONARIO);
-                                }
-                        );
+                        .orElseThrow(() -> {
+                            log.error("Usuário autenticado, mas registro não encontrado no banco para email: {}", body.getEmail());
+                            return new DataNotFoundException("Email do usuário não cadastrado", Domains.FUNCIONARIO);
+                        });
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("Contexto de segurança atualizado para o usuário.");
 
         final String token = GERENCIADOR_TOKEN_JWT.generateToken(authentication, funcionarioAutenticado);
         log.info("Token JWT gerado com sucesso para: {}", funcionarioAutenticado.getNome());
@@ -96,16 +97,19 @@ public class OficinaService {
         });
     }
 
-    public Oficina atualizar(Integer id, Oficina body){
-        log.info("Iniciando atualização completa da oficina ID: {}", id);
-        if (OFICINA_REPOSITORY.existsById(id)){
-            body.setIdOficina(id);
-            Oficina empSalva = OFICINA_REPOSITORY.save(body);
-            log.info("Dados da oficina ID {} atualizados com sucesso.", id);
-            return empSalva;
+    public Oficina atualizar(RequestPutOficina body){
+        log.info("Iniciando atualização completa da oficina ID: {}", body.getIdOficina());
+        if (!OFICINA_REPOSITORY.existsById(body.getIdOficina())){
+            log.error("Impossível atualizar: Oficina ID {} inexistente.", body.getIdOficina());
+            throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, body.getIdOficina()), Domains.OFICINA);
         }
-        log.error("Impossível atualizar: Oficina ID {} inexistente.", id);
-        throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, id), Domains.OFICINA);
+
+        Oficina existente = this.findOficinasById(body.getIdOficina());
+        Oficina atualizada = OficinaMapper.toEntityUpdate(existente, body);
+
+        atualizada = OFICINA_REPOSITORY.save(atualizada);
+        log.info("Dados da oficina ID {} atualizados com sucesso.", body.getIdOficina());
+        return atualizada;
     }
 
     public Oficina patchEmail(OficinaPatchEmailDTO dto){
@@ -116,10 +120,10 @@ public class OficinaService {
             log.warn("Falha no patch: Oficina ID {} não encontrada.", dto.getId());
             throw new DataNotFoundException(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, Domains.OFICINA);
         }
-        Oficina emp = Oficinas.get();
 
-        emp.setIdOficina(dto.getId());
+        Oficina emp = Oficinas.get();
         emp.setEmail(dto.getEmail());
+
         log.info("Email da oficina ID {} alterado para: {}", dto.getId(), dto.getEmail());
         return OFICINA_REPOSITORY.save(emp);
     }
@@ -133,9 +137,8 @@ public class OficinaService {
             log.warn("Falha no patch status: Oficina ID {} não encontrada.", dto.getId());
             throw new DataNotFoundException(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, Domains.OFICINA);
         }
-        Oficina emp = Oficinas.get();
 
-        emp.setIdOficina(dto.getId());
+        Oficina emp = Oficinas.get();
         emp.setStatus(dto.getStatus());
         log.info("Status da oficina ID {} alterado para: {}", dto.getId(), dto.getStatus());
         return OFICINA_REPOSITORY.save(emp);
@@ -148,6 +151,6 @@ public class OficinaService {
             throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, id), Domains.OFICINA);
         }
         OFICINA_REPOSITORY.deleteById(id);
-        log.info("Oficina ID {} removida permanentemente.", id);
+        log.info("Oficina ID {} excluída com sucesso.", id);
     }
 }

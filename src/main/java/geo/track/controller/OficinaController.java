@@ -8,10 +8,11 @@ import geo.track.dto.autenticacao.UsuarioMapper;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
+import geo.track.dto.oficinas.request.RequestPutOficina;
 import geo.track.dto.oficinas.response.OficinaResponse;
-import geo.track.log.Log;
 import geo.track.mapper.OficinaMapper;
 import geo.track.service.OficinaService;
+import geo.track.log.Log;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -81,9 +82,10 @@ public class OficinaController implements OficinaSwagger {
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<OficinaResponse> atualizarEmpresa(@PathVariable Integer id, @RequestBody Oficina empresa){
+    public ResponseEntity<OficinaResponse> atualizarEmpresa(@PathVariable Integer id, @RequestBody @Valid RequestPutOficina empresa){
         log.info("Atualizando dados da oficina com ID: {}", id);
-        Oficina emp = OFICINA_SERVICE.atualizar(id, empresa);
+        empresa.setIdOficina(id);
+        Oficina emp = OFICINA_SERVICE.atualizar(empresa);
         log.info("Oficina ID {} atualizada com sucesso.", id);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(emp));
     }

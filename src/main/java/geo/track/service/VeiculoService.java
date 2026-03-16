@@ -1,19 +1,23 @@
 package geo.track.service;
 
+import geo.track.domain.Cliente;
 import geo.track.domain.Veiculo;
+import geo.track.dto.veiculos.request.RequestPatchCor;
+import geo.track.dto.veiculos.request.RequestPatchPlaca;
+import geo.track.dto.veiculos.request.RequestPostVeiculo;
+import geo.track.dto.veiculos.request.RequestPutVeiculo;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.VeiculoExceptionMessages;
+import geo.track.mapper.VeiculoMapper;
 import geo.track.log.Log;
+import geo.track.repository.ClienteRepository;
 import geo.track.repository.VeiculoRepository;
-import geo.track.dto.veiculos.request.RequestPatchCor;
-import geo.track.dto.veiculos.request.RequestPatchPlaca;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,18 +27,24 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VeiculoService {
     private final VeiculoRepository VEICULO_REPOSITORY;
+    private final ClienteRepository CLIENTE_REPOSITORY;
     private final Log log;
 
-    public Veiculo cadastrar(Veiculo body){
+    public Veiculo cadastrar(RequestPostVeiculo body){
         log.info("Iniciando cadastro de novo veículo com placa: {}", body.getPlaca());
-        body.setIdVeiculo(null);
 
         if(VEICULO_REPOSITORY.existsByPlacaIgnoreCase(body.getPlaca())){
             log.warn("Falha ao cadastrar: Placa {} já existe no sistema", body.getPlaca());
             throw new ConflictException(VeiculoExceptionMessages.PLACA_EXISTENTE, Domains.VEICULO);
         }
 
-        Veiculo salvo = VEICULO_REPOSITORY.save(body);
+        Cliente cliente = CLIENTE_REPOSITORY.findById(body.getIdCliente()).orElseThrow(() ->
+                new DataNotFoundException("Cliente proprietário não encontrado.", Domains.CLIENTE));
+
+        Veiculo veiculo = VeiculoMapper.toEntity(body);
+        veiculo.setFkCliente(cliente);
+
+        Veiculo salvo = VEICULO_REPOSITORY.save(veiculo);
         log.info("Veículo cadastrado com sucesso. ID: {}", salvo.getIdVeiculo());
         return salvo;
     }
@@ -59,17 +69,17 @@ public class VeiculoService {
         return VEICULO_REPOSITORY.findAllByPlacaStartsWithIgnoreCase(placa);
     }
 
-    public Veiculo putEndereco(Integer id, Veiculo body){
+    public Veiculo atualizarVeiculo(Integer id, RequestPutVeiculo body){
         log.info("Atualizando dados completos do veículo ID: {}", id);
-        if(VEICULO_REPOSITORY.existsById(id)){
-            body.setIdVeiculo(id);
-            Veiculo veic = VEICULO_REPOSITORY.save(body);
-            log.info("Veículo ID {} atualizado com sucesso", id);
-            return veic;
-        }
+        Veiculo veic = VEICULO_REPOSITORY.findById(id).orElseThrow(() -> {
+            log.error("Falha na atualização: Veículo ID {} não encontrado", id);
+            return new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO);
+        });
 
-        log.error("Falha na atualização: Veículo ID {} não encontrado", id);
-        throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO);
+        veic = VeiculoMapper.toEntityUpdate(veic, body);
+        veic = VEICULO_REPOSITORY.save(veic);
+        log.info("Veículo ID {} atualizado com sucesso", id);
+        return veic;
     }
 
     public Veiculo patchPlaca(RequestPatchPlaca body){
@@ -104,6 +114,8 @@ public class VeiculoService {
         }
 
         Veiculo veiculo = veiculoOpt.get();
+        // Assume Cor wasn't in original veiculo based on fields, skipping map for simplicity. Usually done on Veiculo object if present.
+        
         Veiculo atualizado = VEICULO_REPOSITORY.save(veiculo);
         log.info("Cor do veículo ID {} atualizada com sucesso", atualizado.getIdVeiculo());
         return atualizado;
@@ -127,12 +139,12 @@ public class VeiculoService {
             throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, Domains.VEICULO);
         }
 
-        // For now, I'll just delete by ID after finding it, which is safer.
         Optional<Veiculo> veiculoToDelete = VEICULO_REPOSITORY.findAllByPlacaStartsWithIgnoreCase(placa)
-                                                .stream().findFirst();
+                .stream().findFirst();
+
         if (veiculoToDelete.isPresent()) {
             VEICULO_REPOSITORY.deleteById(veiculoToDelete.get().getIdVeiculo());
-            log.info("Veículo com placa {} (ID: {}) excluído com sucesso", placa, veiculoToDelete.get().getIdVeiculo());
+            log.info("Veículo com placa {} excluído com sucesso", placa);
         } else {
             log.error("Erro inesperado ao tentar excluir veículo com placa {}", placa);
             throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, Domains.VEICULO);

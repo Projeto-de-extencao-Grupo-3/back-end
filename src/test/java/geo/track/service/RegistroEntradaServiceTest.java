@@ -69,7 +69,7 @@ class RegistroEntradaServiceTest {
                 "João Responsável",
                 "123.456.789-00",
                 1, 1, 1, 1, 1, 1, 1, 1,
-                1
+                1, ""
         );
     }
 
@@ -193,7 +193,7 @@ class RegistroEntradaServiceTest {
         // Arrange
         when(repository.findById(999)).thenReturn(Optional.empty());
         RequestPutRegistroEntrada requestComIdInvalido = new RequestPutRegistroEntrada(
-                999, LocalDate.now(), "Nome", "CPF", 1, 1, 1, 1, 1, 1, 1, 1, 1
+                999, LocalDate.now(), "Nome", "CPF", 1, 1, 1, 1, 1, 1, 1, 1, 1, ""
         );
 
         // Act & Assert
