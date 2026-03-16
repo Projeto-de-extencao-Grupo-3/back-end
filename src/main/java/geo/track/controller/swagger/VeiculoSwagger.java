@@ -97,6 +97,9 @@ public interface VeiculoSwagger {
     @GetMapping("/placa/{placa}")
     ResponseEntity<List<VeiculoResponse>> findVeiculoByPlaca(@PathVariable String placa);
 
+    @GetMapping("/cliente/{id}")
+    ResponseEntity<List<VeiculoResponse>>findVeiculoByClienteId(@PathVariable Integer id);
+
     @Operation(summary = "Atualizar completamente um veículo")
     @ApiResponses(value = {
             @ApiResponse(

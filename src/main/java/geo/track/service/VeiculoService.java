@@ -138,4 +138,8 @@ public class VeiculoService {
             throw new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_PLACA, Domains.VEICULO);
         }
     }
+
+    public List<Veiculo> findVeiculoByCliente(Integer idCliente) {
+        return VEICULO_REPOSITORY.findAllByFkCliente_IdCliente(idCliente);
+    }
 }

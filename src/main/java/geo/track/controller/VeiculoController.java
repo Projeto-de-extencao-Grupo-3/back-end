@@ -58,6 +58,18 @@ public class VeiculoController implements VeiculoSwagger {
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
+    @GetMapping("/cliente/{id}")
+    @Override
+    public ResponseEntity<List<VeiculoResponse>>findVeiculoByClienteId(@PathVariable Integer id){
+        List<Veiculo> veiculos = VEICULO_SERVICE.findVeiculoByCliente(id);
+
+        if(veiculos.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veiculos));
+    }
+
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<VeiculoResponse>putVeiculo(@PathVariable Integer id, @RequestBody Veiculo body){

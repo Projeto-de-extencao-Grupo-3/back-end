@@ -10,4 +10,5 @@ public interface VeiculoRepository extends JpaRepository<Veiculo,Integer> {
     Boolean existsByPlacaIgnoreCase(String placa);
     List<Veiculo> findAllByPlacaStartsWithIgnoreCase(String placa);
     void deleteByPlacaIgnoreCase(String placa);
+    List<Veiculo> findAllByFkCliente_IdCliente(Integer idCliente);
 }
