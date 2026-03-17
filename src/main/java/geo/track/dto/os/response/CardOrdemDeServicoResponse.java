@@ -9,6 +9,7 @@ import java.time.LocalDate;
 public record CardOrdemDeServicoResponse(
         Integer idOrdemServico,
         Double valorTotal,
+        Integer diasEspera,
         LocalDate dataSaidaPrevista,
         LocalDate dataSaidaEfetiva,
         LocalDate dataEntradaPrevista,

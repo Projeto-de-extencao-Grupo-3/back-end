@@ -12,11 +12,13 @@ import geo.track.dto.os.response.ResumoOrdemServicoResponse;
 import geo.track.dto.os.response.TelaOrdemServicoResponse;
 import geo.track.dto.veiculos.response.VeiculoResponse;
 import geo.track.enums.os.StatusVeiculo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class OrdemDeServicoMapper {
     public static OrdemDeServicoResponse toResponse(OrdemDeServico entity) {
         if (entity == null) {
@@ -111,6 +113,7 @@ public class OrdemDeServicoMapper {
         return new   CardOrdemDeServicoResponse(
                 ordem.getIdOrdemServico(),
                 ordemResponse.getValorTotal(),
+                (LocalDate.now().getDayOfYear() - ordem.getDataAtualizacao().getDayOfYear()),
                 ordemResponse.getDataSaidaPrevista(),
                 ordemResponse.getDataSaidaEfetiva(),
                 ordemResponse.getEntrada().getDataEntradaPrevista(),
