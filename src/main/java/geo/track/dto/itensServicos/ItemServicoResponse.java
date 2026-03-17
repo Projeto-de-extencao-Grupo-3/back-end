@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import geo.track.enums.Servico;
 import geo.track.enums.servico.LadoVeiculo;
 import geo.track.enums.servico.ParteVeiculo;
+import geo.track.enums.servico.TipoPintura;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
@@ -21,5 +22,5 @@ public class ItemServicoResponse {
     private Double precoCobrado;
     private String cor;
     private String especificacaoServico;
-    private String observacoesItem;
+    private TipoPintura tipoPintura;
 }

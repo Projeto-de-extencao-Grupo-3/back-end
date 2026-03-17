@@ -9,7 +9,6 @@ import geo.track.enums.Servico;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemServicoMapper {
@@ -24,7 +23,7 @@ public class ItemServicoMapper {
         response.setLadoVeiculo(entity.getLadoVeiculo());
         response.setCor(entity.getCor());
         response.setEspecificacaoServico(entity.getEspecificacaoServico());
-        response.setObservacoesItem(entity.getObservacoesItem());
+        response.setTipoPintura(entity.getTipoPintura());
         response.setTipoServico(entity.getTipoServico());
 
         return response;
@@ -53,7 +52,7 @@ public class ItemServicoMapper {
         item.setLadoVeiculo(dto.getLadoVeiculo());
         item.setCor(dto.getCor());
         item.setEspecificacaoServico(dto.getEspecificacaoServico());
-        item.setObservacoesItem(dto.getObservacoesItem());
+        item.setTipoPintura(dto.getTipoPintura());
         item.setFkOrdemServico(ordemServico); // Can be null if FK is nullable
         item.setTipoServico(servico); // Can be null if FK is nullable
 
@@ -72,7 +71,7 @@ public static ItemServicoOsResponse toOsResponse(ItemServico entity) {
     response.setLadoVeiculo(entity.getLadoVeiculo());
     response.setCor(entity.getCor());
     response.setEspecificacaoServico(entity.getEspecificacaoServico());
-    response.setObservacoesItem(entity.getObservacoesItem());
+    response.setTipoPintura(entity.getTipoPintura());
 
     response.setTipoServico(entity.getTipoServico());
     return response;

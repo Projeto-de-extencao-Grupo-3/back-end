@@ -22,9 +22,14 @@ public class OrdemDeServico {
     @Schema(description = "Identificador único da ordem de serviço", example = "101")
     private Integer idOrdemServico;
 
-//    @NotNull
-//    @Schema(description = "Valor total da ordem de serviço", example = "850.00")
-//    private Double valorTotal;
+    @Schema(description = "Valor total da ordem de serviço", example = "850.00")
+    private Double valorTotal;
+
+    @Schema(description = "Valor total da serviços", example = "850.00")
+    private Double valorTotalServicos;
+
+    @Schema(description = "Valor total da produtos", example = "850.00")
+    private Double valorTotalProdutos;
 
     @Schema(description = "Data prevista de saída do veículo", example = "2025-11-05")
     private LocalDate dataSaidaPrevista;
@@ -32,7 +37,9 @@ public class OrdemDeServico {
     @Schema(description = "Data efetiva de saída do veículo", example = "2025-11-06")
     private LocalDate dataSaidaEfetiva;
 
-    @NotNull
+    @Schema(description = "Data da última atualização da ordem de serviço", example = "2025-11-06")
+    private LocalDate dataAtualizacao;
+
     @Enumerated(EnumType.STRING)
     @Schema(description = "Status atual do veículo", example = "EM_REPARO")
     private StatusVeiculo status;

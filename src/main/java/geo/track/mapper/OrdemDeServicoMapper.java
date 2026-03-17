@@ -22,25 +22,12 @@ public class OrdemDeServicoMapper {
         if (entity == null) {
             return null;
         }
-        Double totalServico = 0.0;
-        Double totalProduto = 0.0;
-        if (entity.getServicos() != null) {
-            totalServico = entity.getServicos().stream()
-                    .mapToDouble(ItemServico::getPrecoCobrado)
-                    .sum();
-        }
-
-        if (entity.getProdutos() != null) {
-            totalProduto = entity.getProdutos().stream()
-                    .mapToDouble(p -> p.getPrecoPeca() * p.getQuantidade())
-                    .sum();
-        }
 
         OrdemDeServicoResponse response = new OrdemDeServicoResponse();
         response.setIdOrdemServico(entity.getIdOrdemServico());
-        response.setValorTotal(totalServico + totalProduto);
-        response.setValorTotalServicos(totalServico);
-        response.setValorTotalProdutos(totalProduto);
+        response.setValorTotal(entity.getValorTotal());
+        response.setValorTotalServicos(entity.getValorTotalServicos());
+        response.setValorTotalProdutos(entity.getValorTotalProdutos());
         response.setDataSaidaPrevista(entity.getDataSaidaPrevista());
         response.setDataSaidaEfetiva(entity.getDataSaidaEfetiva());
         response.setStatus(entity.getStatus());

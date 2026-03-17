@@ -32,12 +32,15 @@ public class OrdemDeServicoService {
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final Log Log;
 
-    public OrdemDeServico cadastrarOrdemServico(@Valid @RequestBody PostEntradaVeiculo body) {
+    public OrdemDeServico cadastrarOrdemServico(@Valid @RequestBody RequestPostEntradaVeiculo body) {
         Log.info("Iniciando cadastro de Ordem de Serviço para a entrada ID: {}", body.getFkEntrada());
         RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.findById(body.getFkEntrada()).orElseThrow(()-> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA));
 
         OrdemDeServico ordem = OrdemDeServico.builder()
                 .status(body.getStatus())
+                .valorTotal(null)
+                .valorTotalServicos(null)
+                .valorTotalProdutos(null)
                 .dataSaidaPrevista(null)
                 .dataSaidaEfetiva(null)
                 .seguradora(false)
@@ -110,6 +113,7 @@ public class OrdemDeServicoService {
         OrdemDeServico ordem = ordemOPT.get();
 
         ordem.setStatus(body.getStatus());
+        ordem.setDataAtualizacao(LocalDate.now());
 
         return ORDEM_REPOSITORY.save(ordem);
     }

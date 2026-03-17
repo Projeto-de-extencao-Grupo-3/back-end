@@ -10,8 +10,6 @@ import geo.track.dto.os.response.ViewPagtoRealizado;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.OrdemDeServicoRepository;
 import geo.track.repository.RegistroEntradaRepository;
@@ -52,7 +50,7 @@ class OrdemDeServicoServiceTest {
 
     private OrdemDeServico ordemDeServicos;
     private RegistroEntrada registroEntrada;
-    private PostEntradaVeiculo postEntradaVeiculo;
+    private RequestPostEntradaVeiculo requestPostEntradaVeiculo;
     private RequestPutValorESaida requestPutValorESaida;
     private RequestPatchSaidaEfetiva requestPatchSaidaEfetiva;
     private RequestPatchStatus requestPatchStatus;
@@ -74,7 +72,7 @@ class OrdemDeServicoServiceTest {
                 .fkEntrada(registroEntrada)
                 .build();
 
-        postEntradaVeiculo = new PostEntradaVeiculo(StatusVeiculo.EM_PRODUCAO, 1);
+        requestPostEntradaVeiculo = new RequestPostEntradaVeiculo(StatusVeiculo.EM_PRODUCAO, 1);
         requestPutValorESaida = new RequestPutValorESaida(1, 750.0, LocalDate.now().plusWeeks(5));
         requestPatchSaidaEfetiva = new RequestPatchSaidaEfetiva(1, 1, LocalDate.now().plusWeeks(6));
         requestPatchStatus = new RequestPatchStatus(1, StatusVeiculo.FINALIZADO);
@@ -92,7 +90,7 @@ class OrdemDeServicoServiceTest {
         when(ordemRepository.save(any(OrdemDeServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        OrdemDeServico resultado = service.cadastrarOrdemServico(postEntradaVeiculo);
+        OrdemDeServico resultado = service.cadastrarOrdemServico(requestPostEntradaVeiculo);
 
         // Assert
         assertNotNull(resultado);
@@ -117,7 +115,7 @@ class OrdemDeServicoServiceTest {
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-                () -> service.cadastrarOrdemServico(postEntradaVeiculo));
+                () -> service.cadastrarOrdemServico(requestPostEntradaVeiculo));
 
         assertEquals("Registro de Entrada não encontrado ou não pertence a esta oficina", exception.getMessage());
         verify(registroEntradaRepository).findById(1);

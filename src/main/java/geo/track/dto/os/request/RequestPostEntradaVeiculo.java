@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PostEntradaVeiculo {
+public class RequestPostEntradaVeiculo {
     @NotNull
     @Enumerated(EnumType.STRING)
     private StatusVeiculo status;

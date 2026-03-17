@@ -3,11 +3,10 @@ package geo.track.service;
 import geo.track.domain.OrdemDeServico;
 import geo.track.domain.RegistroEntrada;
 import geo.track.domain.Veiculo;
-import geo.track.dto.os.request.PostEntradaVeiculo;
+import geo.track.dto.os.request.RequestPostEntradaVeiculo;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
-import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,7 +87,7 @@ class RegistroEntradaServiceTest {
         });
         
         // Mock do serviço de OS que estava faltando
-        when(ordemDeServicoService.cadastrarOrdemServico(any(PostEntradaVeiculo.class)))
+        when(ordemDeServicoService.cadastrarOrdemServico(any(RequestPostEntradaVeiculo.class)))
                 .thenReturn(new OrdemDeServico());
 
         // Act
@@ -100,7 +99,7 @@ class RegistroEntradaServiceTest {
         verify(veiculoService).findVeiculoById(1);
         // O método realizarAgendamentoVeiculo chama save duas vezes: uma para criar e outra para atualizar com a OS
         verify(repository, times(2)).save(any(RegistroEntrada.class));
-        verify(ordemDeServicoService).cadastrarOrdemServico(any(PostEntradaVeiculo.class));
+        verify(ordemDeServicoService).cadastrarOrdemServico(any(RequestPostEntradaVeiculo.class));
     }
 
     // ===== listarEntradas =====

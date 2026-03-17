@@ -58,7 +58,7 @@ public class ItemServicoService {
         existente.setLadoVeiculo(body.getLadoVeiculo());
         existente.setCor(body.getCor());
         existente.setEspecificacaoServico(body.getEspecificacaoServico());
-        existente.setObservacoesItem(body.getObservacoesItem());
+        existente.setTipoPintura(body.getTipoPintura());
 
         existente.setTipoServico(body.getTipoServico());
         existente.setFkOrdemServico(body.getFkOrdemServico());

@@ -3,6 +3,7 @@ package geo.track.domain;
 import geo.track.enums.Servico;
 import geo.track.enums.servico.LadoVeiculo;
 import geo.track.enums.servico.ParteVeiculo;
+import geo.track.enums.servico.TipoPintura;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -11,8 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -48,8 +47,9 @@ public class ItemServico {
     @Schema(description = "Descrição detalahada do serviço", example = "Troca do parabrisa trincado por um novo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String especificacaoServico;
 
+    @Enumerated(EnumType.STRING)
     @Schema(description = "Campo para colocar alguma observação se necessário", example = "Desconto de 10%, pois a peça nova X foi danificada", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String observacoesItem;
+    private TipoPintura tipoPintura;
 
     @NotNull
     @Enumerated(EnumType.STRING)

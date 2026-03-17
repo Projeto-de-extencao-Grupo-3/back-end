@@ -6,7 +6,6 @@ import geo.track.enums.Servico;
 import geo.track.enums.servico.LadoVeiculo;
 import geo.track.enums.servico.ParteVeiculo;
 import geo.track.exception.DataNotFoundException;
-import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.ItemServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +52,7 @@ class ItensServicoServiceTest {
         itemServico.setLadoVeiculo(LadoVeiculo.COMPLETO);
         itemServico.setCor("Azul");
         itemServico.setEspecificacaoServico("Pintura");
-        itemServico.setObservacoesItem("Pequeno arranhão");
+        itemServico.setTipoPintura("Pequeno arranhão");
         itemServico.setTipoServico(Servico.FUNILARIA);
         itemServico.setFkOrdemServico(ordemDeServicos);
     }
@@ -186,7 +185,7 @@ class ItensServicoServiceTest {
         updatedItemServico.setLadoVeiculo(LadoVeiculo.ESQUERDO);
         updatedItemServico.setCor("Preto");
         updatedItemServico.setEspecificacaoServico("Reparo");
-        updatedItemServico.setObservacoesItem("Amassado leve");
+        updatedItemServico.setTipoPintura("Amassado leve");
         updatedItemServico.setTipoServico(Servico.PINTURA);
         updatedItemServico.setFkOrdemServico(ordemDeServicos);
 
@@ -203,7 +202,7 @@ class ItensServicoServiceTest {
         assertEquals(LadoVeiculo.ESQUERDO, resultado.getLadoVeiculo());
         assertEquals("Preto", resultado.getCor());
         assertEquals("Reparo", resultado.getEspecificacaoServico());
-        assertEquals("Amassado leve", resultado.getObservacoesItem());
+        assertEquals("Amassado leve", resultado.getTipoPintura());
         assertEquals(Servico.PINTURA, resultado.getTipoServico());
         verify(repository).findById(1);
         verify(repository).save(any(ItemServico.class));

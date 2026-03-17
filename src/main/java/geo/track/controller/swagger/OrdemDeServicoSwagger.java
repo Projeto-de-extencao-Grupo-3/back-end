@@ -32,7 +32,7 @@ public interface OrdemDeServicoSwagger {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
     })
     @PostMapping
-    ResponseEntity<OrdemDeServicoResponse> postOrdem(@RequestBody PostEntradaVeiculo ordemDTO);
+    ResponseEntity<OrdemDeServicoResponse> postOrdem(@RequestBody RequestPostEntradaVeiculo ordemDTO);
 
     @Operation(summary = "Listar todas as Ordens de Serviços")
     @ApiResponses(value = {

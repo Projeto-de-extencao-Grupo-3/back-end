@@ -30,7 +30,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     @Override
 //    @PostMapping
 //    Criação de Ordem de Servico é feito automaticamente na entrada
-    public ResponseEntity<OrdemDeServicoResponse> postOrdem(@RequestBody PostEntradaVeiculo ordemDTO) {
+    public ResponseEntity<OrdemDeServicoResponse> postOrdem(@RequestBody RequestPostEntradaVeiculo ordemDTO) {
         if (ORDEM_SERVICO_SERVICE.existeOrdemServicoPorEntrada(ordemDTO.getFkEntrada())) {
             throw new ConflictException(OrdemDeServicoExceptionMessages.ORDEM_JA_EXISTE_PARA_REGISTRO_ENTRADA, Domains.ORDEM_DE_SERVICO);
         }
