@@ -60,9 +60,4 @@ public class ItemServico {
     @JoinColumn(name = "fk_ordem_servico")
     @Schema(description = "FK da ordem de serviço ")
     private OrdemDeServico fkOrdemServico;
-
-    @OneToMany(mappedBy = "fkServicoFunc", cascade = CascadeType.ALL)
-    @Schema(description = "Lista de funcionarios associados à uma lista de serviços")
-    private List<FuncionarioServico> listaFuncionario;
-
 }

@@ -44,9 +44,4 @@ public class Funcionario {
     @ManyToOne
     @JoinColumn(name = "fk_oficina")
     private Oficina fkOficina;
-
-    @OneToMany(mappedBy = "fkFuncionarioLista")
-    @Schema(description = "Lista de serviços associados à ordem de serviço")
-    private List<FuncionarioServico> funcionarioLista;
-
 }
