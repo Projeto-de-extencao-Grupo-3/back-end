@@ -2,9 +2,12 @@ package geo.track.service;
 
 import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
+import geo.track.dto.itensServicos.RequestPostItemServico;
+import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.enums.Servico;
 import geo.track.enums.servico.LadoVeiculo;
 import geo.track.enums.servico.ParteVeiculo;
+import geo.track.enums.servico.TipoPintura;
 import geo.track.exception.DataNotFoundException;
 import geo.track.log.LogImplementation;
 import geo.track.repository.ItemServicoRepository;
@@ -31,6 +34,9 @@ class ItensServicoServiceTest {
     private ItemServicoRepository repository;
 
     @Mock
+    private OrdemDeServicoService ordemServicoService;
+
+    @Mock
     private LogImplementation log;
 
     @InjectMocks
@@ -38,6 +44,8 @@ class ItensServicoServiceTest {
 
     private OrdemDeServico ordemDeServicos;
     private ItemServico itemServico;
+    private RequestPostItemServico requestPostItemServico;
+    private RequestPutItemServico requestPutItemServico;
 
     @BeforeEach
     void setUp() {
@@ -52,9 +60,28 @@ class ItensServicoServiceTest {
         itemServico.setLadoVeiculo(LadoVeiculo.COMPLETO);
         itemServico.setCor("Azul");
         itemServico.setEspecificacaoServico("Pintura");
-        itemServico.setTipoPintura("Pequeno arranhão");
+        itemServico.setTipoPintura(TipoPintura.COMPLETA);
         itemServico.setTipoServico(Servico.FUNILARIA);
         itemServico.setFkOrdemServico(ordemDeServicos);
+
+        requestPostItemServico = new RequestPostItemServico();
+        requestPostItemServico.setPrecoCobrado(100.0);
+        requestPostItemServico.setParteVeiculo(ParteVeiculo.CAPO);
+        requestPostItemServico.setLadoVeiculo(LadoVeiculo.COMPLETO);
+        requestPostItemServico.setCor("Azul");
+        requestPostItemServico.setEspecificacaoServico("Pintura");
+        requestPostItemServico.setTipoPintura(TipoPintura.COMPLETA);
+        requestPostItemServico.setTipoServico(Servico.FUNILARIA);
+        requestPostItemServico.setFkOrdemServico(1);
+
+        requestPutItemServico = new RequestPutItemServico();
+        requestPutItemServico.setPrecoCobrado(150.0);
+        requestPutItemServico.setParteVeiculo(ParteVeiculo.PARACHOQUE);
+        requestPutItemServico.setLadoVeiculo(LadoVeiculo.ESQUERDO);
+        requestPutItemServico.setCor("Preto");
+        requestPutItemServico.setEspecificacaoServico("Reparo");
+        requestPutItemServico.setTipoPintura(TipoPintura.COMPLETA);
+        requestPutItemServico.setTipoServico(Servico.PINTURA);
     }
 
     // ===== cadastrar =====
@@ -62,6 +89,7 @@ class ItensServicoServiceTest {
     @DisplayName("cadastrar: Deve cadastrar um novo item de serviço com sucesso")
     void testCadastrarItemServicoComSucesso() {
         // Arrange
+        when(ordemServicoService.buscarOrdemServicoPorId(1, 1)).thenReturn(ordemDeServicos);
         when(repository.save(any(ItemServico.class))).thenAnswer(invocation -> {
             ItemServico savedItem = invocation.getArgument(0);
             savedItem.setIdRegistroServico(1); // Simulate ID generation
@@ -69,12 +97,13 @@ class ItensServicoServiceTest {
         });
 
         // Act
-        ItemServico resultado = service.cadastrar(itemServico);
+        ItemServico resultado = service.cadastrar(requestPostItemServico, 1);
 
         // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdRegistroServico());
         assertEquals("Pintura", resultado.getEspecificacaoServico());
+        verify(ordemServicoService).buscarOrdemServicoPorId(1, 1);
         verify(repository).save(any(ItemServico.class));
     }
 
@@ -179,21 +208,11 @@ class ItensServicoServiceTest {
     @DisplayName("atualizar: Deve atualizar item de serviço com sucesso quando existe")
     void testAtualizarItemServicoComSucesso() {
         // Arrange
-        ItemServico updatedItemServico = new ItemServico();
-        updatedItemServico.setPrecoCobrado(150.0);
-        updatedItemServico.setParteVeiculo(ParteVeiculo.PARACHOQUE);
-        updatedItemServico.setLadoVeiculo(LadoVeiculo.ESQUERDO);
-        updatedItemServico.setCor("Preto");
-        updatedItemServico.setEspecificacaoServico("Reparo");
-        updatedItemServico.setTipoPintura("Amassado leve");
-        updatedItemServico.setTipoServico(Servico.PINTURA);
-        updatedItemServico.setFkOrdemServico(ordemDeServicos);
-
         when(repository.findById(1)).thenReturn(Optional.of(itemServico));
         when(repository.save(any(ItemServico.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        ItemServico resultado = service.atualizar(1, updatedItemServico);
+        ItemServico resultado = service.atualizar(1, requestPutItemServico);
 
         // Assert
         assertNotNull(resultado);
@@ -202,7 +221,7 @@ class ItensServicoServiceTest {
         assertEquals(LadoVeiculo.ESQUERDO, resultado.getLadoVeiculo());
         assertEquals("Preto", resultado.getCor());
         assertEquals("Reparo", resultado.getEspecificacaoServico());
-        assertEquals("Amassado leve", resultado.getTipoPintura());
+        assertEquals(TipoPintura.COMPLETA, resultado.getTipoPintura());
         assertEquals(Servico.PINTURA, resultado.getTipoServico());
         verify(repository).findById(1);
         verify(repository).save(any(ItemServico.class));
@@ -212,12 +231,11 @@ class ItensServicoServiceTest {
     @DisplayName("atualizar: Deve lançar DataNotFoundException quando item de serviço não existe")
     void testAtualizarItemServicoNaoEncontrado() {
         // Arrange
-        ItemServico updatedItemServico = new ItemServico();
         when(repository.findById(999)).thenReturn(Optional.empty());
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
-            () -> service.atualizar(999, updatedItemServico));
+            () -> service.atualizar(999, requestPutItemServico));
 
         assertEquals("Item de Serviço não encontrado", exception.getMessage());
         verify(repository).findById(999);

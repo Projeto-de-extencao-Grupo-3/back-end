@@ -2,11 +2,16 @@ package geo.track.service;
 
 import geo.track.domain.ItemServico;
 import geo.track.domain.OrdemDeServico;
+import geo.track.dto.itensServicos.RequestPostItemServico;
+import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ItemServicoExceptionMessages;
+import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.log.Log;
+import geo.track.mapper.ItemServicoMapper;
 import geo.track.repository.ItemServicoRepository;
+import geo.track.repository.OrdemDeServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +22,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ItemServicoService {
     private final ItemServicoRepository ITEM_SERVICO_REPOSITORY;
+    private final OrdemDeServicoRepository ORDEM_SERVICO_SERVICE;
     private final Log log;
 
-    public ItemServico cadastrar(ItemServico body){
-        log.info("Iniciando cadastro de novo Item de Serviço para a Ordem de Serviço ID: {}", body.getFkOrdemServico().getIdOrdemServico());
-        return ITEM_SERVICO_REPOSITORY.save(body);
+    public ItemServico cadastrar(RequestPostItemServico body, Integer idOficina){
+        log.info("Iniciando cadastro de novo Item de Serviço para a Ordem de Serviço ID: {}", body.getFkOrdemServico());
+
+        OrdemDeServico ordemServico = ORDEM_SERVICO_SERVICE.findByIdAndIdOficina(body.getFkOrdemServico(), idOficina).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO));
+        ItemServico item = ItemServicoMapper.toDomain(body, ordemServico, body.getTipoServico());
+
+        return ITEM_SERVICO_REPOSITORY.save(item);
     }
 
     public List<ItemServico> listar(){
@@ -48,20 +58,13 @@ public class ItemServicoService {
         return servicos;
     }
 
-    public ItemServico atualizar(Integer id, ItemServico body) {
+    public ItemServico atualizar(Integer id, RequestPutItemServico body) {
         ItemServico existente = ITEM_SERVICO_REPOSITORY.findById(id)
                 .orElseThrow(() -> new DataNotFoundException(ItemServicoExceptionMessages.ITEM_SERVICO_NAO_ENCONTRADO, Domains.ITEM_SERVICO));
 
         log.info("Atualizando Item de Serviço ID: {}", id);
-        existente.setPrecoCobrado(body.getPrecoCobrado());
-        existente.setParteVeiculo(body.getParteVeiculo());
-        existente.setLadoVeiculo(body.getLadoVeiculo());
-        existente.setCor(body.getCor());
-        existente.setEspecificacaoServico(body.getEspecificacaoServico());
-        existente.setTipoPintura(body.getTipoPintura());
-
-        existente.setTipoServico(body.getTipoServico());
-        existente.setFkOrdemServico(body.getFkOrdemServico());
+        
+        ItemServicoMapper.updateDomain(existente, body);
 
         return ITEM_SERVICO_REPOSITORY.save(existente);
     }

@@ -8,26 +8,17 @@ import geo.track.enums.servico.ParteVeiculo;
 import geo.track.enums.servico.TipoPintura;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Data
-public class RequestPostItemServico {
-    @NotNull
+public class RequestPutItemServico {
     private Double precoCobrado;
-    @NotNull
     private ParteVeiculo parteVeiculo;
-    @NotNull
     private LadoVeiculo ladoVeiculo;
-    @NotNull
-    private Servico tipoServico;
-    @NotNull
-    private Integer fkOrdemServico;
-
     private String cor;
     private String especificacaoServico;
     @Enumerated(EnumType.STRING)
     private TipoPintura tipoPintura;
+    private Servico tipoServico;
 }

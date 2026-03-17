@@ -5,7 +5,12 @@ import geo.track.domain.OrdemDeServico;
 import geo.track.dto.itensServicos.ItemServicoOsResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPostItemServico;
+import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.enums.Servico;
+import geo.track.exception.BadBusinessRuleException;
+import geo.track.exception.BadRequestException;
+import geo.track.exception.constraint.message.Domains;
+import geo.track.exception.constraint.message.ItemServicoExceptionMessages;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,12 +45,13 @@ public class ItemServicoMapper {
 
     public static ItemServico toDomain(RequestPostItemServico dto, OrdemDeServico ordemServico, Servico servico) {
         if (dto == null) {
-            return null; // Or throw an IllegalArgumentException
+            return null;
         }
 
-        if (dto.getCor() == null) dto.setCor("Não Informada");
+        if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getTipoPintura() == null) throw new BadRequestException(ItemServicoExceptionMessages.TIPO_PINTURA_OBRIGATORIO, Domains.ITEM_SERVICO);
+        if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getCor() == null) throw new BadRequestException(ItemServicoExceptionMessages.COR_OBRIGATORIA, Domains.ITEM_SERVICO);
 
-    ItemServico item = new ItemServico();
+        ItemServico item = new ItemServico();
 
         item.setPrecoCobrado(dto.getPrecoCobrado());
         item.setParteVeiculo(dto.getParteVeiculo());
@@ -53,36 +59,52 @@ public class ItemServicoMapper {
         item.setCor(dto.getCor());
         item.setEspecificacaoServico(dto.getEspecificacaoServico());
         item.setTipoPintura(dto.getTipoPintura());
-        item.setFkOrdemServico(ordemServico); // Can be null if FK is nullable
-        item.setTipoServico(servico); // Can be null if FK is nullable
+        item.setFkOrdemServico(ordemServico);
+        item.setTipoServico(servico);
 
         return item;
-}
-
-public static ItemServicoOsResponse toOsResponse(ItemServico entity) {
-    if (entity == null) {
-        return null;
     }
 
-    ItemServicoOsResponse response = new ItemServicoOsResponse();
-    response.setIdRegistroServico(entity.getIdRegistroServico());
-    response.setPrecoCobrado(entity.getPrecoCobrado());
-    response.setParteVeiculo(entity.getParteVeiculo());
-    response.setLadoVeiculo(entity.getLadoVeiculo());
-    response.setCor(entity.getCor());
-    response.setEspecificacaoServico(entity.getEspecificacaoServico());
-    response.setTipoPintura(entity.getTipoPintura());
+    public static ItemServico updateDomain(ItemServico item, RequestPutItemServico dto) {
+        if (dto == null) {
+            return item;
+        }
 
-    response.setTipoServico(entity.getTipoServico());
-    return response;
-}
+        if (dto.getPrecoCobrado() != null) item.setPrecoCobrado(dto.getPrecoCobrado());
+        if (dto.getParteVeiculo() != null) item.setParteVeiculo(dto.getParteVeiculo());
+        if (dto.getLadoVeiculo() != null) item.setLadoVeiculo(dto.getLadoVeiculo());
+        if (dto.getCor() != null) item.setCor(dto.getCor());
+        if (dto.getEspecificacaoServico() != null) item.setEspecificacaoServico(dto.getEspecificacaoServico());
+        if (dto.getTipoPintura() != null) item.setTipoPintura(dto.getTipoPintura());
+        if (dto.getTipoServico() != null) item.setTipoServico(dto.getTipoServico());
 
-public static List<ItemServicoOsResponse> toOsResponse(List<ItemServico> entities) {
-    if (entities == null) {
-        return Collections.emptyList();
+        return item;
     }
-    return entities.stream()
-            .map(ItemServicoMapper::toOsResponse)
-            .collect(Collectors.toList());
-}
+
+    public static ItemServicoOsResponse toOsResponse(ItemServico entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        ItemServicoOsResponse response = new ItemServicoOsResponse();
+        response.setIdRegistroServico(entity.getIdRegistroServico());
+        response.setPrecoCobrado(entity.getPrecoCobrado());
+        response.setParteVeiculo(entity.getParteVeiculo());
+        response.setLadoVeiculo(entity.getLadoVeiculo());
+        response.setCor(entity.getCor());
+        response.setEspecificacaoServico(entity.getEspecificacaoServico());
+        response.setTipoPintura(entity.getTipoPintura());
+
+        response.setTipoServico(entity.getTipoServico());
+        return response;
+    }
+
+    public static List<ItemServicoOsResponse> toOsResponse(List<ItemServico> entities) {
+        if (entities == null) {
+            return Collections.emptyList();
+        }
+        return entities.stream()
+                .map(ItemServicoMapper::toOsResponse)
+                .collect(Collectors.toList());
+    }
 }

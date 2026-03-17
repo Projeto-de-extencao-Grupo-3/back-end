@@ -5,6 +5,7 @@ import geo.track.domain.OrdemDeServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPostItemServico;
+import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.mapper.ItemServicoMapper;
 import geo.track.service.ItemServicoService;
 import geo.track.service.OrdemDeServicoService;
@@ -21,17 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemServicoController {
     private final ItemServicoService ITEM_SERVICO_SERVICE;
-    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
     @PostMapping
     public ResponseEntity<ItemServicoResponse> cadastrar(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestBody @Valid RequestPostItemServico body) {
         Integer idOficina = usuario.getIdOficina();
 
-        OrdemDeServico ordemServico = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(body.getFkOrdemServico(), idOficina);
-
-        ItemServico item = ItemServicoMapper.toDomain(body, ordemServico, body.getTipoServico());
-
-        ItemServico itemServico = ITEM_SERVICO_SERVICE.cadastrar(item);
+        ItemServico itemServico = ITEM_SERVICO_SERVICE.cadastrar(body, idOficina);
         return ResponseEntity.status(201).body(ItemServicoMapper.toResponse(itemServico));
     }
 
@@ -51,7 +47,7 @@ public class ItemServicoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItemServicoResponse> atualizar(@PathVariable Integer id, @RequestBody @Valid ItemServico body) {
+    public ResponseEntity<ItemServicoResponse> atualizar(@PathVariable Integer id, @RequestBody @Valid RequestPutItemServico body) {
         ItemServico itemServico = ITEM_SERVICO_SERVICE.atualizar(id, body);
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
