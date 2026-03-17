@@ -31,6 +31,7 @@ public class ItemProdutoMapper {
         response.setBaixado(entity.getBaixado());
         response.setTipoServico(entity.getFkProduto().getTipoServico().toString());
         response.setPossivelRegistrarSaida(entity.possivelRealizarBaixaNoEstoque());
+        response.setIdProdutoEstoque(entity.getFkProduto().getIdProduto());
 
         return response;
     }

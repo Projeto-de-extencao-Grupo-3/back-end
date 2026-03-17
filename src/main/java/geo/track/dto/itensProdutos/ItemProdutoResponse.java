@@ -18,4 +18,5 @@ public class ItemProdutoResponse {
     private Boolean baixado;
     private String tipoServico;
     private Boolean possivelRegistrarSaida;
+    private Integer idProdutoEstoque;
 }
