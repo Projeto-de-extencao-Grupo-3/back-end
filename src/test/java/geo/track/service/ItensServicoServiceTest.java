@@ -11,6 +11,7 @@ import geo.track.enums.servico.TipoPintura;
 import geo.track.exception.DataNotFoundException;
 import geo.track.log.LogImplementation;
 import geo.track.repository.ItemServicoRepository;
+import geo.track.repository.OrdemDeServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class ItensServicoServiceTest {
     private ItemServicoRepository repository;
 
     @Mock
-    private OrdemDeServicoService ordemServicoService;
+    private OrdemDeServicoRepository ordemServicoRepository;
 
     @Mock
     private LogImplementation log;
@@ -89,7 +90,7 @@ class ItensServicoServiceTest {
     @DisplayName("cadastrar: Deve cadastrar um novo item de serviço com sucesso")
     void testCadastrarItemServicoComSucesso() {
         // Arrange
-        when(ordemServicoService.buscarOrdemServicoPorId(1, 1)).thenReturn(ordemDeServicos);
+        when(ordemServicoRepository.findByIdAndIdOficina(1, 1)).thenReturn(Optional.of(ordemDeServicos));
         when(repository.save(any(ItemServico.class))).thenAnswer(invocation -> {
             ItemServico savedItem = invocation.getArgument(0);
             savedItem.setIdRegistroServico(1); // Simulate ID generation
@@ -103,7 +104,7 @@ class ItensServicoServiceTest {
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdRegistroServico());
         assertEquals("Pintura", resultado.getEspecificacaoServico());
-        verify(ordemServicoService).buscarOrdemServicoPorId(1, 1);
+        verify(ordemServicoRepository).findByIdAndIdOficina(1, 1);
         verify(repository).save(any(ItemServico.class));
     }
 
