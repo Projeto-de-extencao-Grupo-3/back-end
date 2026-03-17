@@ -69,6 +69,19 @@ public class EnderecoService {
         return salvo;
     }
 
+    public Endereco saveVazio() {
+        Endereco e = new Endereco();
+        e.setCep("00000000");
+        e.setLogradouro("A PREENCHER");
+        e.setNumero(0);
+        e.setBairro("A PREENCHER");
+        e.setCidade("A PREENCHER");
+        e.setEstado("AA");
+        e.setComplemento("-");
+
+        return ENDERECO_REPOSITORY.save(e);
+    }
+
     public Endereco patchComplementoEndereco(RequestPatchComplemento body) {
         log.info("Atualizando complemento do endereço ID: {}", body.getIdEndereco());
         Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(body.getIdEndereco());

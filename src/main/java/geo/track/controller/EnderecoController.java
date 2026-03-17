@@ -52,6 +52,12 @@ public class EnderecoController implements EnderecoSwagger {
         return ResponseEntity.status(201).body(EnderecoMapper.toResponse(novoEndereco));
     }
 
+    @PostMapping("/registrar-vazio")
+    public ResponseEntity<EnderecoResponse> postEnderecoVazio() {
+        Endereco novoEndereco = ENDERECO_SERVICE.saveVazio();
+        return ResponseEntity.status(201).body(EnderecoMapper.toResponse(novoEndereco));
+    }
+
     @Override
     @PatchMapping("/complemento")
     public ResponseEntity<EnderecoResponse> patchComplementoEndereco(@RequestBody @Valid RequestPatchComplemento body) {
