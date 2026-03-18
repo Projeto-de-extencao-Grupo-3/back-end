@@ -1,14 +1,14 @@
 package geo.track.service;
 
-import geo.track.domain.OrdemDeServico;
-import geo.track.domain.RegistroEntrada;
+import geo.track.jornada.entity.OrdemDeServico;
+import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.domain.Veiculo;
 import geo.track.dto.os.request.RequestPostEntradaVeiculo;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.exception.DataNotFoundException;
 import geo.track.log.LogImplementation;
-import geo.track.repository.RegistroEntradaRepository;
+import geo.track.jornada.entity.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

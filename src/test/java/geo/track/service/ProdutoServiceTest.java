@@ -7,7 +7,6 @@ import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.enums.Servico;
 import geo.track.exception.DataNotFoundException;
-import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.ProdutoRepository;
 import org.junit.jupiter.api.BeforeEach;

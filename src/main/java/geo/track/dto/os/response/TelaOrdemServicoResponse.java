@@ -1,6 +1,5 @@
 package geo.track.dto.os.response;
 
-import geo.track.domain.Cliente;
 import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;

@@ -4,7 +4,7 @@ import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.itensProdutos.ItemProdutoOsResponse;
 import geo.track.dto.itensServicos.ItemServicoOsResponse;
 
-import geo.track.dto.registroEntrada.response.RegistroEntradaResponse;
+import geo.track.jornada.response.entrada.RegistroEntradaResponse;
 import geo.track.dto.veiculos.response.VeiculoResponse;
 import geo.track.enums.os.StatusVeiculo;
 import lombok.Data;

@@ -2,7 +2,7 @@ package geo.track.service;
 
 import geo.track.config.rabbitMQ.RabbitMQConfig;
 import geo.track.domain.Arquivo;
-import geo.track.domain.OrdemDeServico;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.enums.Formato;
 import geo.track.enums.StatusArquivo;
 import geo.track.enums.Template;

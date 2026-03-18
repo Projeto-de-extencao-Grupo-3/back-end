@@ -1,8 +1,6 @@
 package geo.track.mapper;
 
-import geo.track.domain.OrdemDeServico;
-import geo.track.dto.os.response.CardOrdemDeServicoResponse;
-import geo.track.dto.os.response.OrdemDeServicoResponse;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.painelControle.response.ResponsePainelControle;
 import geo.track.enums.os.StatusVeiculo;
 

@@ -1,7 +1,7 @@
 package geo.track.service;
 
 import geo.track.domain.ItemServico;
-import geo.track.domain.OrdemDeServico;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.enums.Servico;
@@ -11,7 +11,7 @@ import geo.track.enums.servico.TipoPintura;
 import geo.track.exception.DataNotFoundException;
 import geo.track.log.LogImplementation;
 import geo.track.repository.ItemServicoRepository;
-import geo.track.repository.OrdemDeServicoRepository;
+import geo.track.jornada.entity.OrdemDeServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

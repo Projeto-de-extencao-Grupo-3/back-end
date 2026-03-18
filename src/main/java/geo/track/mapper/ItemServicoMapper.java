@@ -1,13 +1,12 @@
 package geo.track.mapper;
 
 import geo.track.domain.ItemServico;
-import geo.track.domain.OrdemDeServico;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.itensServicos.ItemServicoOsResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.enums.Servico;
-import geo.track.exception.BadBusinessRuleException;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ItemServicoExceptionMessages;

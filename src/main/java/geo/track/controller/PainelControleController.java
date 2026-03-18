@@ -1,6 +1,6 @@
 package geo.track.controller;
 
-import geo.track.domain.OrdemDeServico;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.os.response.TelaOrdemServicoResponse;
 import geo.track.dto.painelControle.response.ResponsePainelControle;

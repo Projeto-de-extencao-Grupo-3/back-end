@@ -1,9 +1,11 @@
-package geo.track.domain;
+package geo.track.jornada.entity;
 
+import geo.track.domain.ItemProduto;
+import geo.track.domain.ItemServico;
+import geo.track.domain.Oficina;
 import geo.track.enums.os.StatusVeiculo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -53,8 +55,7 @@ public class OrdemDeServico {
     @Schema(description = "Indica se o pagamento foi realizado", example = "true")
     private Boolean pagtRealizado;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_entrada")
+    @OneToOne(mappedBy = "fkOrdemServico")
     @Schema(description = "Registro de entrada relacionado á ordem de serviço.")
     private RegistroEntrada fkEntrada;
 

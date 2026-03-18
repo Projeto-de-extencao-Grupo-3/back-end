@@ -8,7 +8,6 @@ import geo.track.dto.enderecos.request.RequestPutEndereco;
 import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.NotAcepptableException;
-import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.EnderecoRepository;
 import geo.track.util.ViacepConnection;

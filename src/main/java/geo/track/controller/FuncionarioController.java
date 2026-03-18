@@ -2,16 +2,13 @@ package geo.track.controller;
 
 import geo.track.controller.swagger.FuncionarioSwagger;
 import geo.track.domain.Funcionario;
-import geo.track.domain.Oficina;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.response.FuncionarioResponse;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.mapper.FuncionarioMapper;
-import geo.track.mapper.OficinaMapper;
 import geo.track.service.FuncionarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

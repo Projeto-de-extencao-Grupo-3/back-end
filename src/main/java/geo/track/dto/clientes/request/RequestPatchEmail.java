@@ -14,7 +14,7 @@ public class RequestPatchEmail {
 
     @NotNull
     @Schema(description = "ID do cliente que terá o e-mail atualizado", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    Integer id;
+    Integer idCliente;
 
     @NotBlank
     @Email

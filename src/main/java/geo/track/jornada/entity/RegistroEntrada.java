@@ -1,5 +1,6 @@
-package geo.track.domain;
+package geo.track.jornada.entity;
 
+import geo.track.domain.Veiculo;
 import io.swagger.v3.oas.annotations.media.Schema; // Import adicionado
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -70,7 +71,8 @@ public class RegistroEntrada {
     @Schema(description = "Veículo associado a este registro de entrada") // Adicionado
     private Veiculo fkVeiculo;
 
-    @OneToOne(mappedBy = "fkEntrada")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_ordem_servico")
     @Schema(description = "Ordem de serviço gerada a partir desta entrada") // Adicionado
-    private OrdemDeServico ordemDeServicos;
+    private OrdemDeServico fkOrdemServico;
 }

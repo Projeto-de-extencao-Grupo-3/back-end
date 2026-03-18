@@ -1,7 +1,5 @@
-package geo.track.repository;
+package geo.track.jornada.entity;
 
-import geo.track.domain.OrdemDeServico;
-import geo.track.domain.RegistroEntrada;
 import geo.track.dto.os.response.ViewNotaFiscal;
 import geo.track.dto.os.response.ViewPagtoPendente;
 import geo.track.dto.os.response.ViewPagtoRealizado;
@@ -9,11 +7,13 @@ import geo.track.enums.os.StatusVeiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, Integer> {
     
     @Query("SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v JOIN v.fkCliente c JOIN c.fkOficina ofi WHERE v.placa = :placa AND ofi.idOficina = :idOficina")
