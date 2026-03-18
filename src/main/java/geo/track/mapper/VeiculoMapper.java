@@ -20,6 +20,9 @@ public class VeiculoMapper {
         response.setPlaca(entity.getPlaca());
         response.setModelo(entity.getModelo());
         response.setAnoModelo(entity.getAnoModelo());
+        response.setMarca(entity.getMarca());
+        response.setPrefixo(entity.getPrefixo());
+
         // Assuming fkCliente is not directly mapped to response, or handled elsewhere if needed.
 
         return response;

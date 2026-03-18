@@ -8,4 +8,6 @@ public class VeiculoResponse {
     private String placa;
     private String modelo;
     private Integer anoModelo;
+    private String marca;
+    private String prefixo;
 }
