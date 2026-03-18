@@ -7,7 +7,7 @@ import geo.track.jornada.request.entrada.RequestConfirmacao;
 import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
 import geo.track.jornada.request.entrada.RequestEntradaEfetivaSemCadastro;
 import geo.track.jornada.response.entrada.RegistroEntradaResponse;
-import geo.track.jornada.usecase.JornadaService;
+import geo.track.jornada.service.JornadaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

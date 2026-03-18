@@ -1,23 +1,24 @@
-package geo.track.jornada.usecase;
+package geo.track.jornada.service;
 
 import geo.track.domain.Veiculo;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.jornada.entity.OrdemDeServicoRepository;
 import geo.track.jornada.entity.RegistroEntradaRepository;
+import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.service.VeiculoService;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.request.entrada.RequestAgendamento;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class AgendamentoStrategy implements JornadaStrategy<RequestAgendamento, RegistroEntrada> {
-    private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
+    private final CadastrarOrdemServicoUseCase CADASTRAR_OS_PORT;
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final VeiculoService VEICULO_SERVICE;
 
@@ -29,20 +30,12 @@ public class AgendamentoStrategy implements JornadaStrategy<RequestAgendamento, 
     @Override
     public RegistroEntrada execute(RequestAgendamento request) {
         StatusVeiculo status = StatusVeiculo.AGUARDANDO_ENTRADA;
+        OrdemDeServico ordemDeServico = CADASTRAR_OS_PORT.execute(status);
         Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(request.fkVeiculo());
+
         LocalDate dataEntradaPrevista = request.dataEntradaPrevista();
 
-        OrdemDeServico ordemDeServico = this.cadastrarOrdemServico(status);
-
         return this.cadastrarAgendamento(ordemDeServico, veiculo, dataEntradaPrevista);
-    }
-
-    private OrdemDeServico cadastrarOrdemServico(StatusVeiculo status) {
-        OrdemDeServico ordemDeServico = new OrdemDeServico();
-        ordemDeServico.setStatus(status);
-        ordemDeServico.setAtivo(true);
-
-        return ORDEM_SERVICO_REPOSITORY.save(ordemDeServico);
     }
 
     private RegistroEntrada cadastrarAgendamento(OrdemDeServico ordemDeServico, Veiculo veiculo, LocalDate dataEntradaPrevista) {

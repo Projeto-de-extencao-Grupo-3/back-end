@@ -1,4 +1,4 @@
-package geo.track.jornada.usecase;
+package geo.track.jornada.service;
 
 import geo.track.jornada.request.entrada.GetJornadaType;
 import lombok.RequiredArgsConstructor;

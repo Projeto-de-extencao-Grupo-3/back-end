@@ -1,8 +1,11 @@
 package geo.track.mapper;
 
+import geo.track.domain.Veiculo;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;
 import geo.track.jornada.request.entrada.RequestConfirmacao;
+import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
 import geo.track.jornada.response.entrada.RegistroEntradaResponse;
 
 import java.time.LocalDate;
@@ -72,5 +75,28 @@ public final class RegistroEntradaMapper {
         if (request.observacoes() != null) entity.setObservacoes(request.observacoes());
 
         return entity;
+    }
+
+    public static RegistroEntrada toEntity(RequestEntradaEfetiva request, Veiculo veiculo, OrdemDeServico ordemDeServico) {
+        RegistroEntrada entrada = new RegistroEntrada();
+
+        entrada.setDataEntradaEfetiva(LocalDate.now());
+        entrada.setDataEntradaPrevista(LocalDate.now());
+        entrada.setResponsavel(request.responsavel());
+        entrada.setCpf(request.cpf());
+        entrada.setExtintor(request.extintor());
+        entrada.setMacaco(request.macaco());
+        entrada.setChaveRoda(request.chaveRoda());
+        entrada.setGeladeira(request.geladeira());
+        entrada.setMonitor(request.monitor());
+        entrada.setEstepe(request.estepe());
+        entrada.setSomDvd(request.somDvd());
+        entrada.setCaixaFerramentas(request.caixaFerramentas());
+        if (request.observacoes() != null) entrada.setObservacoes(request.observacoes());
+
+        entrada.setFkVeiculo(veiculo);
+        entrada.setFkOrdemServico(ordemDeServico);
+
+        return entrada;
     }
 }
