@@ -3,13 +3,10 @@ package geo.track.exception.handler;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.common.base.CaseFormat;
 import geo.track.exception.*;
-import geo.track.exception.constraint.message.Domains;
 import geo.track.log.Log;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -196,6 +193,20 @@ public class GlobalExceptionHandler {
                 ExceptionBody.builder()
                         .codigo(HttpStatus.SERVICE_UNAVAILABLE.value())
                         .domain(e.getDomain())
+                        .mensagem(e.getMessage())
+                        .excecao(e.getClass().getSimpleName())
+                        .momento(LocalDateTime.now())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ResponseEntity<ExceptionBody> unsupportedOperationException(UnsupportedOperationException e) {
+        log.error("Erro {} - ({}) {}", 501, "SISTEMA", e.getMessage());
+        return ResponseEntity.status(500).body(
+                ExceptionBody.builder()
+                        .codigo(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .domain("SISTEMA")
                         .mensagem(e.getMessage())
                         .excecao(e.getClass().getSimpleName())
                         .momento(LocalDateTime.now())

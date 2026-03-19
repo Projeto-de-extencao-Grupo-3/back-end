@@ -1,4 +1,4 @@
-package geo.track.dto.registroEntrada.response;
+package geo.track.jornada.response.entrada;
 
 import lombok.Data;
 

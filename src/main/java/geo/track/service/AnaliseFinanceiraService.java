@@ -1,6 +1,6 @@
 package geo.track.service;
 
-import geo.track.domain.OrdemDeServico;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.analise.financeira.response.ResponseNotaFiscals;
 import geo.track.dto.analise.financeira.response.ResponsePagamentos;
 import geo.track.dto.os.response.ViewNotaFiscal;

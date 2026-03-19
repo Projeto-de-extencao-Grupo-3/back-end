@@ -1,9 +1,9 @@
 package geo.track.service;
 
 import geo.track.domain.ItemServico;
-import geo.track.domain.OrdemDeServico;
-import geo.track.domain.RegistroEntrada;
 import geo.track.dto.os.request.*;
+import geo.track.jornada.entity.OrdemDeServico;
+import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.dto.os.response.ViewNotaFiscal;
 import geo.track.dto.os.response.ViewPagtoPendente;
 import geo.track.dto.os.response.ViewPagtoRealizado;
@@ -11,8 +11,8 @@ import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.log.LogImplementation;
-import geo.track.repository.OrdemDeServicoRepository;
-import geo.track.repository.RegistroEntradaRepository;
+import geo.track.jornada.entity.OrdemDeServicoRepository;
+import geo.track.jornada.entity.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

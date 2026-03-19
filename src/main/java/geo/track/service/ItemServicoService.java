@@ -1,7 +1,7 @@
 package geo.track.service;
 
 import geo.track.domain.ItemServico;
-import geo.track.domain.OrdemDeServico;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.exception.DataNotFoundException;
@@ -11,7 +11,7 @@ import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.log.Log;
 import geo.track.mapper.ItemServicoMapper;
 import geo.track.repository.ItemServicoRepository;
-import geo.track.repository.OrdemDeServicoRepository;
+import geo.track.jornada.entity.OrdemDeServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

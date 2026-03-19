@@ -1,5 +1,6 @@
-package geo.track.domain;
+package geo.track.jornada.entity;
 
+import geo.track.domain.Veiculo;
 import io.swagger.v3.oas.annotations.media.Schema; // Import adicionado
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -24,7 +25,6 @@ public class RegistroEntrada {
     @Schema(description = "ID único do registro de entrada", example = "1") // Adicionado
     private Integer idRegistroEntrada;
 
-    @NotNull
     @Schema(description = "Data prevista para a entrada do veículo", example = "2025-10-26", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private LocalDate dataEntradaPrevista;
 
@@ -34,7 +34,6 @@ public class RegistroEntrada {
     @Schema(description = "Nome do responsável que trouxe o veículo", example = "Carlos Souza") // Adicionado
     private String responsavel;
 
-    @CPF
     @Schema(description = "CPF do responsável", example = "98765432109") // Adicionado
     private String cpf;
 
@@ -70,7 +69,8 @@ public class RegistroEntrada {
     @Schema(description = "Veículo associado a este registro de entrada") // Adicionado
     private Veiculo fkVeiculo;
 
-    @OneToOne(mappedBy = "fkEntrada")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_ordem_servico")
     @Schema(description = "Ordem de serviço gerada a partir desta entrada") // Adicionado
-    private OrdemDeServico ordemDeServicos;
+    private OrdemDeServico fkOrdemServico;
 }

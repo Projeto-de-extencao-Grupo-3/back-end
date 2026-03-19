@@ -14,7 +14,7 @@ public class RequestPatchTelefone {
 
     @NotNull
     @Schema(description = "ID do cliente que terá o telefone atualizado", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    Integer id;
+    Integer idCliente;
 
     @NotBlank
     @Size(min = 10, max = 11)

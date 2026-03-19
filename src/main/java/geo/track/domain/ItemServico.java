@@ -4,6 +4,7 @@ import geo.track.enums.Servico;
 import geo.track.enums.servico.LadoVeiculo;
 import geo.track.enums.servico.ParteVeiculo;
 import geo.track.enums.servico.TipoPintura;
+import geo.track.jornada.entity.OrdemDeServico;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

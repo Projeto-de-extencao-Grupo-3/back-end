@@ -1,10 +1,11 @@
 package geo.track.controller;
 
 import geo.track.controller.swagger.OrdemDeServicoSwagger;
-import geo.track.domain.OrdemDeServico;
+import geo.track.dto.os.request.*;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.os.request.*;
-import geo.track.dto.os.response.*;
+import geo.track.dto.os.response.OrdemDeServicoResponse;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.ConflictException;
@@ -41,7 +42,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<OrdemDeServicoResponse>> listOrdens(@RequestParam Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
+    public ResponseEntity<List<OrdemDeServicoResponse>> listOrdens(@RequestParam(required = false) Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
 
         List<OrdemDeServico> ordem;

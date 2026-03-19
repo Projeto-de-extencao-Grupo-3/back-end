@@ -1,14 +1,12 @@
 package geo.track.controller;
 
 import geo.track.domain.ItemServico;
-import geo.track.domain.OrdemDeServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.mapper.ItemServicoMapper;
 import geo.track.service.ItemServicoService;
-import geo.track.service.OrdemDeServicoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

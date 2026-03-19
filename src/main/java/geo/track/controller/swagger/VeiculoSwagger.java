@@ -1,6 +1,5 @@
 package geo.track.controller.swagger;
 
-import geo.track.domain.Veiculo;
 import geo.track.dto.veiculos.request.RequestPatchCor;
 import geo.track.dto.veiculos.request.RequestPatchPlaca;
 import geo.track.dto.veiculos.request.RequestPostVeiculo;

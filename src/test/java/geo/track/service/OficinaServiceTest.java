@@ -10,7 +10,6 @@ import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.dto.oficinas.request.RequestPutOficina;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
-import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;

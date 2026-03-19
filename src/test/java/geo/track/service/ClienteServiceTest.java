@@ -11,7 +11,6 @@ import geo.track.enums.cliente.TipoCliente;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
-import geo.track.log.Log;
 import geo.track.log.LogImplementation;
 import geo.track.repository.ClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -287,7 +286,7 @@ class ClienteServiceTest {
         Cliente clienteParaAtualizar = cliente;
         clienteParaAtualizar.setEmail("novo.email@example.com");
 
-        when(repository.findById(requestPatchEmail.getId())).thenReturn(Optional.of(clienteParaAtualizar));
+        when(repository.findById(requestPatchEmail.getIdCliente())).thenReturn(Optional.of(clienteParaAtualizar));
         when(repository.save(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -296,7 +295,7 @@ class ClienteServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("novo.email@example.com", resultado.getEmail());
-        verify(repository).findById(requestPatchEmail.getId());
+        verify(repository).findById(requestPatchEmail.getIdCliente());
         verify(repository).save(any(Cliente.class));
     }
 
@@ -304,14 +303,14 @@ class ClienteServiceTest {
     @DisplayName("patchEmailCliente: Deve lançar DataNotFoundException quando cliente não existe")
     void testPatchEmailClienteNaoEncontrado() {
         // Arrange
-        when(repository.findById(requestPatchEmail.getId())).thenReturn(Optional.empty());
+        when(repository.findById(requestPatchEmail.getIdCliente())).thenReturn(Optional.empty());
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.patchEmailCliente(requestPatchEmail));
 
-        assertEquals("Não existe cliente com esse ID ou não pertence a esta oficina", exception.getMessage());
-        verify(repository).findById(requestPatchEmail.getId());
+        assertEquals("O ID 1 não foi encontrado ou não pertence a esta oficina", exception.getMessage());
+        verify(repository).findById(requestPatchEmail.getIdCliente());
         verify(repository, never()).save(any(Cliente.class));
     }
 
@@ -323,7 +322,7 @@ class ClienteServiceTest {
         Cliente clienteParaAtualizar = cliente;
         clienteParaAtualizar.setTelefone("11888888888");
 
-        when(repository.findById(requestPatchTelefone.getId())).thenReturn(Optional.of(clienteParaAtualizar));
+        when(repository.findById(requestPatchTelefone.getIdCliente())).thenReturn(Optional.of(clienteParaAtualizar));
         when(repository.save(any(Cliente.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
@@ -332,7 +331,7 @@ class ClienteServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("11888888888", resultado.getTelefone());
-        verify(repository).findById(requestPatchTelefone.getId());
+        verify(repository).findById(requestPatchTelefone.getIdCliente());
         verify(repository).save(any(Cliente.class));
     }
 
@@ -340,14 +339,14 @@ class ClienteServiceTest {
     @DisplayName("patchTelefoneCliente: Deve lançar DataNotFoundException quando cliente não existe")
     void testPatchTelefoneClienteNaoEncontrado() {
         // Arrange
-        when(repository.findById(requestPatchTelefone.getId())).thenReturn(Optional.empty());
+        when(repository.findById(requestPatchTelefone.getIdCliente())).thenReturn(Optional.empty());
 
         // Act & Assert
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.patchTelefoneCliente(requestPatchTelefone));
 
-        assertEquals("Não existe cliente com esse ID ou não pertence a esta oficina", exception.getMessage());
-        verify(repository).findById(requestPatchTelefone.getId());
+        assertEquals("O ID 1 não foi encontrado ou não pertence a esta oficina", exception.getMessage());
+        verify(repository).findById(requestPatchTelefone.getIdCliente());
         verify(repository, never()).save(any(Cliente.class));
     }
 
@@ -388,7 +387,7 @@ class ClienteServiceTest {
         DataNotFoundException exception = assertThrows(DataNotFoundException.class,
             () -> service.putCliente(requestPutCliente));
 
-        assertEquals("Não existe cliente com esse ID ou não pertence a esta oficina", exception.getMessage());
+        assertEquals("O ID 1 não foi encontrado ou não pertence a esta oficina", exception.getMessage());
         verify(repository).findById(requestPutCliente.getIdCliente());
         verify(repository, never()).save(any(Cliente.class));
     }

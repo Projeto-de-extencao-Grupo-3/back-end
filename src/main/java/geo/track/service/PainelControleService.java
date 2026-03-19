@@ -1,6 +1,6 @@
 package geo.track.service;
 
-import geo.track.domain.OrdemDeServico;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.log.Log;
 import lombok.RequiredArgsConstructor;

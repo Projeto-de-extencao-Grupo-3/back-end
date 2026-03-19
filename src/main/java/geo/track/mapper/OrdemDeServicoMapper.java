@@ -2,7 +2,7 @@ package geo.track.mapper;
 
 import geo.track.domain.ItemProduto;
 import geo.track.domain.ItemServico;
-import geo.track.domain.OrdemDeServico;
+import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;

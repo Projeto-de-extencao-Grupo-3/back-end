@@ -1,9 +1,9 @@
 package geo.track.service;
 
-import geo.track.domain.RegistroEntrada;
+import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.domain.Veiculo;
 import geo.track.dto.os.request.RequestPostEntradaVeiculo;
-import geo.track.dto.registroEntrada.request.*;
+import geo.track.dto.registroEntrada.request.RequestPostEntrada;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
 import geo.track.enums.os.StatusVeiculo;
@@ -12,7 +12,7 @@ import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.RegistroEntradaExceptionMessages;
 import geo.track.log.Log;
-import geo.track.repository.RegistroEntradaRepository;
+import geo.track.jornada.entity.RegistroEntradaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +40,7 @@ public class RegistroEntradaService{
         registro.setFkVeiculo(veiculo);
 
         RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.save(registro);
-        registro.setOrdemDeServicos(ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(new RequestPostEntradaVeiculo(StatusVeiculo.AGUARDANDO_ENTRADA, entrada.getIdRegistroEntrada())));
+        registro.setFkOrdemServico(ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(new RequestPostEntradaVeiculo(StatusVeiculo.AGUARDANDO_ENTRADA, entrada.getIdRegistroEntrada())));
         log.info("Agendamento realizado com sucesso para o veículo ID: {}. Registro ID: {}", body.getFkVeiculo(), entrada.getIdRegistroEntrada());
         return REGISTRO_ENTRADA_REPOSITORY.save(entrada);
     }
@@ -68,7 +68,7 @@ public class RegistroEntradaService{
         registro.setFkVeiculo(veiculo);
 
         RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.save(registro);
-        entrada.setOrdemDeServicos(ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(new RequestPostEntradaVeiculo(StatusVeiculo.AGUARDANDO_ORCAMENTO, entrada.getIdRegistroEntrada())));
+        entrada.setFkOrdemServico(ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(new RequestPostEntradaVeiculo(StatusVeiculo.AGUARDANDO_ORCAMENTO, entrada.getIdRegistroEntrada())));
 
         log.info("Entrada do veículo ID: {} registrada com sucesso. Registro ID: {}", body.fkVeiculo(), entrada.getIdRegistroEntrada());
         return REGISTRO_ENTRADA_REPOSITORY.save(entrada);

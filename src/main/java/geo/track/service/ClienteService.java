@@ -16,6 +16,7 @@ import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -27,34 +28,33 @@ public class ClienteService {
     private final EnderecoService ENDERECO_SERVICE;
     private final Log log;
 
-    public Cliente postCliente(RequestPostCliente body){
+    public Cliente postCliente(RequestPostCliente body) {
         log.info("Iniciando criação de novo cliente com CPF/CNPJ: {}", body.getCpfCnpj());
-        if(CLIENTE_REPOSITORY.existsByCpfCnpj(body.getCpfCnpj())){
+        if (CLIENTE_REPOSITORY.existsByCpfCnpj(body.getCpfCnpj())) {
             log.warn("Falha ao criar cliente: CPF/CNPJ {} já cadastrado", body.getCpfCnpj());
             throw new ConflictException(ClienteExceptionMessages.CPF_EXISTENTE, Domains.CLIENTE);
         }
         Oficina oficina = OFICINA_SERVICE.findOficinasById(body.getFkOficina());
         Endereco endereco = ENDERECO_SERVICE.findEnderecoById(body.getFkEndereco());
 
-        Cliente cliente = ClientesMapper.toEntity(body,oficina, endereco);
+        Cliente cliente = ClientesMapper.toEntity(body, oficina, endereco);
         log.info("Cliente criado com sucesso para a oficina ID: {}", body.getFkOficina());
         return CLIENTE_REPOSITORY.save(cliente);
     }
 
-    public List<Cliente> findClientes(String nome, String cpfCnpj){
+    public List<Cliente> findClientes(String nome, String cpfCnpj) {
         if (nome != null && cpfCnpj != null) {
             log.info("Buscando clientes pelo nome contendo: {} e CPF/CNPJ: {}", nome, cpfCnpj);
             List<Cliente> clientes = CLIENTE_REPOSITORY.findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCase(nome, cpfCnpj);
             return clientes;
-        }
-        else if (cpfCnpj != null && !cpfCnpj.trim().isEmpty()) {
+        } else if (cpfCnpj != null && !cpfCnpj.trim().isEmpty()) {
             log.info("Buscando cliente pelo CPF/CNPJ: {}", cpfCnpj);
             List<Cliente> cliente = CLIENTE_REPOSITORY.findByCpfCnpjContainingIgnoreCase(cpfCnpj);
         } else if (nome != null && !nome.trim().isEmpty()) {
             log.info("Buscando clientes pelo nome contendo: {}", nome);
             List<Cliente> clientes = CLIENTE_REPOSITORY.findByNomeContainingIgnoreCase(nome);
             return clientes;
-        } else  {
+        } else {
             log.info("Buscando todos os clientes cadastrados");
             return CLIENTE_REPOSITORY.findAll();
         }
@@ -63,7 +63,7 @@ public class ClienteService {
         return CLIENTE_REPOSITORY.findAll();
     }
 
-    public Cliente findClienteById(Integer id){
+    public Cliente findClienteById(Integer id) {
         log.info("Buscando cliente pelo ID: {}", id);
         Optional<Cliente> cliente = CLIENTE_REPOSITORY.findById(id);
 
@@ -78,65 +78,45 @@ public class ClienteService {
     }
 
     public Cliente patchEmailCliente(RequestPatchEmail body) {
-        log.info("Atualizando e-mail do cliente ID: {}", body.getId());
-        Optional<Cliente> clientes = CLIENTE_REPOSITORY.findById(body.getId());
-
-        if(clientes.isEmpty()){
-            log.error("Falha ao atualizar e-mail: Cliente ID {} não encontrado", body.getId());
-            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, Domains.CLIENTE);
-        }
-        Cliente cliente = clientes.get();
-        cliente.setIdCliente(body.getId());
+        log.info("Atualizando e-mail do cliente ID: {}", body.getIdCliente());
+        Cliente cliente = this.findClienteById(body.getIdCliente());
+        cliente.setIdCliente(body.getIdCliente());
         cliente.setEmail(body.getEmail());
 
-        log.info("E-mail do cliente ID {} atualizado com sucesso", body.getId());
+        log.info("E-mail do cliente ID {} atualizado com sucesso", body.getIdCliente());
         return CLIENTE_REPOSITORY.save(cliente);
     }
 
     public Cliente patchTelefoneCliente(RequestPatchTelefone body) {
-        log.info("Atualizando telefone do cliente ID: {}", body.getId());
-        Optional<Cliente> clientes = CLIENTE_REPOSITORY.findById(body.getId());
-
-        if(clientes.isEmpty()){
-            log.error("Falha ao atualizar telefone: Cliente ID {} não encontrado", body.getId());
-            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, Domains.CLIENTE);
-        }
-
-        Cliente cliente = clientes.get();
-        cliente.setIdCliente(body.getId());
+        log.info("Atualizando telefone do cliente ID: {}", body.getIdCliente());
+        Cliente cliente = this.findClienteById(body.getIdCliente());
+        cliente.setIdCliente(body.getIdCliente());
         cliente.setTelefone(body.getTelefone());
 
-        log.info("Telefone do cliente ID {} atualizado com sucesso", body.getId());
+        log.info("Telefone do cliente ID {} atualizado com sucesso", body.getIdCliente());
         return CLIENTE_REPOSITORY.save(cliente);
     }
 
     public Cliente putCliente(RequestPutCliente body) {
         log.info("Atualizando dados completos do cliente ID: {}", body.getIdCliente());
-        Optional<Cliente> clientes = CLIENTE_REPOSITORY.findById(body.getIdCliente());
 
+        Cliente cliente = this.findClienteById(body.getIdCliente());
 
-        if(clientes.isEmpty()){
-            log.error("Falha na atualização completa: Cliente ID {} não encontrado", body.getIdCliente());
-            throw new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_ID_OU_OFICINA, Domains.CLIENTE);
-        }
+        cliente.setIdCliente(body.getIdCliente());
+        cliente.setNome(body.getNome());
+        cliente.setCpfCnpj(body.getCpfCnpj());
+        cliente.setTelefone(body.getTelefone());
+        cliente.setEmail(body.getEmail());
 
-            Cliente cliente = clientes.get();
-
-            cliente.setIdCliente(body.getIdCliente());
-            cliente.setNome(body.getNome());
-            cliente.setCpfCnpj(body.getCpfCnpj());
-            cliente.setTelefone(body.getTelefone());
-            cliente.setEmail(body.getEmail());
-
-          log.info("Dados do cliente ID {} atualizados com sucesso", body.getIdCliente());
-          return CLIENTE_REPOSITORY.save(cliente);
+        log.info("Dados do cliente ID {} atualizados com sucesso", body.getIdCliente());
+        return CLIENTE_REPOSITORY.save(cliente);
 
 
     }
 
-    public void deletar(Integer id){
+    public void deletar(Integer id) {
         log.info("Solicitação para deletar cliente ID: {}", id);
-        if (CLIENTE_REPOSITORY.existsById(id)){
+        if (CLIENTE_REPOSITORY.existsById(id)) {
             CLIENTE_REPOSITORY.deleteById(id);
             log.info("Cliente ID {} deletado com sucesso", id);
             return;

@@ -2,7 +2,6 @@ package geo.track.dto.analise.financeira.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import geo.track.dto.os.response.CardOrdemDeServicoResponse;
-import geo.track.dto.os.response.OrdemDeServicoResponse;
 
 import java.util.List;
 

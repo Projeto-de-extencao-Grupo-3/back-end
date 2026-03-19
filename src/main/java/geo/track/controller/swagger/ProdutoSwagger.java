@@ -1,6 +1,5 @@
 package geo.track.controller.swagger;
 
-import geo.track.domain.Produto;
 import geo.track.dto.produtos.ProdutoRequest;
 import geo.track.dto.produtos.ProdutoResponse;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;

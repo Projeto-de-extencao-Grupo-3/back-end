@@ -6,6 +6,7 @@ import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;
+import geo.track.log.Log;
 import geo.track.repository.FuncionarioRepository;
 import geo.track.repository.OficinaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +42,7 @@ class FuncionarioServiceTest {
     private PasswordEncoder PASSWORD_ENCODER;
 
     @Mock
-    private geo.track.log.Log log;
+    private Log log;
 
     @InjectMocks
     private FuncionarioService service;
