@@ -5,6 +5,7 @@ import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;
 import geo.track.jornada.request.entrada.RequestConfirmacao;
+import geo.track.jornada.request.entrada.RequestEntrada;
 import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
 import geo.track.jornada.response.entrada.RegistroEntradaResponse;
 
@@ -55,7 +56,7 @@ public final class RegistroEntradaMapper {
         return response;
     }
     
-    public static RegistroEntrada toEntityUpdate(RegistroEntrada entity, RequestConfirmacao request) {
+    public static RegistroEntrada toEntityUpdate(RegistroEntrada entity, RequestEntrada request) {
         if (request == null || entity == null) {
             return entity;
         }
@@ -77,7 +78,7 @@ public final class RegistroEntradaMapper {
         return entity;
     }
 
-    public static RegistroEntrada toEntity(RequestEntradaEfetiva request, Veiculo veiculo, OrdemDeServico ordemDeServico) {
+    public static RegistroEntrada toEntity(RequestEntrada request, Veiculo veiculo, OrdemDeServico ordemDeServico) {
         RegistroEntrada entrada = new RegistroEntrada();
 
         entrada.setDataEntradaEfetiva(LocalDate.now());

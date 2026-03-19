@@ -34,7 +34,7 @@ public class ConfirmacaoStrategy implements JornadaStrategy<RequestConfirmacao, 
 
         this.atualizarOrdemDeServico(entradaAgendada, status);
 
-        RegistroEntrada entradaAtualizada = RegistroEntradaMapper.toEntityUpdate(entradaAgendada, request);
+        RegistroEntrada entradaAtualizada = RegistroEntradaMapper.toEntityUpdate(entradaAgendada, request.entrada());
 
         return this.atualizarAgendamento(entradaAtualizada );
     }

@@ -12,7 +12,7 @@ public class JornadaService {
     private final List<JornadaStrategy> jornadaStrategies;
 
     @SuppressWarnings("unchecked")
-    public <T> T realizarJornada(GetJornadaType request) {
+    public <T> T realizarJornadaEntrada(GetJornadaType request) {
         for (JornadaStrategy strategy : jornadaStrategies) {
             if (strategy.isApplicable(request.getTipoJornada())) {
                 return (T) strategy.execute(request);

@@ -25,7 +25,6 @@ public class RegistroEntrada {
     @Schema(description = "ID único do registro de entrada", example = "1") // Adicionado
     private Integer idRegistroEntrada;
 
-    @NotNull
     @Schema(description = "Data prevista para a entrada do veículo", example = "2025-10-26", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private LocalDate dataEntradaPrevista;
 
@@ -35,7 +34,6 @@ public class RegistroEntrada {
     @Schema(description = "Nome do responsável que trouxe o veículo", example = "Carlos Souza") // Adicionado
     private String responsavel;
 
-    @CPF
     @Schema(description = "CPF do responsável", example = "98765432109") // Adicionado
     private String cpf;
 

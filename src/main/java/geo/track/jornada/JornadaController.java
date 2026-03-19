@@ -22,7 +22,7 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PostMapping("/agendamento")
     public ResponseEntity<RegistroEntradaResponse> agendamentoEntrada(@Valid @RequestBody RequestAgendamento request) {
-        RegistroEntrada agendamento = service.realizarJornada(request);
+        RegistroEntrada agendamento = service.realizarJornadaEntrada(request);
 
         return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponse(agendamento));
     }
@@ -30,7 +30,7 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PatchMapping("/confirmar-entrada")
     public ResponseEntity<RegistroEntradaResponse> confirmarEntradaAgendada(@Valid @RequestBody RequestConfirmacao request) {
-        RegistroEntrada entradaConfirmada = service.realizarJornada(request);
+        RegistroEntrada entradaConfirmada = service.realizarJornadaEntrada(request);
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaConfirmada));
     }
@@ -38,15 +38,15 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PostMapping("/entrada-efetiva")
     public ResponseEntity<RegistroEntradaResponse> entradaVeiculoEfetiva(@Valid @RequestBody RequestEntradaEfetiva request) {
-        RegistroEntrada entradaFeita = service.realizarJornada(request);
+        RegistroEntrada entradaFeita = service.realizarJornadaEntrada(request);
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaFeita));
     }
 
     @Override
     @PostMapping("/entrada-efetiva-sem-cadastro")
-    public ResponseEntity<RegistroEntradaResponse> entradaVeiculoSemCadastroEfetiva(@Valid @RequestBody RequestEntradaEfetivaSemCadastro request) {
-        RegistroEntrada entradaFeita = service.realizarJornada(request);
+    public ResponseEntity<RegistroEntradaResponse> entradaVeiculoSemCadastroEfetiva(@RequestBody RequestEntradaEfetivaSemCadastro request) {
+        RegistroEntrada entradaFeita = service.realizarJornadaEntrada(request);
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaFeita));
     }
