@@ -19,7 +19,7 @@ public class AnaliseFinanceiraService {
 
     public ResponsePagamentos findOrdensPagtoCondition(Integer idOficina, Boolean nfRealizada, Boolean pagtoRealizado) {
         log.info("Iniciando busca de ordens de serviço por condição de pagamento. Oficina ID: {}, NF Realizada: {}, Pagamento Realizado: {}", idOficina, nfRealizada, pagtoRealizado);
-        List<OrdemDeServico> ordensPagtoPendente = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(nfRealizada, pagtoRealizado, idOficina);
+        List<OrdemDeServico> ordensPagtoPendente = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(nfRealizada, pagtoRealizado);
 
         if (pagtoRealizado) {
             log.info("Calculando KPIs para pagamentos realizados da oficina ID: {}", idOficina);
@@ -42,7 +42,7 @@ public class AnaliseFinanceiraService {
     public ResponseNotaFiscals findOrdensNotaFiscalCondition(Integer idOficina, Boolean nfRealizada, Boolean pagtoRealizado) {
         log.info("Iniciando busca de ordens de serviço por condição de nota fiscal. Oficina ID: {}, NF Realizada: {}, Pagamento Realizado: {}", idOficina, nfRealizada, pagtoRealizado);
         ViewNotaFiscal kpiNotaFiscal = ORDEM_SERVICO_SERVICE.exibirKpiNotaFiscal(idOficina);
-        List<OrdemDeServico> ordensNotaFiscalpendente = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(nfRealizada, pagtoRealizado, idOficina);
+        List<OrdemDeServico> ordensNotaFiscalpendente = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(nfRealizada, pagtoRealizado);
 
         log.info("KPI de Notas Fiscais pendentes recuperado: {} para oficina ID: {}", kpiNotaFiscal.quantidadeNfsPendentes(), idOficina);
         return AnaliseFinanceiraMapper.toResponseNotaFiscalPendente(kpiNotaFiscal.quantidadeNfsPendentes(), ordensNotaFiscalpendente);

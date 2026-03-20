@@ -21,7 +21,7 @@ public class PainelControleService {
         List<List<OrdemDeServico>> listaOrdensPorStatus = new ArrayList<>();
 
         for (int i = 0; i < StatusVeiculo.values().length; i++) {
-            listaOrdensPorStatus.add(ODEM_SERVICO_SERVICE.buscarOrdemPorStatus(StatusVeiculo.values()[i], idOficina));
+            listaOrdensPorStatus.add(ODEM_SERVICO_SERVICE.buscarOrdemPorStatus(StatusVeiculo.values()[i]));
         }
 
         log.info("Busca finalizada com sucesso para a oficina ID: {}. Total de categorias processadas: {}", idOficina, listaOrdensPorStatus.size());

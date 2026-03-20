@@ -11,8 +11,8 @@ import geo.track.exception.BadBusinessRuleException;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.RegistroEntradaExceptionMessages;
+import geo.track.jornada.entity.repository.RegistroEntradaRepository;
 import geo.track.log.Log;
-import geo.track.jornada.entity.RegistroEntradaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

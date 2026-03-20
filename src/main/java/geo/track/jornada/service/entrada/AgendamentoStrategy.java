@@ -1,39 +1,50 @@
-package geo.track.jornada.service;
+package geo.track.jornada.service.entrada;
 
 import geo.track.domain.Veiculo;
 import geo.track.enums.os.StatusVeiculo;
-import geo.track.jornada.entity.OrdemDeServicoRepository;
-import geo.track.jornada.entity.RegistroEntradaRepository;
+import geo.track.jornada.entity.repository.RegistroEntradaRepository;
+import geo.track.jornada.service.EntradaJornadaStrategy;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.service.VeiculoService;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
+import geo.track.jornada.interfaces.GetJornada;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.request.entrada.RequestAgendamento;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-
+/** Strategy para AGENDAMENTO DE ENTRADA **/
 @Component
 @RequiredArgsConstructor
-public class AgendamentoStrategy implements JornadaStrategy<RequestAgendamento, RegistroEntrada> {
+public class AgendamentoStrategy implements EntradaJornadaStrategy {
     private final CadastrarOrdemServicoUseCase CADASTRAR_OS_PORT;
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final VeiculoService VEICULO_SERVICE;
 
     @Override
-    public Boolean isApplicable(TipoJornada tipoJornada) {
-        return TipoJornada.AGENDAMENTO.equals(tipoJornada);
+    public Boolean isApplicable(TipoJornada tipo) {
+        return TipoJornada.AGENDAMENTO.equals(tipo);
     }
 
+    /**
+     * Executa o agendamento de entrada do veículo.
+     *
+     * @param request deve ser um RequestAgendamento contendo:
+     *                - fkVeiculo: ID do veículo
+     *                - dataEntradaPrevista: data prevista para a entrada
+     * @return RegistroEntrada com o agendamento criado
+     */
     @Override
-    public RegistroEntrada execute(RequestAgendamento request) {
+    public RegistroEntrada execute(GetJornada request) {
+        RequestAgendamento requestAgendamento = (RequestAgendamento) request;
+
         StatusVeiculo status = StatusVeiculo.AGUARDANDO_ENTRADA;
         OrdemDeServico ordemDeServico = CADASTRAR_OS_PORT.execute(status);
-        Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(request.fkVeiculo());
+        Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(requestAgendamento.fkVeiculo());
 
-        LocalDate dataEntradaPrevista = request.dataEntradaPrevista();
+        LocalDate dataEntradaPrevista = requestAgendamento.dataEntradaPrevista();
 
         return this.cadastrarAgendamento(ordemDeServico, veiculo, dataEntradaPrevista);
     }

@@ -27,16 +27,13 @@ public class ItemServico {
     @Schema(description = "ID da lista de serviços", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer idRegistroServico;
 
-    @NotNull
     @Schema(description = "Preço cobrado", example = "99.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double precoCobrado;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Schema(description = "Parte que será reparada no veiculo", example = "Parachoque/Parabrisa/Janelas", requiredMode = Schema.RequiredMode.REQUIRED)
     private ParteVeiculo parteVeiculo;
 
-    @NotNull
     @Schema(description = "Lado no qual será executado o reparo", example = "Latera Esquerda/Transeira", requiredMode = Schema.RequiredMode.REQUIRED)
     @Enumerated(EnumType.STRING)
     private LadoVeiculo ladoVeiculo;
@@ -44,7 +41,6 @@ public class ItemServico {
     @Schema(description = "Cor do Veiculo", example = "Ciano/Vermelho", requiredMode = Schema.RequiredMode.REQUIRED)
     private String cor;
 
-    @NotBlank
     @Schema(description = "Descrição detalahada do serviço", example = "Troca do parabrisa trincado por um novo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String especificacaoServico;
 
@@ -52,7 +48,6 @@ public class ItemServico {
     @Schema(description = "Campo para colocar alguma observação se necessário", example = "Desconto de 10%, pois a peça nova X foi danificada", requiredMode = Schema.RequiredMode.REQUIRED)
     private TipoPintura tipoPintura;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Schema(description = "Tipo serviço ")
     private Servico tipoServico;

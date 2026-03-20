@@ -6,6 +6,7 @@ import geo.track.domain.Produto;
 import geo.track.dto.itensProdutos.ItemProdutoOsResponse;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
+import geo.track.jornada.request.itens.RequestPostItemProduto;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,15 +75,16 @@ public class ItemProdutoMapper {
                 .collect(Collectors.toList());
     }
 
-    public static ItemProduto toEntity(Integer id, Integer quantidade, Double precoProduto, Boolean baixado, Produto produto, OrdemDeServico ordemServico) {
-        return new ItemProduto(
-                null,
-                quantidade,
-                precoProduto,
-                baixado,
-                produto,
-                ordemServico
-        );
+    public static ItemProduto toEntity(RequestPostItemProduto requestPostItemProduto, Produto produto, OrdemDeServico ordemServico) {
+        ItemProduto itemProduto = new ItemProduto();
+
+        itemProduto.setQuantidade(requestPostItemProduto.quantidade());
+        itemProduto.setPrecoPeca(requestPostItemProduto.precoProduto());
+        itemProduto.setBaixado(false);
+        itemProduto.setFkProduto(produto);
+        itemProduto.setFkOrdemServico(ordemServico);
+
+        return itemProduto;
     }
 
     public static ItemProduto updateEntity(ItemProduto registroDesejado, RequestPutItemProduto body) {

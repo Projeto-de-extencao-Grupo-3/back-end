@@ -4,12 +4,12 @@ import geo.track.domain.ItemServico;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.itensServicos.ItemServicoOsResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;
-import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.enums.Servico;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ItemServicoExceptionMessages;
+import geo.track.jornada.request.itens.RequestPostItemServico;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,15 +42,17 @@ public class ItemServicoMapper {
                 .collect(Collectors.toList());
     }
 
-    public static ItemServico toDomain(RequestPostItemServico dto, OrdemDeServico ordemServico, Servico servico) {
+    public static ItemServico toEntity(RequestPostItemServico dto, OrdemDeServico ordemServico) {
         if (dto == null) {
             return null;
         }
 
-        if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getTipoPintura() == null) throw new BadRequestException(ItemServicoExceptionMessages.TIPO_PINTURA_OBRIGATORIO, Domains.ITEM_SERVICO);
-        if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getCor() == null) throw new BadRequestException(ItemServicoExceptionMessages.COR_OBRIGATORIA, Domains.ITEM_SERVICO);
-
         ItemServico item = new ItemServico();
+
+        if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getTipoPintura() == null) throw new BadRequestException(ItemServicoExceptionMessages.TIPO_PINTURA_OBRIGATORIO, Domains.ITEM_SERVICO);
+        else item.setTipoPintura(dto.getTipoPintura());
+        if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getCor() == null) throw new BadRequestException(ItemServicoExceptionMessages.COR_OBRIGATORIA, Domains.ITEM_SERVICO);
+        else item.setCor(dto.getCor());
 
         item.setPrecoCobrado(dto.getPrecoCobrado());
         item.setParteVeiculo(dto.getParteVeiculo());
@@ -59,7 +61,6 @@ public class ItemServicoMapper {
         item.setEspecificacaoServico(dto.getEspecificacaoServico());
         item.setTipoPintura(dto.getTipoPintura());
         item.setFkOrdemServico(ordemServico);
-        item.setTipoServico(servico);
 
         return item;
     }

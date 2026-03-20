@@ -22,15 +22,12 @@ public class ItemProduto {
     @Schema(description = "Id da lista de produtos", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer idRegistroPeca;
 
-    @NotNull
     @Schema(description = "Quantidade do produto selecionado", example = "12", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer quantidade;
 
-    @NotNull
     @Schema(description = "Preço da peça selecionada", example = "29.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Double precoPeca;
 
-    @NotNull
     @Schema(description = "Indicador se o item foi abaixado no Estoque", example = "29.90", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean baixado;
 

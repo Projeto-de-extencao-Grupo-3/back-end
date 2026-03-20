@@ -1,6 +1,7 @@
 package geo.track.jornada.request.entrada;
 
 import geo.track.jornada.enums.TipoJornada;
+import geo.track.jornada.interfaces.GetJornada;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ public record RequestConfirmacao(
         @Valid
         @NotNull
         RequestEntrada entrada
-) implements GetJornadaType {
+) implements GetJornada {
     @Override
     public TipoJornada getTipoJornada() {
         return TipoJornada.CONFIRMAR_ENTRADA_AGENDADA;

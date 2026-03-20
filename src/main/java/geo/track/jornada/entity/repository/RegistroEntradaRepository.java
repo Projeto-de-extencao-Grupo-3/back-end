@@ -1,5 +1,6 @@
-package geo.track.jornada.entity;
+package geo.track.jornada.entity.repository;
 
+import geo.track.jornada.entity.RegistroEntrada;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

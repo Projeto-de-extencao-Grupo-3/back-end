@@ -1,6 +1,7 @@
 package geo.track.jornada.request.entrada;
 
 import geo.track.jornada.enums.TipoJornada;
+import geo.track.jornada.interfaces.GetJornada;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 
@@ -13,7 +14,7 @@ public record RequestAgendamento(
 
         @NotNull
         Integer fkVeiculo
-) implements GetJornadaType {
+) implements GetJornada {
     public TipoJornada getTipoJornada() {
         return TipoJornada.AGENDAMENTO;
     }
