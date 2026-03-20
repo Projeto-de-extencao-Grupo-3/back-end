@@ -1,17 +1,19 @@
 package geo.track.service;
 
+import geo.track.annotation.ToRefactor;
+import geo.track.config.DefaultMessages;
 import geo.track.domain.ItemServico;
 import geo.track.jornada.entity.OrdemDeServico;
-import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ItemServicoExceptionMessages;
 import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
+import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
+import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.log.Log;
 import geo.track.mapper.ItemServicoMapper;
 import geo.track.repository.ItemServicoRepository;
-import geo.track.jornada.entity.OrdemDeServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +27,15 @@ public class ItemServicoService {
     private final OrdemDeServicoRepository ORDEM_SERVICO_SERVICE;
     private final Log log;
 
+    @ToRefactor(reason = DefaultMessages.refatoracaoDominioJornada)
     public ItemServico cadastrar(RequestPostItemServico body, Integer idOficina){
-        log.info("Iniciando cadastro de novo Item de Serviço para a Ordem de Serviço ID: {}", body.getFkOrdemServico());
+//        log.info("Iniciando cadastro de novo Item de Serviço para a Ordem de Serviço ID: {}", body.getFkOrdemServico());
 
-        OrdemDeServico ordemServico = ORDEM_SERVICO_SERVICE.findByIdAndIdOficina(body.getFkOrdemServico(), idOficina).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO));
-        ItemServico item = ItemServicoMapper.toDomain(body, ordemServico, body.getTipoServico());
-
-        return ITEM_SERVICO_REPOSITORY.save(item);
+//        OrdemDeServico ordemServico = ORDEM_SERVICO_SERVICE.findById(()).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO));
+//        ItemServico item = ItemServicoMapper.toEntity(body, ordemServico, body.getTipoServico());
+//
+//        return ITEM_SERVICO_REPOSITORY.save(item);
+        return null;
     }
 
     public List<ItemServico> listar(){

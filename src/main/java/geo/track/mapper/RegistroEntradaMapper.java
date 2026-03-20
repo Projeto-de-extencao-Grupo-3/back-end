@@ -4,9 +4,7 @@ import geo.track.domain.Veiculo;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;
-import geo.track.jornada.request.entrada.RequestConfirmacao;
 import geo.track.jornada.request.entrada.RequestEntrada;
-import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
 import geo.track.jornada.response.entrada.RegistroEntradaResponse;
 
 import java.time.LocalDate;

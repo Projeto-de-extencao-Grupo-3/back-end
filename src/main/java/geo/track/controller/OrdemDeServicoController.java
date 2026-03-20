@@ -47,8 +47,8 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
 
         List<OrdemDeServico> ordem;
 
-        if (intervalo != null) ordem = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(intervalo, idOficina);
-        else ordem = ORDEM_SERVICO_SERVICE.listarOrdensServico(idOficina);
+        if (intervalo != null) ordem = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(intervalo);
+        else ordem = ORDEM_SERVICO_SERVICE.listarOrdensServico();
 
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -60,7 +60,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     @GetMapping("/veiculos/{placa}")
     public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByPlaca(@PathVariable String placa, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
-        List<OrdemDeServico> ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorPlaca(placa, idOficina);
+        List<OrdemDeServico> ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorPlaca(placa);
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -81,7 +81,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
         StatusVeiculo statusEnum = StatusVeiculo.valueOf(status.toUpperCase());
         List<OrdemDeServico> ordens;
 
-        ordens = ORDEM_SERVICO_SERVICE.buscarOrdemPorStatus(statusEnum, idOficina);
+        ordens = ORDEM_SERVICO_SERVICE.buscarOrdemPorStatus(statusEnum);
 
         if (ordens.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -93,7 +93,7 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
     @GetMapping("/{idOrdem}")
     public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated) {
         Integer idOficina = userAuthenticated.getIdOficina();
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem, idOficina);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 

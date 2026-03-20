@@ -2,8 +2,8 @@ package geo.track.controller.swagger;
 
 import geo.track.domain.ItemServico;
 import geo.track.dto.itensServicos.ItemServicoResponse;
-import geo.track.dto.itensServicos.RequestPostItemServico;
 import geo.track.exception.ExceptionBody;
+import geo.track.jornada.request.itens.RequestPostItemServico;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

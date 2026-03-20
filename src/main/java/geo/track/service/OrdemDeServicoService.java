@@ -4,7 +4,6 @@ import geo.track.domain.ItemServico;
 import geo.track.dto.os.request.*;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
-import geo.track.dto.os.request.*;
 import geo.track.dto.os.response.ViewNotaFiscal;
 import geo.track.dto.os.response.ViewPagtoPendente;
 import geo.track.dto.os.response.ViewPagtoRealizado;
@@ -15,9 +14,9 @@ import geo.track.exception.ForbiddenException;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.exception.constraint.message.RegistroEntradaExceptionMessages;
+import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
+import geo.track.jornada.entity.repository.RegistroEntradaRepository;
 import geo.track.log.Log;
-import geo.track.jornada.entity.OrdemDeServicoRepository;
-import geo.track.jornada.entity.RegistroEntradaRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,14 +57,14 @@ public class OrdemDeServicoService {
         return salva;
     }
 
-    public List<OrdemDeServico> listarOrdensServico(Integer idOficina){
-        Log.info("Listando todas as Ordens de Serviço da oficina ID: {}", idOficina);
-        return ORDEM_REPOSITORY.findAllByIdOficina(idOficina);
+    public List<OrdemDeServico> listarOrdensServico(){
+        Log.info("Listando todas as Ordens de Serviço");
+        return ORDEM_REPOSITORY.findAll();
     }
 
-    public OrdemDeServico buscarOrdemServicoPorId(Integer idOrdem, Integer idOficina){
-        Log.info("Buscando Ordem de Serviço ID: {} para a oficina ID: {}", idOrdem, idOficina);
-        Optional<OrdemDeServico> ordem = ORDEM_REPOSITORY.findByIdAndIdOficina(idOrdem, idOficina);
+    public OrdemDeServico buscarOrdemServicoPorId(Integer idOrdem){
+        Log.info("Buscando Ordem de Serviço ID: {}", idOrdem);
+        Optional<OrdemDeServico> ordem = ORDEM_REPOSITORY.findById(idOrdem);
 
         if (ordem.isEmpty()){
             throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
@@ -191,19 +190,19 @@ public class OrdemDeServicoService {
         Log.info("Ordem de Serviço ID: {} deletada com sucesso", idOrdem);
     }
 
-    public List<OrdemDeServico> buscarOrdemServicoPorPlaca(String placa, Integer idOficina) {
-        Log.info("Buscando Ordens de Serviço pela placa: {} na oficina ID: {}", placa, idOficina);
-        return ORDEM_REPOSITORY.findByPlacaAndIdOficina(placa, idOficina);
+    public List<OrdemDeServico> buscarOrdemServicoPorPlaca(String placa) {
+        Log.info("Buscando Ordens de Serviço pela placa: {}", placa);
+        return ORDEM_REPOSITORY.findByPlaca(placa);
     }
 
-    public List<OrdemDeServico> buscarOrdemPorStatus(StatusVeiculo status, Integer idOficina) {
+    public List<OrdemDeServico> buscarOrdemPorStatus(StatusVeiculo status) {
         LocalDate dataLimite = LocalDate.now().minusDays(30L);
-        Log.info("Buscando Ordens de Serviço com status: {} na oficina ID: {}", status, idOficina);
+        Log.info("Buscando Ordens de Serviço com status: {}", status);
         if (status.equals(StatusVeiculo.FINALIZADO)) {
-            return ORDEM_REPOSITORY.findByStatusUltimos30DiasAndIdOficina(dataLimite, idOficina);
+            return ORDEM_REPOSITORY.findByStatusUltimos30Dias(dataLimite);
 
         } else {
-            return ORDEM_REPOSITORY.findByStatusAndIdOficina(status, idOficina);
+            return ORDEM_REPOSITORY.findByStatus(status);
         }
     }
 
@@ -240,14 +239,14 @@ public class OrdemDeServicoService {
         return viewPagamentoPendente;
     }
 
-    public List<OrdemDeServico> buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(Boolean nfRealizada, Boolean pagtRealizado, Integer idOficina) {
-        Log.info("Filtrando Ordens por NF: {}, Pagamento: {} na oficina ID: {}", nfRealizada, pagtRealizado, idOficina);
-        return ORDEM_REPOSITORY.findByNfRealizadaAndPagtRealizadoAndIdOficinaAndIsFinalizado(nfRealizada, pagtRealizado, idOficina);
+    public List<OrdemDeServico> buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(Boolean nfRealizada, Boolean pagtRealizado) {
+        Log.info("Filtrando Ordens por NF: {}, Pagamento: {}", nfRealizada, pagtRealizado);
+        return ORDEM_REPOSITORY.findByNfRealizadaAndPagtRealizado(nfRealizada, pagtRealizado);
     }
 
-    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer intervalo, Integer idOficina) {
+    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer intervalo) {
         LocalDate dataInferiorIntervalo = LocalDate.now().minusMonths(intervalo);
 
-        return ORDEM_REPOSITORY.findAllByIntervaloMeses(dataInferiorIntervalo, idOficina);
+        return ORDEM_REPOSITORY.findAllByIntervaloMeses(dataInferiorIntervalo);
     }
 }

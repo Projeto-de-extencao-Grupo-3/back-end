@@ -31,7 +31,7 @@ public class PainelControleController {
     @GetMapping("/{idOrdem}")
     public ResponseEntity<TelaOrdemServicoResponse> findServicosProdutos(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario, @PathVariable Integer idOrdem) {
         Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem, idOficina);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
 
         if (ordem.getServicos().isEmpty() && ordem.getProdutos().isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -43,7 +43,7 @@ public class PainelControleController {
     @GetMapping("/resumo/{idOrdem}")
     public ResponseEntity<TelaOrdemServicoResponse> resumoOrdemServico(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario, @PathVariable Integer idOrdem) {
         Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem, idOficina);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
 
         if (ordem.getServicos().isEmpty() && ordem.getProdutos().isEmpty()) {
             return ResponseEntity.status(204).build();

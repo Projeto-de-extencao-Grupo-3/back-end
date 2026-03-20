@@ -38,7 +38,7 @@ public class ArquivoService {
     @Transactional
     public void solicitarGeracao(Integer idOrdem, Integer idOficina, Template template) {
         log.info("Iniciando solicitação de geração de arquivo de Ordem de Serviço. Ordem ID: {}, Oficina ID: {}", idOrdem, idOficina);
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem, idOficina);
+        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
 
         String routingKey = routingKeyMap.get(template);
 

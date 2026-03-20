@@ -3,7 +3,6 @@ package geo.track.service;
 import geo.track.domain.ItemProduto;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.domain.Produto;
-import geo.track.dto.itensProdutos.RequestPostItemProduto;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
 import geo.track.exception.BadBusinessRuleException;
 import geo.track.exception.DataNotFoundException;
@@ -11,10 +10,11 @@ import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ItemProdutoExceptionMessages;
 import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.exception.constraint.message.ProdutoExceptionMessages;
+import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
+import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.log.Log;
 import geo.track.mapper.ItemProdutoMapper;
 import geo.track.repository.ItemProdutoRepository;
-import geo.track.jornada.entity.OrdemDeServicoRepository;
 import geo.track.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class ItemProdutoService {
         OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(body.fkOrdemServico()).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO));
         Produto produto = PRODUTO_REPOSITORY.findById(body.fkProduto()).orElseThrow(() -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO));
 
-        ItemProduto registroProduto = ItemProdutoMapper.toEntity(null, body.quantidade(), body.precoProduto(), false, produto, ordemServico);
+        ItemProduto registroProduto = ItemProdutoMapper.toEntity(body, produto, ordemServico);
 
         ItemProduto salvo = ITEM_PRODUTO_REPOSITORY.save(registroProduto);
         log.info("Item de produto cadastrado com sucesso. ID Gerado: {}", salvo.getIdRegistroPeca());
