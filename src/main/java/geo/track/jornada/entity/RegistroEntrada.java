@@ -71,6 +71,5 @@ public class RegistroEntrada {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_ordem_servico")
-    @Schema(description = "Ordem de serviço gerada a partir desta entrada") // Adicionado
     private OrdemDeServico fkOrdemServico;
 }

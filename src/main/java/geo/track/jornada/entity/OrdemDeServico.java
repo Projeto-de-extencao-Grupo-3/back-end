@@ -55,8 +55,10 @@ public class OrdemDeServico {
     @Schema(description = "Indica se o pagamento foi realizado", example = "true")
     private Boolean pagtRealizado;
 
-    @OneToOne(mappedBy = "fkOrdemServico")
-    @Schema(description = "Registro de entrada relacionado á ordem de serviço.")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "fk_entrada",
+            referencedColumnName = "idRegistroEntrada" )
     private RegistroEntrada fkEntrada;
 
     @OneToMany(mappedBy = "fkOrdemServico")
