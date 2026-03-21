@@ -1,6 +1,6 @@
 package geo.track.controller;
 
-import geo.track.domain.Veiculo;
+import geo.track.entity.Veiculo;
 import geo.track.dto.plate.PlateResponse;
 import geo.track.mapper.VeiculoMapper;
 import geo.track.service.PlateService;

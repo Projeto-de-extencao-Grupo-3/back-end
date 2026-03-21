@@ -1,9 +1,8 @@
 package geo.track.jornada.service.entrada;
 
-import geo.track.domain.Veiculo;
+import geo.track.entity.Veiculo;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.jornada.entity.repository.RegistroEntradaRepository;
-import geo.track.jornada.service.EntradaJornadaStrategy;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.service.VeiculoService;
 import geo.track.jornada.entity.OrdemDeServico;

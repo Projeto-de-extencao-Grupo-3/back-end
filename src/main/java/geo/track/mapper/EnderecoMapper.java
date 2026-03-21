@@ -1,6 +1,6 @@
 package geo.track.mapper;
 
-import geo.track.domain.Endereco;
+import geo.track.entity.Endereco;
 import geo.track.dto.enderecos.response.EnderecoResponse;
 
 import java.util.Collections;

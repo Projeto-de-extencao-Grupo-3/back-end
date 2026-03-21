@@ -1,7 +1,7 @@
 package geo.track.dto.autenticacao;
 
-import geo.track.domain.Funcionario;
-import geo.track.domain.Oficina;
+import geo.track.entity.Funcionario;
+import geo.track.entity.Oficina;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

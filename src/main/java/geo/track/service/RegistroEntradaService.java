@@ -1,7 +1,7 @@
 package geo.track.service;
 
 import geo.track.jornada.entity.RegistroEntrada;
-import geo.track.domain.Veiculo;
+import geo.track.entity.Veiculo;
 import geo.track.dto.os.request.RequestPostEntradaVeiculo;
 import geo.track.dto.registroEntrada.request.RequestPostEntrada;
 import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;

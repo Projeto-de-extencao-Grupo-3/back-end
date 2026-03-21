@@ -2,13 +2,10 @@ package geo.track.jornada.service.entrada;
 
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.exception.constraint.message.RegistroEntradaExceptionMessages;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
-import geo.track.jornada.entity.repository.RegistroEntradaRepository;
-import geo.track.jornada.service.EntradaJornadaStrategy;
-import geo.track.mapper.RegistroEntradaMapper;
-import geo.track.service.VeiculoService;
+import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
+import geo.track.jornada.util.RegistroEntradaMapper;
+import geo.track.service.RegistroEntradaService;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.interfaces.GetJornada;
@@ -22,8 +19,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ConfirmacaoStrategy implements EntradaJornadaStrategy {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
-    private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
-    private final VeiculoService VEICULO_SERVICE;
+    private final CadastrarEntradaUseCase CADASTRAR_ENTRADA_PORT;
+    private final RegistroEntradaService REGISTRO_ENTRADA_SERVICE;
 
     @Override
     public Boolean isApplicable(TipoJornada tipo) {
@@ -44,9 +41,7 @@ public class ConfirmacaoStrategy implements EntradaJornadaStrategy {
         RequestConfirmacao requestConfirmacao = (RequestConfirmacao) request;
 
         StatusVeiculo status = StatusVeiculo.AGUARDANDO_ORCAMENTO;
-
-        RegistroEntrada entradaAgendada = REGISTRO_ENTRADA_REPOSITORY.findById(requestConfirmacao.fkRegistro())
-                .orElseThrow(() -> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA));
+        RegistroEntrada entradaAgendada = REGISTRO_ENTRADA_SERVICE.buscarEntradaPorId(requestConfirmacao.fkRegistro());
 
         this.atualizarOrdemDeServico(entradaAgendada, status);
 
@@ -63,6 +58,6 @@ public class ConfirmacaoStrategy implements EntradaJornadaStrategy {
 
 
     private RegistroEntrada atualizarAgendamento(RegistroEntrada entradaAtualizada) {
-        return REGISTRO_ENTRADA_REPOSITORY.save(entradaAtualizada);
+        return CADASTRAR_ENTRADA_PORT.execute(entradaAtualizada);
     }
 }

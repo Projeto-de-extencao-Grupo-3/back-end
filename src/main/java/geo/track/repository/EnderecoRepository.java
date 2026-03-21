@@ -1,6 +1,6 @@
 package geo.track.repository;
 
-import geo.track.domain.Endereco;
+import geo.track.entity.Endereco;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EnderecoRepository extends JpaRepository<Endereco, Integer> {

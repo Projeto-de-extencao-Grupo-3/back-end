@@ -1,6 +1,6 @@
 package geo.track.config;
 
-import geo.track.domain.Funcionario;
+import geo.track.entity.Funcionario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

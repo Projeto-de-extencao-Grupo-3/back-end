@@ -1,7 +1,7 @@
 package geo.track.service;
 
 import geo.track.config.rabbitMQ.RabbitMQConfig;
-import geo.track.domain.Arquivo;
+import geo.track.entity.Arquivo;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.enums.Formato;
 import geo.track.enums.StatusArquivo;
@@ -13,7 +13,7 @@ import geo.track.exception.constraint.message.ArquivoExceptionMessages;
 import geo.track.exception.constraint.message.Domains;
 import geo.track.gateway.GatewayExporData;
 import geo.track.log.Log;
-import geo.track.mapper.OrdemDeServicoMapper;
+import geo.track.jornada.util.OrdemDeServicoMapper;
 import geo.track.repository.ArquivoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

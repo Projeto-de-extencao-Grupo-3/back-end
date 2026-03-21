@@ -1,6 +1,6 @@
 package geo.track.controller;
 
-import geo.track.domain.ItemServico;
+import geo.track.gestao.entity.ItemServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPutItemServico;

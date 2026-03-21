@@ -1,9 +1,9 @@
 package geo.track.service;
 
 import geo.track.jornada.entity.OrdemDeServico;
-import geo.track.dto.analise.financeira.response.ResponseNotaFiscals;
-import geo.track.dto.analise.financeira.response.ResponsePagamentos;
-import geo.track.dto.os.response.ViewNotaFiscal;
+import geo.track.jornada.response.listagem.ResponseNotaFiscals;
+import geo.track.jornada.response.listagem.ResponsePagamentos;
+import geo.track.jornada.response.listagem.ViewNotaFiscal;
 import geo.track.log.Log;
 import geo.track.mapper.AnaliseFinanceiraMapper;
 import lombok.RequiredArgsConstructor;

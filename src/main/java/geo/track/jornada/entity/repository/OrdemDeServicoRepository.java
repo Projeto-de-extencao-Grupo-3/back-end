@@ -1,8 +1,8 @@
 package geo.track.jornada.entity.repository;
 
-import geo.track.dto.os.response.ViewNotaFiscal;
-import geo.track.dto.os.response.ViewPagtoPendente;
-import geo.track.dto.os.response.ViewPagtoRealizado;
+import geo.track.jornada.response.listagem.ViewNotaFiscal;
+import geo.track.jornada.response.listagem.ViewPagtoPendente;
+import geo.track.jornada.response.listagem.ViewPagtoRealizado;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
@@ -13,11 +13,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, Integer> {
-    
+
     @Query("SELECT o FROM OrdemDeServico o JOIN o.fkEntrada e JOIN e.fkVeiculo v WHERE v.placa = :placa")
     List<OrdemDeServico> findByPlaca(@Param("placa") String placa);
 
@@ -30,14 +29,23 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
     Boolean existsByFkEntrada(RegistroEntrada registroEntrada);
 
     // KPI Queries
-    @Query(value = "SELECT quantidade_nfs_pendentes FROM vw_kpi_nfs_pendentes WHERE id_oficina = :idOficina", nativeQuery = true)
+    @Query(value = "SELECT quantidade_nfs_pendentes FROM vw_kpi_nfs_pendentes as vw WHERE id_oficina = :idOficina", nativeQuery = true)
     ViewNotaFiscal findViewNotasFicaisPendentes(@Param("idOficina") Integer idOficina);
 
-    @Query(value = "SELECT total_pagamentos_realizados FROM vw_kpi_pgtos_realizados WHERE id_oficina = :idOficina", nativeQuery = true)
+    @Query(value = "SELECT quantidade_nfs_pendentes FROM vw_kpi_nfs_pendentes as vw WHERE vw.ano = :ano AND vw.mes = :mes", nativeQuery = true)
+    ViewNotaFiscal findViewNotasFicaisPendentes(@Param("ano") Integer ano, @Param("mes") Integer mes);
+
+    @Query(value = "SELECT total_pagamentos_realizados FROM vw_kpi_pgtos_realizados as vw WHERE id_oficina = :idOficina", nativeQuery = true)
     ViewPagtoRealizado findViewPagamentoRealizados(@Param("idOficina") Integer idOficina);
 
-    @Query(value = "SELECT total_valor_nao_pago, quantidade_servicos_nao_pagos FROM vw_kpi_servicos_nao_pagos WHERE id_oficina = :idOficina", nativeQuery = true)
+    @Query(value = "SELECT total_pagamentos_realizados FROM vw_kpi_pgtos_realizados as vw WHERE vw.ano = :ano AND vw.mes = :mes", nativeQuery = true)
+    ViewPagtoRealizado findViewPagamentoRealizados(@Param("ano") Integer ano, @Param("mes") Integer mes);
+
+    @Query(value = "SELECT total_valor_nao_pago, quantidade_servicos_nao_pagos FROM vw_kpi_servicos_nao_pagos as vw WHERE id_oficina = :idOficina", nativeQuery = true)
     ViewPagtoPendente findViewPagamentoPendente(@Param("idOficina") Integer idOficina);
+
+    @Query(value = "SELECT total_valor_nao_pago, quantidade_servicos_nao_pagos FROM vw_kpi_servicos_nao_pagos as vw WHERE vw.ano = :ano AND vw.mes = :mes", nativeQuery = true)
+    ViewPagtoPendente findViewPagamentoPendente(@Param("ano") Integer ano, @Param("mes") Integer mes);
 
     @Query("SELECT o FROM OrdemDeServico o " +
             "WHERE o.nfRealizada = :nfRealizada " +
@@ -47,5 +55,15 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
             @Param("pagtRealizado") Boolean pagtRealizado);
 
     @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva >= :intervalo")
-    List<OrdemDeServico> findAllByIntervaloMeses(@Param("intervalo") LocalDate intervalo);
+    List<OrdemDeServico> findByIntervaloMeses(@Param("intervalo") LocalDate intervalo);
+
+    @Query("SELECT o FROM OrdemDeServico o WHERE Year(o.dataSaidaEfetiva) = :ano AND Month(o.dataSaidaEfetiva) = :mes")
+    List<OrdemDeServico> findByAnoAndMes(@Param("ano") Integer ano, @Param("mes") Integer mes);
+
+    @Query("SELECT o FROM OrdemDeServico o WHERE o.nfRealizada = :nfRealizada AND o.pagtRealizado = :pagtRealizado AND Year(o.dataSaidaEfetiva) = :ano AND Month(o.dataSaidaEfetiva) = :mes")
+    List<OrdemDeServico> findByListagemAnaliseFinanceiraStrategy(
+            @Param("nfRealizada") Boolean nfRealizada,
+            @Param("pagtRealizado") Boolean pagtRealizado,
+            @Param("ano") Integer ano,
+            @Param("mes") Integer mes);
 }

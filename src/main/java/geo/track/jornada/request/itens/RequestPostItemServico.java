@@ -21,6 +21,7 @@ public class RequestPostItemServico implements GetJornada {
     private ParteVeiculo parteVeiculo;
     @NotNull
     private LadoVeiculo ladoVeiculo;
+
     @NotNull
     private Servico tipoServico;
 

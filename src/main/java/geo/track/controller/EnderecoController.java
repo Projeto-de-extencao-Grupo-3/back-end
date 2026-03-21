@@ -1,7 +1,7 @@
 package geo.track.controller;
 
 import geo.track.controller.swagger.EnderecoSwagger;
-import geo.track.domain.Endereco;
+import geo.track.entity.Endereco;
 import geo.track.dto.enderecos.request.RequestPatchComplemento;
 import geo.track.dto.enderecos.request.RequestPatchNumero;
 import geo.track.dto.enderecos.request.RequestPostEndereco;

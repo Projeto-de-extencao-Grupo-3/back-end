@@ -1,6 +1,6 @@
 package geo.track.controller.swagger;
 
-import geo.track.domain.ItemServico;
+import geo.track.gestao.entity.ItemServico;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.exception.ExceptionBody;
 import geo.track.jornada.request.itens.RequestPostItemServico;

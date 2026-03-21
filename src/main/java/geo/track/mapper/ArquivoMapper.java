@@ -1,6 +1,6 @@
 package geo.track.mapper;
 
-import geo.track.domain.Arquivo;
+import geo.track.entity.Arquivo;
 import geo.track.dto.arquivos.ArquivoResponse;
 
 public class ArquivoMapper {

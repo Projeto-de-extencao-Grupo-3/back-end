@@ -1,7 +1,7 @@
 package geo.track.controller;
 
 import geo.track.controller.swagger.ClienteSwagger;
-import geo.track.domain.Cliente;
+import geo.track.entity.Cliente;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPostCliente;

@@ -1,8 +1,8 @@
 package geo.track.service;
 
-import geo.track.domain.ItemProduto;
+import geo.track.gestao.entity.ItemProduto;
 import geo.track.jornada.entity.OrdemDeServico;
-import geo.track.domain.Produto;
+import geo.track.gestao.entity.Produto;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
 import geo.track.exception.BadBusinessRuleException;
 import geo.track.exception.DataNotFoundException;
@@ -14,8 +14,8 @@ import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.log.Log;
 import geo.track.mapper.ItemProdutoMapper;
-import geo.track.repository.ItemProdutoRepository;
-import geo.track.repository.ProdutoRepository;
+import geo.track.gestao.entity.repository.ItemProdutoRepository;
+import geo.track.gestao.entity.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

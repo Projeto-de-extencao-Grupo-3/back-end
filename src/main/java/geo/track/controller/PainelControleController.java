@@ -2,10 +2,10 @@ package geo.track.controller;
 
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
-import geo.track.dto.os.response.TelaOrdemServicoResponse;
-import geo.track.dto.painelControle.response.ResponsePainelControle;
+import geo.track.jornada.response.listagem.TelaOrdemServicoResponse;
+import geo.track.jornada.response.listagem.ResponsePainelControle;
 import geo.track.enums.os.StatusVeiculo;
-import geo.track.mapper.OrdemDeServicoMapper;
+import geo.track.jornada.util.OrdemDeServicoMapper;
 import geo.track.mapper.PainelControleMapper;
 import geo.track.service.OrdemDeServicoService;
 import geo.track.service.PainelControleService;
@@ -30,18 +30,6 @@ public class PainelControleController {
 
     @GetMapping("/{idOrdem}")
     public ResponseEntity<TelaOrdemServicoResponse> findServicosProdutos(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario, @PathVariable Integer idOrdem) {
-        Integer idOficina = usuario.getIdOficina();
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
-
-        if (ordem.getServicos().isEmpty() && ordem.getProdutos().isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toTelaOrdemServicoResponse(ordem));
-    }
-
-    @GetMapping("/resumo/{idOrdem}")
-    public ResponseEntity<TelaOrdemServicoResponse> resumoOrdemServico(@Parameter(hidden = true) @AuthenticationPrincipal UsuarioDetalhesDto usuario, @PathVariable Integer idOrdem) {
         Integer idOficina = usuario.getIdOficina();
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
 

@@ -32,6 +32,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguracao {
+    @Value("${url.frontend}") String frontendUrl;
 
     @Autowired
     private AutenticacaoService autenticacaoService;
@@ -113,10 +114,10 @@ public class SecurityConfiguracao {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(@Value("${url.frontend}") String frontendUrl) {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuracao = new CorsConfiguration();
 
-        configuracao.addAllowedOrigin("http://localhost:5173");
+        configuracao.addAllowedOrigin("http://localhost:5174");
 
         configuracao.setAllowedMethods(
                 Arrays.asList(

@@ -1,8 +1,8 @@
 package geo.track.jornada.entity;
 
-import geo.track.domain.ItemProduto;
-import geo.track.domain.ItemServico;
-import geo.track.domain.Oficina;
+import geo.track.gestao.entity.ItemProduto;
+import geo.track.gestao.entity.ItemServico;
+import geo.track.entity.Oficina;
 import geo.track.enums.os.StatusVeiculo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;

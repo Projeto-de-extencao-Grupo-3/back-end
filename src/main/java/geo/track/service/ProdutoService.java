@@ -1,6 +1,6 @@
 package geo.track.service;
 
-import geo.track.domain.Produto;
+import geo.track.gestao.entity.Produto;
 import geo.track.dto.produtos.ProdutoRequest;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
@@ -11,7 +11,7 @@ import geo.track.exception.constraint.message.Domains;
 import geo.track.exception.constraint.message.ProdutoExceptionMessages;
 import geo.track.log.Log;
 import geo.track.mapper.ProdutoMapper;
-import geo.track.repository.ProdutoRepository;
+import geo.track.gestao.entity.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

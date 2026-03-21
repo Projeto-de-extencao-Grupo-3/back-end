@@ -1,8 +1,8 @@
 package geo.track.service;
 
-import geo.track.domain.Cliente;
-import geo.track.domain.Endereco;
-import geo.track.domain.Oficina;
+import geo.track.entity.Cliente;
+import geo.track.entity.Endereco;
+import geo.track.entity.Oficina;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.exception.ConflictException;
 import geo.track.exception.DataNotFoundException;

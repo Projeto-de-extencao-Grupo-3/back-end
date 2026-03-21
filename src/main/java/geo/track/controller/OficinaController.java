@@ -1,7 +1,7 @@
 package geo.track.controller;
 
 import geo.track.controller.swagger.OficinaSwagger;
-import geo.track.domain.Oficina;
+import geo.track.entity.Oficina;
 import geo.track.dto.autenticacao.UsuarioCriacaoDto;
 import geo.track.dto.autenticacao.UsuarioLoginDto;
 import geo.track.dto.autenticacao.UsuarioMapper;

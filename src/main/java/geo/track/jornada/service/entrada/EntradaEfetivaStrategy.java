@@ -1,16 +1,15 @@
 package geo.track.jornada.service.entrada;
 
-import geo.track.domain.Veiculo;
+import geo.track.entity.Veiculo;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
-import geo.track.jornada.entity.repository.RegistroEntradaRepository;
 import geo.track.jornada.interfaces.GetJornada;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
-import geo.track.jornada.service.EntradaJornadaStrategy;
+import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
-import geo.track.mapper.RegistroEntradaMapper;
+import geo.track.jornada.util.RegistroEntradaMapper;
 import geo.track.service.VeiculoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EntradaEfetivaStrategy implements EntradaJornadaStrategy {
     private final CadastrarOrdemServicoUseCase CADASTRAR_ORDEM_PORT;
-    private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
+    private final CadastrarEntradaUseCase CADASTRAR_ENTRADA_PORT;
     private final VeiculoService VEICULO_SERVICE;
 
     @Override
@@ -43,6 +42,6 @@ public class EntradaEfetivaStrategy implements EntradaJornadaStrategy {
 
         RegistroEntrada entradaEfetiva = RegistroEntradaMapper.toEntity(requestEfetiva.entrada(), veiculo, ordemDeServico);
 
-        return REGISTRO_ENTRADA_REPOSITORY.save(entradaEfetiva);
+        return CADASTRAR_ENTRADA_PORT.execute(entradaEfetiva);
     }
 }
