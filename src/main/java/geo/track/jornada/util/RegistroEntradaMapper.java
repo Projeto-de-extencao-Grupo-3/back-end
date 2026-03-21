@@ -32,6 +32,8 @@ public final class RegistroEntradaMapper {
         response.setSomDvd(entity.getSomDvd());
         response.setCaixaFerramenta(entity.getCaixaFerramentas());
 
+        response.setFkOrdemServico(entity.getFkOrdemServico().getIdOrdemServico());
+
         if (entity.getFkVeiculo() != null) {
             response.setIdVeiculo(entity.getFkVeiculo().getIdVeiculo());
         }
