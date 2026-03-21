@@ -1,6 +1,6 @@
 package geo.track.service;
 
-import geo.track.domain.Oficina;
+import geo.track.entity.Oficina;
 import geo.track.config.GerenciadorTokenJwt;
 import geo.track.dto.autenticacao.UsuarioLoginDto;
 import geo.track.dto.autenticacao.UsuarioMapper;

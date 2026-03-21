@@ -1,6 +1,6 @@
 package geo.track.mapper;
 
-import geo.track.domain.Funcionario;
+import geo.track.entity.Funcionario;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.dto.funcionarios.response.FuncionarioResponse;

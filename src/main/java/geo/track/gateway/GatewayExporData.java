@@ -1,7 +1,7 @@
 package geo.track.gateway;
 
 import geo.track.config.rabbitMQ.RabbitMQConfig;
-import geo.track.dto.os.response.OrdemDeServicoResponse;
+import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

@@ -1,13 +1,12 @@
 package geo.track.jornada.service.itens;
 
-import geo.track.domain.ItemServico;
+import geo.track.gestao.entity.ItemServico;
 import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
-import geo.track.jornada.service.ItensJornadaStrategy;
 import geo.track.mapper.ItemServicoMapper;
-import geo.track.repository.ItemServicoRepository;
+import geo.track.gestao.entity.repository.ItemServicoRepository;
 import geo.track.service.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

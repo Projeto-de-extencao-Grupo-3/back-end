@@ -1,12 +1,12 @@
 package geo.track.service;
 
-import geo.track.domain.ItemServico;
+import geo.track.gestao.entity.ItemServico;
 import geo.track.dto.os.request.*;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
-import geo.track.dto.os.response.ViewNotaFiscal;
-import geo.track.dto.os.response.ViewPagtoPendente;
-import geo.track.dto.os.response.ViewPagtoRealizado;
+import geo.track.jornada.response.listagem.ViewNotaFiscal;
+import geo.track.jornada.response.listagem.ViewPagtoPendente;
+import geo.track.jornada.response.listagem.ViewPagtoRealizado;
 import geo.track.enums.os.StatusVeiculo;
 import geo.track.exception.BadRequestException;
 import geo.track.exception.DataNotFoundException;
@@ -206,6 +206,17 @@ public class OrdemDeServicoService {
         }
     }
 
+    public List<OrdemDeServico> listarOrdemPorStatus(StatusVeiculo status) {
+        LocalDate dataLimite = LocalDate.now().minusDays(30L);
+        Log.info("Buscando Ordens de Serviço com status: {}", status);
+        if (status.equals(StatusVeiculo.FINALIZADO)) {
+            return ORDEM_REPOSITORY.findByStatusUltimos30Dias(dataLimite);
+
+        } else {
+            return ORDEM_REPOSITORY.findByStatus(status);
+        }
+    }
+
     public Boolean existeOrdemServicoPorEntrada(Integer idRegistroEtrada) {
         Log.info("Verificando existência de Ordem de Serviço para entrada ID: {}", idRegistroEtrada);
         RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.findById(idRegistroEtrada).orElseThrow(()-> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA));
@@ -247,6 +258,6 @@ public class OrdemDeServicoService {
     public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer intervalo) {
         LocalDate dataInferiorIntervalo = LocalDate.now().minusMonths(intervalo);
 
-        return ORDEM_REPOSITORY.findAllByIntervaloMeses(dataInferiorIntervalo);
+        return ORDEM_REPOSITORY.findByIntervaloMeses(dataInferiorIntervalo);
     }
 }

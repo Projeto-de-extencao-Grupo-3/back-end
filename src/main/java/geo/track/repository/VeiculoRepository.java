@@ -1,6 +1,6 @@
 package geo.track.repository;
 
-import geo.track.domain.Veiculo;
+import geo.track.entity.Veiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package geo.track.service;
 
-import geo.track.domain.Endereco;
+import geo.track.entity.Endereco;
 import geo.track.dto.enderecos.request.RequestPostEndereco;
 import geo.track.exception.DataNotFoundException;
 import geo.track.exception.NotAcepptableException;

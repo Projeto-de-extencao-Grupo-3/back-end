@@ -1,7 +1,7 @@
 package geo.track.service;
 
-import geo.track.domain.Funcionario;
-import geo.track.domain.Oficina;
+import geo.track.entity.Funcionario;
+import geo.track.entity.Oficina;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.exception.ConflictException;

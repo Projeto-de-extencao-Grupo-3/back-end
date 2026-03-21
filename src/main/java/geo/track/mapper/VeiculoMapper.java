@@ -1,7 +1,7 @@
 package geo.track.mapper;
 
-import geo.track.domain.Cliente;
-import geo.track.domain.Veiculo;
+import geo.track.entity.Cliente;
+import geo.track.entity.Veiculo;
 import geo.track.dto.veiculos.request.RequestPostVeiculo;
 import geo.track.dto.veiculos.request.RequestPutVeiculo;
 import geo.track.dto.veiculos.response.VeiculoResponse;

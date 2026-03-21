@@ -1,6 +1,6 @@
 package geo.track.dto.registroEntrada.response;
 
-import geo.track.dto.os.response.CardOrdemDeServicoResponse;
+import geo.track.jornada.response.listagem.CardOrdemDeServicoResponse;
 import geo.track.jornada.response.entrada.RegistroEntradaResponse;
 import lombok.Data;
 

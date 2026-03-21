@@ -1,7 +1,7 @@
 package geo.track.controller;
 
-import geo.track.dto.analise.financeira.response.ResponseNotaFiscals;
-import geo.track.dto.analise.financeira.response.ResponsePagamentos;
+import geo.track.jornada.response.listagem.ResponseNotaFiscals;
+import geo.track.jornada.response.listagem.ResponsePagamentos;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.service.AnaliseFinanceiraService;
 import lombok.RequiredArgsConstructor;

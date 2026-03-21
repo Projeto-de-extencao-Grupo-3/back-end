@@ -1,8 +1,9 @@
 package geo.track.mapper;
 
 import geo.track.jornada.entity.OrdemDeServico;
-import geo.track.dto.analise.financeira.response.ResponseNotaFiscals;
-import geo.track.dto.analise.financeira.response.ResponsePagamentos;
+import geo.track.jornada.response.listagem.ResponseNotaFiscals;
+import geo.track.jornada.response.listagem.ResponsePagamentos;
+import geo.track.jornada.util.OrdemDeServicoMapper;
 
 import java.util.List;
 

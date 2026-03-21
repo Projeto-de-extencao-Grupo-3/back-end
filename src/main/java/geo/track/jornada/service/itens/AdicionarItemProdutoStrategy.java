@@ -1,14 +1,13 @@
 package geo.track.jornada.service.itens;
 
-import geo.track.domain.ItemProduto;
-import geo.track.domain.Produto;
+import geo.track.gestao.entity.ItemProduto;
+import geo.track.gestao.entity.Produto;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
-import geo.track.jornada.service.ItensJornadaStrategy;
 import geo.track.mapper.ItemProdutoMapper;
-import geo.track.repository.ItemProdutoRepository;
+import geo.track.gestao.entity.repository.ItemProdutoRepository;
 import geo.track.service.OrdemDeServicoService;
 import geo.track.service.ProdutoService;
 import lombok.RequiredArgsConstructor;

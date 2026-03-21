@@ -1,8 +1,8 @@
 package geo.track.mapper;
 
-import geo.track.domain.ItemProduto;
+import geo.track.gestao.entity.ItemProduto;
 import geo.track.jornada.entity.OrdemDeServico;
-import geo.track.domain.Produto;
+import geo.track.gestao.entity.Produto;
 import geo.track.dto.itensProdutos.ItemProdutoOsResponse;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;

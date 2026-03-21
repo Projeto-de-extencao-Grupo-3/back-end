@@ -1,6 +1,6 @@
 package geo.track.repository;
 
-import geo.track.domain.Cliente;
+import geo.track.entity.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package geo.track.mapper;
 
-import geo.track.domain.Oficina;
+import geo.track.entity.Oficina;
 import geo.track.dto.oficinas.request.RequestPostOficina;
 import geo.track.dto.oficinas.request.RequestPutOficina;
 import geo.track.dto.oficinas.response.OficinaResponse;

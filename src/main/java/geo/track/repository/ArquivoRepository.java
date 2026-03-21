@@ -1,6 +1,6 @@
 package geo.track.repository;
 
-import geo.track.domain.Arquivo;
+import geo.track.entity.Arquivo;
 import geo.track.enums.StatusArquivo;
 import geo.track.enums.Template;
 import org.springframework.data.jpa.repository.JpaRepository;

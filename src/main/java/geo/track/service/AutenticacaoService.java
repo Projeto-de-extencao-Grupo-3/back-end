@@ -1,6 +1,6 @@
 package geo.track.service;
 
-import geo.track.domain.Funcionario;
+import geo.track.entity.Funcionario;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.log.Log;
 import geo.track.repository.FuncionarioRepository;

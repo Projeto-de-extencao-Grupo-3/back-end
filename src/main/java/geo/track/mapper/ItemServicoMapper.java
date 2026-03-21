@@ -1,6 +1,6 @@
 package geo.track.mapper;
 
-import geo.track.domain.ItemServico;
+import geo.track.gestao.entity.ItemServico;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.itensServicos.ItemServicoOsResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;

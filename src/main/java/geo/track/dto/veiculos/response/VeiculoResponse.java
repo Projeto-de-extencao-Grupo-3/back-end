@@ -1,6 +1,5 @@
 package geo.track.dto.veiculos.response;
 
-import geo.track.domain.Cliente;
 import lombok.Data;
 
 @Data

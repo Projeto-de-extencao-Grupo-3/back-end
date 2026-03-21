@@ -2,8 +2,7 @@ package geo.track.controller.swagger;
 
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.os.request.*;
-import geo.track.dto.os.request.*;
-import geo.track.dto.os.response.OrdemDeServicoResponse;
+import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
 import geo.track.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
