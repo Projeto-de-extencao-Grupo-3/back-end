@@ -6,6 +6,6 @@ public enum StatusVeiculo {
     AGUARDANDO_AUTORIZACAO,
     AGUARDANDO_VAGA,
     EM_PRODUCAO,
-    FINALIZADO;
+    FINALIZADO ;
 
 }

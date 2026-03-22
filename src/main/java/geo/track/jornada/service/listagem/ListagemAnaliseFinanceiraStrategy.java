@@ -15,7 +15,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemAnaliseFinanceiraStrategy implements ListagemJornadaStrategy<ListagemJornadaParams> {
+public class ListagemAnaliseFinanceiraStrategy implements ListagemJornadaStrategy {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /** Strategy para ADICIONAR SERVICO AO ORÇAMENTO **/
 @Component
 @RequiredArgsConstructor
-public class AdicionarItemServicoStrategy implements ItensJornadaStrategy<ItemServico> {
+public class AdicionarItemServicoStrategy implements ItensJornadaStrategy {
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final ItemServicoRepository ITEM_SERVICO_REPOSITORY;
 

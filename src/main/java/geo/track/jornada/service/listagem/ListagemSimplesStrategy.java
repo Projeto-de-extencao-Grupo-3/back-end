@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemSimplesStrategy implements ListagemJornadaStrategy<ListagemJornadaParams> {
+public class ListagemSimplesStrategy implements ListagemJornadaStrategy {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override

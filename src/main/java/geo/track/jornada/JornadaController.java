@@ -1,8 +1,11 @@
 package geo.track.jornada;
 
-import geo.track.jornada.enums.MapListagem;
+import geo.track.dto.os.request.RequestPatchStatus;
+import geo.track.jornada.entity.OrdemDeServico;
+import geo.track.jornada.enums.TipoJornada;
+import geo.track.jornada.interfaces.GetJornada;
+import geo.track.jornada.request.controle.RequestPatchSaidaPrevista;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
-import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
 import geo.track.gestao.entity.ItemProduto;
 import geo.track.gestao.entity.ItemServico;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
@@ -12,7 +15,11 @@ import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
 import geo.track.jornada.request.entrada.RequestEntradaEfetivaSemCadastro;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.jornada.request.itens.RequestPostItemServico;
+import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
+import geo.track.jornada.service.ControleService;
+import geo.track.jornada.service.ItensService;
 import geo.track.jornada.service.ListagemService;
+import geo.track.jornada.util.OrdemDeServicoMapper;
 import geo.track.mapper.ItemProdutoMapper;
 import geo.track.mapper.ItemServicoMapper;
 import geo.track.jornada.util.RegistroEntradaMapper;
@@ -20,26 +27,27 @@ import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.request.entrada.RequestAgendamento;
 import geo.track.jornada.request.entrada.RequestConfirmacao;
 import geo.track.jornada.response.entrada.RegistroEntradaResponse;
-import geo.track.jornada.service.JornadaService;
+import geo.track.jornada.service.EntradaService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/jornada")
 public class JornadaController implements JornadaSwagger {
-    private final JornadaService service;
-    private final ListagemService listagemService;
+    private final EntradaService entradaService;
 
+    /**
+     * Jornada: Entrada
+     */
     @Override
     @PostMapping("/agendamento")
     public ResponseEntity<RegistroEntradaResponse> agendamentoEntrada(@Valid @RequestBody RequestAgendamento request) {
-        RegistroEntrada agendamento = service.realizarJornadaEntrada(request);
+        RegistroEntrada agendamento = entradaService.realizarJornadaEntrada(request);
 
         return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponse(agendamento));
     }
@@ -47,7 +55,7 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PatchMapping("/confirmar-entrada")
     public ResponseEntity<RegistroEntradaResponse> confirmarEntradaAgendada(@Valid @RequestBody RequestConfirmacao request) {
-        RegistroEntrada entradaConfirmada = service.realizarJornadaEntrada(request);
+        RegistroEntrada entradaConfirmada = entradaService.realizarJornadaEntrada(request);
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaConfirmada));
     }
@@ -55,7 +63,7 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PostMapping("/entrada-efetiva")
     public ResponseEntity<RegistroEntradaResponse> entradaVeiculoEfetiva(@Valid @RequestBody RequestEntradaEfetiva request) {
-        RegistroEntrada entradaFeita = service.realizarJornadaEntrada(request);
+        RegistroEntrada entradaFeita = entradaService.realizarJornadaEntrada(request);
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaFeita));
     }
@@ -63,28 +71,45 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PostMapping("/entrada-efetiva-sem-cadastro")
     public ResponseEntity<RegistroEntradaResponse> entradaVeiculoSemCadastroEfetiva(@RequestBody RequestEntradaEfetivaSemCadastro request) {
-        RegistroEntrada entradaFeita = service.realizarJornadaEntrada(request);
+        RegistroEntrada entradaFeita = entradaService.realizarJornadaEntrada(request);
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaFeita));
     }
 
+    /**
+     * Jornada: Itens
+     */
+    private final ItensService itensService;
+
     @PostMapping("/{idOrdemServico}/produtos")
     public ResponseEntity<ItemProdutoResponse> adicionarItem(@PathVariable Integer idOrdemServico, @Valid @RequestBody RequestPostItemProduto request) {
-        ItemProduto itemProduto = service.realizarJornadaItens(idOrdemServico, request);
+        ItemProduto itemProduto = itensService.realizarJornadaItens(idOrdemServico, request);
 
         return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(itemProduto));
     }
 
     @PostMapping("/{idOrdemServico}/servicos")
     public ResponseEntity<ItemServicoResponse> adicionarItem(@PathVariable Integer idOrdemServico, @Valid @RequestBody RequestPostItemServico request) {
-        ItemServico itemServico = service.realizarJornadaItens(idOrdemServico, request);
+        ItemServico itemServico = itensService.realizarJornadaItens(idOrdemServico, request);
 
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
 
+    @PatchMapping("/{idItemProduto}/saida-material")
+    public ResponseEntity<ItemProdutoResponse> realizarSaidaMaterial(@PathVariable Integer idItemProduto) {
+        ItemProduto itemProduto = itensService.realizarJornadaItens(idItemProduto, () -> TipoJornada.SAIDA_MATERIAL);
+
+        return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(itemProduto));
+    }
+
+    /**
+     * Jornada: Listagem
+     */
+    private final ListagemService listagemService;
+
     @GetMapping("/listagem")
     public ResponseEntity<ListagemJornadaResponse> listarOrdensJornada(@ParameterObject @Valid ListagemJornadaParams params) {
-        ListagemJornadaResponse response = listagemService.execute(params, false);
+        ListagemJornadaResponse response = listagemService.execute(params);
 
         return ResponseEntity.status(200).body(response);
     }
@@ -94,5 +119,38 @@ public class JornadaController implements JornadaSwagger {
         ListagemJornadaResponse response = listagemService.execute(id);
 
         return ResponseEntity.status(200).body(response);
+    }
+
+    /**
+     * Jornada: Controle
+     */
+    private final ControleService controleService;
+
+    @PatchMapping("/{idOrdemServico}/atualizar-status")
+    public ResponseEntity<OrdemDeServicoResponse> atualizarStatus(@PathVariable Integer idOrdemServico, @RequestBody @Valid RequestPatchStatus request) {
+        OrdemDeServico ordem = controleService.realizarJornadaControle(idOrdemServico, request);
+
+        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
+    }
+
+    @PatchMapping("/{idOrdemServico}/definir-data-saida-prevista")
+    public ResponseEntity<OrdemDeServicoResponse> definirDataSaidaPrevista(@PathVariable Integer idOrdemServico, @RequestBody @Valid RequestPatchSaidaPrevista request) {
+        OrdemDeServico ordem = controleService.realizarJornadaControle(idOrdemServico, request);
+
+        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
+    }
+
+    @PatchMapping("/{idOrdemServico}/definir-pagamento-realizado")
+    public ResponseEntity<OrdemDeServicoResponse> definirPagamentoRealizado(@PathVariable Integer idOrdemServico) {
+        OrdemDeServico ordem = controleService.realizarJornadaControle(idOrdemServico, () -> TipoJornada.DEFINIR_PAGAMENTO_REALIZADO);
+
+        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
+    }
+
+    @PatchMapping("/{idOrdemServico}/definir-nota-fiscal-realizada")
+    public ResponseEntity<OrdemDeServicoResponse> definirNotaFiscalRealizada(@PathVariable Integer idOrdemServico) {
+        OrdemDeServico ordem = controleService.realizarJornadaControle(idOrdemServico, () -> TipoJornada.DEFINIR_NOTA_FISCAL_REALIZADA);
+
+        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 }
