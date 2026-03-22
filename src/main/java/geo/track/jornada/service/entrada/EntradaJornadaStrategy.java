@@ -3,29 +3,41 @@ package geo.track.jornada.service.entrada;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.interfaces.GetJornada;
 import geo.track.jornada.enums.TipoJornada;
+import geo.track.jornada.service.base.JornadaTypeStrategy;
 
 /**
- * Strategy específica para operações de Jornada de Entrada.
-
- * Esta interface define o contrato para todas as implementações relacionadas
- * ao processo de ENTRADA de veículos, como:
- * - Agendamento
- * - Confirmação de entrada agendada
- * - Entrada efetiva
- * - Entrada efetiva sem cadastro
+ * Strategy específica para operações de Jornada de ENTRADA.
  *
- * @see TipoJornada (AGENDAMENTO, CONFIRMAR_ENTRADA_AGENDADA, ENTRADA_EFETIVA, ENTRADA_EFETIVA_SEM_CADASTRO)
+ * Esta interface define o contrato para todas as implementações relacionadas
+ * ao processo de ENTRADA de veículos na oficina, como:
+ *
+ * - **AGENDAMENTO:** Agendamento futuro de entrada do veículo
+ * - **CONFIRMAR_ENTRADA_AGENDADA:** Confirmação de entrada previamente agendada
+ * - **ENTRADA_EFETIVA:** Entrada com ordem de serviço já criada
+ * - **ENTRADA_EFETIVA_SEM_CADASTRO:** Entrada sem cadastro prévio
+ *
+ * Cada implementação é responsável por gerenciar o ciclo de vida completo
+ * de um RegistroEntrada específico para seu tipo de jornada.
+ *
+ * @see TipoJornada para tipos suportados
+ * @see EntradaService para orquestração das estratégias
  */
-public interface EntradaJornadaStrategy {
+public interface EntradaJornadaStrategy extends JornadaTypeStrategy<TipoJornada> {
 
     /**
-     * @param tipoJornada - recebe o tipo de jornada desejada
-     * @return se a strategy é válida para executar a lógica
+     * Verifica se esta strategy é aplicável para o tipo de jornada fornecido
+     *
+     * @param tipoJornada tipo de jornada de entrada
+     * @return true se esta strategy deve processar este tipo
      */
+    @Override
     Boolean isApplicable(TipoJornada tipoJornada);
 
     /**
-     * @param request o request que implementa GetJornada, com os dados da entrada
+     * Executa a lógica de entrada específica para este tipo de jornada
+     *
+     * @param request implementação de GetJornada com os dados da entrada
+     *                Deve ser castado para o tipo específico da strategy
      * @return RegistroEntrada criado ou atualizado
      */
     RegistroEntrada execute(GetJornada request);

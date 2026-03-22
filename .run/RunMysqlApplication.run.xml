@@ -9,7 +9,7 @@
       <env name="SPRING_DATASOURCE_URL" value="jdbc:mysql://127.0.0.1:3306/grotrack" />
       <env name="SPRING_DATASOURCE_USERNAME" value="root" />
       <env name="SPRING_JPA_HIBERNATE_DDL_AUTO" value="update" />
-      <env name="URL_FRONTEND" value="http:localhost:5173" />
+      <env name="URL_FRONTEND" value="http://localhost:5173" />
       <env name="URL_PYTHON" value="localhost:5000" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="geo.track.StartApplication" />

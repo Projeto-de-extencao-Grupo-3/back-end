@@ -78,14 +78,14 @@ public class OrdemDeServico {
         return null;
     }
 
-    public OrdemDeServico(Integer idOrdemServico, Double valorTotal, LocalDate dataSaidaPrevista, LocalDate dataSaidaEfetiva, StatusVeiculo status, Boolean seguradora, Boolean nfRealizada, Boolean pagtRealizado, RegistroEntrada fkEntrada, List<ItemProduto> produtos, List<ItemServico> servicos) {
+    public OrdemDeServico(Integer idOrdemServico, Double valorTotal, LocalDate dataSaidaPrevista, LocalDate dataSaidaEfetiva, StatusVeiculo status, Boolean seguradora, Boolean nfRealizada, Boolean pagamentoRealizado, RegistroEntrada fkEntrada, List<ItemProduto> produtos, List<ItemServico> servicos) {
         this.idOrdemServico = idOrdemServico;
         this.dataSaidaPrevista = dataSaidaPrevista;
         this.dataSaidaEfetiva = dataSaidaEfetiva;
         this.status = status;
         this.seguradora = seguradora;
         this.nfRealizada = nfRealizada;
-        this.pagtRealizado = pagtRealizado;
+        this.pagtRealizado = pagamentoRealizado;
         this.fkEntrada = fkEntrada;
         this.produtos = produtos;
         this.servicos = servicos;

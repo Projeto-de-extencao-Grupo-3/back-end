@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemPainelControleStrategy implements ListagemJornadaStrategy<ListagemJornadaParams> {
+public class ListagemPainelControleStrategy implements ListagemJornadaStrategy {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override

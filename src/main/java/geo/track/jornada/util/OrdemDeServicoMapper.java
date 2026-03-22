@@ -19,6 +19,7 @@ import geo.track.mapper.VeiculoMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,10 +115,14 @@ public class OrdemDeServicoMapper {
     public static CardOrdemDeServicoResponse toCard(OrdemDeServico ordem) {
         OrdemDeServicoResponse ordemResponse = OrdemDeServicoMapper.toResponse(ordem);
 
-        return new   CardOrdemDeServicoResponse(
+        LocalDate dataReferencia = ordem.getStatus().equals(StatusVeiculo.FINALIZADO) ? ordem.getDataSaidaEfetiva() : LocalDate.now();
+        Long diasEspera = ChronoUnit.DAYS.between(ordem.getDataAtualizacao(), dataReferencia);
+        diasEspera = diasEspera < 0 ? 0L : diasEspera;
+
+        return new CardOrdemDeServicoResponse(
                 ordem.getIdOrdemServico(),
                 ordemResponse.getValorTotal(),
-                (LocalDate.now().getDayOfYear() - ordem.getDataAtualizacao().getDayOfYear()),
+                diasEspera,
                 ordemResponse.getDataSaidaPrevista(),
                 ordemResponse.getDataSaidaEfetiva(),
                 ordemResponse.getEntrada().getDataEntradaPrevista(),
