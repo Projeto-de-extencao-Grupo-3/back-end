@@ -1,26 +1,22 @@
 package geo.track.service;
 
 import geo.track.gestao.entity.ItemServico;
-import geo.track.dto.os.request.*;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
+import geo.track.jornada.enums.Status;
 import geo.track.jornada.response.listagem.ViewNotaFiscal;
 import geo.track.jornada.response.listagem.ViewPagtoPendente;
 import geo.track.jornada.response.listagem.ViewPagtoRealizado;
-import geo.track.enums.os.StatusVeiculo;
-import geo.track.exception.BadRequestException;
-import geo.track.exception.DataNotFoundException;
-import geo.track.exception.ForbiddenException;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
-import geo.track.exception.constraint.message.RegistroEntradaExceptionMessages;
+import geo.track.infraestructure.exception.BadRequestException;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.ForbiddenException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
-import geo.track.jornada.entity.repository.RegistroEntradaRepository;
-import geo.track.log.Log;
-import jakarta.validation.Valid;
+import geo.track.infraestructure.log.Log;
+import geo.track.infraestructure.annotation.ToRefactor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,31 +27,8 @@ import java.util.Optional;
 public class OrdemDeServicoService {
     private final OrdemDeServicoRepository ORDEM_REPOSITORY;
     private final ItemServicoService ITEM_SERVICO_SERVICE;
-    private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final Log Log;
 
-    public OrdemDeServico cadastrarOrdemServico(@Valid @RequestBody RequestPostEntradaVeiculo body) {
-        Log.info("Iniciando cadastro de Ordem de Serviço para a entrada ID: {}", body.getFkEntrada());
-        RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.findById(body.getFkEntrada()).orElseThrow(()-> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA));
-
-        OrdemDeServico ordem = OrdemDeServico.builder()
-                .status(body.getStatus())
-                .valorTotal(null)
-                .valorTotalServicos(null)
-                .valorTotalProdutos(null)
-                .dataSaidaPrevista(null)
-                .dataSaidaEfetiva(null)
-                .seguradora(false)
-                .nfRealizada(false)
-                .pagtRealizado(false)
-                .ativo(true)
-                .fkEntrada(entrada)
-                .build();
-
-        OrdemDeServico salva = ORDEM_REPOSITORY.save(ordem);
-        Log.info("Ordem de Serviço cadastrada com sucesso. ID Gerado: {}", salva.getIdOrdemServico());
-        return salva;
-    }
 
     public List<OrdemDeServico> listarOrdensServico(){
         Log.info("Listando todas as Ordens de Serviço");
@@ -72,7 +45,7 @@ public class OrdemDeServicoService {
         return ordem.get();
     }
 
-
+    @ToRefactor
     public void deletarOrdemServico(Integer idOrdem){
         Log.info("Tentando deletar Ordem de Serviço ID: {}", idOrdem);
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(idOrdem);
@@ -104,10 +77,10 @@ public class OrdemDeServicoService {
         return ORDEM_REPOSITORY.findByPlaca(placa);
     }
 
-    public List<OrdemDeServico> buscarOrdemPorStatus(StatusVeiculo status) {
+    public List<OrdemDeServico> buscarOrdemPorStatus(Status status) {
         LocalDate dataLimite = LocalDate.now().minusDays(30L);
         Log.info("Buscando Ordens de Serviço com status: {}", status);
-        if (status.equals(StatusVeiculo.FINALIZADO)) {
+        if (status.equals(Status.FINALIZADO)) {
             return ORDEM_REPOSITORY.findByStatusUltimos30Dias(dataLimite);
 
         } else {
@@ -147,9 +120,9 @@ public class OrdemDeServicoService {
         return ORDEM_REPOSITORY.findByNfRealizadaAndPagtRealizado(nfRealizada, pagtRealizado);
     }
 
-    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer intervalo) {
+    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer idCliente, Integer intervalo) {
         LocalDate dataInferiorIntervalo = LocalDate.now().minusMonths(intervalo);
 
-        return ORDEM_REPOSITORY.findByIntervaloMeses(dataInferiorIntervalo);
+        return ORDEM_REPOSITORY.findByIntervaloMesesAndIdCliente(dataInferiorIntervalo, idCliente);
     }
 }

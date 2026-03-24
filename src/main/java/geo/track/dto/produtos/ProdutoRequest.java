@@ -1,6 +1,6 @@
 package geo.track.dto.produtos;
 
-import geo.track.enums.Servico;
+import geo.track.gestao.enums.Servico;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

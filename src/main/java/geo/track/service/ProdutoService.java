@@ -1,16 +1,17 @@
 package geo.track.service;
 
+import geo.track.infraestructure.annotation.ToRefactor;
 import geo.track.gestao.entity.Produto;
 import geo.track.dto.produtos.ProdutoRequest;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
-import geo.track.enums.Servico;
-import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.exception.constraint.message.ProdutoExceptionMessages;
-import geo.track.log.Log;
-import geo.track.mapper.ProdutoMapper;
+import geo.track.gestao.enums.Servico;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.exception.constraint.message.ProdutoExceptionMessages;
+import geo.track.infraestructure.log.Log;
+import geo.track.gestao.util.ProdutoMapper;
 import geo.track.gestao.entity.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class ProdutoService {
     private final ProdutoRepository PRODUTO_REPOSITORY;
     private final Log log;
 
+    @ToRefactor
     public Produto cadastrar(ProdutoRequest body){
         log.info("Cadastrando novo produto: {}", body.getNome());
         Produto produto = ProdutoMapper.toEntity(body);
@@ -58,6 +60,7 @@ public class ProdutoService {
         );
     }
 
+    @ToRefactor
     public Produto putProdutos(Integer id, ProdutoRequest body) {
         if(PRODUTO_REPOSITORY.existsByIdProdutoAndAtivoTrue(id)){
             log.info("Atualizando produto (PUT) ID: {}", id);
@@ -71,6 +74,7 @@ public class ProdutoService {
         throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
     }
 
+    @ToRefactor
     public Produto patchQtdEstoque(RequestPatchQtdEstoque body){
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(body.getId());
 
@@ -85,6 +89,7 @@ public class ProdutoService {
         return PRODUTO_REPOSITORY.save(prod);
     }
 
+    @ToRefactor
     public Produto patchPrecoCompra(RequestPatchPrecoCompra body){
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(body.getId());
 
@@ -99,6 +104,7 @@ public class ProdutoService {
         return PRODUTO_REPOSITORY.save(prod);
     }
 
+    @ToRefactor
     public Produto patchPrecoVenda(RequestPatchPrecoVenda body){
         Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(body.getId());
 
@@ -113,6 +119,7 @@ public class ProdutoService {
         return PRODUTO_REPOSITORY.save(prod);
     }
 
+    @ToRefactor
     public void excluir(Integer id){
         if(!PRODUTO_REPOSITORY.existsByIdProdutoAndAtivoTrue(id)){
             log.error("Falha ao excluir: Produto ID {} não encontrado", id);

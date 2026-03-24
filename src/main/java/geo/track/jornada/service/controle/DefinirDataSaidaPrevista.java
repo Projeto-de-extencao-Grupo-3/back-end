@@ -1,9 +1,5 @@
 package geo.track.jornada.service.controle;
 
-import geo.track.dto.os.request.RequestPatchStatus;
-import geo.track.enums.os.StatusVeiculo;
-import geo.track.exception.BadBusinessRuleException;
-import geo.track.exception.constraint.message.Domains;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.enums.TipoJornada;
@@ -12,8 +8,6 @@ import geo.track.jornada.request.controle.RequestPatchSaidaPrevista;
 import geo.track.service.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor

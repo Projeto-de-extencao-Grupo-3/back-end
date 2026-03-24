@@ -1,6 +1,6 @@
 package geo.track.jornada.entity;
 
-import geo.track.entity.Veiculo;
+import geo.track.gestao.entity.Veiculo;
 import io.swagger.v3.oas.annotations.media.Schema; // Import adicionado
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package geo.track.dto.clientes.request;
 
-import geo.track.enums.cliente.TipoCliente;
+import geo.track.gestao.enums.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

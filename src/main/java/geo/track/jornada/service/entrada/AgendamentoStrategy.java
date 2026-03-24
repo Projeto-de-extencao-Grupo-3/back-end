@@ -1,7 +1,7 @@
 package geo.track.jornada.service.entrada;
 
-import geo.track.entity.Veiculo;
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.gestao.entity.Veiculo;
+import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.repository.RegistroEntradaRepository;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.service.VeiculoService;
@@ -39,7 +39,7 @@ public class AgendamentoStrategy implements EntradaJornadaStrategy {
     public RegistroEntrada execute(GetJornada request) {
         RequestAgendamento requestAgendamento = (RequestAgendamento) request;
 
-        StatusVeiculo status = StatusVeiculo.AGUARDANDO_ENTRADA;
+        Status status = Status.AGUARDANDO_ENTRADA;
         OrdemDeServico ordemDeServico = CADASTRAR_OS_PORT.execute(status);
         Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(requestAgendamento.fkVeiculo());
 

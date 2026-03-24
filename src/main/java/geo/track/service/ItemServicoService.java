@@ -1,17 +1,17 @@
 package geo.track.service;
 
-import geo.track.annotation.ToRefactor;
-import geo.track.config.DefaultMessages;
+import geo.track.infraestructure.annotation.ToRefactor;
+import geo.track.infraestructure.config.DefaultMessages;
 import geo.track.gestao.entity.ItemServico;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.itensServicos.RequestPutItemServico;
-import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.exception.constraint.message.ItemServicoExceptionMessages;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.exception.constraint.message.ItemServicoExceptionMessages;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.request.itens.RequestPostItemServico;
-import geo.track.log.Log;
-import geo.track.mapper.ItemServicoMapper;
+import geo.track.infraestructure.log.Log;
+import geo.track.gestao.util.ItemServicoMapper;
 import geo.track.gestao.entity.repository.ItemServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,6 +61,7 @@ public class ItemServicoService {
         return servicos;
     }
 
+    @ToRefactor
     public ItemServico atualizar(Integer id, RequestPutItemServico body) {
         ItemServico existente = ITEM_SERVICO_REPOSITORY.findById(id)
                 .orElseThrow(() -> new DataNotFoundException(ItemServicoExceptionMessages.ITEM_SERVICO_NAO_ENCONTRADO, Domains.ITEM_SERVICO));
@@ -72,6 +73,7 @@ public class ItemServicoService {
         return ITEM_SERVICO_REPOSITORY.save(existente);
     }
 
+    @ToRefactor
     public void delete(Integer id){
         log.info("Removendo Item de Serviço ID: {}", id);
         ITEM_SERVICO_REPOSITORY.deleteById(id);

@@ -5,7 +5,7 @@ import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
-import geo.track.mapper.ItemServicoMapper;
+import geo.track.gestao.util.ItemServicoMapper;
 import geo.track.gestao.entity.repository.ItemServicoRepository;
 import geo.track.service.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;

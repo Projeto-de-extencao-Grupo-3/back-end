@@ -1,7 +1,7 @@
 package geo.track.jornada.service.entrada;
 
-import geo.track.enums.os.StatusVeiculo;
-import geo.track.exception.DataNotFoundException;
+import geo.track.jornada.enums.Status;
+import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
 import geo.track.jornada.util.RegistroEntradaMapper;
@@ -40,7 +40,7 @@ public class ConfirmacaoStrategy implements EntradaJornadaStrategy {
     public RegistroEntrada execute(GetJornada request) {
         RequestConfirmacao requestConfirmacao = (RequestConfirmacao) request;
 
-        StatusVeiculo status = StatusVeiculo.AGUARDANDO_ORCAMENTO;
+        Status status = Status.AGUARDANDO_ORCAMENTO;
         RegistroEntrada entradaAgendada = REGISTRO_ENTRADA_SERVICE.buscarEntradaPorId(requestConfirmacao.fkRegistro());
 
         this.atualizarOrdemDeServico(entradaAgendada, status);
@@ -50,7 +50,7 @@ public class ConfirmacaoStrategy implements EntradaJornadaStrategy {
         return this.atualizarAgendamento(entradaAtualizada);
     }
 
-    private void atualizarOrdemDeServico(RegistroEntrada entrada, StatusVeiculo status) {
+    private void atualizarOrdemDeServico(RegistroEntrada entrada, Status status) {
         OrdemDeServico ordemDeServico = entrada.getFkOrdemServico();
         ordemDeServico.setStatus(status);
         ORDEM_SERVICO_REPOSITORY.save(ordemDeServico);

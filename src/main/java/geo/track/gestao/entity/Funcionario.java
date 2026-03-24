@@ -1,0 +1,45 @@
+package geo.track.gestao.entity;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idFuncionario")
+@Schema(description = "Representa um Funcionário do sistema.")
+@Table(name = "funcionarios")
+public class Funcionario {
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identificador do funcionário", example = "1")
+    private Integer idFuncionario;
+    @Schema(description = "Nome do funcionário", example = "José Silva")
+    private String nome;
+    @Schema(description = "Cargo do funcionário", example = "Chefe de produção")
+    private String cargo;
+    @Schema(description = "Especialidade do funcionário", example = "")
+    private String especialidade;
+    @Schema(description = "Telefone do funcionário", example = "4002-8922")
+    private String telefone;
+
+    @Schema(description = "Email de contato da oficina", example = "contato@autocenter.com")
+    private String email;
+
+    @Schema(description = "Senha de acesso ao sistema (armazenada de forma segura)", example = "••••••••")
+    private String senha;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_oficina")
+    private Oficina fkOficina;
+}

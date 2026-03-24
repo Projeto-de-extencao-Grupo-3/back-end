@@ -6,16 +6,16 @@ import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;
+import geo.track.jornada.enums.Status;
 import geo.track.jornada.response.listagem.CardOrdemDeServicoResponse;
 import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
 import geo.track.jornada.response.listagem.ResumoOrdemServicoResponse;
 import geo.track.jornada.response.listagem.TelaOrdemServicoResponse;
 import geo.track.dto.veiculos.response.VeiculoResponse;
-import geo.track.enums.os.StatusVeiculo;
-import geo.track.mapper.ClientesMapper;
-import geo.track.mapper.ItemProdutoMapper;
-import geo.track.mapper.ItemServicoMapper;
-import geo.track.mapper.VeiculoMapper;
+import geo.track.gestao.util.ClientesMapper;
+import geo.track.gestao.util.ItemProdutoMapper;
+import geo.track.gestao.util.ItemServicoMapper;
+import geo.track.gestao.util.VeiculoMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -73,7 +73,7 @@ public class OrdemDeServicoMapper {
         Integer idOrdemServico = entity.getIdOrdemServico();
         ClienteResponse cliente = ClientesMapper.toResponse(entity.getFkEntrada().getFkVeiculo().getFkCliente());
         VeiculoResponse veiculo = VeiculoMapper.toResponse(entity.getFkEntrada().getFkVeiculo());
-        StatusVeiculo status = entity.getStatus();
+        Status status = entity.getStatus();
 
         LocalDate dataEntradaPrevista = entity.getFkEntrada().getDataEntradaPrevista();
         LocalDate dataEntradaEfetiva = entity.getFkEntrada().getDataEntradaEfetiva();
@@ -115,7 +115,7 @@ public class OrdemDeServicoMapper {
     public static CardOrdemDeServicoResponse toCard(OrdemDeServico ordem) {
         OrdemDeServicoResponse ordemResponse = OrdemDeServicoMapper.toResponse(ordem);
 
-        LocalDate dataReferencia = ordem.getStatus().equals(StatusVeiculo.FINALIZADO) ? ordem.getDataSaidaEfetiva() : LocalDate.now();
+        LocalDate dataReferencia = ordem.getStatus().equals(Status.FINALIZADO) ? ordem.getDataSaidaEfetiva() : LocalDate.now();
         Long diasEspera = ChronoUnit.DAYS.between(ordem.getDataAtualizacao(), dataReferencia);
         diasEspera = diasEspera < 0 ? 0L : diasEspera;
 

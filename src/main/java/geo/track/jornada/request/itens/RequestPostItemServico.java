@@ -1,11 +1,9 @@
 package geo.track.jornada.request.itens;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import geo.track.enums.Servico;
-import geo.track.enums.servico.LadoVeiculo;
-import geo.track.enums.servico.ParteVeiculo;
-import geo.track.enums.servico.TipoPintura;
+import geo.track.gestao.enums.Servico;
+import geo.track.gestao.enums.LadoVeiculo;
+import geo.track.gestao.enums.ParteVeiculo;
+import geo.track.gestao.enums.TipoPintura;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
 import jakarta.persistence.EnumType;

@@ -1,7 +1,7 @@
 package geo.track.dto.autenticacao;
 
-import geo.track.entity.Funcionario;
-import geo.track.entity.Oficina;
+import geo.track.gestao.entity.Funcionario;
+import geo.track.gestao.entity.Oficina;
 
 public class UsuarioMapper {
     public static Oficina of(UsuarioCriacaoDto usuarioCriacaoDto) {

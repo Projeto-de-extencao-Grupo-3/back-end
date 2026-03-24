@@ -1,7 +1,7 @@
 package geo.track.jornada.response.listagem;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.jornada.enums.Status;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,6 +14,6 @@ import java.util.List;
 public class ListagemJornadaResponse {
     private List<OrdemDeServicoResponse> listagemSimples;
     private HashMap<String, Object> listagemAnaliseFinanceira;
-    private HashMap<StatusVeiculo, ResponsePainelControle> listagemPainelControle;
+    private HashMap<Status, ResponsePainelControle> listagemPainelControle;
     private TelaOrdemServicoResponse buscaSimples;
 }

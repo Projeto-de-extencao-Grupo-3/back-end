@@ -4,7 +4,7 @@ import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.dto.funcionarios.response.FuncionarioResponse;
 import geo.track.dto.oficinas.response.OficinaResponse;
-import geo.track.exception.ExceptionBody;
+import geo.track.infraestructure.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

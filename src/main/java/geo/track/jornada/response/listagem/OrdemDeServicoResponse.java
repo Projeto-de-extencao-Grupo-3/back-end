@@ -5,7 +5,7 @@ import geo.track.dto.itensProdutos.ItemProdutoOsResponse;
 import geo.track.dto.itensServicos.ItemServicoOsResponse;
 
 import geo.track.dto.veiculos.response.VeiculoResponse;
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.jornada.enums.Status;
 import geo.track.jornada.response.entrada.RegistroEntradaResponse;
 import lombok.Data;
 
@@ -20,7 +20,7 @@ public class OrdemDeServicoResponse {
     private Double valorTotalProdutos;
     private LocalDate dataSaidaPrevista;
     private LocalDate dataSaidaEfetiva;
-    private StatusVeiculo status;
+    private Status status;
     private Boolean seguradora;
     private Boolean nfRealizada;
     private Boolean pagtRealizado;

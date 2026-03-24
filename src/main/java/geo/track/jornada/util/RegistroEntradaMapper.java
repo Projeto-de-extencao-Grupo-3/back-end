@@ -1,6 +1,6 @@
 package geo.track.jornada.util;
 
-import geo.track.entity.Veiculo;
+import geo.track.gestao.entity.Veiculo;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;

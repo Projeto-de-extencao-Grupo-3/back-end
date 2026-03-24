@@ -1,18 +1,19 @@
 package geo.track.service;
 
-import geo.track.entity.Endereco;
+import geo.track.gestao.entity.Endereco;
 import geo.track.dto.enderecos.request.RequestPostEndereco;
-import geo.track.exception.DataNotFoundException;
-import geo.track.exception.NotAcepptableException;
-import geo.track.exception.constraint.message.EnderecoExceptionMessages;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.log.Log;
-import geo.track.mapper.EnderecosMapper;
-import geo.track.repository.EnderecoRepository;
+import geo.track.infraestructure.annotation.ToRefactor;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.NotAcepptableException;
+import geo.track.infraestructure.exception.constraint.message.EnderecoExceptionMessages;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.log.Log;
+import geo.track.gestao.entity.repository.EnderecoRepository;
 import geo.track.dto.enderecos.request.RequestPatchComplemento;
 import geo.track.dto.enderecos.request.RequestPatchNumero;
 import geo.track.dto.enderecos.request.RequestPutEndereco;
 import geo.track.dto.viacep.response.ResponseViacep;
+import geo.track.gestao.util.EnderecoMapper;
 import geo.track.util.ViacepConnection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,9 +56,10 @@ public class EnderecoService {
         return response;
     }
 
+    @ToRefactor
     public Endereco postEndereco(RequestPostEndereco body) {
         log.info("Cadastrando novo endereço para o CEP: {}", body.getCep());
-        Endereco endereco = EnderecosMapper.RequestToEndereco(body);
+        Endereco endereco = EnderecoMapper.RequestToEndereco(body);
 
         if (endereco.getCep().length() != 8) {
             log.warn("Falha ao cadastrar: CEP {} possui formato inválido", endereco.getCep());
@@ -69,6 +71,7 @@ public class EnderecoService {
         return salvo;
     }
 
+    @ToRefactor
     public Endereco saveVazio() {
         Endereco e = new Endereco();
         e.setCep("00000000");
@@ -82,6 +85,7 @@ public class EnderecoService {
         return ENDERECO_REPOSITORY.save(e);
     }
 
+    @ToRefactor
     public Endereco patchComplementoEndereco(RequestPatchComplemento body) {
         log.info("Atualizando complemento do endereço ID: {}", body.getIdEndereco());
         Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(body.getIdEndereco());
@@ -99,6 +103,7 @@ public class EnderecoService {
         return salvo;
     }
 
+    @ToRefactor
     public Endereco patchNumeroEndereco(RequestPatchNumero body) {
         log.info("Atualizando número do endereço ID: {}", body.getId());
         Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(body.getId());
@@ -118,6 +123,7 @@ public class EnderecoService {
         }
     }
 
+    @ToRefactor
     public Endereco putEndereco(RequestPutEndereco body) {
         log.info("Atualização completa solicitada para o endereço ID: {}", body.getIdEndereco());
         if (body.getCep().length() != 8) {

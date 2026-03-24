@@ -1,6 +1,6 @@
 package geo.track.gestao.entity;
 
-import geo.track.enums.Servico;
+import geo.track.gestao.enums.Servico;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

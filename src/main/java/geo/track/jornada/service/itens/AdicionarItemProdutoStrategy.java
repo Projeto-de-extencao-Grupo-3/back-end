@@ -6,7 +6,7 @@ import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
-import geo.track.mapper.ItemProdutoMapper;
+import geo.track.gestao.util.ItemProdutoMapper;
 import geo.track.gestao.entity.repository.ItemProdutoRepository;
 import geo.track.service.OrdemDeServicoService;
 import geo.track.service.ProdutoService;

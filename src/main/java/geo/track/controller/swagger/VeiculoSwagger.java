@@ -5,7 +5,7 @@ import geo.track.dto.veiculos.request.RequestPatchPlaca;
 import geo.track.dto.veiculos.request.RequestPostVeiculo;
 import geo.track.dto.veiculos.request.RequestPutVeiculo;
 import geo.track.dto.veiculos.response.VeiculoResponse;
-import geo.track.exception.ExceptionBody;
+import geo.track.infraestructure.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -186,20 +186,4 @@ public interface VeiculoSwagger {
             )
     })
     ResponseEntity<Void> deleteVeiculoById(@PathVariable Integer id);
-
-    @Operation(summary = "Remover um veículo pela placa",
-            description = "Exclui um veículo cuja placa exata corresponda ao valor fornecido.")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "Veículo removido com sucesso",
-                    content = {@Content(schema = @Schema(hidden = true))}
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Veículo não encontrado pela placa informada",
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
-            )
-    })
-    ResponseEntity<Void> deleteVeiculoByPlaca(@PathVariable String placa);
-}
+    }

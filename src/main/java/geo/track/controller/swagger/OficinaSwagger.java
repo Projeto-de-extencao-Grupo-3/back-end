@@ -7,7 +7,7 @@ import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.dto.oficinas.request.RequestPutOficina;
 import geo.track.dto.oficinas.response.OficinaResponse;
-import geo.track.exception.ExceptionBody;
+import geo.track.infraestructure.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

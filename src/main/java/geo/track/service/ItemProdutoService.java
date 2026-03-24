@@ -4,16 +4,17 @@ import geo.track.gestao.entity.ItemProduto;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.gestao.entity.Produto;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
-import geo.track.exception.BadBusinessRuleException;
-import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.exception.constraint.message.ItemProdutoExceptionMessages;
-import geo.track.exception.constraint.message.OrdemDeServicoExceptionMessages;
-import geo.track.exception.constraint.message.ProdutoExceptionMessages;
+import geo.track.infraestructure.annotation.ToRefactor;
+import geo.track.infraestructure.exception.BadBusinessRuleException;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.exception.constraint.message.ItemProdutoExceptionMessages;
+import geo.track.infraestructure.exception.constraint.message.OrdemDeServicoExceptionMessages;
+import geo.track.infraestructure.exception.constraint.message.ProdutoExceptionMessages;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
-import geo.track.log.Log;
-import geo.track.mapper.ItemProdutoMapper;
+import geo.track.infraestructure.log.Log;
+import geo.track.gestao.util.ItemProdutoMapper;
 import geo.track.gestao.entity.repository.ItemProdutoRepository;
 import geo.track.gestao.entity.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class ItemProdutoService {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
     private final Log log;
 
+    @ToRefactor
     public ItemProduto cadastrarRegistro(RequestPostItemProduto body) {
         log.info("Iniciando cadastro de novo item de produto para a Ordem de Serviço ID: {}", body.fkOrdemServico());
         OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(body.fkOrdemServico()).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO));
@@ -58,6 +60,7 @@ public class ItemProdutoService {
         return registroProdutos;
     }
 
+    @ToRefactor
     public ItemProduto atualizarRegistro(Integer id, RequestPutItemProduto body) {
         log.info("Iniciando atualização do item de produto ID: {}", id);
         ItemProduto registroDesejado = ITEM_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(ItemProdutoExceptionMessages.ITEM_PRODUTO_NAO_ENCONTRADO, Domains.ITEM_SERVICO));
@@ -70,12 +73,14 @@ public class ItemProdutoService {
         return atualizado;
     }
 
+    @ToRefactor
     public void deletarRegistro(Integer id) {
         log.info("Deletando item de produto ID: {}", id);
         ITEM_PRODUTO_REPOSITORY.deleteById(id);
         log.info("Item de produto ID: {} deletado com sucesso.", id);
     }
 
+    @ToRefactor
     public Boolean realizarBaixaEstoque(Integer id) {
         log.info("Iniciando processo de baixa de estoque para o item de produto ID: {}", id);
         ItemProduto itemProduto = this.buscarRegistroPorID(id);
