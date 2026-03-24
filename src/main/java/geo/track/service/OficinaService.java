@@ -1,21 +1,22 @@
 package geo.track.service;
 
-import geo.track.entity.Oficina;
-import geo.track.config.GerenciadorTokenJwt;
+import geo.track.gestao.entity.Oficina;
+import geo.track.infraestructure.annotation.ToRefactor;
+import geo.track.infraestructure.config.GerenciadorTokenJwt;
 import geo.track.dto.autenticacao.UsuarioLoginDto;
 import geo.track.dto.autenticacao.UsuarioMapper;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
 import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.dto.oficinas.request.RequestPutOficina;
-import geo.track.exception.ConflictException;
-import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.exception.constraint.message.OficinaExceptionMessages;
-import geo.track.mapper.OficinaMapper;
-import geo.track.log.Log;
-import geo.track.repository.FuncionarioRepository;
-import geo.track.repository.OficinaRepository;
+import geo.track.infraestructure.exception.ConflictException;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.exception.constraint.message.OficinaExceptionMessages;
+import geo.track.gestao.util.OficinaMapper;
+import geo.track.infraestructure.log.Log;
+import geo.track.gestao.entity.repository.FuncionarioRepository;
+import geo.track.gestao.entity.repository.OficinaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +36,7 @@ public class OficinaService {
     private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
     private final Log log;
 
+    @ToRefactor
     public Oficina cadastrar(Oficina body){
         log.info("Iniciando persistência de nova oficina: {}", body.getRazaoSocial());
         if (OFICINA_REPOSITORY.findByCnpj(body.getCnpj()).isPresent()){
@@ -97,6 +99,7 @@ public class OficinaService {
         });
     }
 
+    @ToRefactor
     public Oficina atualizar(RequestPutOficina body){
         log.info("Iniciando atualização completa da oficina ID: {}", body.getIdOficina());
         if (!OFICINA_REPOSITORY.existsById(body.getIdOficina())){
@@ -112,6 +115,7 @@ public class OficinaService {
         return atualizada;
     }
 
+    @ToRefactor
     public Oficina patchEmail(OficinaPatchEmailDTO dto){
         log.info("Iniciando atualização parcial de email para oficina ID: {}", dto.getId());
         Optional<Oficina> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
@@ -129,6 +133,7 @@ public class OficinaService {
     }
 
 
+    @ToRefactor
     public Oficina patchStatus(OficinaPatchStatusDTO dto){
         log.info("Iniciando atualização de status para oficina ID: {}", dto.getId());
         Optional<Oficina> Oficinas = OFICINA_REPOSITORY.findById(dto.getId());
@@ -144,6 +149,7 @@ public class OficinaService {
         return OFICINA_REPOSITORY.save(emp);
     }
 
+    @ToRefactor
     public void remover(Integer id){
         log.info("Iniciando exclusão da oficina ID: {}", id);
         if (!OFICINA_REPOSITORY.existsById(id)){

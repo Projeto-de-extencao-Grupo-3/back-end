@@ -11,6 +11,6 @@ public interface RegistroEntradaRepository extends JpaRepository<RegistroEntrada
     // Existing method, might need adaptation if fkVeiculo_IdVeiculo is not unique per office
     List<RegistroEntrada> findAllByFkVeiculo_IdVeiculo(Long id);
 
-    @Query("SELECT CASE WHEN COUNT(re) > 0 THEN TRUE ELSE FALSE END FROM RegistroEntrada re JOIN re.fkOrdemServico os WHERE os.status <> StatusVeiculo.FINALIZADO AND re.fkVeiculo.idVeiculo = :idVeiculo")
+    @Query("SELECT CASE WHEN COUNT(re) > 0 THEN TRUE ELSE FALSE END FROM RegistroEntrada re JOIN re.fkOrdemServico os WHERE os.status <> Status.FINALIZADO AND re.fkVeiculo.idVeiculo = :idVeiculo")
     Boolean existsOrdensNaoFinalizadas(@Param("idVeiculo") Integer idVeiculo);
 }

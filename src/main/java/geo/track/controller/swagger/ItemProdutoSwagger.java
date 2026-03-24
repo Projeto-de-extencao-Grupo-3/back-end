@@ -2,7 +2,7 @@ package geo.track.controller.swagger;
 
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
-import geo.track.exception.ExceptionBody;
+import geo.track.infraestructure.exception.ExceptionBody;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

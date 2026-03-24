@@ -1,19 +1,14 @@
 package geo.track.jornada.service.itens;
 
-import geo.track.exception.BadBusinessRuleException;
-import geo.track.exception.BadRequestException;
-import geo.track.exception.constraint.message.Domains;
+import geo.track.infraestructure.exception.BadBusinessRuleException;
+import geo.track.infraestructure.exception.BadRequestException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.gestao.entity.ItemProduto;
 import geo.track.gestao.entity.Produto;
 import geo.track.gestao.entity.repository.ItemProdutoRepository;
-import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
-import geo.track.jornada.request.itens.RequestPostItemProduto;
-import geo.track.mapper.ItemProdutoMapper;
 import geo.track.service.ItemProdutoService;
-import geo.track.service.OrdemDeServicoService;
-import geo.track.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

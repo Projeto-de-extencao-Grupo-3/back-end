@@ -1,17 +1,18 @@
 package geo.track.service;
 
-import geo.track.entity.Funcionario;
-import geo.track.entity.Oficina;
+import geo.track.gestao.entity.Funcionario;
+import geo.track.gestao.entity.Oficina;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
-import geo.track.exception.ConflictException;
-import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.exception.constraint.message.FuncionarioExceptionMessages;
-import geo.track.log.Log;
-import geo.track.mapper.FuncionarioMapper;
-import geo.track.repository.FuncionarioRepository;
-import geo.track.repository.OficinaRepository;
+import geo.track.infraestructure.annotation.ToRefactor;
+import geo.track.infraestructure.exception.ConflictException;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.exception.constraint.message.FuncionarioExceptionMessages;
+import geo.track.infraestructure.log.Log;
+import geo.track.gestao.util.FuncionarioMapper;
+import geo.track.gestao.entity.repository.FuncionarioRepository;
+import geo.track.gestao.entity.repository.OficinaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class FuncionarioService {
     private final PasswordEncoder PASSWORD_ENCODER;
     private final Log log;
 
+    @ToRefactor
     public Funcionario cadastrar(RequestPostFuncionario body){
         log.info("Iniciando cadastro de novo funcionário com email: {}", body.getEmail());
         if (FUNCIONARIO_REPOSITORY.existsByEmail(body.getEmail())){
@@ -65,6 +67,7 @@ public class FuncionarioService {
         return FUNCIONARIO_REPOSITORY.getByIdFuncionario(id);
     }
 
+    @ToRefactor
     public Funcionario atualizar(RequestPutFuncionario body){
         log.info("Iniciando atualização do funcionário ID: {}", body.getId());
         Funcionario funcionario = this.buscarPorId(body.getId());
@@ -80,6 +83,7 @@ public class FuncionarioService {
         return FUNCIONARIO_REPOSITORY.save(funcionario);
     }
 
+    @ToRefactor
     public void deletar(Integer id){
         log.info("Solicitação para deletar funcionário ID: {}", id);
         if (!FUNCIONARIO_REPOSITORY.existsById(id)){

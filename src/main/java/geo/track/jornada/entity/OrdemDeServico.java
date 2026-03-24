@@ -2,8 +2,8 @@ package geo.track.jornada.entity;
 
 import geo.track.gestao.entity.ItemProduto;
 import geo.track.gestao.entity.ItemServico;
-import geo.track.entity.Oficina;
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.gestao.entity.Oficina;
+import geo.track.jornada.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,7 +44,7 @@ public class OrdemDeServico {
 
     @Enumerated(EnumType.STRING)
     @Schema(description = "Status atual do veículo", example = "EM_REPARO")
-    private StatusVeiculo status;
+    private Status status;
 
     @Schema(description = "Indica se o serviço envolve seguradora", example = "true")
     private Boolean seguradora;
@@ -78,7 +78,7 @@ public class OrdemDeServico {
         return null;
     }
 
-    public OrdemDeServico(Integer idOrdemServico, Double valorTotal, LocalDate dataSaidaPrevista, LocalDate dataSaidaEfetiva, StatusVeiculo status, Boolean seguradora, Boolean nfRealizada, Boolean pagamentoRealizado, RegistroEntrada fkEntrada, List<ItemProduto> produtos, List<ItemServico> servicos) {
+    public OrdemDeServico(Integer idOrdemServico, Double valorTotal, LocalDate dataSaidaPrevista, LocalDate dataSaidaEfetiva, Status status, Boolean seguradora, Boolean nfRealizada, Boolean pagamentoRealizado, RegistroEntrada fkEntrada, List<ItemProduto> produtos, List<ItemServico> servicos) {
         this.idOrdemServico = idOrdemServico;
         this.dataSaidaPrevista = dataSaidaPrevista;
         this.dataSaidaEfetiva = dataSaidaEfetiva;

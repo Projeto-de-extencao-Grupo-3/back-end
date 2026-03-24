@@ -1,8 +1,8 @@
 package geo.track.external.entity;
 
-import geo.track.enums.Formato;
-import geo.track.enums.StatusArquivo;
-import geo.track.enums.Template;
+import geo.track.gestao.enums.Formato;
+import geo.track.external.enums.StatusArquivo;
+import geo.track.external.enums.Template;
 import jakarta.persistence.*;
 import lombok.*;
 

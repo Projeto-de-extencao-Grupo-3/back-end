@@ -1,12 +1,12 @@
 package geo.track.jornada.service.listagem;
 
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.request.ListagemJornadaParams;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
 import geo.track.jornada.response.listagem.ResponsePainelControle;
-import geo.track.mapper.PainelControleMapper;
+import geo.track.jornada.util.PainelControleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +21,8 @@ public class ListagemPainelControleStrategy implements ListagemJornadaStrategy {
 
     @Override
     public ListagemJornadaResponse execute(ListagemJornadaParams request) {
-        List<StatusVeiculo> status = Arrays.stream(StatusVeiculo.values()).toList();
-        var response = new HashMap<StatusVeiculo, ResponsePainelControle>();
+        List<Status> status = Arrays.stream(Status.values()).toList();
+        var response = new HashMap<Status, ResponsePainelControle>();
 
         status.forEach((statusVeiculo) -> {
             List<OrdemDeServico> ordens = ORDEM_SERVICO_REPOSITORY.findByStatus(statusVeiculo);

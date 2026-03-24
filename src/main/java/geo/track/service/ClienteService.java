@@ -1,16 +1,17 @@
 package geo.track.service;
 
-import geo.track.entity.Cliente;
-import geo.track.entity.Endereco;
-import geo.track.entity.Oficina;
+import geo.track.gestao.entity.Cliente;
+import geo.track.gestao.entity.Endereco;
+import geo.track.gestao.entity.Oficina;
 import geo.track.dto.clientes.request.RequestPostCliente;
-import geo.track.exception.ConflictException;
-import geo.track.exception.DataNotFoundException;
-import geo.track.exception.constraint.message.ClienteExceptionMessages;
-import geo.track.exception.constraint.message.Domains;
-import geo.track.log.Log;
-import geo.track.mapper.ClientesMapper;
-import geo.track.repository.ClienteRepository;
+import geo.track.infraestructure.annotation.ToRefactor;
+import geo.track.infraestructure.exception.ConflictException;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.constraint.message.ClienteExceptionMessages;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.log.Log;
+import geo.track.gestao.util.ClientesMapper;
+import geo.track.gestao.entity.repository.ClienteRepository;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPutCliente;
@@ -28,6 +29,7 @@ public class ClienteService {
     private final EnderecoService ENDERECO_SERVICE;
     private final Log log;
 
+    @ToRefactor
     public Cliente postCliente(RequestPostCliente body) {
         log.info("Iniciando criação de novo cliente com CPF/CNPJ: {}", body.getCpfCnpj());
         if (CLIENTE_REPOSITORY.existsByCpfCnpj(body.getCpfCnpj())) {
@@ -77,6 +79,7 @@ public class ClienteService {
         return cliente.get();
     }
 
+    @ToRefactor
     public Cliente patchEmailCliente(RequestPatchEmail body) {
         log.info("Atualizando e-mail do cliente ID: {}", body.getIdCliente());
         Cliente cliente = this.findClienteById(body.getIdCliente());
@@ -87,6 +90,7 @@ public class ClienteService {
         return CLIENTE_REPOSITORY.save(cliente);
     }
 
+    @ToRefactor
     public Cliente patchTelefoneCliente(RequestPatchTelefone body) {
         log.info("Atualizando telefone do cliente ID: {}", body.getIdCliente());
         Cliente cliente = this.findClienteById(body.getIdCliente());
@@ -97,6 +101,7 @@ public class ClienteService {
         return CLIENTE_REPOSITORY.save(cliente);
     }
 
+    @ToRefactor
     public Cliente putCliente(RequestPutCliente body) {
         log.info("Atualizando dados completos do cliente ID: {}", body.getIdCliente());
 
@@ -114,6 +119,7 @@ public class ClienteService {
 
     }
 
+    @ToRefactor
     public void deletar(Integer id) {
         log.info("Solicitação para deletar cliente ID: {}", id);
         if (CLIENTE_REPOSITORY.existsById(id)) {

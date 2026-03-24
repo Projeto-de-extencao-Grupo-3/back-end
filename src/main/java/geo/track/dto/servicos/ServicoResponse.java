@@ -1,6 +1,6 @@
 package geo.track.dto.servicos;
 
-import geo.track.enums.Servico;
+import geo.track.gestao.enums.Servico;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;

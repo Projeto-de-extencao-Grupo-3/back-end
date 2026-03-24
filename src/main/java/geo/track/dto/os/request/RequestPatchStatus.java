@@ -1,6 +1,6 @@
 package geo.track.dto.os.request;
 
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.jornada.enums.Status;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
 import jakarta.persistence.EnumType;
@@ -15,7 +15,7 @@ public class RequestPatchStatus implements GetJornada {
     private Integer idOrdem;
     @Enumerated(EnumType.STRING)
     @NotNull
-    private StatusVeiculo status;
+    private Status status;
 
     @Override
     public TipoJornada getTipoJornada() {

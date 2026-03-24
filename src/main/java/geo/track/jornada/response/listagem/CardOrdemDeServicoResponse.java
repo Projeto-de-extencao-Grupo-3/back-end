@@ -2,7 +2,7 @@ package geo.track.jornada.response.listagem;
 
 import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.veiculos.response.VeiculoResponse;
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.jornada.enums.Status;
 
 import java.time.LocalDate;
 
@@ -14,7 +14,7 @@ public record CardOrdemDeServicoResponse(
         LocalDate dataSaidaEfetiva,
         LocalDate dataEntradaPrevista,
         LocalDate dataEntradaEfetiva,
-        StatusVeiculo status,
+        Status status,
         ClienteResponse cliente,
         VeiculoResponse veiculo
 ) {

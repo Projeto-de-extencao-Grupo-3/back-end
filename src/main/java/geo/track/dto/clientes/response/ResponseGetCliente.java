@@ -1,8 +1,8 @@
 package geo.track.dto.clientes.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import geo.track.entity.Endereco;
-import geo.track.entity.Veiculo;
+import geo.track.gestao.entity.Endereco;
+import geo.track.gestao.entity.Veiculo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

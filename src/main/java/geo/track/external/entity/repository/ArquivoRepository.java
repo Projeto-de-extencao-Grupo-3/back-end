@@ -1,8 +1,8 @@
 package geo.track.external.entity.repository;
 
 import geo.track.external.entity.Arquivo;
-import geo.track.enums.StatusArquivo;
-import geo.track.enums.Template;
+import geo.track.external.enums.StatusArquivo;
+import geo.track.external.enums.Template;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

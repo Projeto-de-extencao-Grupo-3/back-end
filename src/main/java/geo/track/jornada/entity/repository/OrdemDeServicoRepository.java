@@ -3,7 +3,7 @@ package geo.track.jornada.entity.repository;
 import geo.track.jornada.response.listagem.ViewNotaFiscal;
 import geo.track.jornada.response.listagem.ViewPagtoPendente;
 import geo.track.jornada.response.listagem.ViewPagtoRealizado;
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,7 +21,7 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
     List<OrdemDeServico> findByPlaca(@Param("placa") String placa);
 
     @Query("SELECT o FROM OrdemDeServico o WHERE o.status = :status")
-    List<OrdemDeServico> findByStatus(@Param("status") StatusVeiculo status);
+    List<OrdemDeServico> findByStatus(@Param("status") Status status);
 
     @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva >= :data")
     List<OrdemDeServico> findByStatusUltimos30Dias(@Param("data") LocalDate data);
@@ -54,8 +54,8 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
             @Param("nfRealizada") Boolean nfRealizada,
             @Param("pagtRealizado") Boolean pagtRealizado);
 
-    @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva >= :intervalo")
-    List<OrdemDeServico> findByIntervaloMeses(@Param("intervalo") LocalDate intervalo);
+    @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva >= :intervalo AND o.fkEntrada.fkVeiculo.fkCliente.idCliente = :idCliente")
+    List<OrdemDeServico> findByIntervaloMesesAndIdCliente(@Param("intervalo") LocalDate intervalo, @Param("idCliente") Integer idCliente);
 
     @Query("SELECT o FROM OrdemDeServico o WHERE Year(o.dataSaidaEfetiva) = :ano AND Month(o.dataSaidaEfetiva) = :mes")
     List<OrdemDeServico> findByAnoAndMes(@Param("ano") Integer ano, @Param("mes") Integer mes);

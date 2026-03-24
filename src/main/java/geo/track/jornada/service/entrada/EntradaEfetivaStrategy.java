@@ -1,7 +1,7 @@
 package geo.track.jornada.service.entrada;
 
-import geo.track.entity.Veiculo;
-import geo.track.enums.os.StatusVeiculo;
+import geo.track.gestao.entity.Veiculo;
+import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.interfaces.GetJornada;
@@ -36,7 +36,7 @@ public class EntradaEfetivaStrategy implements EntradaJornadaStrategy {
     public RegistroEntrada execute(GetJornada request) {
         RequestEntradaEfetiva requestEfetiva = (RequestEntradaEfetiva) request;
 
-        StatusVeiculo status = StatusVeiculo.AGUARDANDO_ORCAMENTO;
+        Status status = Status.AGUARDANDO_ORCAMENTO;
         OrdemDeServico ordemDeServico = CADASTRAR_ORDEM_PORT.execute(status);
         Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(requestEfetiva.fkVeiculo());
 

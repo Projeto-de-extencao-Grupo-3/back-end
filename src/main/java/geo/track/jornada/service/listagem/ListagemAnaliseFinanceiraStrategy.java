@@ -1,17 +1,13 @@
 package geo.track.jornada.service.listagem;
 
-import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.request.ListagemJornadaParams;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
-import geo.track.jornada.response.listagem.ResponseNotaFiscals;
-import geo.track.jornada.response.listagem.ResponsePagamentos;
-import geo.track.mapper.AnaliseFinanceiraMapper;
+import geo.track.jornada.util.AnaliseFinanceiraMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
