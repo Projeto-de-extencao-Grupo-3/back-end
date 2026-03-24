@@ -24,26 +24,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/ordens")
 @RequiredArgsConstructor
-public class OrdemDeServicoController implements OrdemDeServicoSwagger {
+public class OrdemDeServicoController {
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
-    @Override
-//    @PostMapping
-//    Criação de Ordem de Servico é feito automaticamente na entrada
-    public ResponseEntity<OrdemDeServicoResponse> postOrdem(@RequestBody RequestPostEntradaVeiculo ordemDTO) {
-        if (ORDEM_SERVICO_SERVICE.existeOrdemServicoPorEntrada(ordemDTO.getFkEntrada())) {
-            throw new ConflictException(OrdemDeServicoExceptionMessages.ORDEM_JA_EXISTE_PARA_REGISTRO_ENTRADA, Domains.ORDEM_DE_SERVICO);
-        }
-
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.cadastrarOrdemServico(ordemDTO);
-        return ResponseEntity.status(201).body(OrdemDeServicoMapper.toResponse(ordem));
-    }
-
-    @Override
     @GetMapping
     public ResponseEntity<List<OrdemDeServicoResponse>> listOrdens(@RequestParam(required = false) Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
-        Integer idOficina = usuario.getIdOficina();
-
         List<OrdemDeServico> ordem;
 
         if (intervalo != null) ordem = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(intervalo);
@@ -55,7 +40,6 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
-    @Override
     @GetMapping("/veiculos/{placa}")
     public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByPlaca(@PathVariable String placa, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
@@ -66,7 +50,6 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
-    @Override
     @GetMapping("/status/{status}")
     public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByStatus(@PathVariable String status, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         Integer idOficina = usuario.getIdOficina();
@@ -88,7 +71,6 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordens));
     }
 
-    @Override
     @GetMapping("/{idOrdem}")
     public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated) {
         Integer idOficina = userAuthenticated.getIdOficina();
@@ -96,49 +78,6 @@ public class OrdemDeServicoController implements OrdemDeServicoSwagger {
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
-    @Override
-    @PutMapping("/atualizar")
-    public ResponseEntity<OrdemDeServicoResponse> putValorESaida(@RequestBody @Valid RequestPutValorESaida body) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarValorESaida(body);
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
-    }
-
-    @Override
-    @PatchMapping("/saida-efetiva")
-    public ResponseEntity<OrdemDeServicoResponse> patchSaidaEfetiva(@RequestBody @Valid RequestPatchSaidaEfetiva body) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarSaidaEfetiva(body);
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
-    }
-
-    @Override
-    @PatchMapping("/status")
-    public ResponseEntity<OrdemDeServicoResponse> patchStatus(@RequestBody @Valid RequestPatchStatus body) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarStatus(body);
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
-    }
-
-    @Override
-    @PatchMapping("/seguradora")
-    public ResponseEntity<OrdemDeServicoResponse> patchSeguradora(@RequestBody @Valid RequestPatchSeguradora body) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarSeguradora(body);
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
-    }
-
-    @Override
-    @PatchMapping("/nf-realizada")
-    public ResponseEntity<OrdemDeServicoResponse> patchNfRealizada(@RequestBody @Valid RequestPatchNfRealizada body) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarNotaFiscalRealizada(body);
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
-    }
-
-    @Override
-    @PatchMapping("/pagto-realizado")
-    public ResponseEntity<OrdemDeServicoResponse> patchPagtoRealizado(@RequestBody @Valid RequestPatchPagtoRealizado body) {
-        OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.atualizarPagamentoRealizado(body);
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
-    }
-
-    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrdem(@PathVariable Integer id) {
         ORDEM_SERVICO_SERVICE.deletarOrdemServico(id);

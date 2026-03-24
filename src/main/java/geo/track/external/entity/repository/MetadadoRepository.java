@@ -1,6 +1,6 @@
-package geo.track.repository;
+package geo.track.external.entity.repository;
 
-import geo.track.entity.Metadado;
+import geo.track.external.entity.Metadado;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MetadadoRepository extends JpaRepository<Metadado, Integer> {

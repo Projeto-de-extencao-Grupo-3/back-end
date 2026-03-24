@@ -1,6 +1,6 @@
 package geo.track.controller.swagger;
 
-import geo.track.dto.arquivos.RequestGetArquivoOrcamento;
+import geo.track.external.request.arquivo.RequestGetArquivoOrcamento;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

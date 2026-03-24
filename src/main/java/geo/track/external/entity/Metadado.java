@@ -1,4 +1,4 @@
-package geo.track.entity;
+package geo.track.external.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

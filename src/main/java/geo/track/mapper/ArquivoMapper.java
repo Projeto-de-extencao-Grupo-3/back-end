@@ -1,7 +1,7 @@
 package geo.track.mapper;
 
-import geo.track.entity.Arquivo;
-import geo.track.dto.arquivos.ArquivoResponse;
+import geo.track.external.entity.Arquivo;
+import geo.track.external.request.arquivo.ArquivoResponse;
 
 public class ArquivoMapper {
     public static ArquivoResponse toResponse(Arquivo entity) {

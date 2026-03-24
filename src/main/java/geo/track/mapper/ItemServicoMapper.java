@@ -54,6 +54,7 @@ public class ItemServicoMapper {
         if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getCor() == null) throw new BadRequestException(ItemServicoExceptionMessages.COR_OBRIGATORIA, Domains.ITEM_SERVICO);
         else item.setCor(dto.getCor());
 
+        item.setTipoServico(dto.getTipoServico());
         item.setPrecoCobrado(dto.getPrecoCobrado());
         item.setParteVeiculo(dto.getParteVeiculo());
         item.setLadoVeiculo(dto.getLadoVeiculo());
