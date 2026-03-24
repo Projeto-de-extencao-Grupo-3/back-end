@@ -1,4 +1,4 @@
-package geo.track.entity;
+package geo.track.external.entity;
 
 import geo.track.enums.Formato;
 import geo.track.enums.StatusArquivo;

@@ -1,4 +1,4 @@
-package geo.track.dto.arquivos;
+package geo.track.external.request.arquivo;
 
 import jakarta.validation.constraints.NotNull;
 

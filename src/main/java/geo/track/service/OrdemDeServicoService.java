@@ -72,97 +72,6 @@ public class OrdemDeServicoService {
         return ordem.get();
     }
 
-    public OrdemDeServico atualizarValorESaida(RequestPutValorESaida body){
-        Log.info("Atualizando data de saída prevista da Ordem de Serviço ID: {}", body.getIdOrdem());
-        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
-
-        if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
-        }
-
-        OrdemDeServico ordem = ordemOPT.get();
-
-        if (body.getSaidaPrevista() != null) {
-            ordem.setDataSaidaPrevista(body.getSaidaPrevista());
-        }
-
-        return ORDEM_REPOSITORY.save(ordem);
-    }
-
-    public OrdemDeServico atualizarSaidaEfetiva(RequestPatchSaidaEfetiva body){
-        Log.info("Atualizando data de saída efetiva da Ordem de Serviço ID: {}", body.getIdOrdem());
-        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
-
-        if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
-        }
-        
-        OrdemDeServico ordem = ordemOPT.get();
-        
-        ordem.setDataSaidaEfetiva(body.getDataSaidaEfetiva());
-        
-        return ORDEM_REPOSITORY.save(ordem);
-    }
-
-    public OrdemDeServico atualizarStatus(RequestPatchStatus body){
-        Log.info("Atualizando status da Ordem de Serviço ID: {} para {}", body.getIdOrdem(), body.getStatus());
-        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
-
-        if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
-        }
-
-        OrdemDeServico ordem = ordemOPT.get();
-
-        ordem.setStatus(body.getStatus());
-        ordem.setDataAtualizacao(LocalDate.now());
-
-        return ORDEM_REPOSITORY.save(ordem);
-    }
-
-    public OrdemDeServico atualizarSeguradora(RequestPatchSeguradora body){
-        Log.info("Atualizando flag de seguradora da Ordem de Serviço ID: {} para {}", body.getIdOrdem(), body.getSeguradora());
-        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
-
-        if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
-        }
-
-        OrdemDeServico ordem = ordemOPT.get();
-
-        ordem.setSeguradora(body.getSeguradora());
-
-        return ORDEM_REPOSITORY.save(ordem);
-    }
-
-    public OrdemDeServico atualizarNotaFiscalRealizada(RequestPatchNfRealizada body){
-        Log.info("Atualizando status de Nota Fiscal da Ordem de Serviço ID: {} para {}", body.getIdOrdem(), body.getNfRealizada());
-        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
-
-        if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
-        }
-
-        OrdemDeServico ordem = ordemOPT.get();
-
-        ordem.setSeguradora(body.getNfRealizada());
-
-        return ORDEM_REPOSITORY.save(ordem);
-    }
-
-    public OrdemDeServico atualizarPagamentoRealizado(RequestPatchPagtoRealizado body){
-        Log.info("Atualizando status de pagamento da Ordem de Serviço ID: {} para {}", body.getIdOrdem(), body.getPagtoRealizado());
-        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(body.getIdOrdem());
-
-        if (ordemOPT.isEmpty()){
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
-        }
-
-        OrdemDeServico ordem = ordemOPT.get();
-
-        ordem.setPagtRealizado(body.getPagtoRealizado());
-        return ORDEM_REPOSITORY.save(ordem);
-    }
 
     public void deletarOrdemServico(Integer idOrdem){
         Log.info("Tentando deletar Ordem de Serviço ID: {}", idOrdem);
@@ -204,23 +113,6 @@ public class OrdemDeServicoService {
         } else {
             return ORDEM_REPOSITORY.findByStatus(status);
         }
-    }
-
-    public List<OrdemDeServico> listarOrdemPorStatus(StatusVeiculo status) {
-        LocalDate dataLimite = LocalDate.now().minusDays(30L);
-        Log.info("Buscando Ordens de Serviço com status: {}", status);
-        if (status.equals(StatusVeiculo.FINALIZADO)) {
-            return ORDEM_REPOSITORY.findByStatusUltimos30Dias(dataLimite);
-
-        } else {
-            return ORDEM_REPOSITORY.findByStatus(status);
-        }
-    }
-
-    public Boolean existeOrdemServicoPorEntrada(Integer idRegistroEtrada) {
-        Log.info("Verificando existência de Ordem de Serviço para entrada ID: {}", idRegistroEtrada);
-        RegistroEntrada entrada = REGISTRO_ENTRADA_REPOSITORY.findById(idRegistroEtrada).orElseThrow(()-> new DataNotFoundException(RegistroEntradaExceptionMessages.REGISTRO_ENTRADA_NAO_ENCONTRADO, Domains.REGISTRO_ENTRADA));
-        return ORDEM_REPOSITORY.existsByFkEntrada(entrada);
     }
 
     public ViewNotaFiscal exibirKpiNotaFiscal(Integer idOrdem) {

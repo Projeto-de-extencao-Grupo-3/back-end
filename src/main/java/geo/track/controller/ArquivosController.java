@@ -1,10 +1,10 @@
 package geo.track.controller;
 
-import geo.track.dto.arquivos.ArquivoResponse;
+import geo.track.external.request.arquivo.ArquivoResponse;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.enums.Template;
 import geo.track.mapper.ArquivoMapper;
-import geo.track.service.ArquivoService;
+import geo.track.external.service.ArquivoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
