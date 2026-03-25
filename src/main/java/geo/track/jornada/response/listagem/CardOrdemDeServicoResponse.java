@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 public record CardOrdemDeServicoResponse(
         Integer idOrdemServico,
+        Integer fkEntrada,
         Double valorTotal,
         Long diasEspera,
         LocalDate dataSaidaPrevista,
