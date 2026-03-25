@@ -1,0 +1,35 @@
+package geo.track.gestao.service.endereco.implementations;
+
+import geo.track.gestao.entity.Endereco;
+import geo.track.gestao.entity.repository.EnderecoRepository;
+import geo.track.gestao.service.endereco.CadastrarEnderecoUseCase;
+import geo.track.gestao.util.EnderecoMapper;
+import geo.track.dto.enderecos.request.RequestPostEndereco;
+import geo.track.infraestructure.exception.NotAcepptableException;
+import geo.track.infraestructure.exception.constraint.message.EnderecoExceptionMessages;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.log.Log;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class CadastrarEnderecoImplementation implements CadastrarEnderecoUseCase {
+    private final EnderecoRepository ENDERECO_REPOSITORY;
+    private final Log log;
+
+    public Endereco execute(RequestPostEndereco body) {
+        log.info("Cadastrando novo endereco para o CEP: {}", body.getCep());
+        Endereco endereco = EnderecoMapper.RequestToEndereco(body);
+
+        if (endereco.getCep().length() != 8) {
+            log.warn("Falha ao cadastrar: CEP {} possui formato invalido", endereco.getCep());
+            throw new NotAcepptableException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, Domains.ENDERECO);
+        }
+
+        Endereco salvo = ENDERECO_REPOSITORY.save(endereco);
+        log.info("Endereco cadastrado com sucesso. ID gerado: {}", salvo.getIdEndereco());
+        return salvo;
+    }
+}
+

@@ -1,4 +1,4 @@
-package geo.track.service;
+package geo.track.gestao.service;
 
 import geo.track.gestao.entity.ItemProduto;
 import geo.track.infraestructure.exception.DataNotFoundException;

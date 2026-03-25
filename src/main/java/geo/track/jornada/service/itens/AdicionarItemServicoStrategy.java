@@ -22,7 +22,6 @@ public class AdicionarItemServicoStrategy implements ItensJornadaStrategy {
     @Override
     public ItemServico execute(Integer idOrdemServico, GetJornada getRequest) {
         RequestPostItemServico request = (RequestPostItemServico) getRequest;
-
         return ADICIONAR_ITEM_SERVICO_USE_CASE.execute(request, idOrdemServico);
     }
 }

@@ -1,4 +1,4 @@
-package geo.track.service;
+package geo.track.jornada.service.ordemServico;
 
 import geo.track.gestao.entity.ItemServico;
 import geo.track.jornada.entity.OrdemDeServico;
@@ -15,6 +15,7 @@ import geo.track.infraestructure.exception.constraint.message.OrdemDeServicoExce
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.infraestructure.log.Log;
 import geo.track.infraestructure.annotation.ToRefactor;
+import geo.track.gestao.service.ItemServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -3,15 +3,12 @@ package geo.track.gestao.service.produto.implementations;
 import geo.track.gestao.entity.ItemProduto;
 import geo.track.gestao.entity.Produto;
 import geo.track.gestao.entity.repository.ItemProdutoRepository;
-import geo.track.gestao.entity.repository.ProdutoRepository;
 import geo.track.gestao.service.produto.RealizarBaixaEstoqueItemProdutoUseCase;
 import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.infraestructure.exception.BadRequestException;
-import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
-import geo.track.infraestructure.exception.constraint.message.ItemProdutoExceptionMessages;
 import geo.track.infraestructure.log.Log;
-import geo.track.service.ItemProdutoService;
+import geo.track.gestao.service.ItemProdutoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

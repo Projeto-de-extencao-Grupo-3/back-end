@@ -1,5 +1,7 @@
 package geo.track.dto.itensProdutos;
 
+import geo.track.jornada.enums.TipoJornada;
+import geo.track.jornada.interfaces.GetJornada;
 import jakarta.validation.constraints.NotNull;
 
 public record RequestPutItemProduto(
@@ -9,5 +11,9 @@ public record RequestPutItemProduto(
         Double precoProduto,
         @NotNull
         Boolean baixado
-) {
+) implements GetJornada {
+        @Override
+        public TipoJornada getTipoJornada() {
+                return TipoJornada.DELETAR_ITEM_PRODUTO;
+        }
 }

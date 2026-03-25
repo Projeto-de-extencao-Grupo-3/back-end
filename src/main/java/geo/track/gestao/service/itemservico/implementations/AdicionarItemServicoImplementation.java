@@ -7,7 +7,7 @@ import geo.track.gestao.util.ItemServicoMapper;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.infraestructure.log.Log;
-import geo.track.service.OrdemDeServicoService;
+import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

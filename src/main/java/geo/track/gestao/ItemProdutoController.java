@@ -10,7 +10,7 @@ import geo.track.gestao.service.produto.DeletarItemProdutoUseCase;
 import geo.track.gestao.service.produto.RealizarBaixaEstoqueItemProdutoUseCase;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.gestao.util.ItemProdutoMapper;
-import geo.track.service.ItemProdutoService;
+import geo.track.gestao.service.ItemProdutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

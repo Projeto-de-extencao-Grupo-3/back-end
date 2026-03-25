@@ -1,11 +1,6 @@
-package geo.track.service;
+package geo.track.gestao.service;
 
 import geo.track.gestao.entity.Funcionario;
-import geo.track.dto.funcionarios.request.RequestPostFuncionario;
-import geo.track.dto.funcionarios.request.RequestPutFuncionario;
-import geo.track.gestao.service.funcionario.AtualizarFuncionarioUseCase;
-import geo.track.gestao.service.funcionario.CadastrarFuncionarioUseCase;
-import geo.track.gestao.service.funcionario.DeletarFuncionarioUseCase;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.exception.constraint.message.FuncionarioExceptionMessages;

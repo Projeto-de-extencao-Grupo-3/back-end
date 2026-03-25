@@ -1,13 +1,8 @@
-package geo.track.service;
+package geo.track.jornada.service.registroEntrada;
 
 import geo.track.infraestructure.annotation.ToRefactor;
 import geo.track.jornada.entity.RegistroEntrada;
-import geo.track.gestao.entity.Veiculo;
-import geo.track.dto.os.request.RequestPostEntradaVeiculo;
-import geo.track.dto.registroEntrada.request.RequestPostEntrada;
-import geo.track.dto.registroEntrada.request.RequestPostEntradaAgendada;
 import geo.track.dto.registroEntrada.request.RequestPutRegistroEntrada;
-import geo.track.jornada.enums.Status;
 import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
@@ -25,8 +20,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RegistroEntradaService{
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
-    private final VeiculoService VEICULO_SERVICE;
-    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final Log log;
 
     public List<RegistroEntrada> listarEntradas(){

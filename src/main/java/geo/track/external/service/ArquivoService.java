@@ -14,7 +14,7 @@ import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.log.Log;
 import geo.track.jornada.util.OrdemDeServicoMapper;
 import geo.track.external.entity.repository.ArquivoRepository;
-import geo.track.service.OrdemDeServicoService;
+import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,15 +1,10 @@
-package geo.track.service;
+package geo.track.gestao.service;
 
 import geo.track.gestao.entity.ItemServico;
 import geo.track.jornada.entity.OrdemDeServico;
-import geo.track.dto.itensServicos.RequestPutItemServico;
-import geo.track.gestao.service.itemservico.AtualizarItemServicoUseCase;
-import geo.track.gestao.service.itemservico.AdicionarItemServicoUseCase;
-import geo.track.gestao.service.itemservico.DeletarItemServicoUseCase;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.exception.constraint.message.ItemServicoExceptionMessages;
-import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.infraestructure.log.Log;
 import geo.track.gestao.entity.repository.ItemServicoRepository;
 import lombok.RequiredArgsConstructor;

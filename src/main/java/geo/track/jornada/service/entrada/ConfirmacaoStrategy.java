@@ -5,7 +5,7 @@ import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
 import geo.track.jornada.util.RegistroEntradaMapper;
-import geo.track.service.RegistroEntradaService;
+import geo.track.jornada.service.registroEntrada.RegistroEntradaService;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.interfaces.GetJornada;

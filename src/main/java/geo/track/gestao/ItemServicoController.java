@@ -1,19 +1,16 @@
 package geo.track.gestao;
 
 import geo.track.gestao.entity.ItemServico;
-import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.gestao.service.itemservico.AdicionarItemServicoUseCase;
 import geo.track.gestao.service.itemservico.AtualizarItemServicoUseCase;
 import geo.track.gestao.service.itemservico.DeletarItemServicoUseCase;
-import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.gestao.util.ItemServicoMapper;
-import geo.track.service.ItemServicoService;
+import geo.track.gestao.service.ItemServicoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

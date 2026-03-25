@@ -21,7 +21,7 @@ public class ItemProdutoMapper {
 
 
         ItemProdutoResponse response = new ItemProdutoResponse();
-        response.setIdTransacaoProduto(entity.getIdRegistroPeca());
+        response.setIdItemProduto(entity.getIdRegistroPeca());
         response.setNomeProduto(entity.getFkProduto().getNome());
         response.setFornecedorNf(entity.getFkProduto().getFornecedorNf());
         response.setPrecoCompra(entity.getFkProduto().getPrecoCompra().toString());

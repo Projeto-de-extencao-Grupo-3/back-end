@@ -1,10 +1,6 @@
-package geo.track.service;
+package geo.track.gestao.service;
 
 import geo.track.gestao.entity.Produto;
-import geo.track.dto.produtos.ProdutoRequest;
-import geo.track.dto.produtos.RequestPatchPrecoCompra;
-import geo.track.dto.produtos.RequestPatchPrecoVenda;
-import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.gestao.enums.Servico;
 import geo.track.gestao.service.produto.AlterarPrecoCompraProdutoUseCase;
 import geo.track.gestao.service.produto.AlterarPrecoVendaProdutoUseCase;

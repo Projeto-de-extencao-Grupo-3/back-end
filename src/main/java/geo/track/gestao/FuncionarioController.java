@@ -9,7 +9,7 @@ import geo.track.gestao.service.funcionario.AtualizarFuncionarioUseCase;
 import geo.track.gestao.service.funcionario.CadastrarFuncionarioUseCase;
 import geo.track.gestao.service.funcionario.DeletarFuncionarioUseCase;
 import geo.track.gestao.util.FuncionarioMapper;
-import geo.track.service.FuncionarioService;
+import geo.track.gestao.service.FuncionarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

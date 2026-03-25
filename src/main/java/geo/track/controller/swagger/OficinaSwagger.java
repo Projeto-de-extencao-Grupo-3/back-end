@@ -122,22 +122,6 @@ public interface OficinaSwagger {
     @SecurityRequirement(name = "Bearer")
     ResponseEntity<OficinaResponse> atualizarEmpresa(@PathVariable Integer id, @RequestBody @Valid RequestPutOficina empresa);
 
-    @Operation(summary = "Atualizar o email de uma Oficina")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Email da Oficina atualizado",
-                    content = {@Content(schema = @Schema(implementation = OficinaResponse.class))}
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Oficina não encontrada",
-                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
-            )
-    })
-    @SecurityRequirement(name = "Bearer")
-    ResponseEntity<OficinaResponse> patchEmail(@RequestBody @Valid OficinaPatchEmailDTO dto);
-
     @Operation(summary = "Atualizar o status de uma Oficina")
     @ApiResponses(value = {
             @ApiResponse(

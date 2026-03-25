@@ -7,7 +7,7 @@ import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
 import geo.track.infraestructure.exception.BadRequestException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.jornada.util.OrdemDeServicoMapper;
-import geo.track.service.OrdemDeServicoService;
+import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

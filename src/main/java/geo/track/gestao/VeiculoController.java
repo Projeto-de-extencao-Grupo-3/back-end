@@ -9,7 +9,7 @@ import geo.track.dto.veiculos.request.RequestPutVeiculo;
 import geo.track.dto.veiculos.response.VeiculoResponse;
 import geo.track.gestao.service.veiculo.*;
 import geo.track.gestao.util.VeiculoMapper;
-import geo.track.service.VeiculoService;
+import geo.track.gestao.service.VeiculoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

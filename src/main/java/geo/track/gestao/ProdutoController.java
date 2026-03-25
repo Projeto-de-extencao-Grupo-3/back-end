@@ -9,7 +9,7 @@ import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.gestao.service.produto.*;
 import geo.track.gestao.util.ProdutoMapper;
-import geo.track.service.ProdutoService;
+import geo.track.gestao.service.ProdutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -22,6 +22,7 @@ public class ItemServicoMapper {
         }
 
         ItemServicoResponse response = new ItemServicoResponse();
+        response.setIdItemServico(entity.getIdRegistroServico());
         response.setPrecoCobrado(entity.getPrecoCobrado());
         response.setParteVeiculo(entity.getParteVeiculo());
         response.setLadoVeiculo(entity.getLadoVeiculo());
