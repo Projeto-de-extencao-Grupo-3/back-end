@@ -1,13 +1,10 @@
 package geo.track.jornada.service.itens;
 
 import geo.track.gestao.entity.ItemServico;
+import geo.track.gestao.service.itemservico.AdicionarItemServicoUseCase;
 import geo.track.jornada.request.itens.RequestPostItemServico;
-import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
-import geo.track.gestao.util.ItemServicoMapper;
-import geo.track.gestao.entity.repository.ItemServicoRepository;
-import geo.track.service.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AdicionarItemServicoStrategy implements ItensJornadaStrategy {
-    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
-    private final ItemServicoRepository ITEM_SERVICO_REPOSITORY;
+    private final AdicionarItemServicoUseCase ADICIONAR_ITEM_SERVICO_USE_CASE;
 
     @Override
     public Boolean isApplicable(TipoJornada tipoJornada) {
@@ -26,10 +22,7 @@ public class AdicionarItemServicoStrategy implements ItensJornadaStrategy {
     @Override
     public ItemServico execute(Integer idOrdemServico, GetJornada getRequest) {
         RequestPostItemServico request = (RequestPostItemServico) getRequest;
-        OrdemDeServico ordemDeServico = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdemServico);
 
-        ItemServico itemServico = ItemServicoMapper.toEntity(request, ordemDeServico);
-
-        return ITEM_SERVICO_REPOSITORY.save(itemServico);
+        return ADICIONAR_ITEM_SERVICO_USE_CASE.execute(request, idOrdemServico);
     }
 }

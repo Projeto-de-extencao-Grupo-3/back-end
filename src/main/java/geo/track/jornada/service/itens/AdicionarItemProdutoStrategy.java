@@ -17,9 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AdicionarItemProdutoStrategy implements ItensJornadaStrategy {
-    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final AdicionarItemProdutoUseCase ADICIONAR_ITEM_PRODUTO_USE_CASE;
-    private final ProdutoService PRODUTO_SERVICE;
 
     @Override
     public Boolean isApplicable(TipoJornada tipoJornada) {

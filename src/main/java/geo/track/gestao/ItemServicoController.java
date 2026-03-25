@@ -4,6 +4,9 @@ import geo.track.gestao.entity.ItemServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.dto.itensServicos.RequestPutItemServico;
+import geo.track.gestao.service.itemservico.AdicionarItemServicoUseCase;
+import geo.track.gestao.service.itemservico.AtualizarItemServicoUseCase;
+import geo.track.gestao.service.itemservico.DeletarItemServicoUseCase;
 import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.gestao.util.ItemServicoMapper;
 import geo.track.service.ItemServicoService;
@@ -20,14 +23,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemServicoController {
     private final ItemServicoService ITEM_SERVICO_SERVICE;
-
-    @PostMapping
-    public ResponseEntity<ItemServicoResponse> cadastrar(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @RequestBody @Valid RequestPostItemServico body) {
-        Integer idOficina = usuario.getIdOficina();
-
-        ItemServico itemServico = ITEM_SERVICO_SERVICE.cadastrar(body, idOficina);
-        return ResponseEntity.status(201).body(ItemServicoMapper.toResponse(itemServico));
-    }
+    private final AdicionarItemServicoUseCase CADASTRAR_ITEM_SERVICO_USECASE;
+    private final AtualizarItemServicoUseCase ATUALIZAR_ITEM_SERVICO_USECASE;
+    private final DeletarItemServicoUseCase DELETAR_ITEM_SERVICO_USECASE;
 
     @GetMapping
     public ResponseEntity<List<ItemServicoResponse>> findAll() {
@@ -46,13 +44,13 @@ public class ItemServicoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ItemServicoResponse> atualizar(@PathVariable Integer id, @RequestBody @Valid RequestPutItemServico body) {
-        ItemServico itemServico = ITEM_SERVICO_SERVICE.atualizar(id, body);
+        ItemServico itemServico = ATUALIZAR_ITEM_SERVICO_USECASE.execute(id, body);
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        ITEM_SERVICO_SERVICE.delete(id);
+        DELETAR_ITEM_SERVICO_USECASE.execute(id);
         return ResponseEntity.status(204).build();
     }
 }
