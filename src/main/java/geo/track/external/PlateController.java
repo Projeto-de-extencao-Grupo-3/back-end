@@ -4,7 +4,7 @@ import geo.track.external.service.PlateService;
 import geo.track.gestao.entity.Veiculo;
 import geo.track.dto.plate.PlateResponse;
 import geo.track.gestao.util.VeiculoMapper;
-import geo.track.service.VeiculoService;
+import geo.track.gestao.service.VeiculoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

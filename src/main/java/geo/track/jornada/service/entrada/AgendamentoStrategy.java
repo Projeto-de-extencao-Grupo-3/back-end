@@ -4,7 +4,7 @@ import geo.track.gestao.entity.Veiculo;
 import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.repository.RegistroEntradaRepository;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
-import geo.track.service.VeiculoService;
+import geo.track.gestao.service.VeiculoService;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.interfaces.GetJornada;

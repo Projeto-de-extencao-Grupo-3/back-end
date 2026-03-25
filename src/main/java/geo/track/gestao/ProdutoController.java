@@ -7,8 +7,9 @@ import geo.track.dto.produtos.ProdutoResponse;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
+import geo.track.gestao.service.produto.*;
 import geo.track.gestao.util.ProdutoMapper;
-import geo.track.service.ProdutoService;
+import geo.track.gestao.service.ProdutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProdutoController implements ProdutoSwagger {
     private final ProdutoService PRODUTO_SERVICE;
+    private final CadastrarProdutoUseCase CADASTRAR_PRODUTO_USECASE;
+    private final AtualizarProdutoUseCase ATUALIZAR_PRODUTO_USECASE;
+    private final AlterarQuantidadeEstoqueProdutoUseCase ALTERAR_QUANTIDADE_ESTOQUE_PRODUTO_USECASE;
+    private final AlterarPrecoCompraProdutoUseCase ALTERAR_PRECO_COMPRA_PRODUTO_USECASE;
+    private final AlterarPrecoVendaProdutoUseCase ALTERAR_PRECO_VENDA_PRODUTO_USECASE;
+    private final DeletarProdutoUseCase DELETAR_PRODUTO_USECASE;
 
     @Override
     @PostMapping
     public ResponseEntity<ProdutoResponse> cadastrar(@Valid @RequestBody ProdutoRequest body) {
-        Produto novoProduto = PRODUTO_SERVICE.cadastrar(body);
+        Produto novoProduto = CADASTRAR_PRODUTO_USECASE.execute(body);
         return ResponseEntity.status(201).body(ProdutoMapper.toResponse(novoProduto));
     }
 
@@ -65,35 +72,35 @@ public class ProdutoController implements ProdutoSwagger {
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponse> putProdutos(@PathVariable Integer id, @Valid @RequestBody ProdutoRequest body) {
-        Produto prod = PRODUTO_SERVICE.putProdutos(id, body);
+        Produto prod = ATUALIZAR_PRODUTO_USECASE.execute(id, body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
     @PatchMapping("/quantidade-estoque")
     public ResponseEntity<ProdutoResponse> patchQtdEstoque(@RequestBody @Valid RequestPatchQtdEstoque body) {
-        Produto prod = PRODUTO_SERVICE.patchQtdEstoque(body);
+        Produto prod = ALTERAR_QUANTIDADE_ESTOQUE_PRODUTO_USECASE.execute(body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
     @PatchMapping("/preco-compra")
     public ResponseEntity<ProdutoResponse> patchPrecoCompra(@RequestBody @Valid RequestPatchPrecoCompra body) {
-        Produto prod = PRODUTO_SERVICE.patchPrecoCompra(body);
+        Produto prod = ALTERAR_PRECO_COMPRA_PRODUTO_USECASE.execute(body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
     @PatchMapping("/preco-venda")
     public ResponseEntity<ProdutoResponse> patchPrecoVenda(@RequestBody @Valid RequestPatchPrecoVenda body) {
-        Produto prod = PRODUTO_SERVICE.patchPrecoVenda(body);
+        Produto prod = ALTERAR_PRECO_VENDA_PRODUTO_USECASE.execute(body);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Integer id) {
-        PRODUTO_SERVICE.excluir(id);
+        DELETAR_PRODUTO_USECASE.execute(id);
         return ResponseEntity.status(204).build();
     }
 }

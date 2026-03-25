@@ -10,7 +10,7 @@ import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
 import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.jornada.util.RegistroEntradaMapper;
-import geo.track.service.VeiculoService;
+import geo.track.gestao.service.VeiculoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

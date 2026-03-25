@@ -1,0 +1,46 @@
+package geo.track.gestao.service;
+
+import geo.track.gestao.entity.Veiculo;
+import geo.track.infraestructure.exception.DataNotFoundException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
+import geo.track.infraestructure.exception.constraint.message.VeiculoExceptionMessages;
+import geo.track.infraestructure.log.Log;
+import geo.track.gestao.entity.repository.VeiculoRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class VeiculoService {
+    private final VeiculoRepository VEICULO_REPOSITORY;
+    private final Log log;
+
+
+    public List<Veiculo>listar(){
+        log.info("Listando todos os veículos");
+        return VEICULO_REPOSITORY.findAll();
+    }
+
+    public Veiculo findVeiculoById(@PathVariable Integer id){
+        log.info("Buscando veículo pelo ID: {}", id);
+        return VEICULO_REPOSITORY.findById(id).orElseThrow(
+                () -> {
+                    log.error("Veículo com ID {} não encontrado", id);
+                    return new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO);
+                }
+        );
+    }
+
+    public List<Veiculo> findVeiculoByPlaca(@PathVariable String placa){
+        log.info("Buscando veículos que iniciam com a placa: {}", placa);
+        return VEICULO_REPOSITORY.findAllByPlacaStartsWithIgnoreCase(placa);
+    }
+
+
+    public List<Veiculo> findVeiculoByCliente(Integer idCliente) {
+        return VEICULO_REPOSITORY.findAllByFkCliente_IdCliente(idCliente);
+    }
+}

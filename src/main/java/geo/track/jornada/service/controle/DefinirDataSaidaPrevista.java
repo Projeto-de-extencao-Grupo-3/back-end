@@ -5,7 +5,7 @@ import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.interfaces.GetJornada;
 import geo.track.jornada.request.controle.RequestPatchSaidaPrevista;
-import geo.track.service.OrdemDeServicoService;
+import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

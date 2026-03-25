@@ -5,8 +5,11 @@ import geo.track.gestao.entity.Funcionario;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.response.FuncionarioResponse;
 import geo.track.dto.funcionarios.request.RequestPutFuncionario;
+import geo.track.gestao.service.funcionario.AtualizarFuncionarioUseCase;
+import geo.track.gestao.service.funcionario.CadastrarFuncionarioUseCase;
+import geo.track.gestao.service.funcionario.DeletarFuncionarioUseCase;
 import geo.track.gestao.util.FuncionarioMapper;
-import geo.track.service.FuncionarioService;
+import geo.track.gestao.service.FuncionarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +22,14 @@ import java.util.List;
 @RequestMapping(path = "/funcionarios")
 public class FuncionarioController implements FuncionarioSwagger {
     private final FuncionarioService FUNCIONARIO_SERVICE;
+    private final CadastrarFuncionarioUseCase CADASTRAR_FUNCIONARIO_USECASE;
+    private final AtualizarFuncionarioUseCase ATUALIZAR_FUNCIONARIO_USECASE;
+    private final DeletarFuncionarioUseCase DELETAR_FUNCIONARIO_USECASE;
 
     @Override
     @PostMapping
     public ResponseEntity<FuncionarioResponse> cadastrar(@RequestBody @Valid RequestPostFuncionario body){
-        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.cadastrar(body);
+        Funcionario funcionarioResposta = CADASTRAR_FUNCIONARIO_USECASE.execute(body);
         return ResponseEntity.status(201).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
@@ -51,14 +57,14 @@ public class FuncionarioController implements FuncionarioSwagger {
     @Override
     @PutMapping()
     public ResponseEntity<FuncionarioResponse> atualizar(@RequestBody @Valid RequestPutFuncionario body){
-        Funcionario funcionarioResposta = FUNCIONARIO_SERVICE.atualizar(body);
+        Funcionario funcionarioResposta = ATUALIZAR_FUNCIONARIO_USECASE.execute(body);
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(funcionarioResposta));
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
-        FUNCIONARIO_SERVICE.deletar(id);
+        DELETAR_FUNCIONARIO_USECASE.execute(id);
         return ResponseEntity.status(204).build();
     }
 }

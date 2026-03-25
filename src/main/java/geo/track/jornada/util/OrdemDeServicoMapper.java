@@ -121,6 +121,7 @@ public class OrdemDeServicoMapper {
 
         return new CardOrdemDeServicoResponse(
                 ordem.getIdOrdemServico(),
+                ordemResponse.getEntrada().getIdRegistroEntrada(),
                 ordemResponse.getValorTotal(),
                 diasEspera,
                 ordemResponse.getDataSaidaPrevista(),

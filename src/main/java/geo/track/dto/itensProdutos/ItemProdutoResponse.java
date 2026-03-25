@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemProdutoResponse {
-    private Integer idTransacaoProduto;
+    private Integer idItemProduto;
     //produto
     private String nomeProduto;
     private String fornecedorNf;

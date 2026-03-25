@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemServicoResponse {
-    private Integer idServico;
+    private Integer idItemServico;
     @Enumerated(EnumType.STRING)
     private Servico tipoServico;
     @Enumerated(EnumType.STRING)

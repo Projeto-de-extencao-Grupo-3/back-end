@@ -6,13 +6,15 @@ import geo.track.gestao.enums.Servico;
 import geo.track.gestao.enums.LadoVeiculo;
 import geo.track.gestao.enums.ParteVeiculo;
 import geo.track.gestao.enums.TipoPintura;
+import geo.track.jornada.enums.TipoJornada;
+import geo.track.jornada.interfaces.GetJornada;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Data
-public class RequestPutItemServico {
+public class RequestPutItemServico implements GetJornada {
     private Double precoCobrado;
     private ParteVeiculo parteVeiculo;
     private LadoVeiculo ladoVeiculo;
@@ -21,4 +23,9 @@ public class RequestPutItemServico {
     @Enumerated(EnumType.STRING)
     private TipoPintura tipoPintura;
     private Servico tipoServico;
+
+    @Override
+    public TipoJornada getTipoJornada() {
+        return TipoJornada.ATUALIZAR_ITEM_SERVICO;
+    }
 }
