@@ -121,9 +121,13 @@ public class OrdemDeServicoService {
         return ORDEM_REPOSITORY.findByNfRealizadaAndPagtRealizado(nfRealizada, pagtRealizado);
     }
 
-    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer idCliente, Integer intervalo) {
+    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer idVeiculo, Integer intervalo) {
         LocalDate dataInferiorIntervalo = LocalDate.now().minusMonths(intervalo);
 
-        return ORDEM_REPOSITORY.findByIntervaloMesesAndIdCliente(dataInferiorIntervalo, idCliente);
+        return ORDEM_REPOSITORY.findByIntervaloMesesAndIdVeiculo(dataInferiorIntervalo, idVeiculo);
+    }
+
+    public List<OrdemDeServico> listarOrdensServicoPorVeiculo(Integer idVeiculo) {
+        return ORDEM_REPOSITORY.findAllByVeiculo(idVeiculo);
     }
 }

@@ -54,8 +54,8 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
             @Param("nfRealizada") Boolean nfRealizada,
             @Param("pagtRealizado") Boolean pagtRealizado);
 
-    @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva >= :intervalo AND o.fkEntrada.fkVeiculo.fkCliente.idCliente = :idCliente")
-    List<OrdemDeServico> findByIntervaloMesesAndIdCliente(@Param("intervalo") LocalDate intervalo, @Param("idCliente") Integer idCliente);
+    @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva >= :intervalo AND o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo")
+    List<OrdemDeServico> findByIntervaloMesesAndIdVeiculo(@Param("intervalo") LocalDate intervalo, @Param("idVeiculo") Integer idVeiculo);
 
     @Query("SELECT o FROM OrdemDeServico o WHERE Year(o.dataSaidaEfetiva) = :ano AND Month(o.dataSaidaEfetiva) = :mes")
     List<OrdemDeServico> findByAnoAndMes(@Param("ano") Integer ano, @Param("mes") Integer mes);
@@ -66,4 +66,7 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
             @Param("pagtRealizado") Boolean pagtRealizado,
             @Param("ano") Integer ano,
             @Param("mes") Integer mes);
+
+    @Query("SELECT o FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo")
+    List<OrdemDeServico> findAllByVeiculo(@Param("idVeiculo") Integer idVeiculo);
 }

@@ -22,12 +22,12 @@ import java.util.List;
 public class OrdemDeServicoController {
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
-    @GetMapping("/cliente/{idCliente}")
-    public ResponseEntity<List<OrdemDeServicoResponse>> listOrdens(@PathVariable Integer idCliente, @RequestParam(required = false) Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
+    @GetMapping("/veiculo/{idVeiculo}")
+    public ResponseEntity<List<OrdemDeServicoResponse>> listOrdens(@PathVariable Integer idVeiculo, @RequestParam(required = false) Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         List<OrdemDeServico> ordem;
 
-        if (intervalo != null) ordem = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(idCliente, intervalo);
-        else ordem = ORDEM_SERVICO_SERVICE.listarOrdensServico();
+        if (intervalo != null) ordem = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(idVeiculo, intervalo);
+        else ordem = ORDEM_SERVICO_SERVICE.listarOrdensServicoPorVeiculo(idVeiculo);
 
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
