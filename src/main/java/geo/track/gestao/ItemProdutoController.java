@@ -4,6 +4,10 @@ import geo.track.controller.swagger.ItemProdutoSwagger;
 import geo.track.gestao.entity.ItemProduto;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
+import geo.track.gestao.service.produto.AtualizarItemProdutoUseCase;
+import geo.track.gestao.service.produto.AdicionarItemProdutoUseCase;
+import geo.track.gestao.service.produto.DeletarItemProdutoUseCase;
+import geo.track.gestao.service.produto.RealizarBaixaEstoqueItemProdutoUseCase;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.gestao.util.ItemProdutoMapper;
 import geo.track.service.ItemProdutoService;
@@ -19,11 +23,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemProdutoController implements ItemProdutoSwagger {
     private final ItemProdutoService ITEM_PRODUTO_SERVICE;
+    private final AdicionarItemProdutoUseCase CADASTRAR_ITEM_PRODUTO_USECASE;
+    private final AtualizarItemProdutoUseCase ATUALIZAR_ITEM_PRODUTO_USECASE;
+    private final DeletarItemProdutoUseCase DELETAR_ITEM_PRODUTO_USECASE;
+    private final RealizarBaixaEstoqueItemProdutoUseCase REALIZAR_BAIXA_ESTOQUE_ITEM_PRODUTO_USECASE;
 
     @Override
     @PostMapping
     public ResponseEntity<ItemProdutoResponse> save(@RequestBody @Valid RequestPostItemProduto body) {
-        ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.cadastrarRegistro(body);
+        ItemProduto registroProduto = CADASTRAR_ITEM_PRODUTO_USECASE.execute(body);
         return ResponseEntity.status(201).body(ItemProdutoMapper.toResponse(registroProduto));
     }
 
@@ -47,20 +55,20 @@ public class ItemProdutoController implements ItemProdutoSwagger {
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<ItemProdutoResponse> put(@PathVariable Integer id, @RequestBody @Valid RequestPutItemProduto body) {
-        ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.atualizarRegistro(id, body);
+        ItemProduto registroProduto = ATUALIZAR_ITEM_PRODUTO_USECASE.execute(id, body);
         return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(registroProduto));
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        ITEM_PRODUTO_SERVICE.deletarRegistro(id);
+        DELETAR_ITEM_PRODUTO_USECASE.execute(id);
         return ResponseEntity.status(204).build();
     }
 
     @PatchMapping("/baixa-estoque/{id}")
     public ResponseEntity<ItemProdutoResponse> patchBaixaEstoque(@PathVariable Integer id) {
-        ITEM_PRODUTO_SERVICE.realizarBaixaEstoque(id);
+        REALIZAR_BAIXA_ESTOQUE_ITEM_PRODUTO_USECASE.execute(id);
         return ResponseEntity.status(200).body(null);
     }
 }

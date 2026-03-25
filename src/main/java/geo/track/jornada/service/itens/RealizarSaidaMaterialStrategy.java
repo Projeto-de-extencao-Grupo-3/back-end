@@ -1,5 +1,6 @@
 package geo.track.jornada.service.itens;
 
+import geo.track.gestao.service.produto.RealizarBaixaEstoqueItemProdutoUseCase;
 import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.infraestructure.exception.BadRequestException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RealizarSaidaMaterialStrategy implements ItensJornadaStrategy {
     private final ItemProdutoService ITEM_PRODUTO_SERVICE;
-    private final ItemProdutoRepository ITEM_PRODUTO_REPOSITORY;
+    private final RealizarBaixaEstoqueItemProdutoUseCase REALIZAR_BAIXA_ESTOQUE_ITEM_PRODUTO_USE_CASE;
 
     @Override
     public Boolean isApplicable(TipoJornada tipoJornada) {
@@ -28,19 +29,10 @@ public class RealizarSaidaMaterialStrategy implements ItensJornadaStrategy {
 
     @Override
     public ItemProduto execute(Integer idItemProduto, GetJornada getRequest) {
-        ItemProduto itemProduto = ITEM_PRODUTO_SERVICE.buscarRegistroPorID(idItemProduto);
-        Produto produto = itemProduto.getFkProduto();
-
-        Integer quantidadeDesejada = itemProduto.getQuantidade();
-        Integer quantidadeEstoque = produto.getQuantidadeEstoque();
-
-        if (itemProduto.getBaixado()) throw new BadRequestException("Este item já foi baixado.", Domains.ITEM_PRODUTO);
-        if (quantidadeEstoque < quantidadeDesejada) throw new BadBusinessRuleException("Quantidade solicitada excede o estoque disponível.", Domains.ITEM_PRODUTO);
-
-        produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidadeDesejada);
-        itemProduto.setBaixado(true);
-        itemProduto.setFkProduto(produto);
-
-        return ITEM_PRODUTO_REPOSITORY.save(itemProduto);
+        if (REALIZAR_BAIXA_ESTOQUE_ITEM_PRODUTO_USE_CASE.execute(idItemProduto)) {
+            return ITEM_PRODUTO_SERVICE.buscarRegistroPorID(idItemProduto);
+        } else {
+            throw new BadBusinessRuleException("Não foi possível realizar a saída do material. Verifique o estoque disponível.", Domains.ITEM_SERVICO);
+        }
     }
 }
