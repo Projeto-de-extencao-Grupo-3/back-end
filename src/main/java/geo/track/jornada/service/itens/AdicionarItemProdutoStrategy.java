@@ -21,7 +21,13 @@ public class AdicionarItemProdutoStrategy implements ItensJornadaStrategy {
 
     @Override
     public ItemProduto execute(Integer idOrdemServico, GetJornada getRequest) {
-        RequestPostItemProduto request = (RequestPostItemProduto) getRequest;
-        return ADICIONAR_ITEM_PRODUTO_USE_CASE.execute(request);
+        RequestPostItemProduto requestPre = (RequestPostItemProduto) getRequest;
+        RequestPostItemProduto request = new RequestPostItemProduto(
+                requestPre.fkProduto(),
+                requestPre.quantidade(),
+                requestPre.precoProduto()
+        );
+
+        return ADICIONAR_ITEM_PRODUTO_USE_CASE.execute(idOrdemServico, request);
     }
 }

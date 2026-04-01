@@ -14,6 +14,6 @@ public record RequestPutItemProduto(
 ) implements GetJornada {
         @Override
         public TipoJornada getTipoJornada() {
-                return TipoJornada.DELETAR_ITEM_PRODUTO;
+                return TipoJornada.ATUALIZAR_ITEM_PRODUTO;
         }
 }

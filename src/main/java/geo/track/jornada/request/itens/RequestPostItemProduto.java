@@ -8,8 +8,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 public record RequestPostItemProduto (
         @NotNull
-        Integer fkOrdemServico,
-        @NotNull
         Integer fkProduto,
         @NotNull
         @Positive

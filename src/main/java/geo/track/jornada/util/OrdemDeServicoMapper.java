@@ -7,10 +7,7 @@ import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.itensProdutos.ItemProdutoResponse;
 import geo.track.dto.itensServicos.ItemServicoResponse;
 import geo.track.jornada.enums.Status;
-import geo.track.jornada.response.listagem.CardOrdemDeServicoResponse;
-import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
-import geo.track.jornada.response.listagem.ResumoOrdemServicoResponse;
-import geo.track.jornada.response.listagem.TelaOrdemServicoResponse;
+import geo.track.jornada.response.listagem.*;
 import geo.track.dto.veiculos.response.VeiculoResponse;
 import geo.track.gestao.util.ClientesMapper;
 import geo.track.gestao.util.ItemProdutoMapper;
@@ -132,5 +129,45 @@ public class OrdemDeServicoMapper {
                 ordemResponse.getCliente(),
                 ordemResponse.getVeiculo()
         );
+    }
+    public static List<OrdemDeServicoHistoricoResponse> toResponseHistoricoVeiculo(List<OrdemDeServico> entities) {
+        return entities.stream()
+                .map(OrdemDeServicoMapper::toResponseHistoricoVeiculo)
+                .toList();
+    }
+
+    public static OrdemDeServicoHistoricoResponse toResponseHistoricoVeiculo(OrdemDeServico entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        String status = switch (entity.getStatus()) {
+            case AGUARDANDO_ENTRADA -> "Com agendamento";
+            case AGUARDANDO_ORCAMENTO, AGUARDANDO_AUTORIZACAO, AGUARDANDO_VAGA -> "Presente na oficina";
+            case EM_PRODUCAO -> "Em produção";
+            case FINALIZADO -> "Sem agendamento";
+        };
+
+        OrdemDeServicoHistoricoResponse response = new OrdemDeServicoHistoricoResponse();
+        response.setIdOrdemServico(entity.getIdOrdemServico());
+        response.setValorTotal(entity.getValorTotal());
+        response.setValorTotalServicos(entity.getValorTotalServicos());
+        response.setValorTotalProdutos(entity.getValorTotalProdutos());
+        response.setDataSaidaPrevista(entity.getDataSaidaPrevista());
+        response.setDataSaidaEfetiva(entity.getDataSaidaEfetiva());
+        response.setStatus(status);
+        response.setVeiculo(VeiculoMapper.toResponse(entity.getFkEntrada().getFkVeiculo()));
+
+        if (entity.getFkEntrada().getFkVeiculo().getFkCliente() != null) {
+            ClienteResponse cliente = ClientesMapper.toResponse(entity.getFkEntrada().getFkVeiculo().getFkCliente());
+            response.setCliente(cliente);
+        }
+
+        if (entity.getFkEntrada() != null) {
+            response.setEntrada(RegistroEntradaMapper.toResponse(entity.getFkEntrada()));
+            response.setEntrada(RegistroEntradaMapper.toResponse(entity.getFkEntrada()));
+        }
+
+        return response;
     }
 }
