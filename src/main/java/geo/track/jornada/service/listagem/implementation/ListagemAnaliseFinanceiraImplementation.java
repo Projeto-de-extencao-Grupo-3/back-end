@@ -1,8 +1,9 @@
-package geo.track.jornada.service.listagem;
+package geo.track.jornada.service.listagem.implementation;
 
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.request.ListagemJornadaParams;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
+import geo.track.jornada.service.listagem.ListagemAnaliseFinanceiraUseCase;
 import geo.track.jornada.util.AnaliseFinanceiraMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemAnaliseFinanceiraStrategy implements ListagemJornadaStrategy {
+public class ListagemAnaliseFinanceiraImplementation implements ListagemAnaliseFinanceiraUseCase {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override
@@ -25,7 +26,7 @@ public class ListagemAnaliseFinanceiraStrategy implements ListagemJornadaStrateg
         var listSemNotaFiscal = ORDEM_SERVICO_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(false, true, ano, mes);
         var kpiSemNotaFiscal = ORDEM_SERVICO_REPOSITORY.findViewNotasFicaisPendentes(ano, mes);
 
-        var listSucesso = ORDEM_SERVICO_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(false, false, ano, mes);
+        var listSucesso = ORDEM_SERVICO_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(true, true, ano, mes);
         var kpiSucesso = ORDEM_SERVICO_REPOSITORY.findViewPagamentoRealizados(ano, mes);
 
         Long totalPagamentosRealizados = kpiSucesso == null ? 0L : kpiSucesso.totalPagamentosRealizados();

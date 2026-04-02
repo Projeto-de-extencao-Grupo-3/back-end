@@ -1,14 +1,14 @@
-package geo.track.jornada.service.entrada;
+package geo.track.jornada.service.entrada.implementation;
 
 import geo.track.gestao.entity.Veiculo;
 import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.repository.RegistroEntradaRepository;
+import geo.track.jornada.service.entrada.AgendamentoUseCase;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.gestao.service.VeiculoService;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.interfaces.GetJornada;
-import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.request.entrada.RequestAgendamento;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,24 +17,11 @@ import java.time.LocalDate;
 /** Strategy para AGENDAMENTO DE ENTRADA **/
 @Component
 @RequiredArgsConstructor
-public class AgendamentoStrategy implements EntradaJornadaStrategy {
+public class AgendamentoImplementation implements AgendamentoUseCase {
     private final CadastrarOrdemServicoUseCase CADASTRAR_OS_PORT;
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final VeiculoService VEICULO_SERVICE;
 
-    @Override
-    public Boolean isApplicable(TipoJornada tipo) {
-        return TipoJornada.AGENDAMENTO.equals(tipo);
-    }
-
-    /**
-     * Executa o agendamento de entrada do veículo.
-     *
-     * @param request deve ser um RequestAgendamento contendo:
-     *                - fkVeiculo: ID do veículo
-     *                - dataEntradaPrevista: data prevista para a entrada
-     * @return RegistroEntrada com o agendamento criado
-     */
     @Override
     public RegistroEntrada execute(GetJornada request) {
         RequestAgendamento requestAgendamento = (RequestAgendamento) request;

@@ -27,6 +27,12 @@ public class EnderecoController implements EnderecoSwagger {
     private final AlterarNumeroEnderecoUseCase ALTERAR_NUMERO_ENDERECO_USECASE;
     private final AtualizarEnderecoUseCase ATUALIZAR_ENDERECO_USECASE;
 
+    @PostMapping("/registrar-vazio")
+    public ResponseEntity<EnderecoResponse> registrarEnderecoVazio() {
+        Endereco enderecoVazio = CRIAR_ENDERECO_VAZIO_USECASE.execute();
+        return ResponseEntity.status(201).body(EnderecoMapper.toResponse(enderecoVazio));
+    }
+
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<EnderecoResponse> getEnderecoById(@PathVariable Integer id) {

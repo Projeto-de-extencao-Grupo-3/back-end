@@ -1,12 +1,12 @@
-package geo.track.jornada.service.entrada;
+package geo.track.jornada.service.entrada.implementation;
 
 import geo.track.gestao.entity.Veiculo;
 import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.interfaces.GetJornada;
-import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
+import geo.track.jornada.service.entrada.EntradaEfetivaUseCase;
 import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.jornada.util.RegistroEntradaMapper;
@@ -17,21 +17,11 @@ import org.springframework.stereotype.Component;
 /** Strategy para ENTRADA EFETIVA **/
 @Component
 @RequiredArgsConstructor
-public class EntradaEfetivaStrategy implements EntradaJornadaStrategy {
+public class EntradaEfetivaImplementation implements EntradaEfetivaUseCase {
     private final CadastrarOrdemServicoUseCase CADASTRAR_ORDEM_PORT;
     private final CadastrarEntradaUseCase CADASTRAR_ENTRADA_PORT;
     private final VeiculoService VEICULO_SERVICE;
 
-    @Override
-    public Boolean isApplicable(TipoJornada tipo) {
-        return TipoJornada.ENTRADA_EFETIVA.equals(tipo);
-    }
-
-    /**
-     * @param request deve ser um RequestEfetiva contendo:
-     *                - fkVeiculo: ID do veículo
-     *                - entrada: dados da entrada efetiva
-     */
     @Override
     public RegistroEntrada execute(GetJornada request) {
         RequestEntradaEfetiva requestEfetiva = (RequestEntradaEfetiva) request;
