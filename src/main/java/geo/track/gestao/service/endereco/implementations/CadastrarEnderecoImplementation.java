@@ -22,11 +22,6 @@ public class CadastrarEnderecoImplementation implements CadastrarEnderecoUseCase
         log.info("Cadastrando novo endereco para o CEP: {}", body.getCep());
         Endereco endereco = EnderecoMapper.RequestToEndereco(body);
 
-        if (endereco.getCep().length() != 8) {
-            log.warn("Falha ao cadastrar: CEP {} possui formato invalido", endereco.getCep());
-            throw new NotAcepptableException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, Domains.ENDERECO);
-        }
-
         Endereco salvo = ENDERECO_REPOSITORY.save(endereco);
         log.info("Endereco cadastrado com sucesso. ID gerado: {}", salvo.getIdEndereco());
         return salvo;

@@ -4,6 +4,6 @@ import geo.track.gestao.entity.ItemProduto;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
 
 public interface AdicionarItemProdutoUseCase {
-    ItemProduto execute(RequestPostItemProduto request);
+    ItemProduto execute(Integer id, RequestPostItemProduto request);
 }
 

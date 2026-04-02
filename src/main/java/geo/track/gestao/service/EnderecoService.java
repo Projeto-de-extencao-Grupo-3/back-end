@@ -45,10 +45,6 @@ public class EnderecoService {
 
     public ResponseViacep findEnderecoByVIACEP(String cep) {
         log.info("Iniciando consulta de CEP via integracao: {}", cep);
-        if (cep.length() != 8) {
-            log.warn("Tentativa de consulta com CEP invalido: {}", cep);
-            throw new NotAcepptableException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, Domains.ENDERECO);
-        }
 
         ResponseViacep response = VIACEP_CONNECTION.consultarCEP(cep);
         if (response == null || response.getCep() == null) {

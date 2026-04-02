@@ -4,6 +4,7 @@ import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.repository.ClienteRepository;
 import geo.track.gestao.service.cliente.AtualizarClienteUseCase;
 import geo.track.dto.clientes.request.RequestPutCliente;
+import geo.track.gestao.util.ClientesMapper;
 import geo.track.infraestructure.log.Log;
 import geo.track.gestao.service.ClienteService;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,10 @@ public class AtualizarClienteImplementation implements AtualizarClienteUseCase {
 
         Cliente cliente = CLIENTE_SERVICE.findClienteById(body.getIdCliente());
 
-        cliente.setIdCliente(body.getIdCliente());
-        cliente.setNome(body.getNome());
-        cliente.setCpfCnpj(body.getCpfCnpj());
-        cliente.setTelefone(body.getTelefone());
-        cliente.setEmail(body.getEmail());
+        Cliente clienteUpdate = ClientesMapper.updateEntity(cliente, body);
 
         log.info("Dados do cliente ID {} atualizados com sucesso", body.getIdCliente());
-        return CLIENTE_REPOSITORY.save(cliente);
+        return CLIENTE_REPOSITORY.save(clienteUpdate);
     }
 }
 

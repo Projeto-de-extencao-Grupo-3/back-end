@@ -1,9 +1,10 @@
-package geo.track.jornada.service.listagem;
+package geo.track.jornada.service.listagem.implementation;
 
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.request.ListagemJornadaParams;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
+import geo.track.jornada.service.listagem.ListagemSimplesUseCase;
 import geo.track.jornada.util.OrdemDeServicoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemSimplesStrategy implements ListagemJornadaStrategy {
+public class ListagemSimplesImplementation implements ListagemSimplesUseCase {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override

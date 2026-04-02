@@ -1,5 +1,6 @@
 package geo.track.gestao.util;
 
+import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.Endereco;
 import geo.track.gestao.entity.Oficina;
@@ -57,10 +58,30 @@ public class ClientesMapper {
     }
 
     public static Cliente toEntity(RequestPostCliente dto, Oficina oficina, Endereco endereco) {
-        // Assuming dto is validated before reaching here.
-        // oficina and endereco can be null if the FKs are nullable in the database.
-        // The responsibility to provide non-null oficina/endereco if they are mandatory
-        // lies with the calling service.
         return new Cliente(null, dto.getNome(), dto.getCpfCnpj(), dto.getTelefone(), dto.getEmail(), dto.getTipoCliente() , oficina, endereco);
+    }
+
+    public static Cliente updateEntity(Cliente cliente, RequestPutCliente body) {
+        if (cliente == null || body == null) {
+            return cliente;
+        }
+
+        if (body.getNome() != null ) {
+            cliente.setNome(body.getNome());
+        }
+        if (body.getCpfCnpj() != null) {
+            cliente.setCpfCnpj(body.getCpfCnpj());
+        }
+        if (body.getTelefone() != null) {
+            cliente.setTelefone(body.getTelefone());
+        }
+        if (body.getEmail() != null) {
+            cliente.setEmail(body.getEmail());
+        }
+        if (body.getTipoCliente() != null) {
+            cliente.setTipoCliente(body.getTipoCliente().name());
+        }
+
+        return cliente;
     }
 }

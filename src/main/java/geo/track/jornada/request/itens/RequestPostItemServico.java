@@ -11,26 +11,20 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Data
-public class RequestPostItemServico implements GetJornada {
+public record RequestPostItemServico(
     @NotNull
-    private Double precoCobrado;
+    Double precoCobrado,
     @NotNull
-    private ParteVeiculo parteVeiculo;
+    ParteVeiculo parteVeiculo,
     @NotNull
-    private LadoVeiculo ladoVeiculo;
+    LadoVeiculo ladoVeiculo,
 
     @NotNull
-    private Servico tipoServico;
+    Servico tipoServico,
 
-    private String cor;
-    private String especificacaoServico;
+    String cor,
+    String especificacaoServico,
 
     @Enumerated(EnumType.STRING)
-    private TipoPintura tipoPintura;
-
-    @Override
-    public TipoJornada getTipoJornada() {
-        return TipoJornada.ADICIONAR_ITEM_SERVICO;
-    }
-}
+    TipoPintura tipoPintura
+){}

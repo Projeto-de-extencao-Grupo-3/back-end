@@ -29,10 +29,8 @@ public class ItemProdutoController implements ItemProdutoSwagger {
     private final RealizarBaixaEstoqueItemProdutoUseCase REALIZAR_BAIXA_ESTOQUE_ITEM_PRODUTO_USECASE;
 
     @Override
-    @PostMapping
     public ResponseEntity<ItemProdutoResponse> save(@RequestBody @Valid RequestPostItemProduto body) {
-        ItemProduto registroProduto = CADASTRAR_ITEM_PRODUTO_USECASE.execute(body);
-        return ResponseEntity.status(201).body(ItemProdutoMapper.toResponse(registroProduto));
+        return null;
     }
 
     @Override

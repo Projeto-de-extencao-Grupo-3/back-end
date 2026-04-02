@@ -11,9 +11,4 @@ public record RequestPutItemProduto(
         Double precoProduto,
         @NotNull
         Boolean baixado
-) implements GetJornada {
-        @Override
-        public TipoJornada getTipoJornada() {
-                return TipoJornada.DELETAR_ITEM_PRODUTO;
-        }
-}
+) { }

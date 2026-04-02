@@ -89,10 +89,9 @@ public class ItemProdutoMapper {
 
     public static ItemProduto updateEntity(ItemProduto registroDesejado, RequestPutItemProduto body) {
         if (registroDesejado == null) {
-            return null; // Or throw an IllegalArgumentException
+            return null;    
         }
 
-        // Assuming body is not null and its fields are handled by validation or are nullable wrappers
         if (body.quantidade() != null) {
             registroDesejado.setQuantidade(body.quantidade());
         }

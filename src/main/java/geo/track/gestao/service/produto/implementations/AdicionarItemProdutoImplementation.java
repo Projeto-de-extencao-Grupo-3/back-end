@@ -25,9 +25,9 @@ public class AdicionarItemProdutoImplementation implements AdicionarItemProdutoU
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
     private final Log log;
 
-    public ItemProduto execute(RequestPostItemProduto body) {
-        log.info("Iniciando cadastro de novo item de produto para a Ordem de Servico ID: {}", body.fkOrdemServico());
-        OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(body.fkOrdemServico()).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO));
+    public ItemProduto execute(Integer id, RequestPostItemProduto body) {
+        log.info("Iniciando cadastro de novo item de produto para a Ordem de Servico ID: {}", id);
+        OrdemDeServico ordemServico = ORDEM_SERVICO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO));
         Produto produto = PRODUTO_REPOSITORY.findById(body.fkProduto()).orElseThrow(() -> new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO));
 
         ItemProduto registroProduto = ItemProdutoMapper.toEntity(body, produto, ordemServico);

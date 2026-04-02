@@ -8,8 +8,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 public record RequestPostItemProduto (
         @NotNull
-        Integer fkOrdemServico,
-        @NotNull
         Integer fkProduto,
         @NotNull
         @Positive
@@ -17,9 +15,5 @@ public record RequestPostItemProduto (
         @NotNull
         @PositiveOrZero
         Double precoProduto
-) implements GetJornada {
-        @Override
-        public TipoJornada getTipoJornada() {
-                return TipoJornada.ADICIONAR_ITEM_PRODUTO;
-        }
+)  {
 }

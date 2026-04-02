@@ -3,7 +3,14 @@ package geo.track.jornada.service;
 import geo.track.jornada.request.ListagemJornadaParams;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
 import geo.track.jornada.service.base.JornadaStrategyRegistry;
-import geo.track.jornada.service.listagem.*;
+import geo.track.jornada.service.listagem.ListagemAnaliseFinanceiraUseCase;
+import geo.track.jornada.service.listagem.ListagemJornadaStrategy;
+import geo.track.jornada.service.listagem.ListagemPainelControleUseCase;
+import geo.track.jornada.service.listagem.ListagemSimplesUseCase;
+import geo.track.jornada.service.listagem.implementation.BuscaSimplesImplementation;
+import geo.track.jornada.service.listagem.implementation.ListagemAnaliseFinanceiraImplementation;
+import geo.track.jornada.service.listagem.implementation.ListagemPainelControleImplementation;
+import geo.track.jornada.service.listagem.implementation.ListagemSimplesImplementation;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,9 +21,9 @@ import java.util.List;
  * Utiliza o padrão de Predicados para mapear diferentes tipos de listagem
  */
 @Service
-public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaParams, ListagemJornadaStrategy, ListagemJornadaResponse> {
+public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaParams, ListagemJornadaStrategy, Object> {
     private final List<Condition<ListagemJornadaParams, ListagemJornadaStrategy>> conditions = new ArrayList<>();
-    private final BuscaSimplesUseCase buscaSimplesUseCase;
+    private final BuscaSimplesImplementation buscaSimplesImplementation;
 
     /**
      * Executa a strategy de listagem apropriada baseada nos parâmetros
@@ -24,7 +31,7 @@ public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaP
      * @return resposta com dados de listagem
      */
     @Override
-    public ListagemJornadaResponse execute(ListagemJornadaParams params) {
+    public Object execute(ListagemJornadaParams params) {
         for (Condition<ListagemJornadaParams, ListagemJornadaStrategy> condition : conditions) {
             if (condition.isApplicable(params)) {
                 return condition.estrategia().execute(params);
@@ -40,30 +47,30 @@ public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaP
      * @return resposta com dados do registro
      */
     public ListagemJornadaResponse execute(Integer id) {
-        return buscaSimplesUseCase.execute(id);
+        return buscaSimplesImplementation.execute(id);
     }
 
     public ListagemService(
-            ListagemSimplesStrategy listagemSimplesStrategy,
-            ListagemPainelControleStrategy listagemPainelControleStrategy,
-            ListagemAnaliseFinanceiraStrategy listagemAnaliseFinanceiraStrategy,
-            BuscaSimplesUseCase buscaSimplesUseCase) {
-        this.buscaSimplesUseCase = buscaSimplesUseCase;
+            ListagemSimplesImplementation listagemSimplesImplementation,
+            ListagemPainelControleImplementation listagemPainelControleImplementation,
+            ListagemAnaliseFinanceiraImplementation listagemAnaliseFinanceiraImplementation,
+            BuscaSimplesImplementation buscaSimplesImplementation) {
+        this.buscaSimplesImplementation = buscaSimplesImplementation;
 
         // Mapeamento de condições para estratégias
         conditions.addAll(
                 List.of(
-                        new Condition<>(
+                        new Condition<ListagemJornadaParams, ListagemJornadaStrategy>(
                                 request -> request.isListagemSimples().equals(true),
-                                listagemSimplesStrategy
+                                listagemSimplesImplementation
                         ),
-                        new Condition<>(
+                        new Condition<ListagemJornadaParams, ListagemJornadaStrategy>(
                                 request -> request.isListagemPainelControle().equals(true),
-                                listagemPainelControleStrategy
+                                listagemPainelControleImplementation
                         ),
-                        new Condition<>(
+                        new Condition<ListagemJornadaParams, ListagemJornadaStrategy>(
                                 request -> request.isListagemAnaliseFinanceira().equals(true),
-                                listagemAnaliseFinanceiraStrategy
+                                listagemAnaliseFinanceiraImplementation
                         )
                 )
         );

@@ -50,18 +50,18 @@ public class ItemServicoMapper {
 
         ItemServico item = new ItemServico();
 
-        if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getTipoPintura() == null) throw new BadRequestException(ItemServicoExceptionMessages.TIPO_PINTURA_OBRIGATORIO, Domains.ITEM_SERVICO);
-        else item.setTipoPintura(dto.getTipoPintura());
-        if (dto.getTipoServico().equals(Servico.PINTURA) && dto.getCor() == null) throw new BadRequestException(ItemServicoExceptionMessages.COR_OBRIGATORIA, Domains.ITEM_SERVICO);
-        else item.setCor(dto.getCor());
+        if (dto.tipoServico().equals(Servico.PINTURA) && dto.tipoPintura() == null) throw new BadRequestException(ItemServicoExceptionMessages.TIPO_PINTURA_OBRIGATORIO, Domains.ITEM_SERVICO);
+        else item.setTipoPintura(dto.tipoPintura());
+        if (dto.tipoServico().equals(Servico.PINTURA) && dto.cor() == null) throw new BadRequestException(ItemServicoExceptionMessages.COR_OBRIGATORIA, Domains.ITEM_SERVICO);
+        else item.setCor(dto.cor());
 
-        item.setTipoServico(dto.getTipoServico());
-        item.setPrecoCobrado(dto.getPrecoCobrado());
-        item.setParteVeiculo(dto.getParteVeiculo());
-        item.setLadoVeiculo(dto.getLadoVeiculo());
-        item.setCor(dto.getCor());
-        item.setEspecificacaoServico(dto.getEspecificacaoServico());
-        item.setTipoPintura(dto.getTipoPintura());
+        item.setTipoServico(dto.tipoServico());
+        item.setPrecoCobrado(dto.precoCobrado());
+        item.setParteVeiculo(dto.parteVeiculo());
+        item.setLadoVeiculo(dto.ladoVeiculo());
+        item.setCor(dto.cor());
+        item.setEspecificacaoServico(dto.especificacaoServico());
+        item.setTipoPintura(dto.tipoPintura());
         item.setFkOrdemServico(ordemServico);
 
         return item;
@@ -72,13 +72,13 @@ public class ItemServicoMapper {
             return item;
         }
 
-        if (dto.getPrecoCobrado() != null) item.setPrecoCobrado(dto.getPrecoCobrado());
-        if (dto.getParteVeiculo() != null) item.setParteVeiculo(dto.getParteVeiculo());
-        if (dto.getLadoVeiculo() != null) item.setLadoVeiculo(dto.getLadoVeiculo());
-        if (dto.getCor() != null) item.setCor(dto.getCor());
-        if (dto.getEspecificacaoServico() != null) item.setEspecificacaoServico(dto.getEspecificacaoServico());
-        if (dto.getTipoPintura() != null) item.setTipoPintura(dto.getTipoPintura());
-        if (dto.getTipoServico() != null) item.setTipoServico(dto.getTipoServico());
+        if (dto.precoCobrado() != null) item.setPrecoCobrado(dto.precoCobrado());
+        if (dto.parteVeiculo() != null) item.setParteVeiculo(dto.parteVeiculo());
+        if (dto.ladoVeiculo() != null) item.setLadoVeiculo(dto.ladoVeiculo());
+        if (dto.cor() != null) item.setCor(dto.cor());
+        if (dto.especificacaoServico() != null) item.setEspecificacaoServico(dto.especificacaoServico());
+        if (dto.tipoPintura() != null) item.setTipoPintura(dto.tipoPintura());
+        if (dto.tipoServico() != null) item.setTipoServico(dto.tipoServico());
 
         return item;
     }

@@ -3,6 +3,7 @@ package geo.track.controller;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.jornada.enums.Status;
+import geo.track.jornada.response.listagem.OrdemDeServicoHistoricoResponse;
 import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
 import geo.track.infraestructure.exception.BadRequestException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
@@ -23,7 +24,7 @@ public class OrdemDeServicoController {
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
     @GetMapping("/veiculo/{idVeiculo}")
-    public ResponseEntity<List<OrdemDeServicoResponse>> listOrdens(@PathVariable Integer idVeiculo, @RequestParam(required = false) Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
+    public ResponseEntity<List<OrdemDeServicoHistoricoResponse>> listOrdens(@PathVariable Integer idVeiculo, @RequestParam(required = false) Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
         List<OrdemDeServico> ordem;
 
         if (intervalo != null) ordem = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(idVeiculo, intervalo);
@@ -32,7 +33,7 @@ public class OrdemDeServicoController {
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
-        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
+        return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponseHistoricoVeiculo(ordem));
     }
 
     @GetMapping("/veiculos/{placa}")
