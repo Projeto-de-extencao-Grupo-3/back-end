@@ -22,11 +22,6 @@ public class AtualizarEnderecoImplementation implements AtualizarEnderecoUseCase
 
     public Endereco execute(RequestPutEndereco body) {
         log.info("Atualizacao completa solicitada para o endereco ID: {}", body.getIdEndereco());
-        if (body.getCep().length() != 8) {
-            log.warn("Falha na atualizacao: CEP {} invalido", body.getCep());
-            throw new NotAcepptableException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, Domains.ENDERECO);
-        }
-
         Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(body.getIdEndereco());
 
         if (enderecos.isPresent()) {

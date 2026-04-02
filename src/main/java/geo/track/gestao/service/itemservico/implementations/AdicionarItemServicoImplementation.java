@@ -18,7 +18,7 @@ public class AdicionarItemServicoImplementation implements AdicionarItemServicoU
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final Log log;
 
-    public ItemServico execute(RequestPostItemServico body, Integer idOrdemServico) {
+    public ItemServico execute(Integer idOrdemServico, RequestPostItemServico body) {
         log.info("Iniciando cadastro de novo Item de Servico");
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdemServico);
 

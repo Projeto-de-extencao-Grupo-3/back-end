@@ -15,9 +15,5 @@ public record RequestPostItemProduto (
         @NotNull
         @PositiveOrZero
         Double precoProduto
-) implements GetJornada {
-        @Override
-        public TipoJornada getTipoJornada() {
-                return TipoJornada.ADICIONAR_ITEM_PRODUTO;
-        }
+)  {
 }

@@ -3,6 +3,7 @@ package geo.track.dto.enderecos.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,6 @@ import lombok.Data;
 @Schema(description = "Objeto utilizado para receber as informações do endereço")
 public class RequestPostEndereco {
     @NotBlank
-    @Size(max = 8, min = 8)
     @Schema(description = "CEP do Endereço", example = "01414001", requiredMode = Schema.RequiredMode.REQUIRED)
     private String cep;
 
@@ -24,7 +24,6 @@ public class RequestPostEndereco {
     @Schema(description = "Número do Endereço", example = "595", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer numero;
 
-    @NotBlank
     @Schema(description = "Complemento do Endereço", example = "Melhor faculdade de Tecnologia do Brasil", requiredMode = Schema.RequiredMode.REQUIRED)
     private String complemento;
 

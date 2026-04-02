@@ -13,19 +13,14 @@ import jakarta.persistence.Enumerated;
 import lombok.Data;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Data
-public class RequestPutItemServico implements GetJornada {
-    private Double precoCobrado;
-    private ParteVeiculo parteVeiculo;
-    private LadoVeiculo ladoVeiculo;
-    private String cor;
-    private String especificacaoServico;
-    @Enumerated(EnumType.STRING)
-    private TipoPintura tipoPintura;
-    private Servico tipoServico;
-
-    @Override
-    public TipoJornada getTipoJornada() {
-        return TipoJornada.ATUALIZAR_ITEM_SERVICO;
-    }
+public record RequestPutItemServico(
+        Double precoCobrado,
+        ParteVeiculo parteVeiculo,
+        LadoVeiculo ladoVeiculo,
+        String cor,
+        String especificacaoServico,
+        @Enumerated(EnumType.STRING)
+        TipoPintura tipoPintura,
+        Servico tipoServico
+) {
 }

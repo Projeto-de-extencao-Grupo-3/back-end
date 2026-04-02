@@ -67,7 +67,7 @@ public class RegistroEntrada {
     @Schema(description = "Veículo associado a este registro de entrada") // Adicionado
     private Veiculo fkVeiculo;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "fk_ordem_servico")
     @Schema(description = "Ordem de serviço gerada a partir desta entrada") // Adicionado
     private OrdemDeServico fkOrdemServico;

@@ -64,7 +64,7 @@ public class Cliente {
     @Schema(description = "Oficina associada a este cliente") // Adicionado
     private Oficina fkOficina;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "fk_endereco")
     @Schema(description = "Endereço associado a este cliente") // Adicionado
     private Endereco fkEndereco;

@@ -3,6 +3,13 @@ package geo.track.jornada;
 import geo.track.dto.itensProdutos.RequestPutItemProduto;
 import geo.track.dto.itensServicos.RequestPutItemServico;
 import geo.track.dto.os.request.RequestPatchStatus;
+import geo.track.gestao.service.itemservico.AdicionarItemServicoUseCase;
+import geo.track.gestao.service.itemservico.AtualizarItemServicoUseCase;
+import geo.track.gestao.service.itemservico.DeletarItemServicoUseCase;
+import geo.track.gestao.service.produto.AdicionarItemProdutoUseCase;
+import geo.track.gestao.service.produto.AtualizarItemProdutoUseCase;
+import geo.track.gestao.service.produto.DeletarItemProdutoUseCase;
+import geo.track.gestao.service.produto.RealizarBaixaEstoqueItemProdutoUseCase;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.request.controle.RequestPatchSaidaPrevista;
@@ -18,7 +25,6 @@ import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
 import geo.track.jornada.service.ControleService;
-import geo.track.jornada.service.ItensService;
 import geo.track.jornada.service.ListagemService;
 import geo.track.jornada.util.OrdemDeServicoMapper;
 import geo.track.gestao.util.ItemProdutoMapper;
@@ -79,55 +85,61 @@ public class JornadaController implements JornadaSwagger {
     /**
      * Jornada: Itens
      */
-    private final ItensService itensService;
+    private final AdicionarItemServicoUseCase adicionarItemServicoUseCase;
+    private final AdicionarItemProdutoUseCase adicionarItemProdutoUseCase;
+    private final AtualizarItemServicoUseCase atualizarItemServicoUseCase;
+    private final AtualizarItemProdutoUseCase atualizarItemProdutoUseCase;
+    private final DeletarItemServicoUseCase deletarItemServicoUseCase;
+    private final DeletarItemProdutoUseCase deletarItemProdutoUseCase;
+    private final RealizarBaixaEstoqueItemProdutoUseCase realizarBaixaEstoqueProdutoUseCase;
 
     @PostMapping("/{idOrdemServico}/produtos")
     public ResponseEntity<ItemProdutoResponse> adicionarItem(@PathVariable Integer idOrdemServico, @Valid @RequestBody RequestPostItemProduto request) {
-        ItemProduto itemProduto = itensService.realizarJornadaItens(idOrdemServico, request);
+        ItemProduto itemProduto = adicionarItemProdutoUseCase.execute(idOrdemServico, request);
 
         return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(itemProduto));
     }
 
     @PutMapping("/{idItemProduto}/produtos")
     public ResponseEntity<ItemProdutoResponse> atualizarItem(@PathVariable Integer idItemProduto, @Valid @RequestBody RequestPutItemProduto request) {
-        ItemProduto itemProduto = itensService.realizarJornadaItens(idItemProduto, request);
+        ItemProduto itemProduto = atualizarItemProdutoUseCase.execute(idItemProduto, request);
 
         return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(itemProduto));
     }
 
     @DeleteMapping("/{idItemProduto}/produtos")
-    public ResponseEntity<ItemProdutoResponse> deletarItemProduto(@PathVariable Integer idItemProduto) {
-        ItemProduto itemProduto = itensService.realizarJornadaItens(idItemProduto, () -> TipoJornada.DELETAR_ITEM_PRODUTO);
+    public ResponseEntity<Object> deletarItemProduto(@PathVariable Integer idItemProduto) {
+        deletarItemProdutoUseCase.execute(idItemProduto);
 
-        return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(itemProduto));
+        return ResponseEntity.status(204).body(null);
     }
 
     @PostMapping("/{idOrdemServico}/servicos")
     public ResponseEntity<ItemServicoResponse> adicionarItem(@PathVariable Integer idOrdemServico, @Valid @RequestBody RequestPostItemServico request) {
-        ItemServico itemServico = itensService.realizarJornadaItens(idOrdemServico, request);
+        ItemServico itemServico = adicionarItemServicoUseCase.execute(idOrdemServico, request);
 
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
 
     @PatchMapping("/{idItemProduto}/saida-material")
-    public ResponseEntity<ItemProdutoResponse> realizarSaidaMaterial(@PathVariable Integer idItemProduto) {
-        ItemProduto itemProduto = itensService.realizarJornadaItens(idItemProduto, () -> TipoJornada.SAIDA_MATERIAL);
+    public ResponseEntity<Object> realizarSaidaMaterial(@PathVariable Integer idItemProduto) {
+        realizarBaixaEstoqueProdutoUseCase.execute(idItemProduto);
 
-        return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(itemProduto));
+        return ResponseEntity.status(204).body(null);
     }
 
     @PutMapping("/{idItemServico}/servicos")
     public ResponseEntity<ItemServicoResponse> atualizarItem(@PathVariable Integer idItemServico, @Valid @RequestBody RequestPutItemServico request) {
-        ItemServico itemServico = itensService.realizarJornadaItens(idItemServico, request);
+        ItemServico itemServico = atualizarItemServicoUseCase.execute(idItemServico, request);
 
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
 
     @DeleteMapping("/{idItemServico}/servicos")
-    public ResponseEntity<ItemServicoResponse> deletarItemServico(@PathVariable Integer idItemServico) {
-        ItemServico itemServico = itensService.realizarJornadaItens(idItemServico, () -> TipoJornada.DELETAR_ITEM_SERVICO);
+    public ResponseEntity<Object> deletarItemServico(@PathVariable Integer idItemServico) {
+        deletarItemServicoUseCase.execute(idItemServico);
 
-        return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
+        return ResponseEntity.status(204).body(null);
     }
 
     /**
