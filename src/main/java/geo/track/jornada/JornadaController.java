@@ -11,7 +11,6 @@ import geo.track.gestao.service.produto.AtualizarItemProdutoUseCase;
 import geo.track.gestao.service.produto.DeletarItemProdutoUseCase;
 import geo.track.gestao.service.produto.RealizarBaixaEstoqueItemProdutoUseCase;
 import geo.track.jornada.entity.OrdemDeServico;
-import geo.track.jornada.enums.TipoJornada;
 import geo.track.jornada.request.controle.RequestPatchSaidaPrevista;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
 import geo.track.gestao.entity.ItemProduto;
@@ -24,8 +23,8 @@ import geo.track.jornada.request.entrada.RequestEntradaEfetivaSemCadastro;
 import geo.track.jornada.request.itens.RequestPostItemProduto;
 import geo.track.jornada.request.itens.RequestPostItemServico;
 import geo.track.jornada.response.listagem.OrdemDeServicoResponse;
-import geo.track.jornada.service.ControleService;
 import geo.track.jornada.service.ListagemService;
+import geo.track.jornada.service.controle.*;
 import geo.track.jornada.service.entrada.AgendamentoUseCase;
 import geo.track.jornada.service.entrada.ConfirmacaoUseCase;
 import geo.track.jornada.service.entrada.EntradaEfetivaSemCadastroUseCase;
@@ -60,7 +59,7 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PostMapping("/agendamento")
     public ResponseEntity<RegistroEntradaResponse> agendamentoEntrada(@Valid @RequestBody RequestAgendamento request) {
-        RegistroEntrada agendamento = agendamentoUseCase.execute(request);
+        RegistroEntrada agendamento = agendamentoUseCase.execute(request.dataEntradaPrevista(), request.fkVeiculo());
 
         return ResponseEntity.status(201).body(RegistroEntradaMapper.toResponse(agendamento));
     }
@@ -68,7 +67,7 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PatchMapping("/confirmar-entrada")
     public ResponseEntity<RegistroEntradaResponse> confirmarEntradaAgendada(@Valid @RequestBody RequestConfirmacao request) {
-        RegistroEntrada entradaConfirmada = confirmacaoUseCase.execute(request);
+        RegistroEntrada entradaConfirmada = confirmacaoUseCase.execute(request.fkRegistro(), request.entrada());
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaConfirmada));
     }
@@ -76,7 +75,7 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PostMapping("/entrada-efetiva")
     public ResponseEntity<RegistroEntradaResponse> entradaVeiculoEfetiva(@Valid @RequestBody RequestEntradaEfetiva request) {
-        RegistroEntrada entradaFeita = entradaEfetivaUseCase.execute(request);
+        RegistroEntrada entradaFeita = entradaEfetivaUseCase.execute(request.fkVeiculo(), request.entrada());
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaFeita));
     }
@@ -84,7 +83,7 @@ public class JornadaController implements JornadaSwagger {
     @Override
     @PostMapping("/entrada-efetiva-sem-cadastro")
     public ResponseEntity<RegistroEntradaResponse> entradaVeiculoSemCadastroEfetiva(@RequestBody RequestEntradaEfetivaSemCadastro request) {
-        RegistroEntrada entradaFeita = entradaEfetivaSemCadastroUseCase.execute(request);
+        RegistroEntrada entradaFeita = entradaEfetivaSemCadastroUseCase.execute(request.veiculo(), request.entrada());
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaFeita));
     }
@@ -172,33 +171,45 @@ public class JornadaController implements JornadaSwagger {
     /**
      * Jornada: Controle
      */
-    private final ControleService controleService;
+    private final AtualizarStatusUseCase atualizarStatusUseCase;
+    private final CancelarOrdemUseCase cancelarOrdemUseCase;
+    private final DefinirDataSaidaPrevistaUseCase definirDataSaidaPrevistaImplementationUseCase;
+    private final DefinirPagamentoRealizadoUseCase definirPagamentoRealizadoUseCase;
+    private final DefinirNotaFiscalRealizadaUseCase definirNotaFiscalRealizadaUseCase;
 
     @PatchMapping("/{idOrdemServico}/atualizar-status")
     public ResponseEntity<OrdemDeServicoResponse> atualizarStatus(@PathVariable Integer idOrdemServico, @RequestBody @Valid RequestPatchStatus request) {
-        OrdemDeServico ordem = controleService.realizarJornadaControle(idOrdemServico, request);
+        OrdemDeServico ordem = atualizarStatusUseCase.execute(idOrdemServico, request.getStatus());
 
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @PatchMapping("/{idOrdemServico}/definir-data-saida-prevista")
     public ResponseEntity<OrdemDeServicoResponse> definirDataSaidaPrevista(@PathVariable Integer idOrdemServico, @RequestBody @Valid RequestPatchSaidaPrevista request) {
-        OrdemDeServico ordem = controleService.realizarJornadaControle(idOrdemServico, request);
+        OrdemDeServico ordem = definirDataSaidaPrevistaImplementationUseCase.execute(idOrdemServico, request.saidaPrevista());
 
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @PatchMapping("/{idOrdemServico}/definir-pagamento-realizado")
     public ResponseEntity<OrdemDeServicoResponse> definirPagamentoRealizado(@PathVariable Integer idOrdemServico) {
-        OrdemDeServico ordem = controleService.realizarJornadaControle(idOrdemServico, () -> TipoJornada.DEFINIR_PAGAMENTO_REALIZADO);
+        OrdemDeServico ordem = definirPagamentoRealizadoUseCase.execute(idOrdemServico);
 
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
 
     @PatchMapping("/{idOrdemServico}/definir-nota-fiscal-realizada")
     public ResponseEntity<OrdemDeServicoResponse> definirNotaFiscalRealizada(@PathVariable Integer idOrdemServico) {
-        OrdemDeServico ordem = controleService.realizarJornadaControle(idOrdemServico, () -> TipoJornada.DEFINIR_NOTA_FISCAL_REALIZADA);
+        OrdemDeServico ordem = definirNotaFiscalRealizadaUseCase.execute(idOrdemServico);
 
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
+
+    @DeleteMapping("/{idOrdemServico}/cancelar-ordem")
+    public ResponseEntity<OrdemDeServicoResponse> cancelarOrdem(@PathVariable Integer idOrdemServico) {
+        cancelarOrdemUseCase.execute(idOrdemServico);
+
+        return ResponseEntity.status(204).body(null);
+    }
+
 }

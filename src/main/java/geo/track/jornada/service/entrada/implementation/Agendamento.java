@@ -17,20 +17,17 @@ import java.time.LocalDate;
 /** Strategy para AGENDAMENTO DE ENTRADA **/
 @Component
 @RequiredArgsConstructor
-public class AgendamentoImplementation implements AgendamentoUseCase {
+public class Agendamento implements AgendamentoUseCase {
     private final CadastrarOrdemServicoUseCase CADASTRAR_OS_PORT;
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final VeiculoService VEICULO_SERVICE;
 
     @Override
-    public RegistroEntrada execute(GetJornada request) {
-        RequestAgendamento requestAgendamento = (RequestAgendamento) request;
+    public RegistroEntrada execute(LocalDate dataEntradaPrevista, Integer fkVeiculo) {
 
         Status status = Status.AGUARDANDO_ENTRADA;
         OrdemDeServico ordemDeServico = CADASTRAR_OS_PORT.execute(status);
-        Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(requestAgendamento.fkVeiculo());
-
-        LocalDate dataEntradaPrevista = requestAgendamento.dataEntradaPrevista();
+        Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(fkVeiculo);
 
         return this.cadastrarAgendamento(ordemDeServico, veiculo, dataEntradaPrevista);
     }

@@ -1,6 +1,5 @@
-package geo.track.jornada.service.base;
+package geo.track.jornada.service;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 /**

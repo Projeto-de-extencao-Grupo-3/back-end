@@ -9,9 +9,5 @@ public record RequestEntradaEfetivaSemCadastro(
 
         RequestEntrada entrada
 
-) implements GetJornada {
-    @Override
-    public TipoJornada getTipoJornada() {
-        return TipoJornada.ENTRADA_EFETIVA_SEM_CADASTRO;
+){
     }
-}

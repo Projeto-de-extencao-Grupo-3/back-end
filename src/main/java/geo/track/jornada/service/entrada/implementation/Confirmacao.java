@@ -2,6 +2,7 @@ package geo.track.jornada.service.entrada.implementation;
 
 import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
+import geo.track.jornada.request.entrada.RequestEntrada;
 import geo.track.jornada.service.entrada.ConfirmacaoUseCase;
 import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
 import geo.track.jornada.util.RegistroEntradaMapper;
@@ -16,21 +17,20 @@ import org.springframework.stereotype.Component;
 /** Strategy para CONFIRMACAO DE ENTRADA **/
 @Component
 @RequiredArgsConstructor
-public class ConfirmacaoImplementation implements ConfirmacaoUseCase {
+public class Confirmacao implements ConfirmacaoUseCase {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
     private final CadastrarEntradaUseCase CADASTRAR_ENTRADA_PORT;
     private final RegistroEntradaService REGISTRO_ENTRADA_SERVICE;
 
     @Override
-    public RegistroEntrada execute(GetJornada request) {
-        RequestConfirmacao requestConfirmacao = (RequestConfirmacao) request;
+    public RegistroEntrada execute(Integer fkRegistro, RequestEntrada requestEntrada) {
 
         Status status = Status.AGUARDANDO_ORCAMENTO;
-        RegistroEntrada entradaAgendada = REGISTRO_ENTRADA_SERVICE.buscarEntradaPorId(requestConfirmacao.fkRegistro());
+        RegistroEntrada entradaAgendada = REGISTRO_ENTRADA_SERVICE.buscarEntradaPorId(fkRegistro);
 
         this.atualizarOrdemDeServico(entradaAgendada, status);
 
-        RegistroEntrada entradaAtualizada = RegistroEntradaMapper.toEntityUpdate(entradaAgendada, ((RequestConfirmacao) request).entrada());
+        RegistroEntrada entradaAtualizada = RegistroEntradaMapper.toEntityUpdate(entradaAgendada, requestEntrada);
 
         return this.atualizarAgendamento(entradaAtualizada);
     }

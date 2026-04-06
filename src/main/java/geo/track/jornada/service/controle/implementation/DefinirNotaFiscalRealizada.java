@@ -1,26 +1,20 @@
-package geo.track.jornada.service.controle;
+package geo.track.jornada.service.controle.implementation;
 
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
-import geo.track.jornada.enums.TipoJornada;
-import geo.track.jornada.interfaces.GetJornada;
+import geo.track.jornada.service.controle.DefinirNotaFiscalRealizadaUseCase;
 import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DefinirNotaFiscalRealizada implements ControleJornadaStrategy<OrdemDeServico> {
+public class DefinirNotaFiscalRealizada implements DefinirNotaFiscalRealizadaUseCase {
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override
-    public Boolean isApplicable(TipoJornada tipoJornada) {
-        return TipoJornada.DEFINIR_NOTA_FISCAL_REALIZADA.equals(tipoJornada);
-    }
-
-    @Override
-    public OrdemDeServico execute(Integer idOrdemServico, GetJornada requestGet) {
+    public OrdemDeServico execute(Integer idOrdemServico) {
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdemServico);
         ordem.setNfRealizada(true);
 

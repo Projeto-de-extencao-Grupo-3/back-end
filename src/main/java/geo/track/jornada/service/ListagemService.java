@@ -2,11 +2,7 @@ package geo.track.jornada.service;
 
 import geo.track.jornada.request.ListagemJornadaParams;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
-import geo.track.jornada.service.base.JornadaStrategyRegistry;
-import geo.track.jornada.service.listagem.ListagemAnaliseFinanceiraUseCase;
 import geo.track.jornada.service.listagem.ListagemJornadaStrategy;
-import geo.track.jornada.service.listagem.ListagemPainelControleUseCase;
-import geo.track.jornada.service.listagem.ListagemSimplesUseCase;
 import geo.track.jornada.service.listagem.implementation.BuscaSimplesImplementation;
 import geo.track.jornada.service.listagem.implementation.ListagemAnaliseFinanceiraImplementation;
 import geo.track.jornada.service.listagem.implementation.ListagemPainelControleImplementation;
