@@ -46,7 +46,6 @@ public class OrdemDeServicoService {
         return ordem.get();
     }
 
-    @ToRefactor
     public void deletarOrdemServico(Integer idOrdem){
         Log.info("Tentando deletar Ordem de Serviço ID: {}", idOrdem);
         Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(idOrdem);
