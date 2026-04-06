@@ -1,0 +1,27 @@
+package geo.track.gestao.service.endereco.implementations;
+
+import geo.track.gestao.entity.Endereco;
+import geo.track.gestao.entity.repository.EnderecoRepository;
+import geo.track.gestao.service.endereco.CadastrarEnderecoUseCase;
+import geo.track.gestao.util.EnderecoMapper;
+import geo.track.dto.enderecos.request.RequestPostEndereco;
+import geo.track.infraestructure.log.Log;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class CadastrarEndereco implements CadastrarEnderecoUseCase {
+    private final EnderecoRepository ENDERECO_REPOSITORY;
+    private final Log log;
+
+    public Endereco execute(RequestPostEndereco body) {
+        log.info("Cadastrando novo endereco para o CEP: {}", body.getCep());
+        Endereco endereco = EnderecoMapper.RequestToEndereco(body);
+
+        Endereco salvo = ENDERECO_REPOSITORY.save(endereco);
+        log.info("Endereco cadastrado com sucesso. ID gerado: {}", salvo.getIdEndereco());
+        return salvo;
+    }
+}
+
