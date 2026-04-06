@@ -115,7 +115,6 @@ public class SecurityConfiguracao {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        System.out.println(frontendUrl);
 
         CorsConfiguration configuracao = new CorsConfiguration();
 

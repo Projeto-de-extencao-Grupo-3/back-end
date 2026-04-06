@@ -27,7 +27,6 @@ public class PlateController {
     public ResponseEntity<?> recognizeAndFindVeiculo(@RequestParam("file") MultipartFile file) {
 
         PlateResponse response = PLATE_SERVICE.reconhecerPlaca(file);
-        System.out.println("Arquivo recebido: " + file.getOriginalFilename() + " - Tamanho: " + file.getSize());
         if (response == null || !"success".equals(response.getStatus()) || response.getData() == null) {
             return ResponseEntity.status(422).body("Não foi possível identificar a placa na imagem.");
         }
