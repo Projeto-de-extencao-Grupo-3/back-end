@@ -33,7 +33,7 @@ public class PlateController {
 
         String placaDetectada = response.getData().getPlate();
 
-        List<Veiculo> veic = VEICULO_SERVICE.findVeiculoByPlaca(placaDetectada);
+        List<Veiculo> veic = VEICULO_SERVICE.buscarVeiculoPelaPlaca(placaDetectada);
 
         if (veic.isEmpty()) {
             return ResponseEntity.status(404).body("Placa " + placaDetectada + " reconhecida, mas veículo não encontrado no sistema.");

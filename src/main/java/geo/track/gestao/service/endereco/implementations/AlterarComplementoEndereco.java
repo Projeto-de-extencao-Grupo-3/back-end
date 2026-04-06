@@ -2,6 +2,7 @@ package geo.track.gestao.service.endereco.implementations;
 
 import geo.track.gestao.entity.Endereco;
 import geo.track.gestao.entity.repository.EnderecoRepository;
+import geo.track.gestao.service.EnderecoService;
 import geo.track.gestao.service.endereco.AlterarComplementoEnderecoUseCase;
 import geo.track.dto.enderecos.request.RequestPatchComplemento;
 import geo.track.infraestructure.exception.DataNotFoundException;
@@ -17,19 +18,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AlterarComplementoEndereco implements AlterarComplementoEnderecoUseCase {
     private final EnderecoRepository ENDERECO_REPOSITORY;
+    private final EnderecoService ENDERECO_SERVICE;
     private final Log log;
 
-    public Endereco execute(RequestPatchComplemento body) {
-        log.info("Atualizando complemento do endereco ID: {}", body.getIdEndereco());
-        Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(body.getIdEndereco());
-
-        if (enderecos.isEmpty()) {
-            log.error("Falha ao atualizar complemento: ID {} nao encontrado", body.getIdEndereco());
-            throw new DataNotFoundException(EnderecoExceptionMessages.ENDERECO_NAO_ENCONTRADO, Domains.ENDERECO);
-        }
-
-        Endereco endereco = enderecos.get();
-        endereco.setComplemento(body.getComplemento());
+    public Endereco execute(Integer idEndereco, String complemento) {
+        log.info("Atualizando complemento do endereco ID: {}", idEndereco);
+        Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(idEndereco);
+        endereco.setComplemento(complemento);
 
         Endereco salvo = ENDERECO_REPOSITORY.save(endereco);
         log.info("Complemento do endereco ID {} atualizado com sucesso", salvo.getIdEndereco());

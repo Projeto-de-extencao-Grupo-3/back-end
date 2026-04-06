@@ -30,8 +30,8 @@ public class CadastrarCliente implements CadastrarClienteUseCase {
             log.warn("Falha ao criar cliente: CPF/CNPJ {} ja cadastrado", body.getCpfCnpj());
             throw new ConflictException(ClienteExceptionMessages.CPF_EXISTENTE, Domains.CLIENTE);
         }
-        Oficina oficina = OFICINA_SERVICE.findOficinasById(body.getFkOficina());
-        Endereco endereco = ENDERECO_SERVICE.findEnderecoById(body.getFkEndereco());
+        Oficina oficina = OFICINA_SERVICE.buscarOficinaPorId(body.getFkOficina());
+        Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(body.getFkEndereco());
 
         Cliente cliente = ClientesMapper.toEntity(body, oficina, endereco);
         log.info("Cliente criado com sucesso para a oficina ID: {}", body.getFkOficina());

@@ -2,6 +2,7 @@ package geo.track.gestao.service.produto.implementations;
 
 import geo.track.gestao.entity.Produto;
 import geo.track.gestao.entity.repository.ProdutoRepository;
+import geo.track.gestao.service.ProdutoService;
 import geo.track.gestao.service.produto.AlterarPrecoCompraProdutoUseCase;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.infraestructure.exception.DataNotFoundException;
@@ -17,20 +18,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AlterarPrecoCompraProduto implements AlterarPrecoCompraProdutoUseCase {
     private final ProdutoRepository PRODUTO_REPOSITORY;
+    private final ProdutoService PRODUTO_SERVICE;
     private final Log log;
 
     public Produto execute(RequestPatchPrecoCompra body) {
-        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(body.getId());
+        Produto produto = PRODUTO_SERVICE.buscarProdutosPorId(body.getId());
 
-        if (produtoOpt.isEmpty()) {
-            log.error("Falha ao atualizar preco de compra: Produto ID {} nao encontrado", body.getId());
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
-        }
-
-        Produto prod = produtoOpt.get();
-        prod.setPrecoCompra(body.getPrecoCompra());
-        log.info("Preco de compra atualizado para o produto ID: {}", prod.getIdProduto());
-        return PRODUTO_REPOSITORY.save(prod);
+        produto.setPrecoCompra(body.getPrecoCompra());
+        log.info("Preco de compra atualizado para o produto ID: {}", produto.getIdProduto());
+        return PRODUTO_REPOSITORY.save(produto);
     }
 }
 

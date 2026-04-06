@@ -18,7 +18,7 @@ public class AlterarEmailCliente implements AlterarEmailClienteUseCase {
 
     public Cliente execute(RequestPatchEmail body) {
         log.info("Atualizando e-mail do cliente ID: {}", body.getIdCliente());
-        Cliente cliente = CLIENTE_SERVICE.findClienteById(body.getIdCliente());
+        Cliente cliente = CLIENTE_SERVICE.bucarClientePorId(body.getIdCliente());
         cliente.setIdCliente(body.getIdCliente());
         cliente.setEmail(body.getEmail());
 

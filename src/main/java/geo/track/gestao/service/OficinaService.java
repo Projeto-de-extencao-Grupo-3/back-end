@@ -29,7 +29,7 @@ public class OficinaService {
     private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
     private final Log log;
 
-    public UsuarioTokenDto autenticar(UsuarioLoginDto body) {
+    public UsuarioTokenDto autenticarUsuario(UsuarioLoginDto body) {
         log.info("Iniciando processo de autenticacao para o email: {}", body.getEmail());
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
@@ -54,12 +54,12 @@ public class OficinaService {
         return UsuarioMapper.of(funcionarioAutenticado, token);
     }
 
-    public List<Oficina> listar() {
+    public List<Oficina> listarOficinas() {
         log.info("Buscando lista completa de oficinas no banco de dados.");
         return OFICINA_REPOSITORY.findAll();
     }
 
-    public Oficina findOficinasById(Integer id) {
+    public Oficina buscarOficinaPorId(Integer id) {
         log.info("Pesquisando oficina por ID: {}", id);
         return OFICINA_REPOSITORY.findById(id).orElseThrow(() -> {
             log.warn("Oficina com ID {} nao foi encontrada.", id);
@@ -67,12 +67,12 @@ public class OficinaService {
         });
     }
 
-    public List<Oficina> findOficinasByRazaoSocial(String razaoSocial) {
+    public List<Oficina> buscarOficinaPorRazaoSocial(String razaoSocial) {
         log.info("Pesquisando oficinas contendo a razao social: {}", razaoSocial);
         return OFICINA_REPOSITORY.findByrazaoSocialContainingIgnoreCase(razaoSocial);
     }
 
-    public Oficina findOficinasByCnpj(String cnpj) {
+    public Oficina buscarOficinaPorCnpj(String cnpj) {
         log.info("Pesquisando oficina pelo CNPJ: {}", cnpj);
         return OFICINA_REPOSITORY.findByCnpj(cnpj).orElseThrow(() -> {
             log.warn("Nenhuma oficina encontrada para o CNPJ: {}", cnpj);

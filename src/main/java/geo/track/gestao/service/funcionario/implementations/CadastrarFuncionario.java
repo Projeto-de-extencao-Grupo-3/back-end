@@ -4,6 +4,7 @@ import geo.track.gestao.entity.Funcionario;
 import geo.track.gestao.entity.Oficina;
 import geo.track.gestao.entity.repository.FuncionarioRepository;
 import geo.track.gestao.entity.repository.OficinaRepository;
+import geo.track.gestao.service.OficinaService;
 import geo.track.gestao.service.funcionario.CadastrarFuncionarioUseCase;
 import geo.track.gestao.util.FuncionarioMapper;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 public class CadastrarFuncionario implements CadastrarFuncionarioUseCase {
     private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
     private final OficinaRepository OFICINA_REPOSITORY;
+    private final OficinaService OFICINA_SERVICE;
     private final PasswordEncoder PASSWORD_ENCODER;
     private final Log log;
 
@@ -32,9 +34,7 @@ public class CadastrarFuncionario implements CadastrarFuncionarioUseCase {
 
         Funcionario funcionario = FuncionarioMapper.toEntity(body);
 
-        Oficina oficina = OFICINA_REPOSITORY.findById(body.getFkOficina())
-                .orElseThrow(() -> new RuntimeException("Oficina nao encontrada com ID: " + body.getFkOficina()));
-
+        Oficina oficina = OFICINA_SERVICE.buscarOficinaPorId(body.getFkOficina());
         funcionario.setFkOficina(oficina);
 
         funcionario.setSenha(PASSWORD_ENCODER.encode(body.getSenha()));

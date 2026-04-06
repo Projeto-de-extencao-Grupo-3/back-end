@@ -17,7 +17,7 @@ public class DeletarItemServico implements DeletarItemServicoUseCase {
 
     public void execute(Integer id) {
         log.info("Removendo Item de Servico ID: {}", id);
-        ItemServico item = ITEM_SERVICO_SERVICE.findById(id);
+        ItemServico item = ITEM_SERVICO_SERVICE.buscarItemServicoPorId(id);
         ITEM_SERVICO_REPOSITORY.delete(item);
     }
 }

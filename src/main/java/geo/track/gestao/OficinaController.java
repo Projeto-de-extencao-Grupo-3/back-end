@@ -6,7 +6,6 @@ import geo.track.dto.autenticacao.UsuarioCriacaoDto;
 import geo.track.dto.autenticacao.UsuarioLoginDto;
 import geo.track.dto.autenticacao.UsuarioMapper;
 import geo.track.dto.autenticacao.UsuarioTokenDto;
-import geo.track.dto.oficinas.request.OficinaPatchEmailDTO;
 import geo.track.dto.oficinas.request.OficinaPatchStatusDTO;
 import geo.track.dto.oficinas.request.RequestPutOficina;
 import geo.track.dto.oficinas.response.OficinaResponse;
@@ -47,7 +46,7 @@ public class OficinaController implements OficinaSwagger {
     @PostMapping("/login")
     public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto) {
         log.info("Tentativa de login para o usuário: {}", usuarioLoginDto.getEmail());
-        UsuarioTokenDto usuarioTokenDto = this.OFICINA_SERVICE.autenticar(usuarioLoginDto);
+        UsuarioTokenDto usuarioTokenDto = this.OFICINA_SERVICE.autenticarUsuario(usuarioLoginDto);
         log.info("Login realizado com sucesso para: {}", usuarioLoginDto.getEmail());
         return ResponseEntity.status(200).body(usuarioTokenDto);
     }
@@ -56,7 +55,7 @@ public class OficinaController implements OficinaSwagger {
     @GetMapping("/listar")
     public ResponseEntity<List<OficinaResponse>> listarEmpresas(){
         log.info("Listando todas as oficinas cadastradas.");
-        List<Oficina> lista = OFICINA_SERVICE.listar();
+        List<Oficina> lista = OFICINA_SERVICE.listarOficinas();
         log.info("Total de oficinas encontradas: {}", lista.size());
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(lista));
     }
@@ -65,7 +64,7 @@ public class OficinaController implements OficinaSwagger {
     @GetMapping("/{id}")
     public ResponseEntity<OficinaResponse> getEmpresaById(@PathVariable Integer id){
         log.info("Buscando oficina com ID: {}", id);
-        Oficina emp = OFICINA_SERVICE.findOficinasById(id);
+        Oficina emp = OFICINA_SERVICE.buscarOficinaPorId(id);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(emp));
     }
 
@@ -73,7 +72,7 @@ public class OficinaController implements OficinaSwagger {
     @GetMapping("/razao-social")
     public ResponseEntity<List<OficinaResponse>> getEmpresaByRazaoSocial(@PathVariable String razaoSocial){
         log.info("Buscando oficinas pela Razão Social: {}", razaoSocial);
-        List<Oficina> lista = OFICINA_SERVICE.findOficinasByRazaoSocial(razaoSocial);
+        List<Oficina> lista = OFICINA_SERVICE.buscarOficinaPorRazaoSocial(razaoSocial);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(lista));
     }
 
@@ -81,7 +80,7 @@ public class OficinaController implements OficinaSwagger {
     @GetMapping("/cnpj")
     public ResponseEntity<OficinaResponse> findEmpresaByCNPJ(@PathVariable String cnpj){
         log.info("Buscando oficina pelo CNPJ: {}", cnpj);
-        Oficina emp = OFICINA_SERVICE.findOficinasByCnpj(cnpj);
+        Oficina emp = OFICINA_SERVICE.buscarOficinaPorCnpj(cnpj);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(emp));
     }
 

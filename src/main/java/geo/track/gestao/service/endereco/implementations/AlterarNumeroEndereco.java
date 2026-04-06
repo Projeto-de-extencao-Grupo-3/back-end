@@ -2,6 +2,7 @@ package geo.track.gestao.service.endereco.implementations;
 
 import geo.track.gestao.entity.Endereco;
 import geo.track.gestao.entity.repository.EnderecoRepository;
+import geo.track.gestao.service.EnderecoService;
 import geo.track.gestao.service.endereco.AlterarNumeroEnderecoUseCase;
 import geo.track.dto.enderecos.request.RequestPatchNumero;
 import geo.track.infraestructure.exception.DataNotFoundException;
@@ -17,25 +18,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AlterarNumeroEndereco implements AlterarNumeroEnderecoUseCase {
     private final EnderecoRepository ENDERECO_REPOSITORY;
+    private final EnderecoService ENDERECO_SERVICE;
     private final Log log;
 
-    public Endereco execute(RequestPatchNumero body) {
-        log.info("Atualizando numero do endereco ID: {}", body.getId());
-        Optional<Endereco> enderecos = ENDERECO_REPOSITORY.findById(body.getId());
+    public Endereco execute(Integer idEndereco, Integer numero) {
+        log.info("Atualizando numero do endereco ID: {}", idEndereco);
+        Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(idEndereco);
+        endereco.setNumero(numero);
 
-        if (enderecos.isPresent()) {
-            Endereco endereco = enderecos.get();
+        ENDERECO_REPOSITORY.save(endereco);
 
-            endereco.setNumero(body.getNumero());
-
-            ENDERECO_REPOSITORY.save(endereco);
-
-            log.info("Numero do endereco ID {} atualizado para: {}", endereco.getIdEndereco(), endereco.getNumero());
-            return endereco;
-        } else {
-            log.error("Falha ao atualizar numero: ID {} nao encontrado", body.getId());
-            throw new DataNotFoundException(EnderecoExceptionMessages.ENDERECO_NAO_ENCONTRADO, Domains.ENDERECO);
-        }
+        log.info("Numero do endereco ID {} atualizado para: {}", endereco.getIdEndereco(), endereco.getNumero());
+        return endereco;
     }
 }
 

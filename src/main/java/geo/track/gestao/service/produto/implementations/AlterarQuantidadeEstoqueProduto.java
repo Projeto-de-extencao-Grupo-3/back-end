@@ -2,6 +2,7 @@ package geo.track.gestao.service.produto.implementations;
 
 import geo.track.gestao.entity.Produto;
 import geo.track.gestao.entity.repository.ProdutoRepository;
+import geo.track.gestao.service.ProdutoService;
 import geo.track.gestao.service.produto.AlterarQuantidadeEstoqueProdutoUseCase;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 import geo.track.infraestructure.exception.DataNotFoundException;
@@ -17,20 +18,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AlterarQuantidadeEstoqueProduto implements AlterarQuantidadeEstoqueProdutoUseCase {
     private final ProdutoRepository PRODUTO_REPOSITORY;
+    private final ProdutoService PRODUTO_SERVICE;
     private final Log log;
 
     public Produto execute(Integer id, Integer quantidadeEstoque) {
-        Optional<Produto> produtoOpt = PRODUTO_REPOSITORY.findByIdProdutoAndAtivoTrue(id);
+        Produto produto = PRODUTO_SERVICE.buscarProdutosPorId(id);
+        produto.setQuantidadeEstoque(quantidadeEstoque);
 
-        if (produtoOpt.isEmpty()) {
-            log.error("Falha ao atualizar estoque: Produto ID {} nao encontrado", id);
-            throw new DataNotFoundException(ProdutoExceptionMessages.PRODUTO_NAO_ENCONTRADO_ID, Domains.PRODUTO);
-        }
-
-        Produto prod = produtoOpt.get();
-        prod.setQuantidadeEstoque(quantidadeEstoque);
-        log.info("Quantidade em estoque atualizada para o produto ID: {}. Nova quantidade: {}", prod.getIdProduto(), prod.getQuantidadeEstoque());
-        return PRODUTO_REPOSITORY.save(prod);
+        log.info("Quantidade em estoque atualizada para o produto ID: {}. Nova quantidade: {}", produto.getIdProduto(), produto.getQuantidadeEstoque());
+        return PRODUTO_REPOSITORY.save(produto);
     }
 }
 

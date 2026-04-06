@@ -8,8 +8,6 @@ import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.gestao.service.VeiculoService;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
-import geo.track.jornada.interfaces.GetJornada;
-import geo.track.jornada.request.entrada.RequestAgendamento;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +25,7 @@ public class Agendamento implements AgendamentoUseCase {
 
         Status status = Status.AGUARDANDO_ENTRADA;
         OrdemDeServico ordemDeServico = CADASTRAR_OS_PORT.execute(status);
-        Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(fkVeiculo);
+        Veiculo veiculo = VEICULO_SERVICE.buscarVeiculoPeloId(fkVeiculo);
 
         return this.cadastrarAgendamento(ordemDeServico, veiculo, dataEntradaPrevista);
     }

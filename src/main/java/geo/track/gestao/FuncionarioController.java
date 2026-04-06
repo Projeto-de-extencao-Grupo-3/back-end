@@ -36,7 +36,7 @@ public class FuncionarioController implements FuncionarioSwagger {
     @Override
     @GetMapping()
     public ResponseEntity<List<FuncionarioResponse>> listarFuncionarios(){
-        List<Funcionario> lista = FUNCIONARIO_SERVICE.listar();
+        List<Funcionario> lista = FUNCIONARIO_SERVICE.listarFuncionarios();
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(lista));
     }
 

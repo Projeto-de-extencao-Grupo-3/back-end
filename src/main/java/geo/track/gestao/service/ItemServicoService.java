@@ -19,12 +19,12 @@ public class ItemServicoService {
     private final ItemServicoRepository ITEM_SERVICO_REPOSITORY;
     private final Log log;
 
-    public List<ItemServico> listar() {
+    public List<ItemServico> listarItensServicos() {
         log.info("Listando todos os Itens de Servico cadastrados.");
         return ITEM_SERVICO_REPOSITORY.findAll();
     }
 
-    public ItemServico findById(Integer id) {
+    public ItemServico buscarItemServicoPorId(Integer id) {
         log.info("Buscando Item de Servico pelo ID: {}", id);
         Optional<ItemServico> ordem = ITEM_SERVICO_REPOSITORY.findById(id);
 

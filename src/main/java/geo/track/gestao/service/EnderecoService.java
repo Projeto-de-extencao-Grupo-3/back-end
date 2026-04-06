@@ -1,21 +1,11 @@
 package geo.track.gestao.service;
 
 import geo.track.gestao.entity.Endereco;
-import geo.track.dto.enderecos.request.RequestPostEndereco;
-import geo.track.gestao.service.endereco.AlterarComplementoEnderecoUseCase;
-import geo.track.gestao.service.endereco.AlterarNumeroEnderecoUseCase;
-import geo.track.gestao.service.endereco.AtualizarEnderecoUseCase;
-import geo.track.gestao.service.endereco.CadastrarEnderecoUseCase;
-import geo.track.gestao.service.endereco.CriarEnderecoVazioUseCase;
 import geo.track.infraestructure.exception.DataNotFoundException;
-import geo.track.infraestructure.exception.NotAcepptableException;
 import geo.track.infraestructure.exception.constraint.message.EnderecoExceptionMessages;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.log.Log;
 import geo.track.gestao.entity.repository.EnderecoRepository;
-import geo.track.dto.enderecos.request.RequestPatchComplemento;
-import geo.track.dto.enderecos.request.RequestPatchNumero;
-import geo.track.dto.enderecos.request.RequestPutEndereco;
 import geo.track.dto.viacep.response.ResponseViacep;
 import geo.track.util.ViacepConnection;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +20,7 @@ public class EnderecoService {
     private final EnderecoRepository ENDERECO_REPOSITORY;
     private final Log log;
 
-    public Endereco findEnderecoById(Integer id) {
+    public Endereco buscarEnderecoPorId(Integer id) {
         log.info("Buscando endereco com ID: {}", id);
         Optional<Endereco> endereco = ENDERECO_REPOSITORY.findById(id);
 
@@ -43,7 +33,7 @@ public class EnderecoService {
         return endereco.get();
     }
 
-    public ResponseViacep findEnderecoByVIACEP(String cep) {
+    public ResponseViacep buscarEnderecoPorCep(String cep) {
         log.info("Iniciando consulta de CEP via integracao: {}", cep);
 
         ResponseViacep response = VIACEP_CONNECTION.consultarCEP(cep);

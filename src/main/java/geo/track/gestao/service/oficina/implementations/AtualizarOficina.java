@@ -27,7 +27,7 @@ public class AtualizarOficina implements AtualizarOficinaUseCase {
             throw new DataNotFoundException(String.format(OficinaExceptionMessages.OFICINA_NAO_ENCONTRADA_GENERICO, body.getIdOficina()), Domains.OFICINA);
         }
 
-        Oficina existente = OFICINA_SERVICE.findOficinasById(body.getIdOficina());
+        Oficina existente = OFICINA_SERVICE.buscarOficinaPorId(body.getIdOficina());
         Oficina atualizada = OficinaMapper.toEntityUpdate(existente, body);
 
         atualizada = OFICINA_REPOSITORY.save(atualizada);

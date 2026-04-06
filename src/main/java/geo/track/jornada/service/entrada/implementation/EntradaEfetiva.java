@@ -4,9 +4,7 @@ import geo.track.gestao.entity.Veiculo;
 import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
-import geo.track.jornada.interfaces.GetJornada;
 import geo.track.jornada.request.entrada.RequestEntrada;
-import geo.track.jornada.request.entrada.RequestEntradaEfetiva;
 import geo.track.jornada.service.entrada.EntradaEfetivaUseCase;
 import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
@@ -28,7 +26,7 @@ public class EntradaEfetiva implements EntradaEfetivaUseCase {
 
         Status status = Status.AGUARDANDO_ORCAMENTO;
         OrdemDeServico ordemDeServico = CADASTRAR_ORDEM_PORT.execute(status);
-        Veiculo veiculo = VEICULO_SERVICE.findVeiculoById(fkVeiculo);
+        Veiculo veiculo = VEICULO_SERVICE.buscarVeiculoPeloId(fkVeiculo);
 
         RegistroEntrada entradaEfetiva = RegistroEntradaMapper.toEntity(requestEntrada, veiculo, ordemDeServico);
 

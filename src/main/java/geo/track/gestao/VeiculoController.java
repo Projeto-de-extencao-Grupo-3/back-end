@@ -38,7 +38,7 @@ public class VeiculoController implements VeiculoSwagger {
     @Override
     @GetMapping
     public ResponseEntity<List<VeiculoResponse>> listar(){
-        List<Veiculo> listaVeiculos = VEICULO_SERVICE.listar();
+        List<Veiculo> listaVeiculos = VEICULO_SERVICE.listarVeiculos();
 
         if(listaVeiculos.isEmpty()){
             return ResponseEntity.status(204).build();
@@ -50,14 +50,14 @@ public class VeiculoController implements VeiculoSwagger {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<VeiculoResponse> findVeiculoById(@PathVariable Integer id){
-        Veiculo veic = VEICULO_SERVICE.findVeiculoById(id);
+        Veiculo veic = VEICULO_SERVICE.buscarVeiculoPeloId(id);
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
     @Override
     @GetMapping("/placa/{placa}")
     public ResponseEntity<List<VeiculoResponse>> findVeiculoByPlaca(@PathVariable String placa){
-        List<Veiculo> veic = VEICULO_SERVICE.findVeiculoByPlaca(placa);
+        List<Veiculo> veic = VEICULO_SERVICE.buscarVeiculoPelaPlaca(placa);
 
         if(veic.isEmpty()){
             return ResponseEntity.status(204).build();
@@ -69,7 +69,7 @@ public class VeiculoController implements VeiculoSwagger {
     @GetMapping("/cliente/{id}")
     @Override
     public ResponseEntity<List<VeiculoResponse>> findVeiculoByClienteId(@PathVariable Integer id){
-        List<Veiculo> veiculos = VEICULO_SERVICE.findVeiculoByCliente(id);
+        List<Veiculo> veiculos = VEICULO_SERVICE.buscarVeiculoPeloIdCliente(id);
 
         if(veiculos.isEmpty()){
             return ResponseEntity.status(204).build();

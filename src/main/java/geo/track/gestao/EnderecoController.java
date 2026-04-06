@@ -36,7 +36,7 @@ public class EnderecoController implements EnderecoSwagger {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<EnderecoResponse> getEnderecoById(@PathVariable Integer id) {
-        Endereco endereco = ENDERECO_SERVICE.findEnderecoById(id);
+        Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(id);
 
         if (endereco == null) {
             return ResponseEntity.status(404).build();
@@ -48,7 +48,7 @@ public class EnderecoController implements EnderecoSwagger {
     @Override
     @GetMapping("/viacep/{cep}")
     public ResponseEntity<ResponseViacep> findEnderecoByVIACEP(@PathVariable String cep) {
-        ResponseViacep responseCep = ENDERECO_SERVICE.findEnderecoByVIACEP(cep);
+        ResponseViacep responseCep = ENDERECO_SERVICE.buscarEnderecoPorCep(cep);
 
         if (responseCep == null) {
             return ResponseEntity.status(404).build();
@@ -67,14 +67,14 @@ public class EnderecoController implements EnderecoSwagger {
     @Override
     @PatchMapping("/complemento")
     public ResponseEntity<EnderecoResponse> patchComplementoEndereco(@RequestBody @Valid RequestPatchComplemento body) {
-        Endereco endereco = ALTERAR_COMPLEMENTO_ENDERECO_USECASE.execute(body);
+        Endereco endereco = ALTERAR_COMPLEMENTO_ENDERECO_USECASE.execute(body.getIdEndereco(), body.getComplemento());
         return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
     }
 
     @Override
     @PatchMapping("/numero")
     public ResponseEntity<EnderecoResponse> patchNumeroEndereco(@RequestBody @Valid RequestPatchNumero body) {
-        Endereco endereco = ALTERAR_NUMERO_ENDERECO_USECASE.execute(body);
+        Endereco endereco = ALTERAR_NUMERO_ENDERECO_USECASE.execute(body.getId(), body.getNumero());
         return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
     }
 

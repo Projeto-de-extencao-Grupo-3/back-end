@@ -2,6 +2,7 @@ package geo.track.gestao.service.veiculo.implementations;
 
 import geo.track.gestao.entity.Veiculo;
 import geo.track.gestao.entity.repository.VeiculoRepository;
+import geo.track.gestao.service.VeiculoService;
 import geo.track.gestao.service.veiculo.AtualizarVeiculoUseCase;
 import geo.track.gestao.util.VeiculoMapper;
 import geo.track.dto.veiculos.request.RequestPutVeiculo;
@@ -16,19 +17,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AtualizarVeiculo implements AtualizarVeiculoUseCase {
     private final VeiculoRepository VEICULO_REPOSITORY;
+    private final VeiculoService VEICULO_SERVICE;
     private final Log log;
 
     public Veiculo execute(Integer id, RequestPutVeiculo body) {
         log.info("Atualizando dados completos do veículo ID: {}", id);
-        Veiculo veic = VEICULO_REPOSITORY.findById(id).orElseThrow(() -> {
-            log.error("Falha na atualização: Veículo ID {} não encontrado", id);
-            return new DataNotFoundException(VeiculoExceptionMessages.VEICULO_NAO_ENCONTRADO_ID, Domains.VEICULO);
-        });
+        Veiculo veiculo = VEICULO_SERVICE.buscarVeiculoPeloId(id);
 
-        veic = VeiculoMapper.toEntityUpdate(veic, body);
-        veic = VEICULO_REPOSITORY.save(veic);
+        veiculo = VeiculoMapper.toEntityUpdate(veiculo, body);
+        veiculo = VEICULO_REPOSITORY.save(veiculo);
         log.info("Veículo ID {} atualizado com sucesso", id);
-        return veic;
+        return veiculo;
     }
 }
 

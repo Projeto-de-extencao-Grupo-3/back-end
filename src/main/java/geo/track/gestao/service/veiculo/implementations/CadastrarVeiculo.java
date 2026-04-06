@@ -4,6 +4,7 @@ import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.Veiculo;
 import geo.track.gestao.entity.repository.ClienteRepository;
 import geo.track.gestao.entity.repository.VeiculoRepository;
+import geo.track.gestao.service.ClienteService;
 import geo.track.gestao.service.veiculo.CadastrarVeiculoUseCase;
 import geo.track.gestao.util.VeiculoMapper;
 import geo.track.dto.veiculos.request.RequestPostVeiculo;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 public class CadastrarVeiculo implements CadastrarVeiculoUseCase {
     private final VeiculoRepository VEICULO_REPOSITORY;
     private final ClienteRepository CLIENTE_REPOSITORY;
+    private final ClienteService CLIENTE_SERVICE;
     private final Log log;
 
     public Veiculo execute(RequestPostVeiculo body) {
@@ -30,8 +32,7 @@ public class CadastrarVeiculo implements CadastrarVeiculoUseCase {
             throw new ConflictException(VeiculoExceptionMessages.PLACA_EXISTENTE, Domains.VEICULO);
         }
 
-        Cliente cliente = CLIENTE_REPOSITORY.findById(body.getIdCliente()).orElseThrow(() ->
-                new DataNotFoundException("Cliente proprietário não encontrado.", Domains.CLIENTE));
+        Cliente cliente = CLIENTE_SERVICE.bucarClientePorId(body.getIdCliente());
 
         Veiculo veiculo = VeiculoMapper.toEntity(body);
         veiculo.setFkCliente(cliente);

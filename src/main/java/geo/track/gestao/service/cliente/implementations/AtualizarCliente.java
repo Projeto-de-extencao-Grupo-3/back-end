@@ -20,7 +20,7 @@ public class AtualizarCliente implements AtualizarClienteUseCase {
     public Cliente execute(RequestPutCliente body) {
         log.info("Atualizando dados completos do cliente ID: {}", body.getIdCliente());
 
-        Cliente cliente = CLIENTE_SERVICE.findClienteById(body.getIdCliente());
+        Cliente cliente = CLIENTE_SERVICE.bucarClientePorId(body.getIdCliente());
 
         Cliente clienteUpdate = ClientesMapper.updateEntity(cliente, body);
 

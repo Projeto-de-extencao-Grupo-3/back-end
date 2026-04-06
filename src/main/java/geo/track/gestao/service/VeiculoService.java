@@ -19,12 +19,12 @@ public class VeiculoService {
     private final Log log;
 
 
-    public List<Veiculo>listar(){
+    public List<Veiculo> listarVeiculos(){
         log.info("Listando todos os veículos");
         return VEICULO_REPOSITORY.findAll();
     }
 
-    public Veiculo findVeiculoById(@PathVariable Integer id){
+    public Veiculo buscarVeiculoPeloId(@PathVariable Integer id){
         log.info("Buscando veículo pelo ID: {}", id);
         return VEICULO_REPOSITORY.findById(id).orElseThrow(
                 () -> {
@@ -34,13 +34,13 @@ public class VeiculoService {
         );
     }
 
-    public List<Veiculo> findVeiculoByPlaca(@PathVariable String placa){
+    public List<Veiculo> buscarVeiculoPelaPlaca(@PathVariable String placa){
         log.info("Buscando veículos que iniciam com a placa: {}", placa);
         return VEICULO_REPOSITORY.findAllByPlacaStartsWithIgnoreCase(placa);
     }
 
 
-    public List<Veiculo> findVeiculoByCliente(Integer idCliente) {
+    public List<Veiculo> buscarVeiculoPeloIdCliente(Integer idCliente) {
         return VEICULO_REPOSITORY.findAllByFkCliente_IdCliente(idCliente);
     }
 }

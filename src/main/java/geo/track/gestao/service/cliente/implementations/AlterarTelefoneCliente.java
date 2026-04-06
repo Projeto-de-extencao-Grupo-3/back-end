@@ -18,7 +18,7 @@ public class AlterarTelefoneCliente implements AlterarTelefoneClienteUseCase {
 
     public Cliente execute(RequestPatchTelefone body) {
         log.info("Atualizando telefone do cliente ID: {}", body.getIdCliente());
-        Cliente cliente = CLIENTE_SERVICE.findClienteById(body.getIdCliente());
+        Cliente cliente = CLIENTE_SERVICE.bucarClientePorId(body.getIdCliente());
         cliente.setIdCliente(body.getIdCliente());
         cliente.setTelefone(body.getTelefone());
 

@@ -35,7 +35,7 @@ public class ClienteController implements ClienteSwagger {
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String cpfCnpj
     ) {
-        List<Cliente> clientes = CLIENTE_SERVICE.findClientes(nome, cpfCnpj);
+        List<Cliente> clientes = CLIENTE_SERVICE.listarClientes(nome, cpfCnpj);
 
         if (clientes.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -54,7 +54,7 @@ public class ClienteController implements ClienteSwagger {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> getClienteById(@PathVariable Integer id) {
-        Cliente cliente = CLIENTE_SERVICE.findClienteById(id);
+        Cliente cliente = CLIENTE_SERVICE.bucarClientePorId(id);
 
         return ResponseEntity.status(200).body(ClientesMapper.toResponse(cliente));
     }
