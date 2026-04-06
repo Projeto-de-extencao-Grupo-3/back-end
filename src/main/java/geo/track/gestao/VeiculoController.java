@@ -1,6 +1,7 @@
 package geo.track.gestao;
 
 import geo.track.controller.swagger.VeiculoSwagger;
+import geo.track.dto.veiculos.response.VeiculoHistoricoResponse;
 import geo.track.gestao.entity.Veiculo;
 import geo.track.dto.veiculos.request.RequestPatchCor;
 import geo.track.dto.veiculos.request.RequestPatchPlaca;
@@ -10,6 +11,7 @@ import geo.track.dto.veiculos.response.VeiculoResponse;
 import geo.track.gestao.service.veiculo.*;
 import geo.track.gestao.util.VeiculoMapper;
 import geo.track.gestao.service.VeiculoService;
+import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VeiculoController implements VeiculoSwagger {
     private final VeiculoService VEICULO_SERVICE;
+    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final CadastrarVeiculoUseCase CADASTRAR_VEICULO_USECASE;
     private final AtualizarVeiculoUseCase ATUALIZAR_VEICULO_USECASE;
     private final DeletarVeiculoUseCase DELETAR_VEICULO_USECASE;
@@ -68,14 +71,17 @@ public class VeiculoController implements VeiculoSwagger {
 
     @GetMapping("/cliente/{id}")
     @Override
-    public ResponseEntity<List<VeiculoResponse>> findVeiculoByClienteId(@PathVariable Integer id){
+    public ResponseEntity<List<VeiculoHistoricoResponse>> findVeiculoByClienteId(@PathVariable Integer id){
         List<Veiculo> veiculos = VEICULO_SERVICE.buscarVeiculoPeloIdCliente(id);
 
         if(veiculos.isEmpty()){
             return ResponseEntity.status(204).build();
         }
 
-        return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veiculos));
+        return ResponseEntity.status(200).body(veiculos.stream().map(veiculo -> {
+            var ordem = ORDEM_SERVICO_SERVICE.buscarUltimaOrdemServicoPorVeiculo(veiculo.getIdVeiculo());
+            return VeiculoMapper.toResponseHistorico(veiculo, ordem);
+        }).toList());
     }
 
     @Override

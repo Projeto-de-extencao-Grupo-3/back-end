@@ -14,7 +14,6 @@ import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.exception.constraint.message.OrdemDeServicoExceptionMessages;
 import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.infraestructure.log.Log;
-import geo.track.infraestructure.annotation.ToRefactor;
 import geo.track.gestao.service.ItemServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,15 @@ public class OrdemDeServicoService {
     private final ItemServicoService ITEM_SERVICO_SERVICE;
     private final Log Log;
 
+    public OrdemDeServico buscarUltimaOrdemServicoPorVeiculo(Integer idVeiculo) {
+        Log.info("Buscando última Ordem de Serviço para o veículo ID: {}", idVeiculo);
+        Optional<OrdemDeServico> ordem = ORDEM_REPOSITORY.findLastOrdemServicoVeiculo(idVeiculo);
+
+        if (ordem.isEmpty()) {
+            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ULTIMA_ORDEM_NAO_ENCONTRADA_POR_VEICULO, Domains.ORDEM_DE_SERVICO);
+        }
+        return ordem.get();
+    }
 
     public List<OrdemDeServico> listarOrdensServico(){
         Log.info("Listando todas as Ordens de Serviço");

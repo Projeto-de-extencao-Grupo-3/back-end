@@ -18,7 +18,6 @@ public class VeiculoService {
     private final VeiculoRepository VEICULO_REPOSITORY;
     private final Log log;
 
-
     public List<Veiculo> listarVeiculos(){
         log.info("Listando todos os veículos");
         return VEICULO_REPOSITORY.findAll();

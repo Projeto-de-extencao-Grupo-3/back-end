@@ -1,10 +1,12 @@
 package geo.track.gestao.util;
 
+import geo.track.dto.veiculos.response.VeiculoHistoricoResponse;
 import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.Veiculo;
 import geo.track.dto.veiculos.request.RequestPostVeiculo;
 import geo.track.dto.veiculos.request.RequestPutVeiculo;
 import geo.track.dto.veiculos.response.VeiculoResponse;
+import geo.track.jornada.entity.OrdemDeServico;
 
 import java.util.Collections;
 import java.util.List;
@@ -67,5 +69,26 @@ public class VeiculoMapper {
         if (dto.getPrefixo() != null) existente.setPrefixo(dto.getPrefixo());
         if (dto.getAnoModelo() != null) existente.setAnoModelo(dto.getAnoModelo());
         return existente;
+    }
+
+    public static VeiculoHistoricoResponse toResponseHistorico(Veiculo veiculo, OrdemDeServico ordem) {
+        String status = switch (ordem.getStatus()) {
+            case AGUARDANDO_ENTRADA -> "Com agendamento";
+            case AGUARDANDO_ORCAMENTO, AGUARDANDO_AUTORIZACAO, AGUARDANDO_VAGA -> "Presente na oficina";
+            case EM_PRODUCAO -> "Em produção";
+            case FINALIZADO, CANCELADO -> "Sem agendamento";
+        };
+
+        return new VeiculoHistoricoResponse(
+                veiculo.getIdVeiculo(),
+                veiculo.getPlaca(),
+                veiculo.getModelo(),
+                veiculo.getAnoModelo(),
+                veiculo.getMarca(),
+                veiculo.getPrefixo(),
+                veiculo.getFkCliente().getNome(),
+                veiculo.getFkCliente().getIdCliente(),
+                status
+                );
     }
 }
