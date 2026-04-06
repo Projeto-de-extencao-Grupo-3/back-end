@@ -33,6 +33,10 @@ public class AtualizarStatusStrategy implements ControleJornadaStrategy<OrdemDeS
 
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdemServico);
         Status statusAtual = ordem.getStatus();
+
+        if (statusAtual.ordinal() == Status.FINALIZADO.ordinal())
+            throw new BadBusinessRuleException("Não é possível alterar o status de uma ordem de serviço finalizada.", Domains.ORDEM_DE_SERVICO);
+
         Status statusDesejado = request.getStatus();
         Status proximoStatus = Status.values()[statusAtual.ordinal() + 1];
 
