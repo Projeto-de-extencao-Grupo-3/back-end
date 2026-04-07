@@ -12,7 +12,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RequestPatchStatus implements GetJornada {
-    private Integer idOrdem;
     @Enumerated(EnumType.STRING)
     @NotNull
     private Status status;

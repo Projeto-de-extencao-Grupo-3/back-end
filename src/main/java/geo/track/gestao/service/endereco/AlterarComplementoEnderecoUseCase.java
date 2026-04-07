@@ -4,6 +4,6 @@ import geo.track.gestao.entity.Endereco;
 import geo.track.dto.enderecos.request.RequestPatchComplemento;
 
 public interface AlterarComplementoEnderecoUseCase {
-    Endereco execute(RequestPatchComplemento request);
+    Endereco execute(Integer idEndereco, String complemento);
 }
 

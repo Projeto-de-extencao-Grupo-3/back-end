@@ -15,9 +15,5 @@ public record RequestConfirmacao(
         @Valid
         @NotNull
         RequestEntrada entrada
-) implements GetJornada {
-    @Override
-    public TipoJornada getTipoJornada() {
-        return TipoJornada.CONFIRMAR_ENTRADA_AGENDADA;
-    }
+)  {
 }

@@ -39,7 +39,7 @@ public class ProdutoController implements ProdutoSwagger {
 
     @GetMapping
     public ResponseEntity<List<ProdutoResponse>> listarContains(@RequestParam(required = false) String nome) {
-        List<Produto> produtos = PRODUTO_SERVICE.listar();
+        List<Produto> produtos = PRODUTO_SERVICE.listarProdutos();
         if (nome != null) {
             produtos = produtos.stream().filter(p -> p.getNome().contains(nome)).toList();
         }
@@ -52,7 +52,7 @@ public class ProdutoController implements ProdutoSwagger {
 
     @GetMapping("/status")
     public ResponseEntity<HashMap<String, List<ProdutoResponse>>> listarPorStatus() {
-        HashMap<String, List<Produto>> produtos = PRODUTO_SERVICE.listarProdutosPorStatus();
+        HashMap<String, List<Produto>> produtos = PRODUTO_SERVICE.listarChaveadaProdutosPorStatus();
 
         HashMap<String, List<ProdutoResponse>> response = ProdutoMapper.toResponse(produtos);
 
@@ -65,7 +65,7 @@ public class ProdutoController implements ProdutoSwagger {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponse> findProdutoById(@PathVariable Integer id) {
-        Produto prod = PRODUTO_SERVICE.findProdutoById(id);
+        Produto prod = PRODUTO_SERVICE.buscarProdutosPorId(id);
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 
@@ -79,7 +79,7 @@ public class ProdutoController implements ProdutoSwagger {
     @Override
     @PatchMapping("/quantidade-estoque")
     public ResponseEntity<ProdutoResponse> patchQtdEstoque(@RequestBody @Valid RequestPatchQtdEstoque body) {
-        Produto prod = ALTERAR_QUANTIDADE_ESTOQUE_PRODUTO_USECASE.execute(body);
+        Produto prod = ALTERAR_QUANTIDADE_ESTOQUE_PRODUTO_USECASE.execute(body.getId(), body.getQuantidadeEstoque());
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 

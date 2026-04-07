@@ -4,6 +4,6 @@ import geo.track.gestao.entity.Produto;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
 
 public interface AlterarQuantidadeEstoqueProdutoUseCase {
-    Produto execute(RequestPatchQtdEstoque request);
+    Produto execute(Integer idProduto, Integer quantidadeEstoque);
 }
 

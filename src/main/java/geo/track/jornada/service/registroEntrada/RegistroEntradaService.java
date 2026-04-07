@@ -38,7 +38,6 @@ public class RegistroEntradaService{
         return registro.get();
     }
 
-    @ToRefactor
     public RegistroEntrada atualizarEntradaVeiculoAgendado(RequestPutRegistroEntrada body) {
         log.info("Atualizando registro de entrada ID: {}", body.getIdRegistro());
         // Busca o registro ou lança a exceção diretamente (Clean Code)
@@ -94,7 +93,6 @@ public class RegistroEntradaService{
         return REGISTRO_ENTRADA_REPOSITORY.save(registro);
     }
 
-    @ToRefactor
     public void deletarEntrada(Integer idRegistro){
         log.info("Tentando deletar registro de entrada ID: {}", idRegistro);
         if (!REGISTRO_ENTRADA_REPOSITORY.existsById(idRegistro)){

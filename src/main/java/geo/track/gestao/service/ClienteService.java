@@ -1,20 +1,11 @@
 package geo.track.gestao.service;
 
 import geo.track.gestao.entity.Cliente;
-import geo.track.dto.clientes.request.RequestPostCliente;
-import geo.track.gestao.service.cliente.AlterarEmailClienteUseCase;
-import geo.track.gestao.service.cliente.AlterarTelefoneClienteUseCase;
-import geo.track.gestao.service.cliente.AtualizarClienteUseCase;
-import geo.track.gestao.service.cliente.CadastrarClienteUseCase;
-import geo.track.gestao.service.cliente.DeletarClienteUseCase;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.ClienteExceptionMessages;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.log.Log;
 import geo.track.gestao.entity.repository.ClienteRepository;
-import geo.track.dto.clientes.request.RequestPatchEmail;
-import geo.track.dto.clientes.request.RequestPatchTelefone;
-import geo.track.dto.clientes.request.RequestPutCliente;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,23 +18,23 @@ public class ClienteService {
     private final ClienteRepository CLIENTE_REPOSITORY;
     private final Log log;
 
-    public List<Cliente> findClientes(String nome, String cpfCnpj) {
-        if (nome != null && cpfCnpj != null) {
-            log.info("Buscando clientes pelo nome contendo: {} e CPF/CNPJ: {}", nome, cpfCnpj);
-            return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCase(nome, cpfCnpj);
-        } else if (cpfCnpj != null && !cpfCnpj.trim().isEmpty()) {
-            log.info("Buscando cliente pelo CPF/CNPJ: {}", cpfCnpj);
-            return CLIENTE_REPOSITORY.findByCpfCnpjContainingIgnoreCase(cpfCnpj);
-        } else if (nome != null && !nome.trim().isEmpty()) {
-            log.info("Buscando clientes pelo nome contendo: {}", nome);
-            return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCase(nome);
+    public List<Cliente> listarClientes(String paramNome, String paramCpfCnpj) {
+        if (paramNome != null && paramCpfCnpj != null) {
+            log.info("Buscando clientes pelo nome contendo: {} e CPF/CNPJ: {}", paramNome, paramCpfCnpj);
+            return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCase(paramNome, paramCpfCnpj);
+        } else if (paramCpfCnpj != null && !paramCpfCnpj.trim().isEmpty()) {
+            log.info("Buscando cliente pelo CPF/CNPJ: {}", paramCpfCnpj);
+            return CLIENTE_REPOSITORY.findByCpfCnpjContainingIgnoreCase(paramCpfCnpj);
+        } else if (paramNome != null && !paramNome.trim().isEmpty()) {
+            log.info("Buscando clientes pelo nome contendo: {}", paramNome);
+            return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCase(paramNome);
         } else {
             log.info("Buscando todos os clientes cadastrados");
             return CLIENTE_REPOSITORY.findAll();
         }
     }
 
-    public Cliente findClienteById(Integer id) {
+    public Cliente bucarClientePorId(Integer id) {
         log.info("Buscando cliente pelo ID: {}", id);
         Optional<Cliente> cliente = CLIENTE_REPOSITORY.findById(id);
 

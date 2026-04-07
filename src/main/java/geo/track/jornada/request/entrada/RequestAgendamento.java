@@ -14,8 +14,5 @@ public record RequestAgendamento(
 
         @NotNull
         Integer fkVeiculo
-) implements GetJornada {
-    public TipoJornada getTipoJornada() {
-        return TipoJornada.AGENDAMENTO;
-    }
+) {
 }

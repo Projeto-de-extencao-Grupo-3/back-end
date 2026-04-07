@@ -11,9 +11,5 @@ public record RequestEntradaEfetiva(
 
         @NotNull @Valid
         RequestEntrada entrada
-) implements GetJornada {
-    @Override
-    public TipoJornada getTipoJornada() {
-        return TipoJornada.ENTRADA_EFETIVA;
-    }
-}
+) {
+  }

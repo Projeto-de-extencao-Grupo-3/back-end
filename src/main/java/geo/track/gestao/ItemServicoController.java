@@ -26,7 +26,7 @@ public class ItemServicoController {
 
     @GetMapping
     public ResponseEntity<List<ItemServicoResponse>> findAll() {
-        List<ItemServico> itensServicos = ITEM_SERVICO_SERVICE.listar();
+        List<ItemServico> itensServicos = ITEM_SERVICO_SERVICE.listarItensServicos();
         if (itensServicos.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
@@ -35,7 +35,7 @@ public class ItemServicoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ItemServicoResponse> findById(@PathVariable Integer id) {
-        ItemServico itemServico = ITEM_SERVICO_SERVICE.findById(id);
+        ItemServico itemServico = ITEM_SERVICO_SERVICE.buscarItemServicoPorId(id);
         return ResponseEntity.status(200).body(ItemServicoMapper.toResponse(itemServico));
     }
 

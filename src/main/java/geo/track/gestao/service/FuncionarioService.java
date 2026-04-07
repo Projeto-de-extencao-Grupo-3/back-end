@@ -17,7 +17,7 @@ public class FuncionarioService {
     private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
     private final Log log;
 
-    public List<Funcionario> listar() {
+    public List<Funcionario> listarFuncionarios() {
         log.info("Buscando lista completa de funcionarios no banco de dados.");
         return FUNCIONARIO_REPOSITORY.findAll();
     }

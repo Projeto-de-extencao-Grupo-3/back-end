@@ -146,7 +146,7 @@ public class OrdemDeServicoMapper {
             case AGUARDANDO_ENTRADA -> "Com agendamento";
             case AGUARDANDO_ORCAMENTO, AGUARDANDO_AUTORIZACAO, AGUARDANDO_VAGA -> "Presente na oficina";
             case EM_PRODUCAO -> "Em produção";
-            case FINALIZADO -> "Sem agendamento";
+            case FINALIZADO, CANCELADO -> "Sem agendamento";
         };
 
         OrdemDeServicoHistoricoResponse response = new OrdemDeServicoHistoricoResponse();

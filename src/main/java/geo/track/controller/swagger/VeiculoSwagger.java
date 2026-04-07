@@ -4,6 +4,7 @@ import geo.track.dto.veiculos.request.RequestPatchCor;
 import geo.track.dto.veiculos.request.RequestPatchPlaca;
 import geo.track.dto.veiculos.request.RequestPostVeiculo;
 import geo.track.dto.veiculos.request.RequestPutVeiculo;
+import geo.track.dto.veiculos.response.VeiculoHistoricoResponse;
 import geo.track.dto.veiculos.response.VeiculoResponse;
 import geo.track.infraestructure.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
@@ -103,7 +104,7 @@ public interface VeiculoSwagger {
                     content = {@Content(schema = @Schema(hidden = true))}
             )
     })
-    ResponseEntity<List<VeiculoResponse>> findVeiculoByClienteId(@PathVariable Integer id);
+    ResponseEntity<List<VeiculoHistoricoResponse>> findVeiculoByClienteId(@PathVariable Integer id);
 
     @Operation(summary = "Atualizar completamente os dados de um veículo",
             description = "Substitui as informações de um veículo existente. O ID deve ser válido e existir na base.")

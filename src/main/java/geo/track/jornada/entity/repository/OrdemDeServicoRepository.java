@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, Integer> {
@@ -69,4 +70,7 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
 
     @Query("SELECT o FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo")
     List<OrdemDeServico> findAllByVeiculo(@Param("idVeiculo") Integer idVeiculo);
+
+    @Query("SELECT o FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo ORDER BY o.idOrdemServico DESC")
+    Optional<OrdemDeServico> findLastOrdemServicoVeiculo(@Param("idVeiculo") Integer idVeiculo);
 }
