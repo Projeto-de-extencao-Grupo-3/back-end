@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
+    List<Cliente> findByAtivoTrue();
+    Optional<Cliente> findByIdClienteAndAtivoTrue(Integer idCliente);
 
-    List<Cliente> findByNomeContainingIgnoreCase(String nome);
-    List<Cliente> findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCase(String nome, String cpfCnpj);
-    List<Cliente> findByCpfCnpjContainingIgnoreCase(String cpfCnpj);
+    List<Cliente> findByNomeContainingIgnoreCaseAndAtivoTrue(String nome);
+    List<Cliente> findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCaseAndAtivoTrue(String nome, String cpfCnpj);
+    List<Cliente> findByCpfCnpjContainingIgnoreCaseAndAtivoTrue(String cpfCnpj);
 
-    Boolean existsByNome(String nome);
-    Boolean existsByCpfCnpj(String cpfCnpj);
+    Boolean existsByCpfCnpjAndAtivoTrue(String cpfCnpj);
 
-    Optional<Cliente> findByVeiculoPlaca(String placa);
+    Optional<Cliente> findByVeiculoPlacaAndAtivoTrue(String placa);
 }

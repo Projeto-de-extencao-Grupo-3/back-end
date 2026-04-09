@@ -11,9 +11,7 @@ import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.infraestructure.exception.ConflictException;
 import geo.track.infraestructure.exception.constraint.message.ClienteExceptionMessages;
 import geo.track.infraestructure.exception.constraint.message.Domains;
-import geo.track.infraestructure.exception.constraint.message.EnderecoExceptionMessages;
 import geo.track.infraestructure.log.Log;
-import geo.track.gestao.service.EnderecoService;
 import geo.track.gestao.service.OficinaService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +30,7 @@ public class CadastrarCliente implements CadastrarClienteUseCase {
         log.info("Iniciando criacao de novo cliente com CPF/CNPJ: {}", body.getCpfCnpj());
 
 
-        if (CLIENTE_REPOSITORY.existsByCpfCnpj(body.getCpfCnpj())) {
+        if (CLIENTE_REPOSITORY.existsByCpfCnpjAndAtivoTrue(body.getCpfCnpj())) {
             log.warn("Falha ao criar cliente: CPF/CNPJ {} ja cadastrado", body.getCpfCnpj());
             throw new ConflictException(ClienteExceptionMessages.CPF_EXISTENTE, Domains.CLIENTE);
         }
@@ -45,4 +43,3 @@ public class CadastrarCliente implements CadastrarClienteUseCase {
         return CLIENTE_REPOSITORY.save(cliente);
     }
 }
-
