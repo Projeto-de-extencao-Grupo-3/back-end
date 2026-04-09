@@ -44,6 +44,11 @@ public class OrdemDeServicoService {
         return ORDEM_REPOSITORY.findAll();
     }
 
+    public Boolean existeOrdemServicoAbertaPorCliente(Integer idCliente) {
+        Log.info("Verificando existência de Ordens de Serviço não finalizadas para o cliente ID: {}", idCliente);
+        return ORDEM_REPOSITORY.existsByIdCliente(idCliente, Status.FINALIZADO);
+    }
+
     public OrdemDeServico buscarOrdemServicoPorId(Integer idOrdem){
         Optional<OrdemDeServico> ordem = ORDEM_REPOSITORY.findById(idOrdem);
 
