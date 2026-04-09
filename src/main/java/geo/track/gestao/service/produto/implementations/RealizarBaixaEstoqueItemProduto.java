@@ -21,7 +21,7 @@ public class RealizarBaixaEstoqueItemProduto implements RealizarBaixaEstoqueItem
 
     public Boolean execute(Integer id) {
         log.info("Iniciando processo de baixa de estoque para o item de produto ID: {}", id);
-        ItemProduto itemProduto = ITEM_PRODUTO_SERVICE.buscarRegistroPorID(id);
+        ItemProduto itemProduto = ITEM_PRODUTO_SERVICE.buscarRegistroPorId(id);
         Produto produto = itemProduto.getFkProduto();
 
         Integer quantidadeDesejada = itemProduto.getQuantidade();

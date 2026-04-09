@@ -46,7 +46,7 @@ public class ItemProdutoController implements ItemProdutoSwagger {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<ItemProdutoResponse> findById(@PathVariable Integer id) {
-        ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.buscarRegistroPorID(id);
+        ItemProduto registroProduto = ITEM_PRODUTO_SERVICE.buscarRegistroPorId(id);
         return ResponseEntity.status(200).body(ItemProdutoMapper.toResponse(registroProduto));
     }
 

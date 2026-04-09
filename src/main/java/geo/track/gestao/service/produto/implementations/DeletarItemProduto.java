@@ -17,8 +17,7 @@ public class DeletarItemProduto implements DeletarItemProdutoUseCase {
 
     public void execute(Integer id) {
         log.info("Deletando item de produto ID: {}", id);
-        ItemProduto item = ITEM_PRODUTO_SERVICE.buscarRegistroPorID(id);
+        ItemProduto item = ITEM_PRODUTO_SERVICE.buscarRegistroPorId(id);
         ITEM_PRODUTO_REPOSITORY.delete(item);
     }
 }
-
