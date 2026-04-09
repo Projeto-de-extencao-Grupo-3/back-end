@@ -25,7 +25,6 @@ public class ProdutoController implements ProdutoSwagger {
     private final ProdutoService PRODUTO_SERVICE;
     private final CadastrarProdutoUseCase CADASTRAR_PRODUTO_USECASE;
     private final AtualizarProdutoUseCase ATUALIZAR_PRODUTO_USECASE;
-    private final AlterarQuantidadeEstoqueProdutoUseCase ALTERAR_QUANTIDADE_ESTOQUE_PRODUTO_USECASE;
     private final AlterarPrecoCompraProdutoUseCase ALTERAR_PRECO_COMPRA_PRODUTO_USECASE;
     private final AlterarPrecoVendaProdutoUseCase ALTERAR_PRECO_VENDA_PRODUTO_USECASE;
     private final DeletarProdutoUseCase DELETAR_PRODUTO_USECASE;
@@ -73,13 +72,6 @@ public class ProdutoController implements ProdutoSwagger {
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponse> putProdutos(@PathVariable Integer id, @Valid @RequestBody ProdutoRequest body) {
         Produto prod = ATUALIZAR_PRODUTO_USECASE.execute(id, body);
-        return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
-    }
-
-    @Override
-    @PatchMapping("/quantidade-estoque")
-    public ResponseEntity<ProdutoResponse> patchQtdEstoque(@RequestBody @Valid RequestPatchQtdEstoque body) {
-        Produto prod = ALTERAR_QUANTIDADE_ESTOQUE_PRODUTO_USECASE.execute(body.getId(), body.getQuantidadeEstoque());
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(prod));
     }
 

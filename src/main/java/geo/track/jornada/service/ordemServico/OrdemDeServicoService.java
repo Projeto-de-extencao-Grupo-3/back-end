@@ -45,7 +45,6 @@ public class OrdemDeServicoService {
     }
 
     public OrdemDeServico buscarOrdemServicoPorId(Integer idOrdem){
-        Log.info("Buscando Ordem de Serviço ID: {}", idOrdem);
         Optional<OrdemDeServico> ordem = ORDEM_REPOSITORY.findById(idOrdem);
 
         if (ordem.isEmpty()){
