@@ -4,6 +4,7 @@ import geo.track.jornada.entity.repository.OrdemDeServicoRepository;
 import geo.track.jornada.request.ListagemJornadaParams;
 import geo.track.jornada.response.listagem.ListagemJornadaResponse;
 import geo.track.jornada.service.listagem.ListagemAnaliseFinanceiraUseCase;
+import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import geo.track.jornada.util.AnaliseFinanceiraMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,26 +14,26 @@ import java.util.HashMap;
 @Component
 @RequiredArgsConstructor
 public class ListagemAnaliseFinanceiraImplementation implements ListagemAnaliseFinanceiraUseCase {
-    private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
+    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
     @Override
     public ListagemJornadaResponse execute(ListagemJornadaParams request) {
         Integer ano = Integer.valueOf(request.anoMes().split("-")[0]);
         Integer mes = Integer.valueOf(request.anoMes().split("-")[1]);
 
-        var listPagtoNaoRealizado = ORDEM_SERVICO_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(false, false, ano, mes);
-        var kpiPagtoNaoRealizado = ORDEM_SERVICO_REPOSITORY.findViewPagamentoPendente(ano, mes);
+        var listPagtoNaoRealizado = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(false, false, ano, mes);
+        var kpiPagamentoPendente = ORDEM_SERVICO_SERVICE.exibirKpiPagtoPendente(ano, mes);
 
-        var listSemNotaFiscal = ORDEM_SERVICO_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(false, true, ano, mes);
-        var kpiSemNotaFiscal = ORDEM_SERVICO_REPOSITORY.findViewNotasFicaisPendentes(ano, mes);
+        var listSemNotaFiscal = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(false, true, ano, mes);
+        var kpiNotaFiscalPendente = ORDEM_SERVICO_SERVICE.exibirKpiNotaFiscal(ano, mes);
 
-        var listSucesso = ORDEM_SERVICO_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(true, true, ano, mes);
-        var kpiSucesso = ORDEM_SERVICO_REPOSITORY.findViewPagamentoRealizados(ano, mes);
+        var listSucesso = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(true, true, ano, mes);
+        var kpiPagamentoRealizado = ORDEM_SERVICO_SERVICE.exibirKpiPagtoRealizado(ano, mes);
 
-        Long totalPagamentosRealizados = kpiSucesso == null ? 0L : kpiSucesso.totalPagamentosRealizados();
-        Long quantidadeNfsPendentes = kpiSemNotaFiscal == null ? 0L : kpiSemNotaFiscal.quantidadeNfsPendentes();
-        Long quantidadeServicosNaoPagos = kpiPagtoNaoRealizado == null ? 0L : kpiPagtoNaoRealizado.quantidadeServicosNaoPagos();
-        Double totalValorNaoPago = kpiPagtoNaoRealizado == null ? 0.0 : kpiPagtoNaoRealizado.totalValorNaoPago();
+        Long totalPagamentosRealizados = kpiPagamentoRealizado.totalPagamentosRealizados();
+        Long quantidadeNfsPendentes = kpiNotaFiscalPendente.quantidadeNfsPendentes();
+        Long quantidadeServicosNaoPagos = kpiPagamentoPendente.quantidadeServicosNaoPagos();
+        Double totalValorNaoPago = kpiPagamentoPendente.totalValorNaoPago();
 
         var responsePagamentoRealizado = AnaliseFinanceiraMapper.toResponsePagamentoRealizado(totalPagamentosRealizados, listSucesso);
         var responseNotaFiscalPendente = AnaliseFinanceiraMapper.toResponseNotaFiscalPendente(quantidadeNfsPendentes, listSemNotaFiscal);

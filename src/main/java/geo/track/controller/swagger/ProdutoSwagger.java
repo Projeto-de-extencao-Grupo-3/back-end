@@ -69,17 +69,6 @@ public interface ProdutoSwagger {
     @PutMapping("/{id}")
     ResponseEntity<ProdutoResponse> putProdutos(@PathVariable Integer id, @RequestBody ProdutoRequest produtoAtt);
 
-    @Operation(summary = "Atualizar quantidade em estoque do produto")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quantidade atualizada com sucesso", content = {
-                    @Content(schema = @Schema(implementation = ProdutoResponse.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(schema = @Schema(implementation = ExceptionBody.class))),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = ExceptionBody.class)))
-    })
-    @PatchMapping("/quantidadeEstoque")
-    ResponseEntity<ProdutoResponse> patchQtdEstoque(@RequestBody RequestPatchQtdEstoque produtoAtt);
-
     @Operation(summary = "Atualizar preço de compra do produto")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Preço de compra atualizado com sucesso", content = {

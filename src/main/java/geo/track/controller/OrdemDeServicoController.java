@@ -1,5 +1,6 @@
 package geo.track.controller;
 
+import geo.track.infraestructure.log.Log;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.dto.autenticacao.UsuarioDetalhesDto;
 import geo.track.jornada.enums.Status;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrdemDeServicoController {
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
+    private final Log log;
 
     @GetMapping("/veiculo/{idVeiculo}")
     public ResponseEntity<List<OrdemDeServicoHistoricoResponse>> listOrdens(@PathVariable Integer idVeiculo, @RequestParam(required = false) Integer intervalo, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
@@ -38,7 +40,6 @@ public class OrdemDeServicoController {
 
     @GetMapping("/veiculos/{placa}")
     public ResponseEntity<List<OrdemDeServicoResponse>> findOrdemByPlaca(@PathVariable String placa, @AuthenticationPrincipal UsuarioDetalhesDto usuario) {
-        Integer idOficina = usuario.getIdOficina();
         List<OrdemDeServico> ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorPlaca(placa);
         if (ordem.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -70,6 +71,7 @@ public class OrdemDeServicoController {
     @GetMapping("/{idOrdem}")
     public ResponseEntity<OrdemDeServicoResponse> findOrdemById(@PathVariable Integer idOrdem, @AuthenticationPrincipal UsuarioDetalhesDto userAuthenticated) {
         Integer idOficina = userAuthenticated.getIdOficina();
+        log.info("Buscando Ordem de Serviço ID: {}", idOrdem);
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }

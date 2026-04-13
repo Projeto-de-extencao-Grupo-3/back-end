@@ -21,22 +21,22 @@ public class ClienteService {
     public List<Cliente> listarClientes(String paramNome, String paramCpfCnpj) {
         if (paramNome != null && paramCpfCnpj != null) {
             log.info("Buscando clientes pelo nome contendo: {} e CPF/CNPJ: {}", paramNome, paramCpfCnpj);
-            return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCase(paramNome, paramCpfCnpj);
+            return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCaseAndAtivoTrue(paramNome, paramCpfCnpj);
         } else if (paramCpfCnpj != null && !paramCpfCnpj.trim().isEmpty()) {
             log.info("Buscando cliente pelo CPF/CNPJ: {}", paramCpfCnpj);
-            return CLIENTE_REPOSITORY.findByCpfCnpjContainingIgnoreCase(paramCpfCnpj);
+            return CLIENTE_REPOSITORY.findByCpfCnpjContainingIgnoreCaseAndAtivoTrue(paramCpfCnpj);
         } else if (paramNome != null && !paramNome.trim().isEmpty()) {
             log.info("Buscando clientes pelo nome contendo: {}", paramNome);
-            return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCase(paramNome);
+            return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCaseAndAtivoTrue(paramNome);
         } else {
             log.info("Buscando todos os clientes cadastrados");
-            return CLIENTE_REPOSITORY.findAll();
+            return CLIENTE_REPOSITORY.findByAtivoTrue();
         }
     }
 
     public Cliente bucarClientePorId(Integer id) {
         log.info("Buscando cliente pelo ID: {}", id);
-        Optional<Cliente> cliente = CLIENTE_REPOSITORY.findById(id);
+        Optional<Cliente> cliente = CLIENTE_REPOSITORY.findByIdClienteAndAtivoTrue(id);
 
         if (cliente.isEmpty()) {
             log.error("Cliente com ID {} nao encontrado", id);
@@ -49,6 +49,6 @@ public class ClienteService {
 
     public Cliente buscarClientePorPlaca(String placa) {
         log.info("Buscando cliente pelo numero de placa: {}", placa);
-        return CLIENTE_REPOSITORY.findByVeiculoPlaca(placa).orElseThrow(() -> new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_PLACA, Domains.CLIENTE));
+        return CLIENTE_REPOSITORY.findByVeiculoPlacaAndAtivoTrue(placa).orElseThrow(() -> new DataNotFoundException(ClienteExceptionMessages.CLIENTE_NAO_ENCONTRADO_PLACA, Domains.CLIENTE));
     }
 }

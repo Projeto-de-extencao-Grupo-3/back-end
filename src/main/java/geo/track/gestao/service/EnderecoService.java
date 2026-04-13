@@ -33,6 +33,10 @@ public class EnderecoService {
         return endereco.get();
     }
 
+    public Boolean existeEnderecoPorCep(String cep) {
+        return ENDERECO_REPOSITORY.existsByCep(cep);
+    }
+
     public ResponseViacep buscarEnderecoPorCep(String cep) {
         log.info("Iniciando consulta de CEP via integracao: {}", cep);
 

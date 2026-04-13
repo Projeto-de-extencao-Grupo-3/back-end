@@ -22,9 +22,10 @@ public class ItemProdutoService {
         return ITEM_PRODUTO_REPOSITORY.findAll();
     }
 
-    public ItemProduto buscarRegistroPorID(Integer id) {
+    public ItemProduto buscarRegistroPorId(Integer id) {
         log.info("Buscando item de produto pelo ID: {}", id);
         ItemProduto registroProduto = ITEM_PRODUTO_REPOSITORY.findById(id).orElseThrow(() -> new DataNotFoundException(ItemProdutoExceptionMessages.ITEM_PRODUTO_NAO_ENCONTRADO, Domains.ITEM_SERVICO));
         return registroProduto;
     }
+
 }

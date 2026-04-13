@@ -1,5 +1,6 @@
 package geo.track.dto.clientes.request;
 
+import geo.track.dto.enderecos.request.RequestPostEndereco;
 import geo.track.gestao.enums.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
@@ -38,10 +39,11 @@ public class RequestPostCliente {
     private TipoCliente tipoCliente;
 
     @NotNull
-    @Schema(description = "Endereço associado a este cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
-    private Integer fkEndereco;
-
-    @NotNull
     @Schema(description = "Oficina associada a este cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private Integer fkOficina;
+
+    @NotNull
+    @NotNull
+    @Schema(description = "Endereço associado a ser cadastrado com este cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    private RequestPostEndereco endereco;
 }

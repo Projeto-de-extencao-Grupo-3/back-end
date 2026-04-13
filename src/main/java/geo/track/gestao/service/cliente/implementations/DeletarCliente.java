@@ -1,11 +1,14 @@
 package geo.track.gestao.service.cliente.implementations;
 
+import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.repository.ClienteRepository;
+import geo.track.gestao.service.ClienteService;
 import geo.track.gestao.service.cliente.DeletarClienteUseCase;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.ClienteExceptionMessages;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.log.Log;
+import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +16,23 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DeletarCliente implements DeletarClienteUseCase {
     private final ClienteRepository CLIENTE_REPOSITORY;
+    private final ClienteService CLIENTE_SERVICE;
+    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final Log log;
 
     public void execute(Integer id) {
+
+        // Valida se o cliente possui ordens de serviço com o status diferente de FINALIZADO antes de permitir a exclusão
+        if (ORDEM_SERVICO_SERVICE.existeOrdemServicoAbertaPorCliente(id)) {
+            log.warn("Falha ao deletar cliente ID {}: existem ordens de serviço não finalizadas associadas", id);
+            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_PODE_SER_DELETADO_ORDENS_ABERTAS, id), Domains.CLIENTE);
+        }
+
         log.info("Solicitacao para deletar cliente ID: {}", id);
         if (CLIENTE_REPOSITORY.existsById(id)) {
-            CLIENTE_REPOSITORY.deleteById(id);
+            Cliente cliente = CLIENTE_SERVICE.bucarClientePorId(id);
+            cliente.setAtivo(false);
+            CLIENTE_REPOSITORY.save(cliente);
             log.info("Cliente ID {} deletado com sucesso", id);
             return;
         }

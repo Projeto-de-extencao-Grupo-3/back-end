@@ -11,6 +11,7 @@ import geo.track.jornada.util.PainelControleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,11 @@ public class ListagemPainelControleImplementation implements ListagemPainelContr
         var response = new HashMap<Status, ResponsePainelControle>();
 
         status.forEach((statusVeiculo) -> {
+            LocalDate dataLimite = LocalDate.now().minusDays(30);
+
             List<OrdemDeServico> ordens = ORDEM_SERVICO_REPOSITORY.findByStatus(statusVeiculo);
+            if (statusVeiculo.equals(Status.FINALIZADO)) ordens = ORDEM_SERVICO_REPOSITORY.findByStatusUltimos30Dias(dataLimite);
+
             ResponsePainelControle responsePainelControle = PainelControleMapper.toResponse(ordens);
             response.put(statusVeiculo, responsePainelControle);
         });
