@@ -52,7 +52,7 @@ public class ClienteController implements ClienteSwagger {
 
     @GetMapping("/clientes-paginados")
     public ResponseEntity<Page<ClienteResponse>> listarTodos(
-            @PageableDefault(size = 6, sort = "idCliente") Pageable pageable) {
+            @PageableDefault(size = 8, sort = "idCliente") Pageable pageable) {
 
         Page<Cliente> clientes = CLIENTE_SERVICE.listarClientesPaginados(pageable);
 

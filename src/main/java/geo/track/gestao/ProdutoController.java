@@ -67,7 +67,7 @@ public class ProdutoController implements ProdutoSwagger {
 
     @GetMapping("/produtos-paginados")
     public ResponseEntity<Page<ProdutoResponse>> listarTodos(
-            @PageableDefault(size = 6, sort = "idProduto") Pageable pageable) {
+            @PageableDefault(size = 8, sort = "idProduto") Pageable pageable) {
 
         Page<Produto> produtos = PRODUTO_SERVICE.listarProdutosPaginados(pageable);
 
