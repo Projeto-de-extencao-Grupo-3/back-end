@@ -2,6 +2,8 @@ package geo.track.gestao.entity.repository;
 
 import geo.track.gestao.entity.Produto;
 import geo.track.gestao.enums.Servico;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +12,7 @@ public interface ProdutoRepository extends JpaRepository<Produto,Integer> {
     List<Produto> findByAtivoTrue();
     Optional<Produto> findByIdProdutoAndAtivoTrue(Integer idProduto);
     boolean existsByIdProdutoAndAtivoTrue(Integer idProduto);
-
     List<Produto> findByTipoServico(Servico tipoServico);
+
+    Page<Produto> findByTipoServico(Servico tipoServico, Pageable pageable);
 }
