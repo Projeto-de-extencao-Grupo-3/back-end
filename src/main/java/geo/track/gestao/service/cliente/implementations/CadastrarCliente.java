@@ -39,6 +39,7 @@ public class CadastrarCliente implements CadastrarClienteUseCase {
         Endereco novoEndereco = cadastrarEnderecoUseCase.execute(body.getEndereco());
 
         Cliente cliente = ClientesMapper.toEntity(body, oficina, novoEndereco);
+        cliente.setAtivo(true);
         log.info("Cliente criado com sucesso para a oficina ID: {}", body.getFkOficina());
         return CLIENTE_REPOSITORY.save(cliente);
     }
