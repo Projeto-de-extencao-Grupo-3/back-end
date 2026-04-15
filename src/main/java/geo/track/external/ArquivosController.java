@@ -18,13 +18,13 @@ public class ArquivosController {
 
     @PostMapping("/ordem_servico/{idOrcamento}")
     public ResponseEntity<Void> postOrdemServico(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @PathVariable Integer idOrcamento) {
-        ARQUIVO_SERVICE.solicitarGeracao(idOrcamento, usuario.getIdOficina(), Template.ORCAMENTO);
+        ARQUIVO_SERVICE.solicitarGeracao(idOrcamento, usuario.getIdOficina(), Template.ORDEM_SERVICO);
         return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/orcamento/{idOrdemServico}")
     public ResponseEntity<Void> postOrcamento(@AuthenticationPrincipal UsuarioDetalhesDto usuario, @PathVariable Integer idOrdemServico) {
-        ARQUIVO_SERVICE.solicitarGeracao(idOrdemServico, usuario.getIdOficina(), Template.ORDEM_SERVICO);
+        ARQUIVO_SERVICE.solicitarGeracao(idOrdemServico, usuario.getIdOficina(), Template.ORCAMENTO);
         return ResponseEntity.status(201).build();
     }
 

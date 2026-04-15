@@ -11,6 +11,7 @@ public record CardOrdemDeServicoResponse(
         Integer fkEntrada,
         Double valorTotal,
         Long diasEspera,
+        LocalDate dataUltimaAtualizacao,
         LocalDate dataSaidaPrevista,
         LocalDate dataSaidaEfetiva,
         LocalDate dataEntradaPrevista,

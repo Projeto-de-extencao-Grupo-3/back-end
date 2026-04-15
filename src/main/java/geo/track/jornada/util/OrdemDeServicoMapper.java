@@ -121,6 +121,7 @@ public class OrdemDeServicoMapper {
                 ordemResponse.getEntrada().getIdRegistroEntrada(),
                 ordemResponse.getValorTotal(),
                 diasEspera,
+                dataReferencia,
                 ordemResponse.getDataSaidaPrevista(),
                 ordemResponse.getDataSaidaEfetiva(),
                 ordemResponse.getEntrada().getDataEntradaPrevista(),
