@@ -1,10 +1,11 @@
 package geo.track.gestao.service.cliente.implementations;
 
 import geo.track.gestao.entity.Cliente;
-import geo.track.gestao.entity.Endereco;
 import geo.track.gestao.entity.Oficina;
 import geo.track.gestao.entity.repository.ClienteRepository;
+import geo.track.gestao.service.ClienteService;
 import geo.track.gestao.service.cliente.CadastrarClienteUseCase;
+import geo.track.gestao.service.contato.CadastrarContatoUseCase;
 import geo.track.gestao.service.endereco.CadastrarEnderecoUseCase;
 import geo.track.gestao.util.ClientesMapper;
 import geo.track.dto.clientes.request.RequestPostCliente;
@@ -20,9 +21,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CadastrarCliente implements CadastrarClienteUseCase {
+    private final ClienteService CLIENTE_SERVICE;
     private final ClienteRepository CLIENTE_REPOSITORY;
     private final OficinaService OFICINA_SERVICE;
-    private final CadastrarEnderecoUseCase cadastrarEnderecoUseCase;
+    private final CadastrarEnderecoUseCase CADASTRAR_ENDERECO_USE_CASE;
+    private final CadastrarContatoUseCase CADASTRAR_CONTATO_USE_CASE;
     private final Log log;
 
     @Transactional
@@ -36,11 +39,14 @@ public class CadastrarCliente implements CadastrarClienteUseCase {
         }
         Oficina oficina = OFICINA_SERVICE.buscarOficinaPorId(body.getFkOficina());
 
-        Endereco novoEndereco = cadastrarEnderecoUseCase.execute(body.getEndereco());
-
-        Cliente cliente = ClientesMapper.toEntity(body, oficina, novoEndereco);
+        Cliente cliente = ClientesMapper.toEntity(body, oficina, null);
         cliente.setAtivo(true);
+
+        Cliente finalCliente = CLIENTE_REPOSITORY.save(cliente);
+        body.getContatos().forEach(contato -> CADASTRAR_CONTATO_USE_CASE.execute(finalCliente.getIdCliente(), contato));
+        CADASTRAR_ENDERECO_USE_CASE.execute(body.getEndereco(), cliente.getIdCliente());
+
         log.info("Cliente criado com sucesso para a oficina ID: {}", body.getFkOficina());
-        return CLIENTE_REPOSITORY.save(cliente);
+        return CLIENTE_SERVICE.buscarClientePorId(finalCliente.getIdCliente());
     }
 }

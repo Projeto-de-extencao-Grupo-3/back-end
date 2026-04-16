@@ -4,6 +4,6 @@ import geo.track.gestao.entity.Endereco;
 import geo.track.dto.enderecos.request.RequestPostEndereco;
 
 public interface CadastrarEnderecoUseCase {
-    Endereco execute(RequestPostEndereco request);
+    Endereco execute(RequestPostEndereco request, Integer fkCliente);
 }
 

@@ -57,8 +57,8 @@ public interface EnderecoSwagger {
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
     })
-    @PostMapping()
-    ResponseEntity<EnderecoResponse> postEndereco(@RequestBody RequestPostEndereco endereco);
+    @PostMapping("/{fkCliente}")
+    ResponseEntity<EnderecoResponse> postEndereco(@RequestBody RequestPostEndereco endereco, @PathVariable Integer fkCliente);
 
     @Operation(
             summary = "Atualizar o complemento de um endereço",

@@ -4,7 +4,6 @@ import geo.track.controller.swagger.ClienteSwagger;
 import geo.track.dto.contatos.response.ContatoResponse;
 import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.Contato;
-import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.dto.clientes.response.ClienteResponse;

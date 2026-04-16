@@ -30,7 +30,11 @@ public class ClientesMapper {
         }
 
         if (entity.getEnderecos() != null) {
-            response.setIdEndereco(entity.getEnderecos().stream().map(Endereco::getIdEndereco).toList());
+            response.setEnderecos(entity.getEnderecos().stream().map(EnderecoMapper::toResponse).collect(Collectors.toList()));
+        }
+
+        if (entity.getContatos() != null) {
+            response.setMeiosContato(entity.getContatos().stream().map(ContatoMapper::toResponse).collect(Collectors.toList()));
         }
 
         return response;
@@ -56,11 +60,7 @@ public class ClientesMapper {
     }
 
     public static Cliente toEntity(RequestPostCliente dto, Oficina oficina, Endereco endereco) {
-        var cliente = new Cliente(null, dto.getNome(), dto.getCpfCnpj(), dto.getInscricaoEstadual(), dto.getTipoCliente(), oficina);
-        List<Endereco> enderecos = cliente.getEnderecos();
-        enderecos.add(endereco);
-        cliente.setEnderecos(enderecos);
-        return cliente;
+        return new Cliente(null, dto.getNome(), dto.getCpfCnpj(), dto.getInscricaoEstadual(), dto.getTipoCliente(), oficina);
     }
 
     public static Cliente updateEntity(Cliente cliente, RequestPutCliente body) {

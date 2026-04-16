@@ -1,5 +1,8 @@
 package geo.track.dto.clientes.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import geo.track.dto.contatos.request.RequestPostContato;
 import geo.track.dto.enderecos.request.RequestPostEndereco;
 import geo.track.gestao.enums.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,6 +11,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
@@ -19,8 +24,7 @@ public class RequestPostCliente {
     private String nome;
 
     @NotBlank
-    @Min(value = 11, message = "CPF deve conter 11 dígitos")
-    @Max(value = 14, message = "CNPJ deve conter 14 dígitos")
+    @Size(min = 11, max = 14)
     @Schema(description = "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente", example = "12345678909", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private String cpfCnpj;
 
