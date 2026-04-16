@@ -8,6 +8,10 @@ import geo.track.infraestructure.exception.constraint.message.ProdutoExceptionMe
 import geo.track.infraestructure.log.Log;
 import geo.track.gestao.entity.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -23,6 +27,14 @@ public class ProdutoService {
     public List<Produto> listarProdutos(){
         log.info("Listando todos os produtos");
         return PRODUTO_REPOSITORY.findByAtivoTrue();
+    }
+
+    public Page<Produto> listarProdutosPorTipoServico(Servico tipo, Pageable pageable){
+        return PRODUTO_REPOSITORY.findByTipoServico(tipo, pageable);
+    }
+
+    public Page<Produto> listarProdutosPaginados(Pageable pageable){
+        return PRODUTO_REPOSITORY.findAll(pageable);
     }
 
     public HashMap<String, List<Produto>> listarChaveadaProdutosPorStatus(){

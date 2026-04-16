@@ -1,6 +1,8 @@
 package geo.track.gestao;
 
 import geo.track.controller.swagger.FuncionarioSwagger;
+import geo.track.dto.clientes.response.ClienteResponse;
+import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.Funcionario;
 import geo.track.dto.funcionarios.request.RequestPostFuncionario;
 import geo.track.dto.funcionarios.response.FuncionarioResponse;
@@ -8,10 +10,14 @@ import geo.track.dto.funcionarios.request.RequestPutFuncionario;
 import geo.track.gestao.service.funcionario.AtualizarFuncionarioUseCase;
 import geo.track.gestao.service.funcionario.CadastrarFuncionarioUseCase;
 import geo.track.gestao.service.funcionario.DeletarFuncionarioUseCase;
+import geo.track.gestao.util.ClientesMapper;
 import geo.track.gestao.util.FuncionarioMapper;
 import geo.track.gestao.service.FuncionarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +44,20 @@ public class FuncionarioController implements FuncionarioSwagger {
     public ResponseEntity<List<FuncionarioResponse>> listarFuncionarios(){
         List<Funcionario> lista = FUNCIONARIO_SERVICE.listarFuncionarios();
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(lista));
+    }
+
+    @GetMapping("/funcionarios-paginados")
+    public ResponseEntity<Page<FuncionarioResponse>> listarFuncionariosPaginados(
+            @PageableDefault(size = 8, sort = "idFuncionario") Pageable pageable){
+        Page<Funcionario> funcionarios = FUNCIONARIO_SERVICE.listarFuncionariosPaginados(pageable);
+
+        Page<FuncionarioResponse> response = funcionarios.map(FuncionarioMapper::toResponse);
+
+        if (response.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(response);
     }
 
     @Override

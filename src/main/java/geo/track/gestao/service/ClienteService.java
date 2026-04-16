@@ -7,6 +7,8 @@ import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.log.Log;
 import geo.track.gestao.entity.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +34,10 @@ public class ClienteService {
             log.info("Buscando todos os clientes cadastrados");
             return CLIENTE_REPOSITORY.findByAtivoTrue();
         }
+    }
+
+    public Page<Cliente> listarClientesPaginados(Pageable pageable){
+        return CLIENTE_REPOSITORY.findAll(pageable);
     }
 
     public Cliente bucarClientePorId(Integer id) {

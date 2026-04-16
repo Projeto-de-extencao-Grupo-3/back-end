@@ -1,6 +1,7 @@
 package geo.track.gestao;
 
 import geo.track.controller.swagger.ClienteSwagger;
+import geo.track.dto.produtos.ProdutoResponse;
 import geo.track.gestao.entity.Cliente;
 import geo.track.dto.clientes.request.RequestPatchEmail;
 import geo.track.dto.clientes.request.RequestPatchTelefone;
@@ -8,11 +9,16 @@ import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.dto.clientes.response.ClienteResponse;
 import geo.track.dto.clientes.response.ClienteVeiculoResponse;
+import geo.track.gestao.entity.Produto;
 import geo.track.gestao.service.cliente.*;
 import geo.track.gestao.util.ClientesMapper;
 import geo.track.gestao.service.ClienteService;
+import geo.track.gestao.util.ProdutoMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +49,22 @@ public class ClienteController implements ClienteSwagger {
         List<ClienteResponse> response = ClientesMapper.toResponse(clientes);
         return ResponseEntity.status(200).body(response);
     }
+
+    @GetMapping("/clientes-paginados")
+    public ResponseEntity<Page<ClienteResponse>> listarTodos(
+            @PageableDefault(size = 8, sort = "idCliente") Pageable pageable) {
+
+        Page<Cliente> clientes = CLIENTE_SERVICE.listarClientesPaginados(pageable);
+
+        Page<ClienteResponse> response = clientes.map(ClientesMapper::toResponse);
+
+        if (response.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(response);
+    }
+
 
     @Override
     @PostMapping

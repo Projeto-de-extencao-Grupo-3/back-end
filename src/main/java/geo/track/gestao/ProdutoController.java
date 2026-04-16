@@ -7,11 +7,15 @@ import geo.track.dto.produtos.ProdutoResponse;
 import geo.track.dto.produtos.RequestPatchPrecoCompra;
 import geo.track.dto.produtos.RequestPatchPrecoVenda;
 import geo.track.dto.produtos.RequestPatchQtdEstoque;
+import geo.track.gestao.enums.Servico;
 import geo.track.gestao.service.produto.*;
 import geo.track.gestao.util.ProdutoMapper;
 import geo.track.gestao.service.ProdutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +62,37 @@ public class ProdutoController implements ProdutoSwagger {
         if (produtos.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @GetMapping("/produtos-paginados")
+    public ResponseEntity<Page<ProdutoResponse>> listarTodos(
+            @PageableDefault(size = 8, sort = "idProduto") Pageable pageable) {
+
+        Page<Produto> produtos = PRODUTO_SERVICE.listarProdutosPaginados(pageable);
+
+        Page<ProdutoResponse> response = produtos.map(ProdutoMapper::toResponse);
+
+        if (response.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @GetMapping("/por-servico")
+    public ResponseEntity<Page<ProdutoResponse>> listarPorTipo(
+            @RequestParam Servico tipo,
+            @PageableDefault(size = 6, sort = "idProduto") Pageable pageable) {
+
+        Page<Produto> produtos = PRODUTO_SERVICE.listarProdutosPorTipoServico(tipo, pageable);
+
+        Page<ProdutoResponse> response = produtos.map(ProdutoMapper::toResponse);
+
+        if (response.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
         return ResponseEntity.status(200).body(response);
     }
 

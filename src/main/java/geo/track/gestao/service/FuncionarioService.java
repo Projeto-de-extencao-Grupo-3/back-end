@@ -7,6 +7,8 @@ import geo.track.infraestructure.exception.constraint.message.FuncionarioExcepti
 import geo.track.infraestructure.log.Log;
 import geo.track.gestao.entity.repository.FuncionarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,11 @@ public class FuncionarioService {
     public List<Funcionario> listarFuncionarios() {
         log.info("Buscando lista completa de funcionarios no banco de dados.");
         return FUNCIONARIO_REPOSITORY.findAll();
+    }
+
+    public Page<Funcionario> listarFuncionariosPaginados(Pageable pageable){
+        log.info("Buscando lista completa de funcionarios paginados.");
+        return FUNCIONARIO_REPOSITORY.findAll(pageable);
     }
 
     public List<Funcionario> buscarPorOficina(Integer idOficina) {
