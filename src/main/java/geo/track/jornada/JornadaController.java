@@ -82,7 +82,7 @@ public class JornadaController implements JornadaSwagger {
 
     @Override
     @PostMapping("/entrada-efetiva-sem-cadastro")
-    public ResponseEntity<RegistroEntradaResponse> entradaVeiculoSemCadastroEfetiva(@RequestBody RequestEntradaEfetivaSemCadastro request) {
+    public ResponseEntity<RegistroEntradaResponse> entradaVeiculoSemCadastroEfetiva(@Valid @RequestBody RequestEntradaEfetivaSemCadastro request) {
         RegistroEntrada entradaFeita = entradaEfetivaSemCadastroUseCase.execute(request.veiculo(), request.entrada());
 
         return ResponseEntity.status(200).body(RegistroEntradaMapper.toResponse(entradaFeita));

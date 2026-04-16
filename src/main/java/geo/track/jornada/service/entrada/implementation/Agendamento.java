@@ -8,6 +8,7 @@ import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.gestao.service.VeiculoService;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ public class Agendamento implements AgendamentoUseCase {
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final VeiculoService VEICULO_SERVICE;
 
+    @Transactional
     @Override
     public RegistroEntrada execute(LocalDate dataEntradaPrevista, Integer fkVeiculo) {
 

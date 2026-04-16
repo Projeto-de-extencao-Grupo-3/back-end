@@ -73,6 +73,8 @@ public final class RegistroEntradaMapper {
         entrada.setResponsavel(request.responsavel());
         entrada.setCpf(request.cpf());
 
+        entrada.setItensEntrada(toItemEntrada(request, entrada));
+
         entrada.setFkVeiculo(veiculo);
         entrada.setFkOrdemServico(ordemDeServico);
 

@@ -1,5 +1,6 @@
 package geo.track.jornada.request.entrada;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -15,7 +16,7 @@ public record RequestEntrada(
 
         String observacoes,
 
-        @NotNull
+        @NotNull @Valid
         List<RequestItemEntrada> itensEntrada
 ) {
 }

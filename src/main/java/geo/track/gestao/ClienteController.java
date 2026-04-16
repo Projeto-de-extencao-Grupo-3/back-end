@@ -94,7 +94,7 @@ public class ClienteController implements ClienteSwagger {
     }
 
     @GetMapping("/placa/{placa}")
-    public ResponseEntity<ClienteVeiculoResponse> buscarClientePorPlaca(String placa) {
+    public ResponseEntity<ClienteVeiculoResponse> buscarClientePorPlaca(@PathVariable  String placa) {
         Cliente cliente = CLIENTE_SERVICE.buscarClientePorPlaca(placa);
 
         ClienteVeiculoResponse response = ClientesMapper.toResponseVeiculo(cliente, placa);
