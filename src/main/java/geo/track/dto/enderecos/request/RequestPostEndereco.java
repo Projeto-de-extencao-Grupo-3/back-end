@@ -38,4 +38,12 @@ public class RequestPostEndereco {
     @NotBlank
     @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String estado;
+
+    @NotNull
+    @Schema(description = "Indica se o endereço é de correspondência", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Boolean correspondencia;
+
+    @NotNull
+    @Schema(description = "ID do cliente associado ao endereço", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer fkCliente;
 }

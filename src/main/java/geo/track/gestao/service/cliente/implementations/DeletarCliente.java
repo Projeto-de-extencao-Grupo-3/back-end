@@ -30,7 +30,7 @@ public class DeletarCliente implements DeletarClienteUseCase {
 
         log.info("Solicitacao para deletar cliente ID: {}", id);
         if (CLIENTE_REPOSITORY.existsById(id)) {
-            Cliente cliente = CLIENTE_SERVICE.bucarClientePorId(id);
+            Cliente cliente = CLIENTE_SERVICE.buscarClientePorId(id);
             cliente.setAtivo(false);
             CLIENTE_REPOSITORY.save(cliente);
             log.info("Cliente ID {} deletado com sucesso", id);

@@ -1,6 +1,8 @@
 package geo.track.gestao.util;
 
 import geo.track.dto.enderecos.request.RequestPostEndereco;
+import geo.track.dto.enderecos.request.RequestPutEndereco;
+import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.Endereco;
 import geo.track.dto.enderecos.response.EnderecoResponse;
 
@@ -36,10 +38,23 @@ public class EnderecoMapper {
                 .collect(Collectors.toList());
     }
 
-    public static final Endereco RequestToEndereco(RequestPostEndereco dto) {
+    public static final Endereco RequestToEndereco(RequestPostEndereco dto, Cliente cliente) {
         if (dto == null) {
             return null; // Or throw an IllegalArgumentException, depending on desired behavior
         }
-        return new Endereco(null, dto.getCep(), dto.getLogradouro(), dto.getNumero(), dto.getComplemento(), dto.getBairro(), dto.getCidade(), dto.getEstado(),null);
+        return new Endereco(null, dto.getCep(), dto.getLogradouro(), dto.getNumero(), dto.getComplemento(), dto.getBairro(), dto.getCidade(), dto.getEstado(), dto.getCorrespondencia(), cliente);
+    }
+
+    public static Endereco toEntityUpdate(RequestPutEndereco body, Endereco endereco) {
+        if (body.getCep() != null) endereco.setCep(body.getCep());
+        if (body.getLogradouro() != null) endereco.setLogradouro(body.getLogradouro());
+        if (body.getNumero() != null) endereco.setNumero(body.getNumero());
+        if (body.getComplemento() != null) endereco.setComplemento(body.getComplemento());
+        if (body.getBairro() != null) endereco.setBairro(body.getBairro());
+        if (body.getCidade() != null) endereco.setCidade(body.getCidade());
+        if (body.getEstado() != null) endereco.setEstado(body.getEstado());
+        if (body.getCorrespondencia() != null) endereco.setCorrespondencia(body.getCorrespondencia());
+
+        return endereco;
     }
 }

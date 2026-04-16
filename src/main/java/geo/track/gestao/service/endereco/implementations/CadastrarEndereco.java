@@ -1,7 +1,9 @@
 package geo.track.gestao.service.endereco.implementations;
 
+import geo.track.gestao.entity.Cliente;
 import geo.track.gestao.entity.Endereco;
 import geo.track.gestao.entity.repository.EnderecoRepository;
+import geo.track.gestao.service.ClienteService;
 import geo.track.gestao.service.EnderecoService;
 import geo.track.gestao.service.endereco.CadastrarEnderecoUseCase;
 import geo.track.gestao.util.EnderecoMapper;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class CadastrarEndereco implements CadastrarEnderecoUseCase {
     private final EnderecoRepository ENDERECO_REPOSITORY;
     private final EnderecoService ENDERECO_SERVICE;
+    private final ClienteService CLIENTE_SERVICE;
     private final Log log;
 
     public Endereco execute(RequestPostEndereco body) {
@@ -26,8 +29,10 @@ public class CadastrarEndereco implements CadastrarEnderecoUseCase {
             throw new ConflictException(EnderecoExceptionMessages.ENDERECO_JA_EXISTENTE, Domains.ENDERECO);
         }
 
+        Cliente cliente = CLIENTE_SERVICE.buscarClientePorId(body.getFkCliente());
+
         log.info("Cadastrando novo endereco para o CEP: {}", body.getCep());
-        Endereco endereco = EnderecoMapper.RequestToEndereco(body);
+        Endereco endereco = EnderecoMapper.RequestToEndereco(body, cliente);
 
         Endereco salvo = ENDERECO_REPOSITORY.save(endereco);
         log.info("Endereco cadastrado com sucesso. ID gerado: {}", salvo.getIdEndereco());

@@ -38,14 +38,9 @@ public class Cliente {
     // Adicionado
     private String cpfCnpj;
 
-    @Size(min = 10, max = 11)
-    @Schema(description = "Número de telefone do cliente (com DDD)", example = "11987654321", requiredMode = Schema.RequiredMode.REQUIRED)
-    // Adicionado
-    private String telefone;
+    @Schema(description = "Inscrição estadual do cliente (opcional, apenas para pessoas jurídicas)", example = "123456789", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String inscricaoEstadual;
 
-    @Schema(description = "Endereço de e-mail do cliente", example = "joao.silva@email.com", requiredMode = Schema.RequiredMode.REQUIRED)
-    // Adicionado
-    private String email;
 
     @Schema(description = "Tipo de cliente", example = "PESSOA_FISICA", requiredMode = Schema.RequiredMode.REQUIRED)
     // Adicionado
@@ -58,24 +53,22 @@ public class Cliente {
     @Schema(description = "Oficina associada a este cliente") // Adicionado
     private Oficina fkOficina;
 
-    @OneToOne()
-    @JoinColumn(name = "fk_endereco")
-    @Schema(description = "Endereço associado a este cliente") // Adicionado
-    private Endereco fkEndereco;
+    @OneToMany(mappedBy = "fkCliente")
+    private List<Endereco> enderecos;
 
-    @Getter()
+    @OneToMany(mappedBy = "fkCliente")
+    private List<Contato> contatos;
+
     @OneToMany(mappedBy = "fkCliente")
     @Schema(description = "Lista de veículos pertencentes a este cliente") // Adicionado
     private List<Veiculo> veiculos;
 
-    public Cliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, TipoCliente tipoCliente, Oficina fkOficina, Endereco fkEndereco) {
+    public Cliente(Integer idCliente, String nome, String cpfCnpj, String inscricaoEstadual, TipoCliente tipoCliente, Oficina fkOficina) {
         this.idCliente = idCliente;
         this.nome = nome;
         this.cpfCnpj = cpfCnpj;
-        this.telefone = telefone;
-        this.email = email;
+        this.inscricaoEstadual = inscricaoEstadual;
         this.tipoCliente = tipoCliente.name();
         this.fkOficina = fkOficina;
-        this.fkEndereco = fkEndereco;
     }
 }

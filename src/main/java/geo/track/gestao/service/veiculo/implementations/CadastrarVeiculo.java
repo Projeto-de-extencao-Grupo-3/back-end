@@ -9,7 +9,6 @@ import geo.track.gestao.service.veiculo.CadastrarVeiculoUseCase;
 import geo.track.gestao.util.VeiculoMapper;
 import geo.track.dto.veiculos.request.RequestPostVeiculo;
 import geo.track.infraestructure.exception.ConflictException;
-import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.exception.constraint.message.VeiculoExceptionMessages;
 import geo.track.infraestructure.log.Log;
@@ -32,7 +31,7 @@ public class CadastrarVeiculo implements CadastrarVeiculoUseCase {
             throw new ConflictException(VeiculoExceptionMessages.PLACA_EXISTENTE, Domains.VEICULO);
         }
 
-        Cliente cliente = CLIENTE_SERVICE.bucarClientePorId(body.getIdCliente());
+        Cliente cliente = CLIENTE_SERVICE.buscarClientePorId(body.getIdCliente());
 
         Veiculo veiculo = VeiculoMapper.toEntity(body);
         veiculo.setFkCliente(cliente);

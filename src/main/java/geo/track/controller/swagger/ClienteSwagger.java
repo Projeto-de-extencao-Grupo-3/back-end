@@ -1,7 +1,5 @@
 package geo.track.controller.swagger;
 
-import geo.track.dto.clientes.request.RequestPatchEmail;
-import geo.track.dto.clientes.request.RequestPatchTelefone;
 import geo.track.dto.clientes.request.RequestPostCliente;
 import geo.track.dto.clientes.request.RequestPutCliente;
 import geo.track.dto.clientes.response.ClienteResponse;
@@ -55,24 +53,6 @@ public interface ClienteSwagger {
     })
     @GetMapping("/{id}")
     ResponseEntity<ClienteResponse> getClienteById(@PathVariable Integer id);
-
-    @Operation(summary = "Atualizar o e-mail de um cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "E-mail do cliente atualizado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "Formato de e-mail inválido ou dados ausentes", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
-    @PatchMapping("/email")
-    ResponseEntity<ClienteResponse> patchEmailCliente(@RequestBody RequestPatchEmail clienteDTO);
-
-    @Operation(summary = "Atualizar o telefone de um cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Telefone do cliente atualizado com sucesso", content = {@Content(schema = @Schema(implementation = ClienteResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "Formato de telefone inválido ou dados ausentes", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado", content = {@Content(schema = @Schema(implementation = ExceptionBody.class))})
-    })
-    @PatchMapping("/telefone")
-    ResponseEntity<ClienteResponse> patchTelefoneCliente(@RequestBody RequestPatchTelefone clienteDTO);
 
     @Operation(summary = "Atualizar completamente um cliente")
     @ApiResponses(value = {

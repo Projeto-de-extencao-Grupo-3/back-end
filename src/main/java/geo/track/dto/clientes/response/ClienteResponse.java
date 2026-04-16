@@ -2,6 +2,8 @@ package geo.track.dto.clientes.response;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ClienteResponse {
     private Integer idCliente;
@@ -11,5 +13,5 @@ public class ClienteResponse {
     private String email;
     private String tipoCliente;
     private Integer idOficina;
-    private Integer idEndereco;
+    private List<Integer> idEndereco;
 }

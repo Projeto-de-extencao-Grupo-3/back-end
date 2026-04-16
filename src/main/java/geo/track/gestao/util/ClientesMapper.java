@@ -23,16 +23,14 @@ public class ClientesMapper {
         response.setIdCliente(entity.getIdCliente());
         response.setNome(entity.getNome());
         response.setCpfCnpj(entity.getCpfCnpj());
-        response.setTelefone(entity.getTelefone());
-        response.setEmail(entity.getEmail());
         response.setTipoCliente(entity.getTipoCliente());
 
         if (entity.getFkOficina() != null) {
             response.setIdOficina(entity.getFkOficina().getIdOficina());
         }
 
-        if (entity.getFkEndereco() != null) {
-            response.setIdEndereco(entity.getFkEndereco().getIdEndereco());
+        if (entity.getEnderecos() != null) {
+            response.setIdEndereco(entity.getEnderecos().stream().map(Endereco::getIdEndereco).toList());
         }
 
         return response;
@@ -45,7 +43,7 @@ public class ClientesMapper {
 
         VeiculoResponse veiculoResponse = VeiculoMapper.toResponse(cliente.getVeiculos().stream().filter(v -> v.getPlaca().equals(placa)).findFirst().get());
 
-        return new ClienteVeiculoResponse(cliente.getIdCliente(), cliente.getNome(), cliente.getCpfCnpj(), cliente.getTelefone(), cliente.getEmail(), cliente.getTipoCliente(), veiculoResponse);
+        return new ClienteVeiculoResponse(cliente.getIdCliente(), cliente.getNome(), cliente.getCpfCnpj(), cliente.getTipoCliente(), veiculoResponse);
     }
 
     public static List<ClienteResponse> toResponse(List<Cliente> entities) {
@@ -58,7 +56,11 @@ public class ClientesMapper {
     }
 
     public static Cliente toEntity(RequestPostCliente dto, Oficina oficina, Endereco endereco) {
-        return new Cliente(null, dto.getNome(), dto.getCpfCnpj(), dto.getTelefone(), dto.getEmail(), dto.getTipoCliente() , oficina, endereco);
+        var cliente = new Cliente(null, dto.getNome(), dto.getCpfCnpj(), dto.getInscricaoEstadual(), dto.getTipoCliente(), oficina);
+        List<Endereco> enderecos = cliente.getEnderecos();
+        enderecos.add(endereco);
+        cliente.setEnderecos(enderecos);
+        return cliente;
     }
 
     public static Cliente updateEntity(Cliente cliente, RequestPutCliente body) {
@@ -71,12 +73,6 @@ public class ClientesMapper {
         }
         if (body.getCpfCnpj() != null) {
             cliente.setCpfCnpj(body.getCpfCnpj());
-        }
-        if (body.getTelefone() != null) {
-            cliente.setTelefone(body.getTelefone());
-        }
-        if (body.getEmail() != null) {
-            cliente.setEmail(body.getEmail());
         }
         if (body.getTipoCliente() != null) {
             cliente.setTipoCliente(body.getTipoCliente().name());
