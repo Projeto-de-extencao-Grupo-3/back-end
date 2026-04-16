@@ -33,6 +33,7 @@ public class EntradaEfetivaSemCadastro implements EntradaEfetivaSemCadastroUseCa
         Veiculo veiculo = CADASTRAR_VEICULO_PORT.execute(requestVeiculo);
 
         RegistroEntrada entradaEfetiva = RegistroEntradaMapper.toEntity(requestEntrada, veiculo, ordemDeServico);
+
         return CADASTRAR_ENTRADA_PORT.execute(entradaEfetiva);
     }
 }

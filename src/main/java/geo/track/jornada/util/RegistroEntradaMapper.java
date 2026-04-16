@@ -1,6 +1,7 @@
 package geo.track.jornada.util;
 
 import geo.track.gestao.entity.Veiculo;
+import geo.track.jornada.entity.ItemEntrada;
 import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.dto.registroEntrada.response.RegistroEntradaCriacaoResponse;
@@ -8,6 +9,7 @@ import geo.track.jornada.request.entrada.RequestEntrada;
 import geo.track.jornada.response.entrada.RegistroEntradaResponse;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,14 +25,7 @@ public final class RegistroEntradaMapper {
         response.setDataEntradaEfetiva(entity.getDataEntradaEfetiva());
         response.setResponsavel(entity.getResponsavel());
         response.setCpf(entity.getCpf());
-        response.setExtintor(entity.getExtintor());
-        response.setMacaco(entity.getMacaco());
-        response.setChaveRoda(entity.getChaveRoda());
-        response.setGeladeira(entity.getGeladeira());
-        response.setMonitor(entity.getMonitor());
-        response.setEstepe(entity.getEstepe());
-        response.setSomDvd(entity.getSomDvd());
-        response.setCaixaFerramenta(entity.getCaixaFerramentas());
+
 
         response.setFkOrdemServico(entity.getFkOrdemServico().getIdOrdemServico());
 
@@ -64,16 +59,8 @@ public final class RegistroEntradaMapper {
         entity.setDataEntradaEfetiva(LocalDate.now());
         entity.setResponsavel(request.responsavel());
         entity.setCpf(request.cpf());
-        entity.setExtintor(request.extintor());
-        entity.setMacaco(request.macaco());
-        entity.setChaveRoda(request.chaveRoda());
-        entity.setGeladeira(request.geladeira());
-        entity.setMonitor(request.monitor());
-        entity.setEstepe(request.estepe());
-        entity.setSomDvd(request.somDvd());
-        entity.setCaixaFerramentas(request.caixaFerramentas());
 
-        if (request.observacoes() != null) entity.setObservacoes(request.observacoes());
+        entity.setItensEntrada(toItemEntrada(request, entity));
 
         return entity;
     }
@@ -85,19 +72,26 @@ public final class RegistroEntradaMapper {
         entrada.setDataEntradaPrevista(LocalDate.now());
         entrada.setResponsavel(request.responsavel());
         entrada.setCpf(request.cpf());
-        entrada.setExtintor(request.extintor());
-        entrada.setMacaco(request.macaco());
-        entrada.setChaveRoda(request.chaveRoda());
-        entrada.setGeladeira(request.geladeira());
-        entrada.setMonitor(request.monitor());
-        entrada.setEstepe(request.estepe());
-        entrada.setSomDvd(request.somDvd());
-        entrada.setCaixaFerramentas(request.caixaFerramentas());
-        if (request.observacoes() != null) entrada.setObservacoes(request.observacoes());
+
+        entrada.setItensEntrada(toItemEntrada(request, entrada));
 
         entrada.setFkVeiculo(veiculo);
         entrada.setFkOrdemServico(ordemDeServico);
 
         return entrada;
+    }
+
+    private static List<ItemEntrada> toItemEntrada(RequestEntrada request, RegistroEntrada registro) {
+        List<ItemEntrada> itensEntrada = new ArrayList<>();
+
+        request.itensEntrada().forEach(item -> {
+            ItemEntrada itemEntrada = new ItemEntrada();
+            itemEntrada.setNomeItem(item.nomeItem());
+            itemEntrada.setQuantidade(item.quantidade());
+            itemEntrada.setFkRegistroEntrada(registro);
+            itensEntrada.add(itemEntrada);
+        });
+
+        return itensEntrada;
     }
 }

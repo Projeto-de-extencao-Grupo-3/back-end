@@ -40,6 +40,6 @@ public class VeiculoService {
 
 
     public List<Veiculo> buscarVeiculoPeloIdCliente(Integer idCliente) {
-        return VEICULO_REPOSITORY.findAllByFkCliente_IdCliente(idCliente);
+        return VEICULO_REPOSITORY.findAllByIdCliente(idCliente);
     }
 }

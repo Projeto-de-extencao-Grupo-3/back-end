@@ -5,7 +5,6 @@ import geo.track.jornada.response.listagem.ViewPagtoPendente;
 import geo.track.jornada.response.listagem.ViewPagtoRealizado;
 import geo.track.jornada.enums.Status;
 import geo.track.jornada.entity.OrdemDeServico;
-import geo.track.jornada.entity.RegistroEntrada;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -54,4 +53,7 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.fkCliente.idCliente = :idCliente AND o.status <> :status")
     Boolean existsByIdCliente(Integer idCliente, Status status);
+
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o JOIN o.produtos p WHERE p.fkProduto.idProduto = :idProduto AND o.status <> :status")
+    Boolean existsByIdProduto(@Param("idProduto") Integer idProduto, @Param("status") Status status);
 }

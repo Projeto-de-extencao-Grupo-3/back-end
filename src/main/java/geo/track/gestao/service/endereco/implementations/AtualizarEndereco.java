@@ -5,6 +5,7 @@ import geo.track.gestao.entity.repository.EnderecoRepository;
 import geo.track.gestao.service.EnderecoService;
 import geo.track.gestao.service.endereco.AtualizarEnderecoUseCase;
 import geo.track.dto.enderecos.request.RequestPutEndereco;
+import geo.track.gestao.util.EnderecoMapper;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.EnderecoExceptionMessages;
 import geo.track.infraestructure.exception.constraint.message.Domains;
@@ -24,15 +25,10 @@ public class AtualizarEndereco implements AtualizarEnderecoUseCase {
     public Endereco execute(RequestPutEndereco body) {
         log.info("Atualizacao completa solicitada para o endereco ID: {}", body.getIdEndereco());
         Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(body.getIdEndereco());
-        endereco.setCep(body.getCep());
-        endereco.setLogradouro(body.getLogradouro());
-        endereco.setNumero(body.getNumero());
-        endereco.setComplemento(body.getComplemento());
-        endereco.setBairro(body.getBairro());
-        endereco.setCidade(body.getCidade());
-        endereco.setEstado(body.getEstado());
 
-        ENDERECO_REPOSITORY.save(endereco);
+        Endereco enderecoAtualizado = EnderecoMapper.toEntityUpdate(body, endereco);
+
+        ENDERECO_REPOSITORY.save(enderecoAtualizado);
 
         log.info("Endereco ID {} atualizado completamente com sucesso", endereco.getIdEndereco());
         return endereco;

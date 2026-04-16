@@ -40,7 +40,7 @@ public class ClienteService {
         return CLIENTE_REPOSITORY.findAll(pageable);
     }
 
-    public Cliente bucarClientePorId(Integer id) {
+    public Cliente buscarClientePorId(Integer id) {
         log.info("Buscando cliente pelo ID: {}", id);
         Optional<Cliente> cliente = CLIENTE_REPOSITORY.findByIdClienteAndAtivoTrue(id);
 

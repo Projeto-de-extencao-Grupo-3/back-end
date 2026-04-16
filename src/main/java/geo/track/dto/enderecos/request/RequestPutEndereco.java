@@ -36,4 +36,7 @@ public class RequestPutEndereco {
 
     @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String estado;
+
+    @Schema(description = "Indica se o endereço é de correspondência", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Boolean correspondencia;
 }

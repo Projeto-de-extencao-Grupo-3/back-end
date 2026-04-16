@@ -1,16 +1,20 @@
 package geo.track.dto.clientes.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import geo.track.dto.contatos.request.RequestPostContato;
 import geo.track.dto.enderecos.request.RequestPostEndereco;
 import geo.track.gestao.enums.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
+
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -20,18 +24,12 @@ public class RequestPostCliente {
     private String nome;
 
     @NotBlank
-    @CPF
+    @Size(min = 11, max = 14)
     @Schema(description = "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente", example = "12345678909", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
     private String cpfCnpj;
 
-    @NotBlank
-    @Size(min = 10, max = 11)
-    @Schema(description = "Número de telefone do cliente (com DDD)", example = "11987654321", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
-    private String telefone;
-
-    @NotBlank
-    @Schema(description = "Endereço de e-mail do cliente", example = "joao.silva@email.com", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
-    private String email;
+    @Schema(description = "Inscrição estadual do cliente (opcional, apenas para pessoas jurídicas)", example = "123456789", requiredMode = Schema.RequiredMode.NOT_REQUIRED) // Adicionado
+    private String inscricaoEstadual;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -43,7 +41,10 @@ public class RequestPostCliente {
     private Integer fkOficina;
 
     @NotNull
+    @Schema(description = "Lista de contatos do cliente", requiredMode = Schema.RequiredMode.REQUIRED)
+    private List<RequestPostContato> contatos;
+
     @NotNull
-    @Schema(description = "Endereço associado a ser cadastrado com este cliente", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // Adicionado
+    @Schema(description = "Endereço do cliente", requiredMode = Schema.RequiredMode.REQUIRED)
     private RequestPostEndereco endereco;
 }

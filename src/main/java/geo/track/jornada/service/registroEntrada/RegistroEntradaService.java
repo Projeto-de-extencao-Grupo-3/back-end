@@ -57,38 +57,6 @@ public class RegistroEntradaService{
             registro.setCpf(body.getCpf());
         }
 
-        if (body.getExtintor() != null) {
-            registro.setExtintor(body.getExtintor());
-        }
-
-        if (body.getMacaco() != null) {
-            registro.setMacaco(body.getMacaco());
-        }
-
-        if (body.getChaveRoda() != null) {
-            registro.setChaveRoda(body.getChaveRoda());
-        }
-
-        if (body.getGeladeira() != null) {
-            registro.setGeladeira(body.getGeladeira());
-        }
-
-        if (body.getMonitor() != null) {
-            registro.setMonitor(body.getMonitor());
-        }
-
-        if (body.getEstepe() != null) {
-            registro.setEstepe(body.getEstepe());
-        }
-
-        if (body.getSomDvd() != null) {
-            registro.setSomDvd(body.getSomDvd());
-        }
-
-        if (body.getCaixaFerramentas() != null) {
-            registro.setCaixaFerramentas(body.getCaixaFerramentas());
-        }
-
         log.info("Registro de entrada ID: {} atualizado com sucesso.", body.getIdRegistro());
         return REGISTRO_ENTRADA_REPOSITORY.save(registro);
     }

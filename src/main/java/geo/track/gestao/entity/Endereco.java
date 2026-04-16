@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,6 +45,10 @@ public class Endereco {
     @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
     private String estado;
 
-    @OneToOne(mappedBy = "fkEndereco")
-    private Cliente clientes;
+    @Schema(description = "Indica se o endereço é de correspondência", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Boolean correspondencia;
+
+    @ManyToOne()
+    @JoinColumn(name = "fk_cliente")
+    private Cliente fkCliente;
 }

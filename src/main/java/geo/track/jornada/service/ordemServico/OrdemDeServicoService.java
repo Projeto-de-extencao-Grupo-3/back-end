@@ -142,7 +142,7 @@ public class OrdemDeServicoService {
         return ORDEM_REPOSITORY.findAllByVeiculo(idVeiculo);
     }
 
-    public Boolean existeOrdemServicoAbertaUsandoItemProduto(Integer idProduto) {
-        return null;
+    public Boolean existeOrdemServicoAbertaUsandoProduto(Integer idProduto) {
+        return ORDEM_REPOSITORY.existsByIdProduto(idProduto, Status.FINALIZADO);
     }
 }

@@ -58,9 +58,9 @@ public class EnderecoController implements EnderecoSwagger {
     }
 
     @Override
-    @PostMapping()
-    public ResponseEntity<EnderecoResponse> postEndereco(@RequestBody @Valid RequestPostEndereco body) {
-        Endereco novoEndereco = CADASTRAR_ENDERECO_USECASE.execute(body);
+    @PostMapping("/{fkCliente}")
+    public ResponseEntity<EnderecoResponse> postEndereco(@RequestBody @Valid RequestPostEndereco body, @PathVariable Integer fkCliente) {
+        Endereco novoEndereco = CADASTRAR_ENDERECO_USECASE.execute(body, fkCliente);
         return ResponseEntity.status(201).body(EnderecoMapper.toResponse(novoEndereco));
     }
 

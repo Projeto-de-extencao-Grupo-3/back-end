@@ -10,6 +10,7 @@ import geo.track.jornada.service.usecase.CadastrarEntradaUseCase;
 import geo.track.jornada.service.usecase.CadastrarOrdemServicoUseCase;
 import geo.track.jornada.util.RegistroEntradaMapper;
 import geo.track.gestao.service.VeiculoService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ public class EntradaEfetiva implements EntradaEfetivaUseCase {
     private final CadastrarEntradaUseCase CADASTRAR_ENTRADA_PORT;
     private final VeiculoService VEICULO_SERVICE;
 
+    @Transactional
     @Override
     public RegistroEntrada execute(Integer fkVeiculo, RequestEntrada requestEntrada) {
 

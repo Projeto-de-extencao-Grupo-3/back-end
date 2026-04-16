@@ -3,6 +3,7 @@ package geo.track.infraestructure.exception.constraint.message;
 public enum Domains {
     CLIENTE,
     ENDERECO,
+    CONTATO,
     FUNCIONARIO,
     FUNCIONARIO_SERVICO,
     ITEM_PRODUTO,
@@ -12,5 +13,6 @@ public enum Domains {
     PRODUTO,
     REGISTRO_ENTRADA,
     SERVICO,
-    ARQUIVO, VEICULO
+    ARQUIVO,
+    VEICULO
 }

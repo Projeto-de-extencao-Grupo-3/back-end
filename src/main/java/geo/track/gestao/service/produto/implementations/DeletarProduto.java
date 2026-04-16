@@ -4,9 +4,6 @@ import geo.track.gestao.entity.Produto;
 import geo.track.gestao.entity.repository.ProdutoRepository;
 import geo.track.gestao.service.ProdutoService;
 import geo.track.gestao.service.produto.DeletarProdutoUseCase;
-import geo.track.infraestructure.exception.DataNotFoundException;
-import geo.track.infraestructure.exception.constraint.message.Domains;
-import geo.track.infraestructure.exception.constraint.message.ProdutoExceptionMessages;
 import geo.track.infraestructure.log.Log;
 import geo.track.jornada.service.ordemServico.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +19,7 @@ public class DeletarProduto implements DeletarProdutoUseCase {
 
     public void execute(Integer id) {
         // Verifica se existe alguma ordem de serviço na jornada associada a este item de produto antes de permitir a exclusão
-        if (ORDEM_SERVICO_SERVICE.existeOrdemServicoAbertaUsandoItemProduto(id)) {
+        if (ORDEM_SERVICO_SERVICE.existeOrdemServicoAbertaUsandoProduto(id)) {
             log.warn("Falha ao deletar item de produto ID {}: existem ordens de serviço não finalizadas associadas", id);
             throw new RuntimeException(String.format("Item de produto ID %d não pode ser deletado: existem ordens de serviço não finalizadas associadas", id));
         }

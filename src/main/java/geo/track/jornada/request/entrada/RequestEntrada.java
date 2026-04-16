@@ -1,8 +1,11 @@
 package geo.track.jornada.request.entrada;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+
+import java.util.List;
 
 public record RequestEntrada(
         @NotBlank
@@ -11,38 +14,9 @@ public record RequestEntrada(
         @NotBlank
         String cpf,
 
-        @NotNull
-        @PositiveOrZero
-        Integer extintor,
+        String observacoes,
 
-        @NotNull
-        @PositiveOrZero
-        Integer macaco,
-
-        @NotNull
-        @PositiveOrZero
-        Integer chaveRoda,
-
-        @NotNull
-        @PositiveOrZero
-        Integer geladeira,
-
-        @NotNull
-        @PositiveOrZero
-        Integer monitor,
-
-        @NotNull
-        @PositiveOrZero
-        Integer estepe,
-
-        @NotNull
-        @PositiveOrZero
-        Integer somDvd,
-
-        @NotNull
-        @PositiveOrZero
-        Integer caixaFerramentas,
-
-        String observacoes
+        @NotNull @Valid
+        List<RequestItemEntrada> itensEntrada
 ) {
 }

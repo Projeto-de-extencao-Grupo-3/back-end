@@ -11,6 +11,7 @@ import geo.track.jornada.entity.OrdemDeServico;
 import geo.track.jornada.entity.RegistroEntrada;
 import geo.track.jornada.interfaces.GetJornada;
 import geo.track.jornada.request.entrada.RequestConfirmacao;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ public class Confirmacao implements ConfirmacaoUseCase {
     private final CadastrarEntradaUseCase CADASTRAR_ENTRADA_PORT;
     private final RegistroEntradaService REGISTRO_ENTRADA_SERVICE;
 
+    @Transactional
     @Override
     public RegistroEntrada execute(Integer fkRegistro, RequestEntrada requestEntrada) {
 
