@@ -43,7 +43,7 @@ public class ClientesMapper {
             return null;
         }
 
-        VeiculoResponse veiculoResponse = VeiculoMapper.toResponse(cliente.getVeiculo().stream().filter(v -> v.getPlaca().equals(placa)).findFirst().get());
+        VeiculoResponse veiculoResponse = VeiculoMapper.toResponse(cliente.getVeiculos().stream().filter(v -> v.getPlaca().equals(placa)).findFirst().get());
 
         return new ClienteVeiculoResponse(cliente.getIdCliente(), cliente.getNome(), cliente.getCpfCnpj(), cliente.getTelefone(), cliente.getEmail(), cliente.getTipoCliente(), veiculoResponse);
     }

@@ -5,13 +5,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import geo.track.gestao.enums.TipoCliente;
 import io.swagger.v3.oas.annotations.media.Schema; // Import adicionado
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
@@ -68,7 +66,7 @@ public class Cliente {
     @Getter()
     @OneToMany(mappedBy = "fkCliente")
     @Schema(description = "Lista de veículos pertencentes a este cliente") // Adicionado
-    private List<Veiculo> veiculo;
+    private List<Veiculo> veiculos;
 
     public Cliente(Integer idCliente, String nome, String cpfCnpj, String telefone, String email, TipoCliente tipoCliente, Oficina fkOficina, Endereco fkEndereco) {
         this.idCliente = idCliente;

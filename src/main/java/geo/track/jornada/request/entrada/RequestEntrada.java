@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.util.List;
+
 public record RequestEntrada(
         @NotBlank
         String responsavel,
@@ -11,6 +13,9 @@ public record RequestEntrada(
         @NotBlank
         String cpf,
 
-        String observacoes
+        String observacoes,
+
+        @NotNull
+        List<RequestItemEntrada> itensEntrada
 ) {
 }

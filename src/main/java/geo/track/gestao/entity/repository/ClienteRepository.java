@@ -2,6 +2,7 @@ package geo.track.gestao.entity.repository;
 
 import geo.track.gestao.entity.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,5 +17,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     Boolean existsByCpfCnpjAndAtivoTrue(String cpfCnpj);
 
+    @Query("SELECT c FROM Cliente c JOIN c.veiculos v WHERE v.placa = :placa AND c.ativo = true")
     Optional<Cliente> findByVeiculoPlacaAndAtivoTrue(String placa);
 }
