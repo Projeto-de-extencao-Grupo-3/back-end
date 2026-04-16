@@ -23,14 +23,7 @@ public final class RegistroEntradaMapper {
         response.setDataEntradaEfetiva(entity.getDataEntradaEfetiva());
         response.setResponsavel(entity.getResponsavel());
         response.setCpf(entity.getCpf());
-        response.setExtintor(entity.getExtintor());
-        response.setMacaco(entity.getMacaco());
-        response.setChaveRoda(entity.getChaveRoda());
-        response.setGeladeira(entity.getGeladeira());
-        response.setMonitor(entity.getMonitor());
-        response.setEstepe(entity.getEstepe());
-        response.setSomDvd(entity.getSomDvd());
-        response.setCaixaFerramenta(entity.getCaixaFerramentas());
+
 
         response.setFkOrdemServico(entity.getFkOrdemServico().getIdOrdemServico());
 
@@ -64,16 +57,6 @@ public final class RegistroEntradaMapper {
         entity.setDataEntradaEfetiva(LocalDate.now());
         entity.setResponsavel(request.responsavel());
         entity.setCpf(request.cpf());
-        entity.setExtintor(request.extintor());
-        entity.setMacaco(request.macaco());
-        entity.setChaveRoda(request.chaveRoda());
-        entity.setGeladeira(request.geladeira());
-        entity.setMonitor(request.monitor());
-        entity.setEstepe(request.estepe());
-        entity.setSomDvd(request.somDvd());
-        entity.setCaixaFerramentas(request.caixaFerramentas());
-
-        if (request.observacoes() != null) entity.setObservacoes(request.observacoes());
 
         return entity;
     }
@@ -85,15 +68,6 @@ public final class RegistroEntradaMapper {
         entrada.setDataEntradaPrevista(LocalDate.now());
         entrada.setResponsavel(request.responsavel());
         entrada.setCpf(request.cpf());
-        entrada.setExtintor(request.extintor());
-        entrada.setMacaco(request.macaco());
-        entrada.setChaveRoda(request.chaveRoda());
-        entrada.setGeladeira(request.geladeira());
-        entrada.setMonitor(request.monitor());
-        entrada.setEstepe(request.estepe());
-        entrada.setSomDvd(request.somDvd());
-        entrada.setCaixaFerramentas(request.caixaFerramentas());
-        if (request.observacoes() != null) entrada.setObservacoes(request.observacoes());
 
         entrada.setFkVeiculo(veiculo);
         entrada.setFkOrdemServico(ordemDeServico);

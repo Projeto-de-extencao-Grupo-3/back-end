@@ -11,14 +11,6 @@ public class RegistroEntradaResponse {
     private LocalDate dataEntradaEfetiva;
     private String responsavel;
     private String cpf;
-    private Integer extintor;
-    private Integer macaco;
-    private Integer chaveRoda;
-    private Integer geladeira;
-    private Integer monitor;
-    private Integer estepe;
-    private Integer somDvd;
-    private Integer caixaFerramenta;
     private Integer idVeiculo;
     private Integer fkOrdemServico;
 
