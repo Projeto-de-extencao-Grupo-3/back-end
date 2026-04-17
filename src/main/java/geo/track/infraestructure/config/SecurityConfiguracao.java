@@ -1,6 +1,6 @@
 package geo.track.infraestructure.config;
 
-import geo.track.infraestructure.AutenticacaoService;
+import geo.track.infraestructure.auth.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

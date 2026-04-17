@@ -166,10 +166,10 @@ src/main/java/geo/track/
 
 ## Mapeamento sugerido (estrutura atual -> estrutura alvo)
 
-- `geo.track.gestao.ClienteController` -> `geo.track.cadastros.cliente.api.controller.ClienteController`
-- `geo.track.gestao.service.ClienteService` -> `geo.track.cadastros.cliente.application.service.ClienteService`
-- `geo.track.gestao.entity.Cliente` -> `geo.track.cadastros.cliente.infrastructure.persistence.entity.ClienteEntity`
-- `geo.track.gestao.entity.repository.ClienteRepository` -> `geo.track.cadastros.cliente.infrastructure.persistence.repository.ClienteRepository`
+- `geo.track.gestao.cliente.infraestructure.web.ClienteController` -> `geo.track.cadastros.cliente.api.controller.ClienteController`
+- `service.geo.track.gestao.gest.ClienteService` -> `geo.track.cadastros.cliente.application.service.ClienteService`
+- `entity.geo.track.gestao.gest.Cliente` -> `geo.track.cadastros.cliente.infrastructure.persistence.entity.ClienteEntity`
+- `repository.entity.geo.track.gestao.gest.ClienteRepository` -> `geo.track.cadastros.cliente.infrastructure.persistence.repository.ClienteRepository`
 - `geo.track.dto.clientes.*` -> `geo.track.cadastros.cliente.api.dto.*`
 
 Repetir o mesmo padrao para:
@@ -184,11 +184,11 @@ Repetir o mesmo padrao para:
 - registroentrada
 
 Para integracoes/externos:
-- `geo.track.external.ArquivosController` -> `geo.track.arquivos.api.controller.ArquivosController`
-- `geo.track.external.service.ArquivoService` -> `geo.track.arquivos.application.service.ArquivoService`
-- `geo.track.external.entity.*` -> `geo.track.arquivos.infrastructure.persistence.entity.*`
-- `geo.track.external.PlateController` -> `geo.track.integracoes.placa.api.controller.PlateController`
-- `geo.track.util.ViacepConnection` -> `geo.track.integracoes.viacep.infrastructure.client.ViacepClient`
+- `geo.track.externo.arquivo.infraestructure.web.ArquivosController` -> `geo.track.arquivos.api.controller.ArquivosController`
+- `geo.track.externo.arquivo.domain.ArquivoService` -> `geo.track.arquivos.application.service.ArquivoService`
+- `geo.track.externo.arquivo.infraestructure.persistence.entity.*` -> `geo.track.arquivos.infrastructure.persistence.entity.*`
+- `geo.track.externo.placa.infraestructure.web.PlateController` -> `geo.track.integracoes.placa.api.controller.PlateController`
+- `geo.track.externo.viacep.ViacepConnection` -> `geo.track.integracoes.viacep.infrastructure.client.ViacepClient`
 
 Para infraestrutura transversal:
 - `geo.track.infraestructure.config.*` -> `geo.track.shared.config.*`

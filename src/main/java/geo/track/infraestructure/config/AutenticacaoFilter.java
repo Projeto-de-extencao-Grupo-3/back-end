@@ -1,6 +1,6 @@
 package geo.track.infraestructure.config;
 
-import geo.track.infraestructure.AutenticacaoService;
+import geo.track.infraestructure.auth.AutenticacaoService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
