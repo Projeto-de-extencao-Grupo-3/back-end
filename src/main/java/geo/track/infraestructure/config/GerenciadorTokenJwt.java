@@ -1,6 +1,6 @@
 package geo.track.infraestructure.config;
 
-import geo.track.gestao.entity.Funcionario;
+import geo.track.gestao.funcionario.infraestructure.persistence.entity.Funcionario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

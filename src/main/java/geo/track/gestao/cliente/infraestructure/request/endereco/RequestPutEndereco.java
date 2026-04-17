@@ -1,0 +1,39 @@
+package geo.track.gestao.cliente.infraestructure.request.endereco;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class RequestPutEndereco {
+    @NotNull
+    @Schema(description = "ID do Endereço", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // 2. Detalhes do campo
+    private Integer idEndereco;
+
+    @Schema(description = "CEP do Endereço", example = "01414001", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String cep;
+
+    @Schema(description = "Logradouro do Endereço", example = "Rua Haddock Lobo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String logradouro;
+
+    @NotNull
+    @Schema(description = "Número do Endereço", example = "595", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer numero;
+
+    @Schema(description = "Complemento do Endereço", example = "Melhor faculdade de Tecnologia do Brasil", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String complemento;
+
+    @Schema(description = "Bairro do Endereço", example = "Cerqueira César", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String bairro;
+
+    @Schema(description = "Cidade do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String cidade;
+
+    @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String estado;
+
+    @Schema(description = "Indica se o endereço é de correspondência", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Boolean correspondencia;
+}

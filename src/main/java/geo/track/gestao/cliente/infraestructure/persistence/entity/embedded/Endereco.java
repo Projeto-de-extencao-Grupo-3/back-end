@@ -1,0 +1,55 @@
+package geo.track.gestao.cliente.infraestructure.persistence.entity.embedded;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import geo.track.gestao.cliente.infraestructure.persistence.entity.Cliente;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(description = "Objeto utilizado para enviar ou receber") // 1. Descrição do objeto
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "idEndereco")
+@Table(name = "enderecos")
+public class Endereco {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Schema(description = "ID do Endereço", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // 2. Detalhes do campo
+    private Integer idEndereco;
+    @Schema(description = "CEP do Endereço", example = "01414001", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String cep;
+
+    @Schema(description = "Logradouro do Endereço", example = "Rua Haddock Lobo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String logradouro;
+
+    @Schema(description = "Número do Endereço", example = "595", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer numero;
+
+    @Schema(description = "Complemento do Endereço", example = "Melhor faculdade de Tecnologia do Brasil", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String complemento;
+
+    @Schema(description = "Bairro do Endereço", example = "Cerqueira César", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String bairro;
+
+    @Schema(description = "Cidade do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String cidade;
+
+    @Schema(description = "Estado do Endereço", example = "São Paulo", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String estado;
+
+    @Schema(description = "Indica se o endereço é de correspondência", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Boolean correspondencia;
+
+    @ManyToOne()
+    @JoinColumn(name = "fk_cliente")
+    private Cliente fkCliente;
+}

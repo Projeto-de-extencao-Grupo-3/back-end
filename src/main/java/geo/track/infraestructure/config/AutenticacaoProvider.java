@@ -1,6 +1,6 @@
 package geo.track.infraestructure.config;
 
-import geo.track.infraestructure.AutenticacaoService;
+import geo.track.infraestructure.auth.AutenticacaoService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

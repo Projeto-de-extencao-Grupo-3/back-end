@@ -1,9 +1,0 @@
-package geo.track.jornada.response.listagem;
-
-import java.util.List;
-
-public record ResponsePainelControle(
-        Integer quantidadeOrdens,
-        List<CardOrdemDeServicoResponse> ordensDeServico
-) {
-}

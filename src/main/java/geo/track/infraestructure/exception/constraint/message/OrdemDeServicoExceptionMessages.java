@@ -1,6 +1,6 @@
 package geo.track.infraestructure.exception.constraint.message;
 
-import geo.track.jornada.enums.Status;
+import geo.track.jornada.infraestructure.persistence.entity.Status;
 
 import java.util.Arrays;
 
