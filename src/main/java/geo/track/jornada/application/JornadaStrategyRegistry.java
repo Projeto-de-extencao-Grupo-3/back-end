@@ -1,4 +1,4 @@
-package geo.track.jornada.domain;
+package geo.track.jornada.application;
 
 import java.util.function.Predicate;
 

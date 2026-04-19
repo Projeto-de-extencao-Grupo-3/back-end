@@ -11,8 +11,7 @@ public class ClienteResponse {
     private Integer idCliente;
     private String nome;
     private String cpfCnpj;
-    private String telefone;
-    private String email;
+    private String inscricaoEstadual;
     private String tipoCliente;
     private Integer idOficina;
     private List<ContatoResponse> meiosContato;

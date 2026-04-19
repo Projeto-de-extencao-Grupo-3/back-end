@@ -4,6 +4,6 @@ import geo.track.gestao.cliente.infraestructure.persistence.entity.embedded.Ende
 import geo.track.gestao.cliente.infraestructure.request.endereco.RequestPutEndereco;
 
 public interface AtualizarEnderecoUseCase {
-    Endereco execute(RequestPutEndereco request);
+    Endereco execute(Integer idCliente, Integer idEndereco, RequestPutEndereco request);
 }
 

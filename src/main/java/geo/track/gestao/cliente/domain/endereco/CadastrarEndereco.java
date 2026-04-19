@@ -23,14 +23,14 @@ public class CadastrarEndereco implements CadastrarEnderecoUseCase {
     private final Log log;
 
     public Endereco execute(RequestPostEndereco body, Integer fkCliente) {
-        if (ENDERECO_SERVICE.existeEnderecoPorCep(body.getCep())) {
-            log.warn("Falha ao criar cliente: Endereço com CEP {} já cadastrado", body.getCep());
+        if (ENDERECO_SERVICE.existeEnderecoPorCepENumero(body.getCep(), body.getNumero())) {
+            log.warn("Falha ao criar endereco: Endereço com CEP {} e número {} já cadastrado", body.getCep(), body.getNumero());
             throw new ConflictException(EnderecoExceptionMessages.ENDERECO_JA_EXISTENTE, Domains.ENDERECO);
         }
 
         Cliente cliente = CLIENTE_SERVICE.buscarClientePorId(fkCliente);
 
-        log.info("Cadastrando novo endereco para o CEP: {}", body.getCep());
+        log.info("Cadastrando novo endereco para o CEP: {} e número: {}", body.getCep(), body.getNumero());
         Endereco endereco = EnderecoMapper.RequestToEndereco(body, cliente);
 
         Endereco salvo = ENDERECO_REPOSITORY.save(endereco);

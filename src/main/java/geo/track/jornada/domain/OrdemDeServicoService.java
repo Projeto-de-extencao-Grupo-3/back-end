@@ -138,6 +138,10 @@ public class OrdemDeServicoService {
         return ORDEM_REPOSITORY.findByIntervaloMesesAndIdVeiculo(dataInferiorIntervalo, idVeiculo);
     }
 
+    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(LocalDate dataReferencia) {
+        return ORDEM_REPOSITORY.findByIntervaloMeses(dataReferencia);
+    }
+
     public List<OrdemDeServico> listarOrdensServicoPorVeiculo(Integer idVeiculo) {
         return ORDEM_REPOSITORY.findAllByVeiculo(idVeiculo);
     }

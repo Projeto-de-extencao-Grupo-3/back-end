@@ -18,7 +18,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemPainelControleImplementation implements ListagemPainelControleUseCase {
+public class ListagemPainelControle implements ListagemPainelControleUseCase {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override

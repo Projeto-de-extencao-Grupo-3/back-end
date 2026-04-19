@@ -16,11 +16,15 @@ import geo.track.infraestructure.log.Log;
 import geo.track.jornada.infraestructure.mapper.OrdemDeServicoMapper;
 import geo.track.externo.arquivo.infraestructure.persistence.ArquivoRepository;
 import geo.track.jornada.domain.OrdemDeServicoService;
+import geo.track.jornada.infraestructure.response.listagem.OrdemDeServicoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +58,7 @@ public class ArquivoService {
         log.info("Solicitação de geração de arquivo de Ordem de Serviço enviada com sucesso.");
     }
 
-    public Arquivo buscarArquivo(Integer idOrdem, Template template) {
+    public Arquivo buscarArquivo (Integer idOrdem, Template template) {
         log.info("Buscando status/arquivo do {} para a Ordem ID: {}", template, idOrdem);
         Arquivo arquivo = ARQUIVO_REPOSITORY.findByFkOrdemServicoAndTemplate(idOrdem, template)
                 .orElseThrow(() -> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
@@ -80,5 +84,15 @@ public class ArquivoService {
             log.warn("Tentativa de acessar arquivo que ainda não está concluído. Arquivo ID: {}, Status: {}", arquivo.getIdArquivo(), arquivo.getStatus());
             throw new AcceptedException(ArquivoExceptionMessages.ARQUIVO_NAO_CONCLUIDO, Domains.ARQUIVO);
         }
+    }
+
+    public void solicitarGeracaoRelatorioMensal(Integer idOficina, Integer mesReferencia, Integer anoReferencia) {
+        LocalDate dataReferencia = LocalDate.of(anoReferencia, mesReferencia, 1);
+        log.info("Iniciando solicitação de geração de relatório mensal. Oficina ID: {}, Mês Referência: {}, Ano Referência: {}", idOficina, mesReferencia, anoReferencia);
+
+        List<OrdemDeServico> ordens = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(dataReferencia);
+        this.garantirRegistroArquivo(ordens.getFirst().getIdOrdemServico(), Template.RELATORIO);
+
+        boolean sucesso = GATEWAY_EXPORT_DATA.solicitarArquivo(ordens.stream().map(OrdemDeServicoMapper::toResponse).toList(), RabbitMQConfig.ROUTING_KEY_RELATORIO, mesReferencia, anoReferencia);
     }
 }

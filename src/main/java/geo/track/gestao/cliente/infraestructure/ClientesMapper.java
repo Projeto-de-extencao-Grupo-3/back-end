@@ -24,6 +24,7 @@ public class ClientesMapper {
         response.setIdCliente(entity.getIdCliente());
         response.setNome(entity.getNome());
         response.setCpfCnpj(entity.getCpfCnpj());
+        response.setInscricaoEstadual(entity.getInscricaoEstadual());
         response.setTipoCliente(entity.getTipoCliente());
 
         if (entity.getFkOficina() != null) {
@@ -69,15 +70,9 @@ public class ClientesMapper {
             return cliente;
         }
 
-        if (body.getNome() != null ) {
-            cliente.setNome(body.getNome());
-        }
-        if (body.getCpfCnpj() != null) {
-            cliente.setCpfCnpj(body.getCpfCnpj());
-        }
-        if (body.getTipoCliente() != null) {
-            cliente.setTipoCliente(body.getTipoCliente().name());
-        }
+        if (body.getNome() != null ) cliente.setNome(body.getNome());
+        if (body.getInscricaoEstadual() != null) cliente.setInscricaoEstadual(body.getInscricaoEstadual());
+        if (body.getCpfCnpj() != null) cliente.setCpfCnpj(body.getCpfCnpj());
 
         return cliente;
     }

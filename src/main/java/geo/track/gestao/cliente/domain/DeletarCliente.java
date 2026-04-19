@@ -35,9 +35,17 @@ public class DeletarCliente implements DeletarClienteUseCase {
         if (CLIENTE_REPOSITORY.existsById(id)) {
             Cliente cliente = CLIENTE_SERVICE.buscarClientePorId(id);
 
+            // Deletar todos os contatos do cliente
             cliente.getContatos().forEach(contato -> DELETAR_CONTATO_USE_CASE.execute(id, contato.getIdContato()));
-            cliente.getEnderecos().forEach(endereco -> DELETAR_ENDERECO_USE_CASE.execute(endereco.getIdEndereco()));
 
+            // Deletar todos os endereços do cliente
+            cliente.getEnderecos().forEach(endereco -> DELETAR_ENDERECO_USE_CASE.execute(id, endereco.getIdEndereco()));
+
+            // Limpar as coleções para evitar referências órfãs
+            cliente.getContatos().clear();
+            cliente.getEnderecos().clear();
+
+            // Marcar o cliente como inativo
             cliente.setAtivo(false);
             CLIENTE_REPOSITORY.save(cliente);
             log.info("Cliente ID {} deletado com sucesso", id);

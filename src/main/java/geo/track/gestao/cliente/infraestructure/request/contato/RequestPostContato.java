@@ -13,10 +13,8 @@ public class RequestPostContato {
     @NotBlank
     private String email;
 
-    @NotBlank
     private String nomeContato;
 
-    @NotBlank
     private String departamentoContato;
 }
 

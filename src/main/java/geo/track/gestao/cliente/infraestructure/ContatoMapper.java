@@ -53,10 +53,11 @@ public class ContatoMapper {
             return contato;
         }
 
-        contato.setTelefone(request.getTelefone());
-        contato.setEmail(request.getEmail());
-        contato.setNomeContato(request.getNomeContato());
-        contato.setDepartamento(request.getDepartamentoContato());
+        if (request.getTelefone() != null) contato.setTelefone(request.getTelefone());
+        if (request.getEmail() != null) contato.setEmail(request.getEmail());
+        if (request.getNomeContato() != null) contato.setNomeContato(request.getNomeContato());
+        if (request.getDepartamentoContato() != null) contato.setDepartamento(request.getDepartamentoContato());
+
         return contato;
     }
 }

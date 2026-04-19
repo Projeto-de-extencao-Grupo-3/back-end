@@ -28,6 +28,7 @@ public class ContatoService {
     public Contato buscarContatoPorId(Integer idCliente, Integer idContato) {
         log.info("Buscando contato ID {} para o cliente ID {}", idContato, idCliente);
         CLIENTE_SERVICE.buscarClientePorId(idCliente);
+        
         return CONTATO_REPOSITORY.findByIdContatoAndFkCliente_IdCliente(idContato, idCliente)
                 .orElseThrow(() -> new DataNotFoundException(ContatoExceptionMessages.CONTATO_NAO_ENCONTRADO, Domains.CONTATO));
     }

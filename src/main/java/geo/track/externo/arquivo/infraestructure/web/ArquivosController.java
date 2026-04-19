@@ -39,4 +39,13 @@ public class ArquivosController {
         var arquivo = ARQUIVO_SERVICE.buscarArquivo(idOrdemServico, Template.ORDEM_SERVICO);
         return ResponseEntity.status(200).body(ArquivoMapper.toResponse(arquivo));
     }
+
+    @PostMapping("/relatorio/mensal")
+    public ResponseEntity<Void> postRelatorioMensal(
+            @AuthenticationPrincipal UsuarioDetalhesDto usuario,
+            @RequestParam Integer mesReferencia,
+            @RequestParam Integer anoReferencia) {
+        ARQUIVO_SERVICE.solicitarGeracaoRelatorioMensal(usuario.getIdOficina(), mesReferencia, anoReferencia);
+        return ResponseEntity.status(201).build();
+    }
 }

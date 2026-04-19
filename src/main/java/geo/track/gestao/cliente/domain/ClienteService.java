@@ -37,7 +37,7 @@ public class ClienteService {
     }
 
     public Page<Cliente> listarClientesPaginados(Pageable pageable){
-        return CLIENTE_REPOSITORY.findAll(pageable);
+        return CLIENTE_REPOSITORY.findAllByAtivoTrue(pageable);
     }
 
     public Cliente buscarClientePorId(Integer id) {

@@ -1,9 +1,10 @@
 package geo.track.jornada.domain;
 
-import geo.track.jornada.domain.listagem.BuscaSimplesImplementation;
-import geo.track.jornada.domain.listagem.ListagemAnaliseFinanceiraImplementation;
-import geo.track.jornada.domain.listagem.ListagemPainelControleImplementation;
-import geo.track.jornada.domain.listagem.ListagemSimplesImplementation;
+import geo.track.jornada.application.JornadaStrategyRegistry;
+import geo.track.jornada.domain.listagem.BuscaSimples;
+import geo.track.jornada.domain.listagem.ListagemAnaliseFinanceira;
+import geo.track.jornada.domain.listagem.ListagemPainelControle;
+import geo.track.jornada.domain.listagem.ListagemSimples;
 import geo.track.jornada.infraestructure.request.ListagemJornadaParams;
 import geo.track.jornada.infraestructure.response.listagem.ListagemJornadaResponse;
 import geo.track.jornada.application.listagem.ListagemJornadaStrategy;
@@ -19,7 +20,7 @@ import java.util.List;
 @Service
 public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaParams, ListagemJornadaStrategy, Object> {
     private final List<Condition<ListagemJornadaParams, ListagemJornadaStrategy>> conditions = new ArrayList<>();
-    private final BuscaSimplesImplementation buscaSimplesImplementation;
+    private final BuscaSimples buscaSimples;
 
     /**
      * Executa a strategy de listagem apropriada baseada nos parâmetros
@@ -43,30 +44,30 @@ public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaP
      * @return resposta com dados do registro
      */
     public ListagemJornadaResponse execute(Integer id) {
-        return buscaSimplesImplementation.execute(id);
+        return buscaSimples.execute(id);
     }
 
     public ListagemService(
-            ListagemSimplesImplementation listagemSimplesImplementation,
-            ListagemPainelControleImplementation listagemPainelControleImplementation,
-            ListagemAnaliseFinanceiraImplementation listagemAnaliseFinanceiraImplementation,
-            BuscaSimplesImplementation buscaSimplesImplementation) {
-        this.buscaSimplesImplementation = buscaSimplesImplementation;
+            ListagemSimples listagemSimples,
+            ListagemPainelControle listagemPainelControle,
+            ListagemAnaliseFinanceira listagemAnaliseFinanceira,
+            BuscaSimples buscaSimples) {
+        this.buscaSimples = buscaSimples;
 
         // Mapeamento de condições para estratégias
         conditions.addAll(
                 List.of(
                         new Condition<ListagemJornadaParams, ListagemJornadaStrategy>(
                                 request -> request.isListagemSimples().equals(true),
-                                listagemSimplesImplementation
+                                listagemSimples
                         ),
                         new Condition<ListagemJornadaParams, ListagemJornadaStrategy>(
                                 request -> request.isListagemPainelControle().equals(true),
-                                listagemPainelControleImplementation
+                                listagemPainelControle
                         ),
                         new Condition<ListagemJornadaParams, ListagemJornadaStrategy>(
                                 request -> request.isListagemAnaliseFinanceira().equals(true),
-                                listagemAnaliseFinanceiraImplementation
+                                listagemAnaliseFinanceira
                         )
                 )
         );

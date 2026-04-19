@@ -1,6 +1,8 @@
 package geo.track.gestao.cliente.infraestructure.persistence;
 
 import geo.track.gestao.cliente.infraestructure.persistence.entity.Cliente;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,4 +21,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     @Query("SELECT c FROM Cliente c JOIN c.veiculos v WHERE v.placa = :placa AND c.ativo = true")
     Optional<Cliente> findByVeiculoPlacaAndAtivoTrue(String placa);
+
+    Page<Cliente> findAllByAtivoTrue(Pageable pageable);
 }

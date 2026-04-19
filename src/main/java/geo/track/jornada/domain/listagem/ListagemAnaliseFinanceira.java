@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemAnaliseFinanceiraImplementation implements ListagemAnaliseFinanceiraUseCase {
+public class ListagemAnaliseFinanceira implements ListagemAnaliseFinanceiraUseCase {
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
     @Override

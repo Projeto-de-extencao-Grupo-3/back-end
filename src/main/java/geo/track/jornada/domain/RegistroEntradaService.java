@@ -19,11 +19,6 @@ public class RegistroEntradaService{
     private final RegistroEntradaRepository REGISTRO_ENTRADA_REPOSITORY;
     private final Log log;
 
-    public List<RegistroEntrada> listarEntradas(){
-        log.info("Listando todos os registros de entrada.");
-        return REGISTRO_ENTRADA_REPOSITORY.findAll();
-    }
-
     public RegistroEntrada buscarEntradaPorId(Integer idRegistro){
         log.info("Buscando registro de entrada ID: {}", idRegistro);
         Optional<RegistroEntrada> registro = REGISTRO_ENTRADA_REPOSITORY.findById(idRegistro);

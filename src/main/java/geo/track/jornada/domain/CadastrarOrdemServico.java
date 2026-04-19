@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
-public class CadastrarOrdemServicoImplementation implements CadastrarOrdemServicoUseCase {
+public class CadastrarOrdemServico implements CadastrarOrdemServicoUseCase {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     public geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico execute(Status status) {

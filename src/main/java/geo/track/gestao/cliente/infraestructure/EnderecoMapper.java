@@ -25,6 +25,7 @@ public class EnderecoMapper {
         response.setBairro(entity.getBairro());
         response.setCidade(entity.getCidade());
         response.setEstado(entity.getEstado());
+        response.setCorrespondencia(entity.getCorrespondencia());
 
         return response;
     }

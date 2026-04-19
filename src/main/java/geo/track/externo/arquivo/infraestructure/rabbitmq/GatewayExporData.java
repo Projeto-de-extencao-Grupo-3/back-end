@@ -12,16 +12,31 @@ import org.springframework.stereotype.Service;
 public class GatewayExporData {
     private final RabbitTemplate rabbitTemplate;
 
-    public Boolean solicitarArquivo(OrdemDeServicoResponse ordemDeServico, String routingKey) {
+    public <T> Boolean solicitarArquivo (T dadosArquivo, String routingKey, Integer mesReferencia, Integer anoReferencia) {
         try {
-            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_PROJETO, routingKey, ordemDeServico, message -> {
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_PROJETO, routingKey, dadosArquivo, message -> {
                 MessageProperties props = message.getMessageProperties();
+                props.setHeader("mesReferencia", mesReferencia);
+                props.setHeader("anoReferencia", anoReferencia);
                 return message;
             });
         } catch (Exception e) {
             return false;
         }
 
+        return true;
+    }
+
+
+    public <T> Boolean solicitarArquivo (T dadosArquivo, String routingKey) {
+        try {
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_PROJETO, routingKey, dadosArquivo, message -> {
+                MessageProperties props = message.getMessageProperties();
+                return message;
+            });
+        } catch (Exception e) {
+            return false;
+        }
 
         return true;
     }

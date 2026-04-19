@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemSimplesImplementation implements ListagemSimplesUseCase {
+public class ListagemSimples implements ListagemSimplesUseCase {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override

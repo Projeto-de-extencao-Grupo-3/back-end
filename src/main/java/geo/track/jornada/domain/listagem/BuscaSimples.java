@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class BuscaSimplesImplementation implements BuscaSimplesUseCase {
+public class BuscaSimples implements BuscaSimplesUseCase {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
 
     @Override
