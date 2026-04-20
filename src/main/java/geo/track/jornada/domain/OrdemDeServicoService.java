@@ -58,32 +58,6 @@ public class OrdemDeServicoService {
         return ordem.get();
     }
 
-    public void deletarOrdemServico(Integer idOrdem){
-        Log.info("Tentando deletar Ordem de Serviço ID: {}", idOrdem);
-        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(idOrdem);
-
-        if (ordemOPT.isEmpty()) {
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
-        }
-
-        OrdemDeServico ordem = ordemOPT.get();
-        RegistroEntrada entrada = ordem.getFkEntrada();
-
-        List<ItemServico> servicos = ITEM_SERVICO_SERVICE.listarPelaOrdemServico(ordem);
-
-        if (!servicos.isEmpty()) {
-            throw new BadRequestException(OrdemDeServicoExceptionMessages.ORDEM_NAO_PODE_SER_DELETADA_COM_SERVICOS, Domains.ORDEM_DE_SERVICO);
-        }
-
-        if (entrada == null){
-            throw new ForbiddenException(OrdemDeServicoExceptionMessages.SOLICITACAO_RECUSADA, Domains.ORDEM_DE_SERVICO);
-        }
-
-        // verificar se tem serviços atrelado
-        ORDEM_REPOSITORY.delete(ordem);
-        Log.info("Ordem de Serviço ID: {} deletada com sucesso", idOrdem);
-    }
-
     public List<OrdemDeServico> buscarOrdemServicoPorPlaca(String placa) {
         Log.info("Buscando Ordens de Serviço pela placa: {}", placa);
         return ORDEM_REPOSITORY.findByPlaca(placa);

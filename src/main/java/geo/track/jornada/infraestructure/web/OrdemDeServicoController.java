@@ -75,10 +75,4 @@ public class OrdemDeServicoController {
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
         return ResponseEntity.status(200).body(OrdemDeServicoMapper.toResponse(ordem));
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrdem(@PathVariable Integer id) {
-        ORDEM_SERVICO_SERVICE.deletarOrdemServico(id);
-        return ResponseEntity.status(204).build();
-    }
 }
