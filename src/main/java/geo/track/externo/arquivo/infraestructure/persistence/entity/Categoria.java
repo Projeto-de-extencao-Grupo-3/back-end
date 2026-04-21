@@ -1,6 +1,7 @@
 package geo.track.externo.arquivo.infraestructure.persistence.entity;
 
-public enum Template {
+public enum Categoria {
     ORDEM_SERVICO,
-    RELATORIO, ORCAMENTO
+    ORCAMENTO,
+    RELATORIO
 }

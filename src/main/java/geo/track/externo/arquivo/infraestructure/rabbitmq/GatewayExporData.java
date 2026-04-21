@@ -12,32 +12,19 @@ import org.springframework.stereotype.Service;
 public class GatewayExporData {
     private final RabbitTemplate rabbitTemplate;
 
-    public <T> Boolean solicitarArquivo (T dadosArquivo, String routingKey, Integer mesReferencia, Integer anoReferencia) {
+    public <T> Boolean solicitarArquivo (T dadosArquivo, String routingKey, Integer idOficina) {
         try {
             rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_PROJETO, routingKey, dadosArquivo, message -> {
                 MessageProperties props = message.getMessageProperties();
-                props.setHeader("mesReferencia", mesReferencia);
-                props.setHeader("anoReferencia", anoReferencia);
+                props.setHeader("idOficina", idOficina);
                 return message;
             });
         } catch (Exception e) {
+            System.out.println("Erro ao enviar mensagem para RabbitMQ: " + e.getMessage());
             return false;
         }
 
         return true;
     }
 
-
-    public <T> Boolean solicitarArquivo (T dadosArquivo, String routingKey) {
-        try {
-            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_PROJETO, routingKey, dadosArquivo, message -> {
-                MessageProperties props = message.getMessageProperties();
-                return message;
-            });
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
-    }
 }

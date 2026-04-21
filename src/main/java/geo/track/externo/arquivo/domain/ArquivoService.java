@@ -1,13 +1,12 @@
 package geo.track.externo.arquivo.domain;
 
+import geo.track.externo.arquivo.domain.model.RelatorioOrdemDeServico;
+import geo.track.externo.arquivo.infraestructure.persistence.entity.Categoria;
 import geo.track.externo.arquivo.infraestructure.rabbitmq.GatewayExporData;
 import geo.track.infraestructure.config.rabbitMQ.RabbitMQConfig;
 import geo.track.externo.arquivo.infraestructure.persistence.entity.Arquivo;
 import geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico;
-import geo.track.externo.arquivo.infraestructure.persistence.entity.Formato;
-import geo.track.externo.arquivo.infraestructure.persistence.entity.StatusArquivo;
-import geo.track.externo.arquivo.infraestructure.persistence.entity.Template;
-import geo.track.infraestructure.exception.AcceptedException;
+    import geo.track.externo.arquivo.infraestructure.persistence.entity.Formato;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.ServiceUnavailableException;
 import geo.track.infraestructure.exception.constraint.message.ArquivoExceptionMessages;
@@ -16,13 +15,11 @@ import geo.track.infraestructure.log.Log;
 import geo.track.jornada.infraestructure.mapper.OrdemDeServicoMapper;
 import geo.track.externo.arquivo.infraestructure.persistence.ArquivoRepository;
 import geo.track.jornada.domain.OrdemDeServicoService;
-import geo.track.jornada.infraestructure.response.listagem.OrdemDeServicoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,24 +29,22 @@ public class ArquivoService {
     private final ArquivoRepository ARQUIVO_REPOSITORY;
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
     private final GatewayExporData GATEWAY_EXPORT_DATA;
-    private final HashMap<Template, String> routingKeyMap = new HashMap<>();
+    private final HashMap<Categoria, String> routingKeyMap = new HashMap<>();
     private final Log log;
 
     {
-        routingKeyMap.put(Template.ORCAMENTO, RabbitMQConfig.ROUTING_KEY_ORCAMENTO);
-        routingKeyMap.put(Template.ORDEM_SERVICO, RabbitMQConfig.ROUTING_KEY_ORDEM_SERVICO);
+        routingKeyMap.put(Categoria.ORCAMENTO, RabbitMQConfig.ROUTING_KEY_ORCAMENTO);
+        routingKeyMap.put(Categoria.ORDEM_SERVICO, RabbitMQConfig.ROUTING_KEY_ORDEM_SERVICO);
     }
 
     @Transactional
-    public void solicitarGeracao(Integer idOrdem, Integer idOficina, Template template) {
+    public void solicitarGeracao(Integer idOrdem, Integer idOficina, Categoria categoria) {
         log.info("Iniciando solicitação de geração de arquivo de Ordem de Serviço. Ordem ID: {}, Oficina ID: {}", idOrdem, idOficina);
         OrdemDeServico ordem = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorId(idOrdem);
 
-        String routingKey = routingKeyMap.get(template);
+        String routingKey = routingKeyMap.get(categoria);
 
-        this.garantirRegistroArquivo(ordem.getIdOrdemServico(), template);
-
-        boolean sucesso = GATEWAY_EXPORT_DATA.solicitarArquivo(OrdemDeServicoMapper.toResponse(ordem), routingKey);
+        boolean sucesso = GATEWAY_EXPORT_DATA.solicitarArquivo(OrdemDeServicoMapper.toResponse(ordem), routingKey, idOficina);
 
         if (!sucesso) {
             log.error("Falha ao enviar solicitação para a fila do RabbitMQ. Routing Key: {}", routingKey);
@@ -58,32 +53,13 @@ public class ArquivoService {
         log.info("Solicitação de geração de arquivo de Ordem de Serviço enviada com sucesso.");
     }
 
-    public Arquivo buscarArquivo (Integer idOrdem, Template template) {
-        log.info("Buscando status/arquivo do {} para a Ordem ID: {}", template, idOrdem);
-        Arquivo arquivo = ARQUIVO_REPOSITORY.findByFkOrdemServicoAndTemplate(idOrdem, template)
-                .orElseThrow(() -> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
+    public Arquivo buscarArquivo (Integer idOrdem, Categoria categoria) {
+        log.info("Buscando status/arquivo do {} para a Ordem ID: {}", categoria, idOrdem);
+//        Arquivo arquivo = ARQUIVO_REPOSITORY.findByFkOrdemServicoAndCategoria(idOrdem, categoria)
+//                .orElseThrow(() -> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
 
-        validarStatusConcluido(arquivo);
-        return arquivo;
-    }
-
-    private void garantirRegistroArquivo(Integer idOrdemServico, Template template) {
-        if (!ARQUIVO_REPOSITORY.existsByFkOrdemServicoAndTemplate(idOrdemServico, template)) {
-            log.info("Registrando novo arquivo no banco com status A_FAZER. Ordem ID: {}, Template: {}", idOrdemServico, template);
-            ARQUIVO_REPOSITORY.save(Arquivo.builder()
-                    .formato(Formato.PDF)
-                    .fkOrdemServico(idOrdemServico)
-                    .template(template)
-                    .status(StatusArquivo.A_FAZER)
-                    .build());
-        }
-    }
-
-    private void validarStatusConcluido(Arquivo arquivo) {
-        if (!StatusArquivo.CONCLUIDO.equals(arquivo.getStatus())) {
-            log.warn("Tentativa de acessar arquivo que ainda não está concluído. Arquivo ID: {}, Status: {}", arquivo.getIdArquivo(), arquivo.getStatus());
-            throw new AcceptedException(ArquivoExceptionMessages.ARQUIVO_NAO_CONCLUIDO, Domains.ARQUIVO);
-        }
+//        return arquivo;
+        return null;
     }
 
     public void solicitarGeracaoRelatorioMensal(Integer idOficina, Integer mesReferencia, Integer anoReferencia) {
@@ -91,8 +67,15 @@ public class ArquivoService {
         log.info("Iniciando solicitação de geração de relatório mensal. Oficina ID: {}, Mês Referência: {}, Ano Referência: {}", idOficina, mesReferencia, anoReferencia);
 
         List<OrdemDeServico> ordens = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(dataReferencia);
-        this.garantirRegistroArquivo(ordens.getFirst().getIdOrdemServico(), Template.RELATORIO);
 
-        boolean sucesso = GATEWAY_EXPORT_DATA.solicitarArquivo(ordens.stream().map(OrdemDeServicoMapper::toResponse).toList(), RabbitMQConfig.ROUTING_KEY_RELATORIO, mesReferencia, anoReferencia);
+        RelatorioOrdemDeServico relatorioModel = RelatorioOrdemDeServico.build(ordens, mesReferencia, anoReferencia);
+
+        boolean sucesso = GATEWAY_EXPORT_DATA.solicitarArquivo(relatorioModel, RabbitMQConfig.ROUTING_KEY_RELATORIO, idOficina);
+
+        if (!sucesso) {
+            log.error("Falha ao enviar solicitação para a fila do RabbitMQ. Routing Key: {}", RabbitMQConfig.ROUTING_KEY_RELATORIO);
+            throw new ServiceUnavailableException(Domains.ARQUIVO, ArquivoExceptionMessages.INDISPONIBILIDADE_SERVICO);
+        }
+        log.info("Solicitação de geração de arquivo de Ordem de Serviço enviada com sucesso.");
     }
 }

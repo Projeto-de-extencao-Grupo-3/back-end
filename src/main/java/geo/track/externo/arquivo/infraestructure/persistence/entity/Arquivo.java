@@ -1,5 +1,6 @@
 package geo.track.externo.arquivo.infraestructure.persistence.entity;
 
+import geo.track.gestao.oficina.infraestructure.persistence.entity.Oficina;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,21 +24,20 @@ public class Arquivo {
     private String nome;
 
     @Enumerated(EnumType.STRING)
-    private Formato formato;
+    private Categoria categoria;
 
     @Enumerated(EnumType.STRING)
-    private Template template;
+    private Formato formato;
 
     private String url;
 
     private LocalDateTime dataCriacao;
 
-    @Enumerated(EnumType.STRING)
-    private StatusArquivo status;
-
     private LocalDateTime dataAtualizacao;
 
-    private Integer fkOrdemServico;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_oficina", nullable = false)
+    private Oficina oficina;
 
     @OneToMany(mappedBy = "arquivo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Metadado> metadados;
