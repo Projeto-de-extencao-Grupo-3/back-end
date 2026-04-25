@@ -7,11 +7,10 @@ public enum ParteVeiculo {
     CAPO,
     PARABRISA,
     ITINERARIO,
-    PAINEL_FRONTAL,
+    PAINEL,
 
     // Traseira
     TAMPA_MOTOR,
-    PAINEL_TRASEIRO,
     VIGIA, // Vidro traseiro
 
     // Lateral e Cobertura
@@ -29,6 +28,7 @@ public enum ParteVeiculo {
     PORTA_EMERGENCIA,
     PORTA_BAGAGEIRO,
     PORTA_ESTEPE,
+    PORTA,
 
     // Interior e Componentes
     PAINEL_INSTRUMENTOS,
