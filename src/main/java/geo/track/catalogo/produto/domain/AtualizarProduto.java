@@ -1,6 +1,6 @@
 package geo.track.catalogo.produto.domain;
 
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.catalogo.produto.infraestructure.persistence.ProdutoRepository;
 import geo.track.catalogo.produto.application.AtualizarProdutoUseCase;
 import geo.track.catalogo.produto.infraestructure.ProdutoMapper;

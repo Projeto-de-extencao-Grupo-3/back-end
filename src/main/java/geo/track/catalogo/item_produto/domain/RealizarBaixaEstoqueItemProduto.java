@@ -1,7 +1,7 @@
 package geo.track.catalogo.item_produto.domain;
 
 import geo.track.catalogo.item_produto.infraestructure.persistence.entity.ItemProduto;
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.catalogo.item_produto.infraestructure.persistence.ItemProdutoRepository;
 import geo.track.catalogo.item_produto.application.RealizarBaixaEstoqueItemProdutoUseCase;
 import geo.track.infraestructure.exception.BadBusinessRuleException;

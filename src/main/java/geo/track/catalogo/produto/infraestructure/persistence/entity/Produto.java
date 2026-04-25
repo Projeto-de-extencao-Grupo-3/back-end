@@ -1,4 +1,4 @@
-package geo.track.catalogo.produto.domain.entity;
+package geo.track.catalogo.produto.infraestructure.persistence.entity;
 
 import geo.track.catalogo.item_produto.infraestructure.persistence.entity.ItemProduto;
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.Servico;

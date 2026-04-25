@@ -1,7 +1,7 @@
 package geo.track.catalogo.produto.infraestructure.web;
 
 import geo.track.catalogo.produto.application.*;
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.catalogo.produto.infraestructure.request.ProdutoRequest;
 import geo.track.catalogo.produto.infraestructure.response.ProdutoResponse;
 import geo.track.catalogo.produto.infraestructure.request.RequestPatchPrecoCompra;
@@ -9,9 +9,6 @@ import geo.track.catalogo.produto.infraestructure.request.RequestPatchPrecoVenda
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.Servico;
 import geo.track.catalogo.produto.infraestructure.ProdutoMapper;
 import geo.track.catalogo.produto.domain.ProdutoService;
-import geo.track.gestao.cliente.infraestructure.ClientesMapper;
-import geo.track.gestao.cliente.infraestructure.persistence.entity.Cliente;
-import geo.track.gestao.cliente.infraestructure.response.cliente.ClienteResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

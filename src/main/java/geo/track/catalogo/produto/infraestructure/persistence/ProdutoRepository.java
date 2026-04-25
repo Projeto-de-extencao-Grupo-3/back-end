@@ -1,8 +1,7 @@
 package geo.track.catalogo.produto.infraestructure.persistence;
 
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.Servico;
-import geo.track.gestao.cliente.infraestructure.persistence.entity.Cliente;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

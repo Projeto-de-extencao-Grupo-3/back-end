@@ -1,6 +1,6 @@
 package geo.track.catalogo.item_produto.infraestructure.persistence.entity;
 
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
