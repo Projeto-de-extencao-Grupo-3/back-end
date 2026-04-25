@@ -10,4 +10,5 @@ public class FuncionarioResponse {
     private String especialidade;
     private String telefone;
     private Integer idOficina;
+    private Boolean possuiLogin;
 }

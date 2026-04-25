@@ -17,11 +17,11 @@ public class DeletarProduto implements DeletarProdutoUseCase {
     private final Log log;
 
     public void execute(Integer id) {
-        // Verifica se existe alguma ordem de serviço na jornada associada a este item de produto antes de permitir a exclusão
-        if (ORDEM_SERVICO_SERVICE.existeOrdemServicoAbertaUsandoProduto(id)) {
-            log.warn("Falha ao deletar item de produto ID {}: existem ordens de serviço não finalizadas associadas", id);
-            throw new RuntimeException(String.format("Item de produto ID %d não pode ser deletado: existem ordens de serviço não finalizadas associadas", id));
-        }
+//        // Verifica se existe alguma ordem de serviço na jornada associada a este item de produto antes de permitir a exclusão
+//        if (ORDEM_SERVICO_SERVICE.existeOrdemServicoAbertaUsandoProduto(id)) {
+//            log.warn("Falha ao deletar item de produto ID {}: existem ordens de serviço não finalizadas associadas", id);
+//            throw new RuntimeException(String.format("Item de produto ID %d não pode ser deletado: existem ordens de serviço não finalizadas associadas", id));
+//        }
 
         Produto produto = PRODUTO_SERVICE.buscarProdutosPorId(id);
 

@@ -13,8 +13,12 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class CadastrarOrdemServico implements CadastrarOrdemServicoUseCase {
     private final OrdemDeServicoRepository ORDEM_SERVICO_REPOSITORY;
+    private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
-    public geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico execute(Status status) {
+    public geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico execute(Status status, Integer fkVeiculo) {
+
+        ORDEM_SERVICO_SERVICE.existeOrdemServicoAbertaPorVeiculo(fkVeiculo);
+
         OrdemDeServico ordemDeServico = new OrdemDeServico();
         ordemDeServico.setStatus(status);
         ordemDeServico.setAtivo(true);

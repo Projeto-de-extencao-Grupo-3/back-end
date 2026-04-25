@@ -26,6 +26,9 @@ public class FuncionarioMapper {
         response.setCargo(entity.getCargo());
         response.setEspecialidade(entity.getEspecialidade());
         response.setTelefone(entity.getTelefone());
+        response.setPossuiLogin(false);
+
+        if (entity.getEmail() != null && entity.getSenha() != null) response.setPossuiLogin(true);
 
         if (entity.getFkOficina() != null) {
             response.setIdOficina(entity.getFkOficina().getIdOficina());

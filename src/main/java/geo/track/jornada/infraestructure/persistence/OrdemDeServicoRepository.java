@@ -59,4 +59,7 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o JOIN o.produtos p WHERE p.fkProduto.idProduto = :idProduto AND o.status <> :status")
     Boolean existsByIdProduto(@Param("idProduto") Integer idProduto, @Param("status") Status status);
+
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo AND o.status <> 'FINALIZADO'")
+    Boolean existsByIdVeiculo(@Param("idVeiculo") Integer idVeiculo);
 }

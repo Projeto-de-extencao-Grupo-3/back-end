@@ -123,4 +123,11 @@ public class OrdemDeServicoService {
     public Boolean existeOrdemServicoAbertaUsandoProduto(Integer idProduto) {
         return ORDEM_REPOSITORY.existsByIdProduto(idProduto, Status.FINALIZADO);
     }
+
+    public void existeOrdemServicoAbertaPorVeiculo(Integer fkVeiculo) {
+        Boolean existeOrdemAberta = ORDEM_REPOSITORY.existsByIdVeiculo(fkVeiculo);
+        if (existeOrdemAberta) {
+            throw new ForbiddenException(OrdemDeServicoExceptionMessages.EXISTE_ORDEM_ABERTA_POR_VEICULO, Domains.ORDEM_DE_SERVICO);
+        }
+    }
 }
