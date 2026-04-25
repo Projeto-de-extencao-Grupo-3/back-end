@@ -28,11 +28,11 @@ public class ProdutoService {
     }
 
     public Page<Produto> listarProdutosPorTipoServico(Servico tipo, Pageable pageable){
-        return PRODUTO_REPOSITORY.findByTipoServico(tipo, pageable);
+        return PRODUTO_REPOSITORY.findByTipoServicoAndAtivoTrue(tipo, pageable);
     }
 
     public Page<Produto> listarProdutosPaginados(Pageable pageable){
-        return PRODUTO_REPOSITORY.findAll(pageable);
+        return PRODUTO_REPOSITORY.findByAtivoTrue(pageable);
     }
 
     public HashMap<String, List<Produto>> listarChaveadaProdutosPorStatus(){

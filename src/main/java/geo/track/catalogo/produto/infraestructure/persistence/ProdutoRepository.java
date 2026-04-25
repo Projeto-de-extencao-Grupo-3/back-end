@@ -13,6 +13,6 @@ public interface ProdutoRepository extends JpaRepository<Produto,Integer> {
     Optional<Produto> findByIdProdutoAndAtivoTrue(Integer idProduto);
     boolean existsByIdProdutoAndAtivoTrue(Integer idProduto);
     List<Produto> findByTipoServico(Servico tipoServico);
-
-    Page<Produto> findByTipoServico(Servico tipoServico, Pageable pageable);
+    Page<Produto> findByAtivoTrue(Pageable pageable);
+    Page<Produto> findByTipoServicoAndAtivoTrue(Servico tipo, Pageable pageable);
 }
