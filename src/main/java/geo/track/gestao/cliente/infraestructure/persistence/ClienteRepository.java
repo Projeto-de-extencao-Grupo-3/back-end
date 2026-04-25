@@ -14,6 +14,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
     Optional<Cliente> findByIdClienteAndAtivoTrue(Integer idCliente);
 
     List<Cliente> findByNomeContainingIgnoreCaseAndAtivoTrue(String nome);
+    Page<Cliente> findByNomeContainingIgnoreCaseAndAtivoTrue(Pageable pageable, String nome);
+
     List<Cliente> findByNomeContainingIgnoreCaseAndCpfCnpjContainingIgnoreCaseAndAtivoTrue(String nome, String cpfCnpj);
     List<Cliente> findByCpfCnpjContainingIgnoreCaseAndAtivoTrue(String cpfCnpj);
 

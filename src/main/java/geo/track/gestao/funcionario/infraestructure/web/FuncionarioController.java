@@ -1,5 +1,8 @@
 package geo.track.gestao.funcionario.infraestructure.web;
 
+import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.ProdutoMapper;
+import geo.track.catalogo.produto.infraestructure.response.ProdutoResponse;
 import geo.track.gestao.funcionario.infraestructure.persistence.entity.Funcionario;
 import geo.track.gestao.funcionario.infraestructure.request.RequestPostFuncionario;
 import geo.track.gestao.funcionario.infraestructure.response.FuncionarioResponse;
@@ -40,6 +43,20 @@ public class FuncionarioController implements FuncionarioSwagger {
     public ResponseEntity<List<FuncionarioResponse>> listarFuncionarios(){
         List<Funcionario> lista = FUNCIONARIO_SERVICE.listarFuncionarios();
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(lista));
+    }
+
+    @GetMapping("/busca/nome")
+    public ResponseEntity<Page<FuncionarioResponse>> listarFuncionariosPorNomePaginado(
+            @PageableDefault(size = 8, sort = "idFuncionario") Pageable pageable,
+            @RequestParam(required = true) String nome
+    ){
+        Page<Funcionario> funcionarios = FUNCIONARIO_SERVICE.listarFuncionariosPorNomePaginado(pageable, nome);
+
+        if (funcionarios.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        Page<FuncionarioResponse> response = funcionarios.map(FuncionarioMapper::toResponse);
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/funcionarios-paginados")

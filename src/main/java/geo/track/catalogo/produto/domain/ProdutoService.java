@@ -27,6 +27,10 @@ public class ProdutoService {
         return PRODUTO_REPOSITORY.findByAtivoTrue();
     }
 
+    public Page<Produto> listarProdutosPorNomePaginado(String nome, Pageable pageable){
+        return PRODUTO_REPOSITORY.findByNomeContainingIgnoreCaseAndAtivoTrue(pageable, nome);
+    }
+
     public Page<Produto> listarProdutosPorTipoServico(Servico tipo, Pageable pageable){
         return PRODUTO_REPOSITORY.findByTipoServicoAndAtivoTrue(tipo, pageable);
     }

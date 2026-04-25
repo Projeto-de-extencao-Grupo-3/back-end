@@ -24,6 +24,10 @@ public class FuncionarioService {
         return FUNCIONARIO_REPOSITORY.findAll();
     }
 
+    public Page<Funcionario> listarFuncionariosPorNomePaginado(Pageable pageable, String nome){
+        return FUNCIONARIO_REPOSITORY.findByNomeContainingIgnoreCase(nome, pageable);
+    }
+
     public Page<Funcionario> listarFuncionariosPaginados(Pageable pageable){
         log.info("Buscando lista completa de funcionarios paginados.");
         return FUNCIONARIO_REPOSITORY.findAll(pageable);

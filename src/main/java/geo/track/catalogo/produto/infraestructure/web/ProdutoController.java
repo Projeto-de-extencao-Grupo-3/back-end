@@ -9,6 +9,9 @@ import geo.track.catalogo.produto.infraestructure.request.RequestPatchPrecoVenda
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.Servico;
 import geo.track.catalogo.produto.infraestructure.ProdutoMapper;
 import geo.track.catalogo.produto.domain.ProdutoService;
+import geo.track.gestao.cliente.infraestructure.ClientesMapper;
+import geo.track.gestao.cliente.infraestructure.persistence.entity.Cliente;
+import geo.track.gestao.cliente.infraestructure.response.cliente.ClienteResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -49,6 +52,20 @@ public class ProdutoController implements ProdutoSwagger {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(ProdutoMapper.toResponse(produtos));
+    }
+
+    @GetMapping("/busca/nome")
+    public ResponseEntity<Page<ProdutoResponse>> findAllProdutosPorNomePaginado(
+            @PageableDefault(size = 8, sort = "idProduto") Pageable pageable,
+            @RequestParam(required = true) String nome
+    ) {
+        Page<Produto> produtos = PRODUTO_SERVICE.listarProdutosPorNomePaginado(nome, pageable);
+
+        if (produtos.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        Page<ProdutoResponse> response = produtos.map(ProdutoMapper::toResponse);
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/status")

@@ -36,6 +36,10 @@ public class ClienteService {
         }
     }
 
+    public Page<Cliente> listarClientesPorNomePaginados(Pageable pageable, String nome){
+        return CLIENTE_REPOSITORY.findByNomeContainingIgnoreCaseAndAtivoTrue(pageable, nome);
+    }
+
     public Page<Cliente> listarClientesPaginados(Pageable pageable){
         return CLIENTE_REPOSITORY.findAllByAtivoTrue(pageable);
     }
