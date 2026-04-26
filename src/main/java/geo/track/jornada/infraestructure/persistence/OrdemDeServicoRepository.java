@@ -62,4 +62,7 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo AND o.status <> 'FINALIZADO'")
     Boolean existsByIdVeiculo(@Param("idVeiculo") Integer idVeiculo);
+
+    @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva BETWEEN :dataInicio AND :dataFim")
+    List<OrdemDeServico> findAllByDataInicioAndDataFim(@Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);
 }

@@ -5,8 +5,8 @@ import geo.track.externo.arquivo.infraestructure.persistence.entity.Categoria;
 import geo.track.externo.arquivo.infraestructure.rabbitmq.GatewayExporData;
 import geo.track.infraestructure.config.rabbitMQ.RabbitMQConfig;
 import geo.track.externo.arquivo.infraestructure.persistence.entity.Arquivo;
+import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico;
-    import geo.track.externo.arquivo.infraestructure.persistence.entity.Formato;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.ServiceUnavailableException;
 import geo.track.infraestructure.exception.constraint.message.ArquivoExceptionMessages;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,18 +56,21 @@ public class ArquivoService {
 
     public Arquivo buscarArquivo (Integer idOrdem, Categoria categoria) {
         log.info("Buscando status/arquivo do {} para a Ordem ID: {}", categoria, idOrdem);
-//        Arquivo arquivo = ARQUIVO_REPOSITORY.findByFkOrdemServicoAndCategoria(idOrdem, categoria)
-//                .orElseThrow(() -> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
+        Arquivo arquivo = ARQUIVO_REPOSITORY.findByFkOrdemServicoAndCategoria(idOrdem, categoria)
+                .orElseThrow(() -> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
 
-//        return arquivo;
-        return null;
+        return arquivo;
     }
 
     public void solicitarGeracaoRelatorioMensal(Integer idOficina, Integer mesReferencia, Integer anoReferencia) {
-        LocalDate dataReferencia = LocalDate.of(anoReferencia, mesReferencia, 1);
+        LocalDate dataInicio = LocalDate.of(anoReferencia, mesReferencia, 1);
+        LocalDate dataFim = dataInicio.with(TemporalAdjusters.lastDayOfMonth());
+
         log.info("Iniciando solicitação de geração de relatório mensal. Oficina ID: {}, Mês Referência: {}, Ano Referência: {}", idOficina, mesReferencia, anoReferencia);
 
-        List<OrdemDeServico> ordens = ORDEM_SERVICO_SERVICE.listarOrdensServicoIntervaloMeses(dataReferencia);
+        List<OrdemDeServico> ordens = ORDEM_SERVICO_SERVICE.listarOrdensServicoEntreDataInicioEDataFim(dataInicio, dataFim);
+
+        if (ordens.isEmpty()) throw new BadBusinessRuleException(ArquivoExceptionMessages.FALTA_ORDENS_PARA_RELATORIO, Domains.ARQUIVO);
 
         RelatorioOrdemDeServico relatorioModel = RelatorioOrdemDeServico.build(ordens, mesReferencia, anoReferencia);
 
@@ -77,5 +81,13 @@ public class ArquivoService {
             throw new ServiceUnavailableException(Domains.ARQUIVO, ArquivoExceptionMessages.INDISPONIBILIDADE_SERVICO);
         }
         log.info("Solicitação de geração de arquivo de Ordem de Serviço enviada com sucesso.");
+    }
+
+    public Arquivo buscarArquivoRelatorioMensal(Integer idOficina, Integer mesReferencia, Integer anoReferencia) {
+        log.info("Buscando status/arquivo do relatório mensal para Oficina ID: {}, Mês Referência: {}, Ano Referência: {}", idOficina, mesReferencia, anoReferencia);
+        Arquivo arquivo = ARQUIVO_REPOSITORY.findRelatorioByFkOficinaAndAnoMesReferencia(Categoria.RELATORIO, idOficina, String.format("%04d/%02d", anoReferencia, mesReferencia))
+                .orElseThrow(() -> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
+
+        return arquivo;
     }
 }

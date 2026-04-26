@@ -130,4 +130,10 @@ public class OrdemDeServicoService {
             throw new ForbiddenException(OrdemDeServicoExceptionMessages.EXISTE_ORDEM_ABERTA_POR_VEICULO, Domains.ORDEM_DE_SERVICO);
         }
     }
+
+    public List<OrdemDeServico> listarOrdensServicoEntreDataInicioEDataFim(LocalDate dataInicio, LocalDate dataFim) {
+        System.out.println(dataInicio);
+        System.out.println(dataFim);
+        return ORDEM_REPOSITORY.findAllByDataInicioAndDataFim(dataInicio, dataFim);
+    }
 }
