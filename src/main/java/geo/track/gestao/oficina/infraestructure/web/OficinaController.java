@@ -27,7 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OficinaController implements OficinaSwagger {
     private final OficinaService OFICINA_SERVICE;
-    public static class ExceptionBody { public int status; public String title; }
     private final CadastrarOficinaUseCase CADASTRAR_OFICINA_USECASE;
     private final AtualizarOficinaUseCase ATUALIZAR_OFICINA_USECASE;
     private final AlterarStatusOficinaUseCase ALTERAR_STATUS_OFICINA_USECASE;
@@ -72,7 +71,7 @@ public class OficinaController implements OficinaSwagger {
 
     @Override
     @GetMapping("/razao-social")
-    public ResponseEntity<List<OficinaResponse>> getEmpresaByRazaoSocial(@PathVariable String razaoSocial){
+    public ResponseEntity<List<OficinaResponse>> getEmpresaByRazaoSocial(@RequestParam String razaoSocial){
         log.info("Buscando oficinas pela Razão Social: {}", razaoSocial);
         List<Oficina> lista = OFICINA_SERVICE.buscarOficinaPorRazaoSocial(razaoSocial);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(lista));
@@ -80,7 +79,7 @@ public class OficinaController implements OficinaSwagger {
 
     @Override
     @GetMapping("/cnpj")
-    public ResponseEntity<OficinaResponse> findEmpresaByCNPJ(@PathVariable String cnpj){
+    public ResponseEntity<OficinaResponse> findEmpresaByCNPJ(@RequestParam String cnpj){
         log.info("Buscando oficina pelo CNPJ: {}", cnpj);
         Oficina emp = OFICINA_SERVICE.buscarOficinaPorCnpj(cnpj);
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(emp));
@@ -104,6 +103,7 @@ public class OficinaController implements OficinaSwagger {
         return ResponseEntity.status(200).body(OficinaMapper.toResponse(emp));
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removerEmpresa(@PathVariable Integer id){
         log.warn("Solicitação para remover oficina com ID: {}", id);
