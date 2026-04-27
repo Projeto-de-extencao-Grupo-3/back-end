@@ -1,6 +1,7 @@
 package geo.track.jornada.domain;
 
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.ItemServico;
+import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico;
 import geo.track.jornada.infraestructure.persistence.entity.RegistroEntrada;
 import geo.track.jornada.infraestructure.persistence.entity.Status;
@@ -127,7 +128,7 @@ public class OrdemDeServicoService {
     public void existeOrdemServicoAbertaPorVeiculo(Integer fkVeiculo) {
         Boolean existeOrdemAberta = ORDEM_REPOSITORY.existsByIdVeiculo(fkVeiculo);
         if (existeOrdemAberta) {
-            throw new ForbiddenException(OrdemDeServicoExceptionMessages.EXISTE_ORDEM_ABERTA_POR_VEICULO, Domains.ORDEM_DE_SERVICO);
+            throw new BadBusinessRuleException(OrdemDeServicoExceptionMessages.EXISTE_ORDEM_ABERTA_POR_VEICULO, Domains.ORDEM_DE_SERVICO);
         }
     }
 

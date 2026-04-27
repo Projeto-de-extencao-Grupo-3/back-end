@@ -1,5 +1,7 @@
 package geo.track.jornada.domain;
 
+import geo.track.infraestructure.exception.BadBusinessRuleException;
+import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.jornada.application.JornadaStrategyRegistry;
 import geo.track.jornada.domain.listagem.BuscaSimples;
 import geo.track.jornada.domain.listagem.ListagemAnaliseFinanceira;
@@ -35,7 +37,7 @@ public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaP
             }
         }
 
-        throw new UnsupportedOperationException("Tipo de listagem não suportado: " + params);
+        throw new BadBusinessRuleException("Tipo de listagem não suportado: " + params, Domains.JORNADA);
     }
 
     /**
