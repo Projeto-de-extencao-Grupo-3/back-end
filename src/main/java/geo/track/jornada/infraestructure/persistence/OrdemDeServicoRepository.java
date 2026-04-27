@@ -54,13 +54,13 @@ public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, 
     @Query("SELECT o FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo ORDER BY o.idOrdemServico DESC")
     Optional<OrdemDeServico> findLastOrdemServicoVeiculo(@Param("idVeiculo") Integer idVeiculo);
 
-    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.fkCliente.idCliente = :idCliente AND o.status <> :status")
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.fkCliente.idCliente = :idCliente AND o.status <> :status AND o.status <> 'CANCELADO' ")
     Boolean existsByIdCliente(Integer idCliente, Status status);
 
-    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o JOIN o.produtos p WHERE p.fkProduto.idProduto = :idProduto AND o.status <> :status")
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o JOIN o.produtos p WHERE p.fkProduto.idProduto = :idProduto AND o.status <> :status AND o.status <> 'CANCELADO' ")
     Boolean existsByIdProduto(@Param("idProduto") Integer idProduto, @Param("status") Status status);
 
-    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo AND o.status <> 'FINALIZADO'")
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM OrdemDeServico o WHERE o.fkEntrada.fkVeiculo.idVeiculo = :idVeiculo AND o.status <> 'FINALIZADO' AND o.status <> 'CANCELADO' ")
     Boolean existsByIdVeiculo(@Param("idVeiculo") Integer idVeiculo);
 
     @Query("SELECT o FROM OrdemDeServico o WHERE o.dataSaidaEfetiva BETWEEN :dataInicio AND :dataFim")
