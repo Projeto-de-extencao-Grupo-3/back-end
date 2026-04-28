@@ -8,6 +8,8 @@ public class FuncionarioResponse {
     private String nome;
     private String cargo;
     private String especialidade;
+    private String email;
+    private String senha;
     private String telefone;
     private Integer idOficina;
     private Boolean possuiLogin;
