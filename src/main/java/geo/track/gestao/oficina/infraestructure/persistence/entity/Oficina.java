@@ -1,6 +1,7 @@
 package geo.track.gestao.oficina.infraestructure.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import geo.track.gestao.cliente.infraestructure.persistence.entity.Cliente;
 import geo.track.gestao.funcionario.infraestructure.persistence.entity.Funcionario;
@@ -28,6 +29,7 @@ public class Oficina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Identificador único da oficina", example = "1")
+    @JsonProperty("idOficina")
     private Integer idOficina;
 
     @Schema(description = "Razão social da oficina", example = "Auto Center São Lucas LTDA")
@@ -47,6 +49,7 @@ public class Oficina {
 
     @OneToMany(mappedBy = "fkOficina")
     @Schema(description = "Lista de funcionários associados à oficina")
+
     private List<Funcionario> funcionarios;
 
     @OneToMany(mappedBy = "fkOficina")

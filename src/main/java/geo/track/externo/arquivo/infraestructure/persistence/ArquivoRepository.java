@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ArquivoRepository extends JpaRepository<Arquivo, Integer> {
@@ -14,4 +15,8 @@ public interface ArquivoRepository extends JpaRepository<Arquivo, Integer> {
 
     @Query("SELECT a FROM Arquivo a JOIN a.metadados m WHERE m.chave = 'fkOrdemServico' AND m.valor = :fkOrdemServico AND a.categoria = :categoria")
     Optional<Arquivo> findByFkOrdemServicoAndCategoria(Integer fkOrdemServico, Categoria categoria);
+
+    @Query("SELECT a FROM Arquivo a JOIN a.metadados m " +
+            "WHERE m.chave = 'fkOrdemServico' AND m.valor = :idOrdem")
+    List<Arquivo> findAllByFkOrdemServico(@Param("idOrdem") String idOrdem);
 }

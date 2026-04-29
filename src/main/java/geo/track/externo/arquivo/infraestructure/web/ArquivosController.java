@@ -1,5 +1,6 @@
 package geo.track.externo.arquivo.infraestructure.web;
 
+import geo.track.externo.arquivo.infraestructure.persistence.entity.Arquivo;
 import geo.track.externo.arquivo.infraestructure.persistence.entity.Categoria;
 import geo.track.externo.arquivo.infraestructure.response.ArquivoResponse;
 import geo.track.infraestructure.auth.model.UsuarioDetalhesDto;
@@ -9,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,5 +61,41 @@ public class ArquivosController {
     ) {
         var arquivo = ARQUIVO_SERVICE.buscarArquivoRelatorioMensal(usuario.getIdOficina(), mesReferencia, anoReferencia);
         return ResponseEntity.status(200).body(ArquivoMapper.toResponse(arquivo));
+    }
+
+    @PostMapping("/vistoria/{fkOrdemServico}/{categoria}")
+    public ResponseEntity<ArquivoResponse> postArmazenarVistoriasS3Bucket(@PathVariable Integer fkOrdemServico, @RequestParam("file") MultipartFile file, @PathVariable Categoria categoria){
+        Arquivo arquivo = ARQUIVO_SERVICE.armazenarArquivoDeVistoria(fkOrdemServico, file, Categoria.ORDEM_SERVICO);
+
+        ArquivoResponse response = new ArquivoResponse(
+                arquivo.getIdArquivo(),
+                arquivo.getNome(),
+                arquivo.getCategoria().name(),
+                arquivo.getFormato().name(),
+                arquivo.getUrl(),
+                arquivo.getDataCriacao().toString(),
+                arquivo.getDataAtualizacao() != null ? arquivo.getDataAtualizacao().toString() : null
+        );
+
+        return ResponseEntity.status(201).body(response);
+    }
+
+    @GetMapping("/vistoria/{fkOrdemServico}")
+    public ResponseEntity<List<ArquivoResponse>> listarVistoriasPorOS(@PathVariable Integer fkOrdemServico){
+        List<Arquivo> arquivos = ARQUIVO_SERVICE.listarArquivosOS(fkOrdemServico);
+
+        List<ArquivoResponse> response = arquivos.stream()
+                .map(arquivo -> new ArquivoResponse(
+                        arquivo.getIdArquivo(),
+                        arquivo.getNome(),
+                        arquivo.getCategoria().name(),
+                        arquivo.getFormato().name(),
+                        arquivo.getUrl(),
+                        arquivo.getDataCriacao().toString(),
+                        arquivo.getDataAtualizacao() != null ? arquivo.getDataAtualizacao().toString() : null
+                ))
+                .toList();
+
+        return ResponseEntity.status(200).body(response);
     }
 }

@@ -1,5 +1,7 @@
 package geo.track.externo.arquivo.infraestructure.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import geo.track.gestao.oficina.infraestructure.persistence.entity.Oficina;
 import jakarta.persistence.*;
 import lombok.*;
