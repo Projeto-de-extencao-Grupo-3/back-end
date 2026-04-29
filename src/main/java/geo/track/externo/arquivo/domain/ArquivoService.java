@@ -19,6 +19,7 @@ import geo.track.jornada.infraestructure.mapper.OrdemDeServicoMapper;
 import geo.track.externo.arquivo.infraestructure.persistence.ArquivoRepository;
 import geo.track.jornada.domain.OrdemDeServicoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +46,8 @@ public class ArquivoService {
     private final Log log;
     private final S3Client s3Client;
 
-    private final String BUCKET_NAME = "grotrack-bucket";
+    @Value("aws.bucket.name")
+    private final String BUCKET_NAME;
 
     {
         routingKeyMap.put(Categoria.ORCAMENTO, RabbitMQConfig.ROUTING_KEY_ORCAMENTO);
