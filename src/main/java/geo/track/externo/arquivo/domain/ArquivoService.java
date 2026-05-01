@@ -46,7 +46,7 @@ public class ArquivoService {
     private final Log log;
     private final S3Client s3Client;
 
-    @Value("aws.bucket.name")
+    @Value("aws.s3.bucket-name")
     private String BUCKET_NAME;
 
     {

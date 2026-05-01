@@ -110,15 +110,18 @@ public class SecurityConfiguracao {
         return new BCryptPasswordEncoder();
     }
 
-    @Value("${url.frontend}")
-    private String urlFrontend;
+    @Value("${url.frontend:http://localhost:3000}")
+    private String urlsFrontend;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuracao = new CorsConfiguration();
 
-        // Temporary: allow requests from any origin while frontend environments are being stabilized.
-        configuracao.addAllowedOriginPattern(urlFrontend);
+        // Parse multiple frontend URLs separated by comma
+        String[] urls = urlsFrontend.split(",");
+        for (String url : urls) {
+            configuracao.addAllowedOriginPattern(url.trim());
+        }
 
         configuracao.setAllowedMethods(
                 Arrays.asList(

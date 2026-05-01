@@ -15,19 +15,19 @@ import java.net.URI;
 @Configuration
 public class S3Config {
 
-    @Value("${aws.accessKeyId}")
+    @Value("${aws.s3.access-key}")
     private String accessKey;
 
-    @Value("${aws.secretAccessKey}")
+    @Value("${aws.s3.secret-key}")
     private String secretKey;
 
-    @Value("${aws.sessionToken:}") // O ":" evita erro se a propriedade estiver vazia
+    @Value("${aws.s3.session-token:}") // O ":" evita erro se a propriedade estiver vazia
     private String sessionToken;
 
-    @Value("${aws.region}")
+    @Value("${aws.s3.region}")
     private String region;
 
-    @Value("${aws.endpoint:}")
+    @Value("${aws.s3.endpoint-url:}")
     private String endpoint;
 
     @Bean
