@@ -110,7 +110,7 @@ public class SecurityConfiguracao {
         return new BCryptPasswordEncoder();
     }
 
-    @Value("{url.frontend}")
+    @Value("${url.frontend}")
     private String urlFrontend;
 
     @Bean
