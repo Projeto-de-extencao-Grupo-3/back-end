@@ -47,7 +47,7 @@ public class ArquivoService {
     private final S3Client s3Client;
 
     @Value("aws.bucket.name")
-    private final String BUCKET_NAME;
+    private String BUCKET_NAME;
 
     {
         routingKeyMap.put(Categoria.ORCAMENTO, RabbitMQConfig.ROUTING_KEY_ORCAMENTO);
