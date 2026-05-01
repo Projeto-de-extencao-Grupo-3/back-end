@@ -49,6 +49,7 @@ public class ClienteController implements ClienteSwagger {
         return ResponseEntity.status(200).body(response);
     }
 
+    @Override
     @GetMapping("/busca/nome")
     public ResponseEntity<Page<ClienteResponse>> findAllClientesPorNomePaginado(
             @PageableDefault(size = 8, sort = "idCliente") Pageable pageable,
@@ -63,6 +64,7 @@ public class ClienteController implements ClienteSwagger {
         return ResponseEntity.status(200).body(response);
     }
 
+    @Override
     @GetMapping("/clientes-paginados")
     public ResponseEntity<Page<ClienteResponse>> listarTodos(
             @PageableDefault(size = 8, sort = "idCliente") Pageable pageable) {
@@ -108,6 +110,7 @@ public class ClienteController implements ClienteSwagger {
         return ResponseEntity.status(204).build();
     }
 
+    @Override
     @GetMapping("/placa/{placa}")
     public ResponseEntity<ClienteVeiculoResponse> buscarClientePorPlaca(@PathVariable  String placa) {
         Cliente cliente = CLIENTE_SERVICE.buscarClientePorPlaca(placa);
@@ -117,6 +120,7 @@ public class ClienteController implements ClienteSwagger {
         return ResponseEntity.status(200).body(response);
     }
 
+    @Override
     @GetMapping("/{idCliente}/contatos")
     public ResponseEntity<List<ContatoResponse>> listarContatosPorCliente(@PathVariable Integer idCliente) {
         List<Contato> contatos = CONTATO_SERVICE.listarContatosPorCliente(idCliente);
