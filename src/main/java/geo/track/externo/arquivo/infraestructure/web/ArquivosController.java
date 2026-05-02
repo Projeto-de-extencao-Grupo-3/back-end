@@ -63,9 +63,13 @@ public class ArquivosController {
         return ResponseEntity.status(200).body(ArquivoMapper.toResponse(arquivo));
     }
 
-    @PostMapping("/vistoria/{fkOrdemServico}/{categoria}")
-    public ResponseEntity<ArquivoResponse> postArmazenarVistoriasS3Bucket(@PathVariable Integer fkOrdemServico, @RequestParam("file") MultipartFile file, @PathVariable Categoria categoria){
-        Arquivo arquivo = ARQUIVO_SERVICE.armazenarArquivoDeVistoria(fkOrdemServico, file, Categoria.ORDEM_SERVICO);
+    @PostMapping(value = "/vistoria/{fkOrdemServico}/{categoria}", consumes = "multipart/form-data")
+    public ResponseEntity<ArquivoResponse> postArmazenarVistoriasS3Bucket(
+            @PathVariable Integer fkOrdemServico,
+            @RequestParam("file") MultipartFile file,
+            @PathVariable Categoria categoria) {
+
+        Arquivo arquivo = ARQUIVO_SERVICE.armazenarArquivoDeVistoria(fkOrdemServico, file, categoria);
 
         ArquivoResponse response = new ArquivoResponse(
                 arquivo.getIdArquivo(),
@@ -80,9 +84,9 @@ public class ArquivosController {
         return ResponseEntity.status(201).body(response);
     }
 
-    @GetMapping("/vistoria/{fkOrdemServico}")
-    public ResponseEntity<List<ArquivoResponse>> listarVistoriasPorOS(@PathVariable Integer fkOrdemServico){
-        List<Arquivo> arquivos = ARQUIVO_SERVICE.listarArquivosOS(fkOrdemServico);
+    @GetMapping("/vistoria/{fkOrdemServico}/{categoria}")
+    public ResponseEntity<List<ArquivoResponse>> listarVistoriasPorOS(@PathVariable Integer fkOrdemServico, @PathVariable Categoria categoria){
+        List<Arquivo> arquivos = ARQUIVO_SERVICE.listarArquivosOSPorCategoria(fkOrdemServico, categoria);
 
         List<ArquivoResponse> response = arquivos.stream()
                 .map(arquivo -> new ArquivoResponse(

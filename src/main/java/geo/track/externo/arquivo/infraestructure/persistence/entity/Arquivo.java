@@ -26,9 +26,11 @@ public class Arquivo {
     private String nome;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "categoria", length = 50, nullable = false)
     private Categoria categoria;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "formato", length = 50, nullable = false)
     private Formato formato;
 
     private String url;

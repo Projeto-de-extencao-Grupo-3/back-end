@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.time.LocalDateTime;
@@ -46,8 +47,11 @@ public class ArquivoService {
     private final Log log;
     private final S3Client s3Client;
 
-    @Value("aws.s3.bucket-name")
+    @Value("${aws.s3.bucket-name}")
     private String BUCKET_NAME;
+
+    @Value("${aws.s3.endpoint-url:}")
+    private String endpoint;
 
     {
         routingKeyMap.put(Categoria.ORCAMENTO, RabbitMQConfig.ROUTING_KEY_ORCAMENTO);
@@ -122,13 +126,22 @@ public class ArquivoService {
                             .build(),
                     RequestBody.fromInputStream(arquivo.getInputStream(), arquivo.getSize()));
 
-            String urlS3 = String.format("https://%s.s3.amazonaws.com/%s", BUCKET_NAME, nomeArquivo);
+            // 2. Gerar URL correta (LocalStack vs AWS)
+
+            String url = s3Client.utilities().getUrl(builder -> builder.bucket(BUCKET_NAME).key(nomeArquivo)).toString();
+//            if (endpoint != null && !endpoint.isBlank()) {
+//                 LocalStack: URL via endpoint configurado
+//                urlS3 = String.format("%s/%s/%s", endpoint, BUCKET_NAME, nomeArquivo);
+//            } else {
+//                 AWS Real: URL padrão
+//                urlS3 = String.format("https://%s.s3.amazonaws.com/%s", BUCKET_NAME, nomeArquivo);
+//            }
 
             Arquivo novoArquivo = Arquivo.builder()
                     .nome(arquivo.getOriginalFilename())
                     .categoria(categoria)
                     .formato(Formato.fromContentType(arquivo.getContentType()))
-                    .url(urlS3)
+                    .url(url)
                     .dataCriacao(LocalDateTime.now())
                      .oficina(OFICINA_SERVICE.buscarOficinaPorId(1))
                     .build();
@@ -151,6 +164,10 @@ public class ArquivoService {
 
     public List<Arquivo> listarArquivosOS(Integer idOrdem) {
         return ARQUIVO_REPOSITORY.findAllByFkOrdemServico(idOrdem.toString());
+    }
+
+    public List<Arquivo> listarArquivosOSPorCategoria(Integer idOrdem, Categoria categoria) {
+        return ARQUIVO_REPOSITORY.findAllByFkOrdemServicoAndCategoria(idOrdem.toString(), categoria);
     }
 
 }

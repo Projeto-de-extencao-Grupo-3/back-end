@@ -21,8 +21,8 @@ public class S3Config {
     @Value("${aws.s3.secret-key}")
     private String secretKey;
 
-    @Value("${aws.s3.session-token:}") // O ":" evita erro se a propriedade estiver vazia
-    private String sessionToken;
+//    @Value("${aws.s3.session-token:}") // O ":" evita erro se a propriedade estiver vazia
+//    private String sessionToken;
 
     @Value("${aws.s3.region}")
     private String region;
@@ -34,15 +34,13 @@ public class S3Config {
     public S3Client s3Client() {
         // 1. Configuração de Credenciais (Funciona para ambos)
         StaticCredentialsProvider credentialsProvider;
-        if (sessionToken != null && !sessionToken.isBlank()) {
-            credentialsProvider = StaticCredentialsProvider.create(
-                    AwsSessionCredentials.create(accessKey, secretKey, sessionToken)
-            );
-        } else {
+//        if (sessionToken != null && !sessionToken.isBlank()) {
+//            credentialsProvider = StaticCredentialsProvider.create(
+//                    AwsSessionCredentials.create(accessKey, secretKey, sessionToken)
+//            );
             credentialsProvider = StaticCredentialsProvider.create(
                     AwsBasicCredentials.create(accessKey, secretKey)
             );
-        }
 
         S3ClientBuilder builder = S3Client.builder()
                 .region(Region.of(region))

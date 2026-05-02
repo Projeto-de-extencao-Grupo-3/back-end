@@ -19,4 +19,9 @@ public interface ArquivoRepository extends JpaRepository<Arquivo, Integer> {
     @Query("SELECT a FROM Arquivo a JOIN a.metadados m " +
             "WHERE m.chave = 'fkOrdemServico' AND m.valor = :idOrdem")
     List<Arquivo> findAllByFkOrdemServico(@Param("idOrdem") String idOrdem);
+
+    @Query("SELECT a FROM Arquivo a JOIN a.metadados m " +
+            "WHERE a.categoria = :categoria AND m.chave = 'fkOrdemServico' AND m.valor = :idOrdem")
+    List<Arquivo> findAllByFkOrdemServicoAndCategoria(@Param("idOrdem") String idOrdem, @Param("categoria") Categoria categoria);
+
 }
