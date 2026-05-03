@@ -19,6 +19,7 @@ import geo.track.catalogo.item_servico.domain.ItemServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +80,15 @@ public class OrdemDeServicoService {
         Log.info("Calculando KPI de Nota Fiscal para Ordem no ano {} e mês {}", ano, mes);
         ViewNotaFiscal viewNotasFicaisPendentes = ORDEM_REPOSITORY.findViewNotasFicaisPendentes(ano, mes);
         if (viewNotasFicaisPendentes == null) {
-            return new ViewNotaFiscal(0L);
+            return new ViewNotaFiscal(BigDecimal.ZERO);
+        }
+        return viewNotasFicaisPendentes;
+    }
+    public ViewNotaFiscal exibirKpiNotaFiscal() {
+        Log.info("Calculando KPI de Nota Fiscal para Ordem");
+        ViewNotaFiscal viewNotasFicaisPendentes = ORDEM_REPOSITORY.findViewNotasFicaisPendentes();
+        if (viewNotasFicaisPendentes == null) {
+            return new ViewNotaFiscal(BigDecimal.ZERO);
         }
         return viewNotasFicaisPendentes;
     }
@@ -88,7 +97,16 @@ public class OrdemDeServicoService {
         Log.info("Calculando KPI de Pagamento Realizado para Ordem no ano {} e mês {}", ano, mes);
         ViewPagtoRealizado viewPagamentoRealizados = ORDEM_REPOSITORY.findViewPagamentoRealizados(ano, mes);
         if (viewPagamentoRealizados == null) {
-            return new ViewPagtoRealizado(0L);
+            return new ViewPagtoRealizado(BigDecimal.ZERO);
+        }
+        return viewPagamentoRealizados;
+    }
+
+    public ViewPagtoRealizado exibirKpiPagtoRealizado() {
+        Log.info("Calculando KPI de Pagamento Realizado para Ordem");
+        ViewPagtoRealizado viewPagamentoRealizados = ORDEM_REPOSITORY.findViewPagamentoRealizados();
+        if (viewPagamentoRealizados == null) {
+            return new ViewPagtoRealizado(BigDecimal.ZERO);
         }
         return viewPagamentoRealizados;
     }
@@ -97,7 +115,16 @@ public class OrdemDeServicoService {
         Log.info("Calculando KPI de Pagamento Pendente para Ordem no ano {} e mês {}", ano, mes);
         ViewPagtoPendente viewPagamentoPendente = ORDEM_REPOSITORY.findViewPagamentoPendente(ano, mes);
         if (viewPagamentoPendente == null) {
-            return new ViewPagtoPendente(0.0, 0L);
+            return new ViewPagtoPendente(BigDecimal.ZERO, BigDecimal.ZERO);
+        }
+        return viewPagamentoPendente;
+    }
+
+    public ViewPagtoPendente exibirKpiPagtoPendente() {
+        Log.info("Calculando KPI de Pagamento Pendente para Ordem");
+        ViewPagtoPendente viewPagamentoPendente = ORDEM_REPOSITORY.findViewPagamentoPendente();
+        if (viewPagamentoPendente == null) {
+            return new ViewPagtoPendente(BigDecimal.ZERO, BigDecimal.ZERO);
         }
         return viewPagamentoPendente;
     }
@@ -105,6 +132,11 @@ public class OrdemDeServicoService {
     public List<OrdemDeServico> buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(Boolean nfRealizada, Boolean pagtRealizado, Integer ano, Integer mes) {
         Log.info("Filtrando Ordens por NF: {}, Pagamento: {}", nfRealizada, pagtRealizado, ano, mes);
         return ORDEM_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(nfRealizada, pagtRealizado, ano, mes);
+    }
+
+    public List<OrdemDeServico> buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(Boolean nfRealizada, Boolean pagtRealizado) {
+        Log.info("Filtrando Ordens por NF: {}, Pagamento: {}", nfRealizada, pagtRealizado);
+        return ORDEM_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(nfRealizada, pagtRealizado);
     }
 
     public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer idVeiculo, Integer intervalo) {

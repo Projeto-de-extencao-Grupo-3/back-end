@@ -113,7 +113,7 @@ public class OrdemDeServicoMapper {
         OrdemDeServicoResponse ordemResponse = OrdemDeServicoMapper.toResponse(ordem);
 
         LocalDate dataReferencia = ordem.getStatus().equals(Status.FINALIZADO) ? ordem.getDataSaidaEfetiva() : LocalDate.now();
-        Long diasEspera = ChronoUnit.DAYS.between(ordem.getDataAtualizacao(), dataReferencia);
+        Long diasEspera = ChronoUnit.DAYS.between(dataReferencia, ordem.getDataAtualizacao());
         diasEspera = diasEspera < 0 ? 0L : diasEspera;
 
         return new CardOrdemDeServicoResponse(

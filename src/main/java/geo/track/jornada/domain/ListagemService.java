@@ -3,10 +3,7 @@ package geo.track.jornada.domain;
 import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.jornada.application.JornadaStrategyRegistry;
-import geo.track.jornada.domain.listagem.BuscaSimples;
-import geo.track.jornada.domain.listagem.ListagemAnaliseFinanceira;
-import geo.track.jornada.domain.listagem.ListagemPainelControle;
-import geo.track.jornada.domain.listagem.ListagemSimples;
+import geo.track.jornada.domain.listagem.*;
 import geo.track.jornada.infraestructure.request.ListagemJornadaParams;
 import geo.track.jornada.infraestructure.response.listagem.ListagemJornadaResponse;
 import geo.track.jornada.application.listagem.ListagemJornadaStrategy;
@@ -53,6 +50,7 @@ public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaP
             ListagemSimples listagemSimples,
             ListagemPainelControle listagemPainelControle,
             ListagemAnaliseFinanceira listagemAnaliseFinanceira,
+            ListagemAnaliseFinanceiraSemAnoMes listagemAnaliseFinanceiraSemAnoMes,
             BuscaSimples buscaSimples) {
         this.buscaSimples = buscaSimples;
 
@@ -70,7 +68,11 @@ public class ListagemService implements JornadaStrategyRegistry<ListagemJornadaP
                         new Condition<ListagemJornadaParams, ListagemJornadaStrategy>(
                                 request -> request.isListagemAnaliseFinanceira().equals(true),
                                 listagemAnaliseFinanceira
-                        )
+                        ),
+                        new Condition<ListagemJornadaParams, ListagemJornadaStrategy>(
+                                request -> request.isListagemAnaliseFinanceiraSemAnoMes().equals(true),
+                                listagemAnaliseFinanceiraSemAnoMes
+                )
                 )
         );
     }
