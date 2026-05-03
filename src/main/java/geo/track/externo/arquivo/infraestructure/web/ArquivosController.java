@@ -102,4 +102,9 @@ public class ArquivosController {
 
         return ResponseEntity.status(200).body(response);
     }
+
+    @DeleteMapping("/{idArquivo}")
+    public void deletarArquivo(@PathVariable Integer idArquivo) {
+        ARQUIVO_SERVICE.deletarArquivoPorId(idArquivo);
+    }
 }

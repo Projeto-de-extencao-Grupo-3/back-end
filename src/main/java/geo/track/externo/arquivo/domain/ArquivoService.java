@@ -170,4 +170,11 @@ public class ArquivoService {
         return ARQUIVO_REPOSITORY.findAllByFkOrdemServicoAndCategoria(idOrdem.toString(), categoria);
     }
 
+    public void deletarArquivoPorId(Integer id) {
+        boolean b = ARQUIVO_REPOSITORY.existsById(id);
+
+        if (!b) throw new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO);
+        ARQUIVO_REPOSITORY.deleteById(id);
+    }
+
 }
