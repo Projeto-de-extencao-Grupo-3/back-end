@@ -4,16 +4,20 @@ import geo.track.gestao.funcionario.infraestructure.persistence.entity.Funcionar
 import geo.track.gestao.funcionario.infraestructure.request.RequestPostFuncionario;
 import geo.track.gestao.funcionario.infraestructure.request.RequestPutFuncionario;
 import geo.track.gestao.funcionario.infraestructure.response.FuncionarioResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
+@RequiredArgsConstructor
 public class FuncionarioMapper {
-    @Autowired
-    static PasswordEncoder passwordEncoder;
+
+    private final PasswordEncoder passwordEncoder;
 
     public static FuncionarioResponse toResponse(Funcionario entity) {
         if (entity == null) {
@@ -59,7 +63,7 @@ public class FuncionarioMapper {
         return funcionario;
     }
 
-    public static Funcionario toEntityUpdate(Funcionario funcionario, RequestPutFuncionario body) {
+    public Funcionario toEntityUpdate(Funcionario funcionario, RequestPutFuncionario body) {
         if (body.getNome() != null) {
             funcionario.setNome(body.getNome());
         }
