@@ -128,9 +128,10 @@ public class JornadaController implements JornadaSwagger {
     }
 
     @PatchMapping("/{idItemProduto}/saida-material")
-    public ResponseEntity<Object> realizarSaidaMaterial(@PathVariable Integer idItemProduto) {
-        realizarBaixaEstoqueProdutoUseCase.execute(idItemProduto);
-
+    public ResponseEntity<Object> realizarSaidaMaterial(
+            @PathVariable Integer idItemProduto)
+    {
+        realizarBaixaEstoqueProdutoUseCase.execute(idItemProduto ,null , null);
         return ResponseEntity.status(204).body(null);
     }
 

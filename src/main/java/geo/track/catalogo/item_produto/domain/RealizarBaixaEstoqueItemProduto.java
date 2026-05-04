@@ -1,9 +1,11 @@
 package geo.track.catalogo.item_produto.domain;
 
 import geo.track.catalogo.item_produto.infraestructure.persistence.entity.ItemProduto;
+import geo.track.catalogo.produto.domain.ProdutoService;
 import geo.track.catalogo.produto.domain.entity.Produto;
 import geo.track.catalogo.item_produto.infraestructure.persistence.ItemProdutoRepository;
 import geo.track.catalogo.item_produto.application.RealizarBaixaEstoqueItemProdutoUseCase;
+import geo.track.catalogo.produto.infraestructure.persistence.ProdutoRepository;
 import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.infraestructure.exception.BadRequestException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
@@ -15,27 +17,55 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RealizarBaixaEstoqueItemProduto implements RealizarBaixaEstoqueItemProdutoUseCase {
     private final ItemProdutoRepository ITEM_PRODUTO_REPOSITORY;
+    private final ProdutoRepository PRODUTO_REPOSITORY;
     private final ItemProdutoService ITEM_PRODUTO_SERVICE;
+    private final ProdutoService PRODUTO_SERVICE;
     private final Log log;
 
-    public Boolean execute(Integer id) {
-        log.info("Iniciando processo de baixa de estoque para o item de produto ID: {}", id);
-        ItemProduto itemProduto = ITEM_PRODUTO_SERVICE.buscarRegistroPorId(id);
-        Produto produto = itemProduto.getFkProduto();
+    @Override
+    public Boolean execute(Integer id, Integer quantidade, Integer tela) {
+        Produto produto;
+        ItemProduto itemProduto = null;
 
-        Integer quantidadeDesejada = itemProduto.getQuantidade();
+        if (tela == 1) {
+            itemProduto = ITEM_PRODUTO_SERVICE.buscarRegistroPorId(id);
+            produto = itemProduto.getFkProduto();
+            log.info("PAssei aqui");
+        } else {
+            produto = PRODUTO_SERVICE.buscarProdutosPorId(id);
+        }
+
+        Integer quantidadeEfetiva = (quantidade != null)
+                ? quantidade
+                : (itemProduto != null ? itemProduto.getQuantidade() : 0);
+
+        if (quantidadeEfetiva <= 0) {
+            throw new BadRequestException("Quantidade inválida", Domains.ITEM_PRODUTO);
+        }
         Integer quantidadeEstoque = produto.getQuantidadeEstoque();
 
-        if (itemProduto.getBaixado()) throw new BadRequestException("Este item já foi baixado.", Domains.ITEM_PRODUTO);
-        if (quantidadeEstoque < quantidadeDesejada) throw new BadBusinessRuleException("Quantidade solicitada excede o estoque disponível.", Domains.ITEM_PRODUTO);
+        if (tela == 1) {
+            if (itemProduto.getBaixado()) {
+                throw new BadRequestException("Item já baixado", Domains.ITEM_PRODUTO);
+            }
 
-        log.info("Reduzindo {} unidades do produto ID: {}", quantidadeDesejada, produto.getIdProduto());
-        produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidadeDesejada);
-        itemProduto.setBaixado(true);
-        itemProduto.setFkProduto(produto);
-        ITEM_PRODUTO_REPOSITORY.save(itemProduto);
+            if (quantidadeEstoque < quantidadeEfetiva) {
+                throw new BadBusinessRuleException("Estoque insuficiente", Domains.ITEM_PRODUTO);
+            }
+            produto.setQuantidadeEstoque(quantidadeEstoque - quantidadeEfetiva);
 
-        log.info("Baixa de estoque realizada com sucesso para o item ID: {}", id);
+            if (quantidadeEfetiva.equals(itemProduto.getQuantidade())) {
+                itemProduto.setBaixado(true);
+            } else {
+                itemProduto.setBaixado(true);
+                itemProduto.setQuantidade(quantidadeEfetiva);
+            }
+            ITEM_PRODUTO_REPOSITORY.save(itemProduto);
+        } else {
+            produto.setQuantidadeEstoque(quantidadeEstoque + quantidadeEfetiva);
+        }
+        PRODUTO_REPOSITORY.save(produto);
+
         return true;
     }
 }
