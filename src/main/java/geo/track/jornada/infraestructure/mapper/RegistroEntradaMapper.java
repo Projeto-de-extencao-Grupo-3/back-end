@@ -4,6 +4,7 @@ import geo.track.gestao.veiculo.infraestructure.persistence.entity.Veiculo;
 import geo.track.jornada.infraestructure.persistence.entity.ItemEntrada;
 import geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico;
 import geo.track.jornada.infraestructure.persistence.entity.RegistroEntrada;
+import geo.track.jornada.infraestructure.response.entrada.ItemEntradaResponse;
 import geo.track.jornada.infraestructure.response.entrada.RegistroEntradaCriacaoResponse;
 import geo.track.jornada.infraestructure.request.entrada.RequestEntrada;
 import geo.track.jornada.infraestructure.response.entrada.RegistroEntradaResponse;
@@ -26,14 +27,22 @@ public final class RegistroEntradaMapper {
         response.setResponsavel(entity.getResponsavel());
         response.setCpf(entity.getCpf());
 
-
         response.setFkOrdemServico(entity.getFkOrdemServico().getIdOrdemServico());
+
+        if (entity.getItensEntrada().isEmpty()) response.setItensEntrada(List.of());
+        else response.setItensEntrada(RegistroEntradaMapper.toResponseItemEntrada(entity.getItensEntrada()));
 
         if (entity.getFkVeiculo() != null) {
             response.setIdVeiculo(entity.getFkVeiculo().getIdVeiculo());
         }
 
         return response;
+    }
+
+    private static List<ItemEntradaResponse> toResponseItemEntrada(List<ItemEntrada> itensEntrada) {
+        return itensEntrada.stream()
+                .map(item -> new ItemEntradaResponse(item.getIdItemEntrada(), item.getNomeItem(), item.getQuantidade()))
+                .collect(Collectors.toList());
     }
 
     public static List<RegistroEntradaResponse> toResponse(List<RegistroEntrada> entities) {

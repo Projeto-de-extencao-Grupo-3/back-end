@@ -3,6 +3,7 @@ package geo.track.jornada.infraestructure.response.entrada;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class RegistroEntradaResponse {
@@ -13,5 +14,6 @@ public class RegistroEntradaResponse {
     private String cpf;
     private Integer idVeiculo;
     private Integer fkOrdemServico;
+    private List<ItemEntradaResponse> itensEntrada;
 
 }
