@@ -1,6 +1,6 @@
 package geo.track.catalogo.produto.infraestructure;
 
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.catalogo.produto.infraestructure.request.ProdutoRequest;
 import geo.track.catalogo.produto.infraestructure.response.ProdutoResponse;
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.Servico;

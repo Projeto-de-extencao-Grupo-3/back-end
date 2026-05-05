@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AtualizarFuncionario implements AtualizarFuncionarioUseCase {
     private final FuncionarioRepository FUNCIONARIO_REPOSITORY;
+    private final FuncionarioMapper mapper;
     private final Log log;
 
     public Funcionario execute(RequestPutFuncionario body) {
@@ -28,7 +29,7 @@ public class AtualizarFuncionario implements AtualizarFuncionarioUseCase {
 
         Funcionario funcionario = FUNCIONARIO_REPOSITORY.getByIdFuncionario(body.getId());
 
-        funcionario = FuncionarioMapper.toEntityUpdate(funcionario, body);
+        funcionario = mapper.toEntityUpdate(funcionario, body);
 
         log.info("Funcionario ID {} atualizado com sucesso", body.getId());
         return FUNCIONARIO_REPOSITORY.save(funcionario);

@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 @Component
 @RequiredArgsConstructor
-public class ListagemAnaliseFinanceiraImplementation implements ListagemAnaliseFinanceiraUseCase {
+public class ListagemAnaliseFinanceira implements ListagemAnaliseFinanceiraUseCase {
     private final OrdemDeServicoService ORDEM_SERVICO_SERVICE;
 
     @Override
@@ -26,13 +26,13 @@ public class ListagemAnaliseFinanceiraImplementation implements ListagemAnaliseF
         var listSemNotaFiscal = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(false, true, ano, mes);
         var kpiNotaFiscalPendente = ORDEM_SERVICO_SERVICE.exibirKpiNotaFiscal(ano, mes);
 
-        var listSucesso = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(true, true, ano, mes);
-        var kpiPagamentoRealizado = ORDEM_SERVICO_SERVICE.exibirKpiPagtoRealizado(ano, mes);
+         var listSucesso = ORDEM_SERVICO_SERVICE.buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(true, true, ano, mes);
+         var kpiPagamentoRealizado = ORDEM_SERVICO_SERVICE.exibirKpiPagtoRealizado(ano, mes);
 
-        Long totalPagamentosRealizados = kpiPagamentoRealizado.totalPagamentosRealizados();
-        Long quantidadeNfsPendentes = kpiNotaFiscalPendente.quantidadeNfsPendentes();
-        Long quantidadeServicosNaoPagos = kpiPagamentoPendente.quantidadeServicosNaoPagos();
-        Double totalValorNaoPago = kpiPagamentoPendente.totalValorNaoPago();
+         Long totalPagamentosRealizados = kpiPagamentoRealizado.getQuantidadePagamentosRealizadosAsLong();
+         Long quantidadeNfsPendentes = kpiNotaFiscalPendente.getQuantidadeNfsPendentesAsLong();
+         Long quantidadeServicosNaoPagos = kpiPagamentoPendente.getQuantidadeServicosNaoPagosAsLong();
+         Double totalValorNaoPago = kpiPagamentoPendente.getTotalValorNaoPagoAsDouble();
 
         var responsePagamentoRealizado = AnaliseFinanceiraMapper.toResponsePagamentoRealizado(totalPagamentosRealizados, listSucesso);
         var responseNotaFiscalPendente = AnaliseFinanceiraMapper.toResponseNotaFiscalPendente(quantidadeNfsPendentes, listSemNotaFiscal);

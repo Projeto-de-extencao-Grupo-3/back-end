@@ -26,9 +26,10 @@ public class EntradaEfetivaSemCadastro implements EntradaEfetivaSemCadastroUseCa
     public RegistroEntrada execute(RequestPostVeiculo requestVeiculo, RequestEntrada requestEntrada) {
 
         Status status = Status.AGUARDANDO_ORCAMENTO;
-        OrdemDeServico ordemDeServico = CADASTRAR_ORDEM_PORT.execute(status);
-
         Veiculo veiculo = CADASTRAR_VEICULO_PORT.execute(requestVeiculo);
+
+        OrdemDeServico ordemDeServico = CADASTRAR_ORDEM_PORT.execute(status, veiculo.getIdVeiculo());
+
 
         RegistroEntrada entradaEfetiva = RegistroEntradaMapper.toEntity(requestEntrada, veiculo, ordemDeServico);
 

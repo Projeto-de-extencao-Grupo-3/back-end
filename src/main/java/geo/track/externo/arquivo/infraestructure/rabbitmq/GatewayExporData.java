@@ -12,17 +12,19 @@ import org.springframework.stereotype.Service;
 public class GatewayExporData {
     private final RabbitTemplate rabbitTemplate;
 
-    public Boolean solicitarArquivo(OrdemDeServicoResponse ordemDeServico, String routingKey) {
+    public <T> Boolean solicitarArquivo (T dadosArquivo, String routingKey, Integer idOficina) {
         try {
-            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_PROJETO, routingKey, ordemDeServico, message -> {
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_PROJETO, routingKey, dadosArquivo, message -> {
                 MessageProperties props = message.getMessageProperties();
+                props.setHeader("idOficina", idOficina);
                 return message;
             });
         } catch (Exception e) {
+            System.out.println("Erro ao enviar mensagem para RabbitMQ: " + e.getMessage());
             return false;
         }
 
-
         return true;
     }
+
 }

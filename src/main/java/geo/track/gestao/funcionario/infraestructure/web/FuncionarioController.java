@@ -42,6 +42,20 @@ public class FuncionarioController implements FuncionarioSwagger {
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(lista));
     }
 
+    @GetMapping("/busca/nome")
+    public ResponseEntity<Page<FuncionarioResponse>> listarFuncionariosPorNomePaginado(
+            @PageableDefault(size = 8, sort = "idFuncionario") Pageable pageable,
+            @RequestParam(required = true) String nome
+    ){
+        Page<Funcionario> funcionarios = FUNCIONARIO_SERVICE.listarFuncionariosPorNomePaginado(pageable, nome);
+
+        if (funcionarios.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        Page<FuncionarioResponse> response = funcionarios.map(FuncionarioMapper::toResponse);
+        return ResponseEntity.status(200).body(response);
+    }
+
     @GetMapping("/funcionarios-paginados")
     public ResponseEntity<Page<FuncionarioResponse>> listarFuncionariosPaginados(
             @PageableDefault(size = 8, sort = "idFuncionario") Pageable pageable){

@@ -49,6 +49,20 @@ public class ClienteController implements ClienteSwagger {
         return ResponseEntity.status(200).body(response);
     }
 
+    @GetMapping("/busca/nome")
+    public ResponseEntity<Page<ClienteResponse>> findAllClientesPorNomePaginado(
+            @PageableDefault(size = 8, sort = "idCliente") Pageable pageable,
+            @RequestParam(required = true) String nome
+    ) {
+        Page<Cliente> clientes = CLIENTE_SERVICE.listarClientesPorNomePaginados(pageable, nome);
+
+        if (clientes.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        Page<ClienteResponse> response = clientes.map(ClientesMapper::toResponse);
+        return ResponseEntity.status(200).body(response);
+    }
+
     @GetMapping("/clientes-paginados")
     public ResponseEntity<Page<ClienteResponse>> listarTodos(
             @PageableDefault(size = 8, sort = "idCliente") Pageable pageable) {

@@ -1,6 +1,6 @@
 package geo.track.catalogo.produto.infraestructure.persistence;
 
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.Servico;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +13,7 @@ public interface ProdutoRepository extends JpaRepository<Produto,Integer> {
     Optional<Produto> findByIdProdutoAndAtivoTrue(Integer idProduto);
     boolean existsByIdProdutoAndAtivoTrue(Integer idProduto);
     List<Produto> findByTipoServico(Servico tipoServico);
-
-    Page<Produto> findByTipoServico(Servico tipoServico, Pageable pageable);
+    Page<Produto> findByAtivoTrue(Pageable pageable);
+    Page<Produto> findByNomeContainingIgnoreCaseAndAtivoTrue(Pageable pageable, String nome);
+    Page<Produto> findByTipoServicoAndAtivoTrue(Servico tipo, Pageable pageable);
 }

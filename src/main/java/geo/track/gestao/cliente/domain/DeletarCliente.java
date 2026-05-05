@@ -5,6 +5,7 @@ import geo.track.gestao.cliente.infraestructure.persistence.ClienteRepository;
 import geo.track.gestao.cliente.application.DeletarClienteUseCase;
 import geo.track.gestao.cliente.application.contato.DeletarContatoUseCase;
 import geo.track.gestao.cliente.application.endereco.DeletarEnderecoUseCase;
+import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.ClienteExceptionMessages;
 import geo.track.infraestructure.exception.constraint.message.Domains;
@@ -28,16 +29,24 @@ public class DeletarCliente implements DeletarClienteUseCase {
         // Valida se o cliente possui ordens de serviço com o status diferente de FINALIZADO antes de permitir a exclusão
         if (ORDEM_SERVICO_SERVICE.existeOrdemServicoAbertaPorCliente(id)) {
             log.warn("Falha ao deletar cliente ID {}: existem ordens de serviço não finalizadas associadas", id);
-            throw new DataNotFoundException(String.format(ClienteExceptionMessages.CLIENTE_NAO_PODE_SER_DELETADO_ORDENS_ABERTAS, id), Domains.CLIENTE);
+            throw new BadBusinessRuleException(String.format(ClienteExceptionMessages.CLIENTE_NAO_PODE_SER_DELETADO_ORDENS_ABERTAS, id), Domains.CLIENTE);
         }
 
         log.info("Solicitacao para deletar cliente ID: {}", id);
         if (CLIENTE_REPOSITORY.existsById(id)) {
             Cliente cliente = CLIENTE_SERVICE.buscarClientePorId(id);
 
+            // Deletar todos os contatos do cliente
             cliente.getContatos().forEach(contato -> DELETAR_CONTATO_USE_CASE.execute(id, contato.getIdContato()));
-            cliente.getEnderecos().forEach(endereco -> DELETAR_ENDERECO_USE_CASE.execute(endereco.getIdEndereco()));
 
+            // Deletar todos os endereços do cliente
+            cliente.getEnderecos().forEach(endereco -> DELETAR_ENDERECO_USE_CASE.execute(id, endereco.getIdEndereco()));
+
+            // Limpar as coleções para evitar referências órfãs
+            cliente.getContatos().clear();
+            cliente.getEnderecos().clear();
+
+            // Marcar o cliente como inativo
             cliente.setAtivo(false);
             CLIENTE_REPOSITORY.save(cliente);
             log.info("Cliente ID {} deletado com sucesso", id);

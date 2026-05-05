@@ -8,9 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RequestPutEndereco {
-    @NotNull
-    @Schema(description = "ID do Endereço", example = "1", requiredMode = Schema.RequiredMode.REQUIRED) // 2. Detalhes do campo
-    private Integer idEndereco;
 
     @Schema(description = "CEP do Endereço", example = "01414001", requiredMode = Schema.RequiredMode.REQUIRED)
     private String cep;

@@ -1,25 +1,48 @@
 package geo.track.catalogo.item_servico.infraestructure.persistence.entity;
 
 public enum ParteVeiculo {
-    // Componentes Gerais
+    // Frontal
     PARACHOQUE,
     GRADE,
     CAPO,
+    PARABRISA,
+    ITINERARIO,
+    PAINEL,
+
+    // Traseira
+    TAMPA_MOTOR,
+    VIGIA, // Vidro traseiro
+
+    // Lateral e Cobertura
     TETO,
     SAIA,
-
-    // Áreas Específicas
-    PAINEL,
-    TAMPA_DO_MOTOR,
-    PORTA_BAGAGEIRO,
-
-    // Caixas de Roda
+    LATERAL,
     CAIXA_DE_RODA,
-
-    // Colunas
+    ESTRIBO,
     CURVAO,
 
-    // Portas
+    // Portas e Acessos
+    PORTA_MOTORISTA,
+    PORTA_PASSAGEIRO,
+    PORTA_SERVICO,
+    PORTA_EMERGENCIA,
+    PORTA_BAGAGEIRO,
+    PORTA_ESTEPE,
     PORTA,
-    PORTA_DE_SERVICO
+
+    // Interior e Componentes
+    PAINEL_INSTRUMENTOS,
+    CONSOLE,
+    FORRO_TETO,
+    FORRO_LATERAL,
+    ASSOALHO,
+    BANCO,
+
+    // Iluminação
+    FAROL,
+    LANTERNA,
+    RETROVISOR,
+
+    // Outros
+    OUTROS
 }

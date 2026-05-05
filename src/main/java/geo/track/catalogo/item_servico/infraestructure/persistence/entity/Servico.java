@@ -4,5 +4,12 @@ public enum Servico {
     FUNILARIA,
     PINTURA,
     MECANICA,
+    VEDACAO,
+    POLIMENTO,
+    RECUPERACAO,
+    MONTAGEM,
+    DESMONTAGEM,
+    TROCA,
+    ELETRICA,
     OUTROS
 }

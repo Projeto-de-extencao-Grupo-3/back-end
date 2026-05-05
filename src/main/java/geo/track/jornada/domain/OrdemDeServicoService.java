@@ -1,6 +1,7 @@
 package geo.track.jornada.domain;
 
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.ItemServico;
+import geo.track.infraestructure.exception.BadBusinessRuleException;
 import geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico;
 import geo.track.jornada.infraestructure.persistence.entity.RegistroEntrada;
 import geo.track.jornada.infraestructure.persistence.entity.Status;
@@ -18,6 +19,7 @@ import geo.track.catalogo.item_servico.domain.ItemServicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -58,32 +60,6 @@ public class OrdemDeServicoService {
         return ordem.get();
     }
 
-    public void deletarOrdemServico(Integer idOrdem){
-        Log.info("Tentando deletar Ordem de Serviço ID: {}", idOrdem);
-        Optional<OrdemDeServico> ordemOPT = ORDEM_REPOSITORY.findById(idOrdem);
-
-        if (ordemOPT.isEmpty()) {
-            throw new DataNotFoundException(OrdemDeServicoExceptionMessages.ORDEM_NAO_ENCONTRADA_ID, Domains.ORDEM_DE_SERVICO);
-        }
-
-        OrdemDeServico ordem = ordemOPT.get();
-        RegistroEntrada entrada = ordem.getFkEntrada();
-
-        List<ItemServico> servicos = ITEM_SERVICO_SERVICE.listarPelaOrdemServico(ordem);
-
-        if (!servicos.isEmpty()) {
-            throw new BadRequestException(OrdemDeServicoExceptionMessages.ORDEM_NAO_PODE_SER_DELETADA_COM_SERVICOS, Domains.ORDEM_DE_SERVICO);
-        }
-
-        if (entrada == null){
-            throw new ForbiddenException(OrdemDeServicoExceptionMessages.SOLICITACAO_RECUSADA, Domains.ORDEM_DE_SERVICO);
-        }
-
-        // verificar se tem serviços atrelado
-        ORDEM_REPOSITORY.delete(ordem);
-        Log.info("Ordem de Serviço ID: {} deletada com sucesso", idOrdem);
-    }
-
     public List<OrdemDeServico> buscarOrdemServicoPorPlaca(String placa) {
         Log.info("Buscando Ordens de Serviço pela placa: {}", placa);
         return ORDEM_REPOSITORY.findByPlaca(placa);
@@ -104,7 +80,15 @@ public class OrdemDeServicoService {
         Log.info("Calculando KPI de Nota Fiscal para Ordem no ano {} e mês {}", ano, mes);
         ViewNotaFiscal viewNotasFicaisPendentes = ORDEM_REPOSITORY.findViewNotasFicaisPendentes(ano, mes);
         if (viewNotasFicaisPendentes == null) {
-            return new ViewNotaFiscal(0L);
+            return new ViewNotaFiscal(BigDecimal.ZERO);
+        }
+        return viewNotasFicaisPendentes;
+    }
+    public ViewNotaFiscal exibirKpiNotaFiscal() {
+        Log.info("Calculando KPI de Nota Fiscal para Ordem");
+        ViewNotaFiscal viewNotasFicaisPendentes = ORDEM_REPOSITORY.findViewNotasFicaisPendentes();
+        if (viewNotasFicaisPendentes == null) {
+            return new ViewNotaFiscal(BigDecimal.ZERO);
         }
         return viewNotasFicaisPendentes;
     }
@@ -113,7 +97,16 @@ public class OrdemDeServicoService {
         Log.info("Calculando KPI de Pagamento Realizado para Ordem no ano {} e mês {}", ano, mes);
         ViewPagtoRealizado viewPagamentoRealizados = ORDEM_REPOSITORY.findViewPagamentoRealizados(ano, mes);
         if (viewPagamentoRealizados == null) {
-            return new ViewPagtoRealizado(0L);
+            return new ViewPagtoRealizado(BigDecimal.ZERO);
+        }
+        return viewPagamentoRealizados;
+    }
+
+    public ViewPagtoRealizado exibirKpiPagtoRealizado() {
+        Log.info("Calculando KPI de Pagamento Realizado para Ordem");
+        ViewPagtoRealizado viewPagamentoRealizados = ORDEM_REPOSITORY.findViewPagamentoRealizados();
+        if (viewPagamentoRealizados == null) {
+            return new ViewPagtoRealizado(BigDecimal.ZERO);
         }
         return viewPagamentoRealizados;
     }
@@ -122,7 +115,16 @@ public class OrdemDeServicoService {
         Log.info("Calculando KPI de Pagamento Pendente para Ordem no ano {} e mês {}", ano, mes);
         ViewPagtoPendente viewPagamentoPendente = ORDEM_REPOSITORY.findViewPagamentoPendente(ano, mes);
         if (viewPagamentoPendente == null) {
-            return new ViewPagtoPendente(0.0, 0L);
+            return new ViewPagtoPendente(BigDecimal.ZERO, BigDecimal.ZERO);
+        }
+        return viewPagamentoPendente;
+    }
+
+    public ViewPagtoPendente exibirKpiPagtoPendente() {
+        Log.info("Calculando KPI de Pagamento Pendente para Ordem");
+        ViewPagtoPendente viewPagamentoPendente = ORDEM_REPOSITORY.findViewPagamentoPendente();
+        if (viewPagamentoPendente == null) {
+            return new ViewPagtoPendente(BigDecimal.ZERO, BigDecimal.ZERO);
         }
         return viewPagamentoPendente;
     }
@@ -132,10 +134,19 @@ public class OrdemDeServicoService {
         return ORDEM_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(nfRealizada, pagtRealizado, ano, mes);
     }
 
+    public List<OrdemDeServico> buscarOrdemServicoPorNotaFiscalEPagamentoRealizado(Boolean nfRealizada, Boolean pagtRealizado) {
+        Log.info("Filtrando Ordens por NF: {}, Pagamento: {}", nfRealizada, pagtRealizado);
+        return ORDEM_REPOSITORY.findByListagemAnaliseFinanceiraStrategy(nfRealizada, pagtRealizado);
+    }
+
     public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(Integer idVeiculo, Integer intervalo) {
         LocalDate dataInferiorIntervalo = LocalDate.now().minusMonths(intervalo);
 
         return ORDEM_REPOSITORY.findByIntervaloMesesAndIdVeiculo(dataInferiorIntervalo, idVeiculo);
+    }
+
+    public List<OrdemDeServico> listarOrdensServicoIntervaloMeses(LocalDate dataReferencia) {
+        return ORDEM_REPOSITORY.findByIntervaloMeses(dataReferencia);
     }
 
     public List<OrdemDeServico> listarOrdensServicoPorVeiculo(Integer idVeiculo) {
@@ -144,5 +155,18 @@ public class OrdemDeServicoService {
 
     public Boolean existeOrdemServicoAbertaUsandoProduto(Integer idProduto) {
         return ORDEM_REPOSITORY.existsByIdProduto(idProduto, Status.FINALIZADO);
+    }
+
+    public void existeOrdemServicoAbertaPorVeiculo(Integer fkVeiculo) {
+        Boolean existeOrdemAberta = ORDEM_REPOSITORY.existsByIdVeiculo(fkVeiculo);
+        if (existeOrdemAberta) {
+            throw new BadBusinessRuleException(OrdemDeServicoExceptionMessages.EXISTE_ORDEM_ABERTA_POR_VEICULO, Domains.ORDEM_DE_SERVICO);
+        }
+    }
+
+    public List<OrdemDeServico> listarOrdensServicoEntreDataInicioEDataFim(LocalDate dataInicio, LocalDate dataFim) {
+        System.out.println(dataInicio);
+        System.out.println(dataFim);
+        return ORDEM_REPOSITORY.findAllByDataInicioAndDataFim(dataInicio, dataFim);
     }
 }

@@ -104,7 +104,7 @@ public interface VeiculoSwagger {
                     content = {@Content(schema = @Schema(hidden = true))}
             )
     })
-    ResponseEntity<List<VeiculoHistoricoResponse>> findVeiculoByClienteId(@PathVariable Integer id);
+    ResponseEntity<List<VeiculoResponse>> findVeiculoByClienteId(@PathVariable Integer id);
 
     @Operation(summary = "Atualizar completamente os dados de um veículo",
             description = "Substitui as informações de um veículo existente. O ID deve ser válido e existir na base.")

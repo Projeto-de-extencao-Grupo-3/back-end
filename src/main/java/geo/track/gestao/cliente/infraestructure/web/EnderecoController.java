@@ -15,27 +15,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping(path = "/enderecos")
 @RestController
+@RequestMapping("/clientes/{idCliente}/enderecos")
 @RequiredArgsConstructor
-public class EnderecoController implements EnderecoSwagger {
+public class EnderecoController {
     private final EnderecoService ENDERECO_SERVICE;
     private final CadastrarEnderecoUseCase CADASTRAR_ENDERECO_USECASE;
     private final CriarEnderecoVazioUseCase CRIAR_ENDERECO_VAZIO_USECASE;
-    private final AlterarComplementoEnderecoUseCase ALTERAR_COMPLEMENTO_ENDERECO_USECASE;
-    private final AlterarNumeroEnderecoUseCase ALTERAR_NUMERO_ENDERECO_USECASE;
     private final AtualizarEnderecoUseCase ATUALIZAR_ENDERECO_USECASE;
+    private final DeletarEnderecoUseCase DELETAR_ENDERECO_USECASE;
 
     @PostMapping("/registrar-vazio")
-    public ResponseEntity<EnderecoResponse> registrarEnderecoVazio() {
-        Endereco enderecoVazio = CRIAR_ENDERECO_VAZIO_USECASE.execute();
+    public ResponseEntity<EnderecoResponse> registrarEnderecoVazio(@PathVariable Integer idCliente) {
+        Endereco enderecoVazio = CRIAR_ENDERECO_VAZIO_USECASE.execute(idCliente);
         return ResponseEntity.status(201).body(EnderecoMapper.toResponse(enderecoVazio));
     }
 
-    @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<EnderecoResponse> getEnderecoById(@PathVariable Integer id) {
-        Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(id);
+    @GetMapping("/{idEndereco}")
+    public ResponseEntity<EnderecoResponse> getEnderecoById(@PathVariable Integer idCliente, @PathVariable Integer idEndereco) {
+        Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(idCliente, idEndereco);
 
         if (endereco == null) {
             return ResponseEntity.status(404).build();
@@ -44,7 +42,6 @@ public class EnderecoController implements EnderecoSwagger {
         return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
     }
 
-    @Override
     @GetMapping("/viacep/{cep}")
     public ResponseEntity<ResponseViacep> findEnderecoByVIACEP(@PathVariable String cep) {
         ResponseViacep responseCep = ENDERECO_SERVICE.buscarEnderecoPorCep(cep);
@@ -56,31 +53,21 @@ public class EnderecoController implements EnderecoSwagger {
         return ResponseEntity.status(200).body(responseCep);
     }
 
-    @Override
-    @PostMapping("/{fkCliente}")
-    public ResponseEntity<EnderecoResponse> postEndereco(@RequestBody @Valid RequestPostEndereco body, @PathVariable Integer fkCliente) {
-        Endereco novoEndereco = CADASTRAR_ENDERECO_USECASE.execute(body, fkCliente);
+    @PostMapping()
+    public ResponseEntity<EnderecoResponse> postEndereco(@RequestBody @Valid RequestPostEndereco body, @PathVariable Integer idCliente) {
+        Endereco novoEndereco = CADASTRAR_ENDERECO_USECASE.execute(body, idCliente);
         return ResponseEntity.status(201).body(EnderecoMapper.toResponse(novoEndereco));
     }
 
-    @Override
-    @PatchMapping("/complemento")
-    public ResponseEntity<EnderecoResponse> patchComplementoEndereco(@RequestBody @Valid RequestPatchComplemento body) {
-        Endereco endereco = ALTERAR_COMPLEMENTO_ENDERECO_USECASE.execute(body.getIdEndereco(), body.getComplemento());
-        return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
+    @DeleteMapping("/{idEndereco}")
+    public ResponseEntity<Void> deleteEndereco(@PathVariable Integer idCliente, @PathVariable Integer idEndereco) {
+        DELETAR_ENDERECO_USECASE.execute(idCliente, idEndereco);
+        return ResponseEntity.status(204).build();
     }
 
-    @Override
-    @PatchMapping("/numero")
-    public ResponseEntity<EnderecoResponse> patchNumeroEndereco(@RequestBody @Valid RequestPatchNumero body) {
-        Endereco endereco = ALTERAR_NUMERO_ENDERECO_USECASE.execute(body.getId(), body.getNumero());
-        return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
-    }
-
-    @Override
-    @PutMapping()
-    public ResponseEntity<EnderecoResponse> putEndereco(@RequestBody @Valid RequestPutEndereco body) {
-        Endereco endereco = ATUALIZAR_ENDERECO_USECASE.execute(body);
+    @PutMapping("/{idEndereco}")
+    public ResponseEntity<EnderecoResponse> putEndereco(@PathVariable Integer idCliente, @PathVariable Integer idEndereco, @RequestBody @Valid RequestPutEndereco body) {
+        Endereco endereco = ATUALIZAR_ENDERECO_USECASE.execute(idCliente, idEndereco, body);
         return ResponseEntity.status(200).body(EnderecoMapper.toResponse(endereco));
     }
 }

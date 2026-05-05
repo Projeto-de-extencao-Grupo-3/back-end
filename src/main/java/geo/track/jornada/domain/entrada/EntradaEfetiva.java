@@ -27,8 +27,9 @@ public class EntradaEfetiva implements EntradaEfetivaUseCase {
     public RegistroEntrada execute(Integer fkVeiculo, RequestEntrada requestEntrada) {
 
         Status status = Status.AGUARDANDO_ORCAMENTO;
-        OrdemDeServico ordemDeServico = CADASTRAR_ORDEM_PORT.execute(status);
         Veiculo veiculo = VEICULO_SERVICE.buscarVeiculoPeloId(fkVeiculo);
+
+        OrdemDeServico ordemDeServico = CADASTRAR_ORDEM_PORT.execute(status, veiculo.getIdVeiculo());
 
         RegistroEntrada entradaEfetiva = RegistroEntradaMapper.toEntity(requestEntrada, veiculo, ordemDeServico);
 

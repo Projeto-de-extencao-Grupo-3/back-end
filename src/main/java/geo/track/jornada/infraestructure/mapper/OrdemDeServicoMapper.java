@@ -7,6 +7,7 @@ import geo.track.gestao.cliente.infraestructure.response.cliente.ClienteResponse
 import geo.track.catalogo.item_produto.infraestructure.response.ItemProdutoResponse;
 import geo.track.catalogo.item_servico.infraestructure.response.ItemServicoResponse;
 import geo.track.jornada.infraestructure.persistence.entity.Status;
+import geo.track.jornada.infraestructure.response.entrada.RegistroEntradaResponse;
 import geo.track.jornada.infraestructure.response.listagem.*;
 import geo.track.gestao.veiculo.infraestructure.response.VeiculoResponse;
 import geo.track.gestao.cliente.infraestructure.ClientesMapper;
@@ -77,12 +78,13 @@ public class OrdemDeServicoMapper {
         LocalDate dataSaidaPrevista = entity.getDataSaidaPrevista();
         LocalDate dataSaidaEfetiva = entity.getDataSaidaEfetiva();
 
+        RegistroEntradaResponse entrada = RegistroEntradaMapper.toResponse(entity.getFkEntrada());
         ResumoOrdemServicoResponse resumo = OrdemDeServicoMapper.toResumo(entity);
 
         List<ItemServicoResponse> servicos = entity.getServicos().stream().map(ItemServicoMapper::toResponse).toList();
         List<ItemProdutoResponse> produtos = entity.getProdutos().stream().map(ItemProdutoMapper::toResponse).toList();
 
-        return new TelaOrdemServicoResponse(idOrdemServico, status, dataEntradaPrevista, dataEntradaEfetiva, dataSaidaPrevista, dataSaidaEfetiva, cliente, veiculo, resumo, servicos, produtos);
+        return new TelaOrdemServicoResponse(idOrdemServico, status, dataEntradaPrevista, dataEntradaEfetiva, dataSaidaPrevista, dataSaidaEfetiva, entrada, cliente, veiculo, resumo, servicos, produtos);
     }
 
     private static ResumoOrdemServicoResponse toResumo(OrdemDeServico entity) {
@@ -113,7 +115,7 @@ public class OrdemDeServicoMapper {
         OrdemDeServicoResponse ordemResponse = OrdemDeServicoMapper.toResponse(ordem);
 
         LocalDate dataReferencia = ordem.getStatus().equals(Status.FINALIZADO) ? ordem.getDataSaidaEfetiva() : LocalDate.now();
-        Long diasEspera = ChronoUnit.DAYS.between(ordem.getDataAtualizacao(), dataReferencia);
+        Long diasEspera = ChronoUnit.DAYS.between(dataReferencia, ordem.getDataAtualizacao());
         diasEspera = diasEspera < 0 ? 0L : diasEspera;
 
         return new CardOrdemDeServicoResponse(

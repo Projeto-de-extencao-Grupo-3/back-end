@@ -4,5 +4,5 @@ import geo.track.jornada.infraestructure.persistence.entity.Status;
 import geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico;
 
 public interface CadastrarOrdemServicoUseCase {
-    OrdemDeServico execute(Status status);
+    OrdemDeServico execute(Status status, Integer fkVeiculo);
 }

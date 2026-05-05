@@ -5,6 +5,7 @@ import geo.track.catalogo.item_produto.infraestructure.response.ItemProdutoRespo
 import geo.track.catalogo.item_servico.infraestructure.response.ItemServicoResponse;
 import geo.track.gestao.veiculo.infraestructure.response.VeiculoResponse;
 import geo.track.jornada.infraestructure.persistence.entity.Status;
+import geo.track.jornada.infraestructure.response.entrada.RegistroEntradaResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +17,7 @@ public record TelaOrdemServicoResponse(
         LocalDate dataEntradaEfetiva,
         LocalDate dataSaidaPrevista,
         LocalDate dataSaidaEfetiva,
+        RegistroEntradaResponse entrada,
         ClienteResponse cliente,
         VeiculoResponse veiculo,
         ResumoOrdemServicoResponse resumo,

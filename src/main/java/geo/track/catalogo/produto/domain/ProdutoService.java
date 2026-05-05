@@ -1,6 +1,6 @@
 package geo.track.catalogo.produto.domain;
 
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.catalogo.item_servico.infraestructure.persistence.entity.Servico;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
@@ -27,12 +27,16 @@ public class ProdutoService {
         return PRODUTO_REPOSITORY.findByAtivoTrue();
     }
 
+    public Page<Produto> listarProdutosPorNomePaginado(String nome, Pageable pageable){
+        return PRODUTO_REPOSITORY.findByNomeContainingIgnoreCaseAndAtivoTrue(pageable, nome);
+    }
+
     public Page<Produto> listarProdutosPorTipoServico(Servico tipo, Pageable pageable){
-        return PRODUTO_REPOSITORY.findByTipoServico(tipo, pageable);
+        return PRODUTO_REPOSITORY.findByTipoServicoAndAtivoTrue(tipo, pageable);
     }
 
     public Page<Produto> listarProdutosPaginados(Pageable pageable){
-        return PRODUTO_REPOSITORY.findAll(pageable);
+        return PRODUTO_REPOSITORY.findByAtivoTrue(pageable);
     }
 
     public HashMap<String, List<Produto>> listarChaveadaProdutosPorStatus(){

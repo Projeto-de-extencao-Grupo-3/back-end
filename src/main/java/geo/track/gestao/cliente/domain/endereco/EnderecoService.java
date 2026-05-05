@@ -20,21 +20,25 @@ public class EnderecoService {
     private final EnderecoRepository ENDERECO_REPOSITORY;
     private final Log log;
 
-    public Endereco buscarEnderecoPorId(Integer id) {
-        log.info("Buscando endereco com ID: {}", id);
-        Optional<Endereco> endereco = ENDERECO_REPOSITORY.findById(id);
+    public Endereco buscarEnderecoPorId(Integer idCliente, Integer idEndereco) {
+        log.info("Buscando endereco com ID: {}", idEndereco);
+        Optional<Endereco> endereco = ENDERECO_REPOSITORY.findByIdEnderecoAndFkCliente_IdCliente(idEndereco, idCliente);
 
         if (endereco.isEmpty()) {
-            log.error("Endereco com ID {} nao encontrado", id);
-            throw new DataNotFoundException(EnderecoExceptionMessages.FORMATACAO_CEP_INCORRETA, Domains.ENDERECO);
+            log.error("Endereco com ID {} nao encontrado", idEndereco);
+            throw new DataNotFoundException(EnderecoExceptionMessages.ENDERECO_NAO_ENCONTRADO, Domains.ENDERECO);
         }
 
-        log.info("Endereco encontrado com sucesso para o ID: {}", id);
+        log.info("Endereco encontrado com sucesso para o ID: {}", idEndereco);
         return endereco.get();
     }
 
     public Boolean existeEnderecoPorCep(String cep) {
         return ENDERECO_REPOSITORY.existsByCep(cep);
+    }
+
+    public Boolean existeEnderecoPorCepENumero(String cep, Integer numero) {
+        return ENDERECO_REPOSITORY.existsByCepAndNumero(cep, numero);
     }
 
     public ResponseViacep buscarEnderecoPorCep(String cep) {

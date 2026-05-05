@@ -2,7 +2,7 @@ package geo.track.catalogo.item_produto.infraestructure;
 
 import geo.track.catalogo.item_produto.infraestructure.persistence.entity.ItemProduto;
 import geo.track.jornada.infraestructure.persistence.entity.OrdemDeServico;
-import geo.track.catalogo.produto.domain.entity.Produto;
+import geo.track.catalogo.produto.infraestructure.persistence.entity.Produto;
 import geo.track.catalogo.item_produto.infraestructure.response.ItemProdutoOsResponse;
 import geo.track.catalogo.item_produto.infraestructure.response.ItemProdutoResponse;
 import geo.track.catalogo.item_produto.infraestructure.request.RequestPutItemProduto;

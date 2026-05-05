@@ -14,5 +14,5 @@ public enum Domains {
     REGISTRO_ENTRADA,
     SERVICO,
     ARQUIVO,
-    VEICULO
+    JORNADA, VEICULO
 }

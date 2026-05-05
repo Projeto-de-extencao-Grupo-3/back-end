@@ -2,6 +2,7 @@ package geo.track.infraestructure.config;
 
 import geo.track.infraestructure.auth.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -110,12 +111,18 @@ public class SecurityConfiguracao {
         return new BCryptPasswordEncoder();
     }
 
+    @Value("${url.frontend:http://localhost:3000}")
+    private String urlsFrontend;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuracao = new CorsConfiguration();
 
-        // Temporary: allow requests from any origin while frontend environments are being stabilized.
-        configuracao.addAllowedOriginPattern("*");
+        // Parse multiple frontend URLs separated by comma
+        String[] urls = urlsFrontend.split(",");
+        for (String url : urls) {
+            configuracao.addAllowedOriginPattern(url.trim());
+        }
 
         configuracao.setAllowedMethods(
                 Arrays.asList(

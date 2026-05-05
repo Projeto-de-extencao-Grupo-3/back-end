@@ -26,7 +26,7 @@ public class Agendamento implements AgendamentoUseCase {
     public RegistroEntrada execute(LocalDate dataEntradaPrevista, Integer fkVeiculo) {
 
         Status status = Status.AGUARDANDO_ENTRADA;
-        OrdemDeServico ordemDeServico = CADASTRAR_OS_PORT.execute(status);
+        OrdemDeServico ordemDeServico = CADASTRAR_OS_PORT.execute(status, fkVeiculo);
         Veiculo veiculo = VEICULO_SERVICE.buscarVeiculoPeloId(fkVeiculo);
 
         return this.cadastrarAgendamento(ordemDeServico, veiculo, dataEntradaPrevista);

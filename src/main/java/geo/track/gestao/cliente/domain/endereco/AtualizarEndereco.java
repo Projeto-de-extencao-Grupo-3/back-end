@@ -16,9 +16,9 @@ public class AtualizarEndereco implements AtualizarEnderecoUseCase {
     private final EnderecoService ENDERECO_SERVICE;
     private final Log log;
 
-    public Endereco execute(RequestPutEndereco body) {
-        log.info("Atualizacao completa solicitada para o endereco ID: {}", body.getIdEndereco());
-        Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(body.getIdEndereco());
+    public Endereco execute(Integer idCliente, Integer idEndereco, RequestPutEndereco body) {
+        log.info("Atualizacao completa solicitada para o endereco ID: {}", idEndereco);
+        Endereco endereco = ENDERECO_SERVICE.buscarEnderecoPorId(idCliente, idEndereco  );
 
         Endereco enderecoAtualizado = EnderecoMapper.toEntityUpdate(body, endereco);
 

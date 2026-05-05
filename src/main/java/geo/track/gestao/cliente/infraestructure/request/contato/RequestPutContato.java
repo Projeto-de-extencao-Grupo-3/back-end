@@ -7,15 +7,15 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RequestPutContato {
+    private Integer idEndereco;
+
     @NotBlank
     private String telefone;
 
     @NotBlank
     private String email;
 
-    @NotBlank
     private String nomeContato;
 
-    @NotBlank
     private String departamentoContato;
 }

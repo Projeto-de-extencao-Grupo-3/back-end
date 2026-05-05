@@ -1,6 +1,6 @@
 package geo.track.catalogo.item_servico.infraestructure.web;
 
-import geo.track.catalogo.item_servico.infraestructure.persistence.entity.ItemServico;
+import geo.track.catalogo.item_servico.infraestructure.persistence.entity.*;
 import geo.track.catalogo.item_servico.infraestructure.response.ItemServicoResponse;
 import geo.track.catalogo.item_servico.infraestructure.request.RequestPutItemServico;
 import geo.track.catalogo.item_servico.application.AdicionarItemServicoUseCase;
@@ -23,6 +23,26 @@ public class ItemServicoController {
     private final AdicionarItemServicoUseCase CADASTRAR_ITEM_SERVICO_USECASE;
     private final AtualizarItemServicoUseCase ATUALIZAR_ITEM_SERVICO_USECASE;
     private final DeletarItemServicoUseCase DELETAR_ITEM_SERVICO_USECASE;
+
+    @RequestMapping(value = "/partes_veiculo", method = RequestMethod.OPTIONS)
+    public ResponseEntity<List<ParteVeiculo>> getPartesVeiculo() {
+        return ResponseEntity.ok(List.of(ParteVeiculo.values()));
+    }
+
+    @RequestMapping(value = "/tipos_pintura", method = RequestMethod.OPTIONS)
+    public ResponseEntity<List<TipoPintura>> getTiposPintura() {
+        return ResponseEntity.ok(List.of(TipoPintura.values()));
+    }
+
+    @RequestMapping(value = "/tipos_servico", method = RequestMethod.OPTIONS)
+    public ResponseEntity<List<Servico>> getTiposServico() {
+        return ResponseEntity.ok(List.of(Servico.values()));
+    }
+
+    @RequestMapping(value = "/lados_veiculo", method = RequestMethod.OPTIONS)
+    public ResponseEntity<List<LadoVeiculo>> getLadosVeiculo() {
+        return ResponseEntity.ok(List.of(LadoVeiculo.values()));
+    }
 
     @GetMapping
     public ResponseEntity<List<ItemServicoResponse>> findAll() {

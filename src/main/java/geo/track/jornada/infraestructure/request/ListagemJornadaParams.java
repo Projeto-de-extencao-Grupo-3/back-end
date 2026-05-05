@@ -14,6 +14,11 @@ public record ListagemJornadaParams(
         return anoMes != null && MapListagem.ANALISE_FINANCEIRA.equals(map);
     }
 
+    public Boolean isListagemAnaliseFinanceiraSemAnoMes() {
+        return anoMes == null && MapListagem.ANALISE_FINANCEIRA.equals(map);
+    }
+
+
     public Boolean isListagemPainelControle() {
         return anoMes == null && MapListagem.PAINEL_CONTROLE.equals(map);
     }
