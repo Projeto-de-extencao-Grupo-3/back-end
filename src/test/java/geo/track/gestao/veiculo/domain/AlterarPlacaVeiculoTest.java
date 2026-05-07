@@ -32,7 +32,7 @@ class AlterarPlacaVeiculoTest {
     }
 
     @Test
-    void deveLancarConflictException_QuandoRegraDeNegocioViolada() {
+    void deveLancarConflictException_QuandoVeiculoRepositoryExistsbyplacaignorecaseBodyGetplaca() {
     }
 
 }

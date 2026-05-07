@@ -35,8 +35,4 @@ class DeletarProdutoTest {
     void deveExecutarComSucesso() {
     }
 
-    @Test
-    void deveLancarRuntimeException_QuandoItemDeProdutoIdDNaoPodeSer() {
-    }
-
 }

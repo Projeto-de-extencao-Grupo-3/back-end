@@ -29,7 +29,7 @@ class DeletarOficinaTest {
     }
 
     @Test
-    void deveLancarDataNotFoundException_QuandoRegraDeNegocioViolada() {
+    void deveLancarDataNotFoundException_QuandoOficinaRepositoryExistsbyidId() {
     }
 
 }

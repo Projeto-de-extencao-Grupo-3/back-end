@@ -29,7 +29,7 @@ class DeletarVeiculoTest {
     }
 
     @Test
-    void deveLancarDataNotFoundException_QuandoRegraDeNegocioViolada() {
+    void deveLancarDataNotFoundException_QuandoVeiculoRepositoryExistsbyidId() {
     }
 
 }

@@ -44,7 +44,7 @@ class CadastrarClienteTest {
     }
 
     @Test
-    void deveLancarConflictException_QuandoRegraDeNegocioViolada() {
+    void deveLancarConflictException_QuandoClienteRepositoryExistsbycpfcnpjandativotrueBodyGetcpfcnpj() {
     }
 
 }

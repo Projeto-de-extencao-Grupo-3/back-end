@@ -32,7 +32,7 @@ class AtualizarOficinaTest {
     }
 
     @Test
-    void deveLancarDataNotFoundException_QuandoRegraDeNegocioViolada() {
+    void deveLancarDataNotFoundException_QuandoOficinaRepositoryExistsbyidBodyGetidoficina() {
     }
 
 }

@@ -44,11 +44,11 @@ class DeletarClienteTest {
     }
 
     @Test
-    void deveLancarBadBusinessRuleException_QuandoRegraDeNegocioViolada() {
+    void deveLancarBadBusinessRuleException_QuandoOrdemServicoServiceExisteordemservicoabertaporclienteId() {
     }
 
     @Test
-    void deveLancarDataNotFoundException_QuandoRegraDeNegocioViolada() {
+    void deveLancarDataNotFoundException_QuandoClienteRepositoryExistsbyidId() {
     }
 
 }

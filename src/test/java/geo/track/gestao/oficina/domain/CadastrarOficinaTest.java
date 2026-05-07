@@ -29,7 +29,7 @@ class CadastrarOficinaTest {
     }
 
     @Test
-    void deveLancarConflictException_QuandoRegraDeNegocioViolada() {
+    void deveLancarConflictException_QuandoOficinaRepositoryFindbycnpjBodyGetcnpj() {
     }
 
 }

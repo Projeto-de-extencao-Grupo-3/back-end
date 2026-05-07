@@ -29,7 +29,7 @@ class CancelarOrdemTest {
     }
 
     @Test
-    void deveLancarBadBusinessRuleException_QuandoAOrdemDeServicoComStatus() {
+    void deveLancarBadBusinessRuleException_QuandoStatusPodesercanceladaOrdemGetstatus() {
     }
 
 }

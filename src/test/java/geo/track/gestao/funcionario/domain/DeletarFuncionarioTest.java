@@ -29,7 +29,7 @@ class DeletarFuncionarioTest {
     }
 
     @Test
-    void deveLancarDataNotFoundException_QuandoRegraDeNegocioViolada() {
+    void deveLancarDataNotFoundException_QuandoFuncionarioRepositoryExistsbyidId() {
     }
 
 }

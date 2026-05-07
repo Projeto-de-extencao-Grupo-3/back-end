@@ -29,15 +29,15 @@ class AtualizarStatusTest {
     }
 
     @Test
-    void deveLancarBadBusinessRuleException_QuandoNaoEPossivelAlterarOStatusDeUma() {
+    void deveLancarBadBusinessRuleException_QuandoStatusatualEqualsStatusCancelado() {
     }
 
     @Test
-    void deveLancarBadBusinessRuleException_QuandoNaoEPossivelAlterarOStatusDeUma2() {
+    void deveLancarBadBusinessRuleException_QuandoStatusatualOrdinal() {
     }
 
     @Test
-    void deveLancarBadBusinessRuleException_QuandoTransicaoDeStatusInvalidaOProximoStatusDeve() {
+    void deveLancarBadBusinessRuleException_QuandoStatusatualEqualsStatusdesejado() {
     }
 
 }

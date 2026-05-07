@@ -29,7 +29,7 @@ class AtualizarProdutoTest {
     }
 
     @Test
-    void deveLancarDataNotFoundException_QuandoRegraDeNegocioViolada() {
+    void deveLancarDataNotFoundException_QuandoProdutoRepositoryExistsbyidprodutoandativotrueId() {
     }
 
 }

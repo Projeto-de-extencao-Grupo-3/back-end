@@ -33,7 +33,7 @@ class AtualizarFuncionarioTest {
     }
 
     @Test
-    void deveLancarDataNotFoundException_QuandoRegraDeNegocioViolada() {
+    void deveLancarDataNotFoundException_QuandoFuncionarioRepositoryExistsbyidBodyGetid() {
     }
 
 }

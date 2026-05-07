@@ -36,11 +36,11 @@ class CadastrarContatoTest {
     }
 
     @Test
-    void deveLancarConflictException_QuandoRegraDeNegocioViolada() {
+    void deveLancarConflictException_QuandoContatoServiceExisteemailporclienteIdclienteBodyGetemail() {
     }
 
     @Test
-    void deveLancarConflictException_QuandoRegraDeNegocioViolada2() {
+    void deveLancarConflictException_QuandoContatoServiceExistetelefoneporclienteIdclienteBodyGettelefone() {
     }
 
 }

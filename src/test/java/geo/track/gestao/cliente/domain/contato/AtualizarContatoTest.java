@@ -32,11 +32,11 @@ class AtualizarContatoTest {
     }
 
     @Test
-    void deveLancarConflictException_QuandoRegraDeNegocioViolada() {
+    void deveLancarConflictException_QuandoContatoServiceExisteemailporclienteexcluindocontatoIdclienteIdcontatoBodyGetemail() {
     }
 
     @Test
-    void deveLancarConflictException_QuandoRegraDeNegocioViolada2() {
+    void deveLancarConflictException_QuandoContatoServiceExistetelefoneporclienteexcluindocontatoIdclienteIdcontatoBodyGettelefone() {
     }
 
 }

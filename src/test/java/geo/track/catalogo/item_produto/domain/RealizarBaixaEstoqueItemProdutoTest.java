@@ -40,15 +40,15 @@ class RealizarBaixaEstoqueItemProdutoTest {
     }
 
     @Test
-    void deveLancarBadRequestException_QuandoQuantidadeInvalida() {
+    void deveLancarBadRequestException_QuandoQuantidadeefetiva0() {
     }
 
     @Test
-    void deveLancarBadRequestException_QuandoItemJaBaixado() {
+    void deveLancarBadRequestException_QuandoItemprodutoGetbaixado() {
     }
 
     @Test
-    void deveLancarBadBusinessRuleException_QuandoEstoqueInsuficiente() {
+    void deveLancarBadBusinessRuleException_QuandoQuantidadeestoqueQuantidadeefetiva() {
     }
 
 }
