@@ -1,6 +1,5 @@
 package geo.track.gestao.funcionario.domain;
 
-import geo.track.gestao.funcionario.domain.AtualizarFuncionario;
 import geo.track.gestao.funcionario.infraestructure.FuncionarioMapper;
 import geo.track.gestao.funcionario.infraestructure.persistence.FuncionarioRepository;
 import geo.track.infraestructure.log.Log;

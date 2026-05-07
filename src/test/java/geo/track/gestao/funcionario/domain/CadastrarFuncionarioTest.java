@@ -1,6 +1,5 @@
 package geo.track.gestao.funcionario.domain;
 
-import geo.track.gestao.funcionario.domain.CadastrarFuncionario;
 import geo.track.gestao.funcionario.infraestructure.persistence.FuncionarioRepository;
 import geo.track.gestao.oficina.domain.OficinaService;
 import geo.track.gestao.oficina.infraestructure.persistence.OficinaRepository;

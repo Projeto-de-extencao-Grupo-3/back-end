@@ -2,7 +2,6 @@ package geo.track.gestao.veiculo.domain;
 
 import geo.track.gestao.cliente.domain.ClienteService;
 import geo.track.gestao.cliente.infraestructure.persistence.ClienteRepository;
-import geo.track.gestao.veiculo.domain.CadastrarVeiculo;
 import geo.track.gestao.veiculo.infraestructure.persistence.VeiculoRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;

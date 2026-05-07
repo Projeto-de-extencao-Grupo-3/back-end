@@ -2,7 +2,6 @@ package geo.track.jornada.domain.controle;
 
 import geo.track.infraestructure.log.Log;
 import geo.track.jornada.domain.OrdemDeServicoService;
-import geo.track.jornada.domain.controle.DefinirDataSaidaPrevista;
 import geo.track.jornada.infraestructure.persistence.OrdemDeServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

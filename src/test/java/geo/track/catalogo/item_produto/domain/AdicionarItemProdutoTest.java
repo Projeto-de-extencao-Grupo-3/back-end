@@ -1,6 +1,5 @@
 package geo.track.catalogo.item_produto.domain;
 
-import geo.track.catalogo.item_produto.domain.AdicionarItemProduto;
 import geo.track.catalogo.item_produto.infraestructure.persistence.ItemProdutoRepository;
 import geo.track.catalogo.produto.domain.ProdutoService;
 import geo.track.infraestructure.log.Log;

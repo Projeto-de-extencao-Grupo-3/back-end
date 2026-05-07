@@ -1,6 +1,5 @@
 package geo.track.catalogo.item_produto.domain;
 
-import geo.track.catalogo.item_produto.domain.DeletarItemProduto;
 import geo.track.catalogo.item_produto.infraestructure.persistence.ItemProdutoRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;

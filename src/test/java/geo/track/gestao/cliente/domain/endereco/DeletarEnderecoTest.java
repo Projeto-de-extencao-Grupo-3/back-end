@@ -1,6 +1,5 @@
 package geo.track.gestao.cliente.domain.endereco;
 
-import geo.track.gestao.cliente.domain.endereco.DeletarEndereco;
 import geo.track.gestao.cliente.infraestructure.persistence.EnderecoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

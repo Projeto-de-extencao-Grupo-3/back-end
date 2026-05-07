@@ -1,6 +1,5 @@
 package geo.track.gestao.oficina.domain;
 
-import geo.track.gestao.oficina.domain.DeletarOficina;
 import geo.track.gestao.oficina.infraestructure.persistence.OficinaRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;

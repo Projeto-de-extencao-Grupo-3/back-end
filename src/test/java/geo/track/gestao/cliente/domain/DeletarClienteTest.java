@@ -2,7 +2,6 @@ package geo.track.gestao.cliente.domain;
 
 import geo.track.gestao.cliente.application.contato.DeletarContatoUseCase;
 import geo.track.gestao.cliente.application.endereco.DeletarEnderecoUseCase;
-import geo.track.gestao.cliente.domain.DeletarCliente;
 import geo.track.gestao.cliente.infraestructure.persistence.ClienteRepository;
 import geo.track.infraestructure.log.Log;
 import geo.track.jornada.domain.OrdemDeServicoService;

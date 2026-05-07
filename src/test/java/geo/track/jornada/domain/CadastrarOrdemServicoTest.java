@@ -1,6 +1,5 @@
 package geo.track.jornada.domain;
 
-import geo.track.jornada.domain.CadastrarOrdemServico;
 import geo.track.jornada.infraestructure.persistence.OrdemDeServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

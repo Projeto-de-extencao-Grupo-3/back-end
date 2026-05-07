@@ -1,6 +1,5 @@
 package geo.track.gestao.veiculo.domain;
 
-import geo.track.gestao.veiculo.domain.AlterarCorVeiculo;
 import geo.track.gestao.veiculo.infraestructure.persistence.VeiculoRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;

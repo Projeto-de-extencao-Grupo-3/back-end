@@ -1,6 +1,5 @@
 package geo.track.gestao.cliente.domain.contato;
 
-import geo.track.gestao.cliente.domain.contato.DeletarContato;
 import geo.track.gestao.cliente.infraestructure.persistence.ContatoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

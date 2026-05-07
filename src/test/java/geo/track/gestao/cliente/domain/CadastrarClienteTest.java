@@ -2,7 +2,6 @@ package geo.track.gestao.cliente.domain;
 
 import geo.track.gestao.cliente.application.contato.CadastrarContatoUseCase;
 import geo.track.gestao.cliente.application.endereco.CadastrarEnderecoUseCase;
-import geo.track.gestao.cliente.domain.CadastrarCliente;
 import geo.track.gestao.cliente.infraestructure.persistence.ClienteRepository;
 import geo.track.gestao.oficina.domain.OficinaService;
 import geo.track.infraestructure.log.Log;

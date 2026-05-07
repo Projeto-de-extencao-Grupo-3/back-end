@@ -3,7 +3,6 @@ package geo.track.jornada.domain.entrada;
 import geo.track.gestao.veiculo.application.CadastrarVeiculoUseCase;
 import geo.track.jornada.application.CadastrarEntradaUseCase;
 import geo.track.jornada.application.CadastrarOrdemServicoUseCase;
-import geo.track.jornada.domain.entrada.EntradaEfetivaSemCadastro;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

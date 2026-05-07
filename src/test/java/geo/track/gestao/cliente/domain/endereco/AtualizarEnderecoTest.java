@@ -1,6 +1,5 @@
 package geo.track.gestao.cliente.domain.endereco;
 
-import geo.track.gestao.cliente.domain.endereco.AtualizarEndereco;
 import geo.track.gestao.cliente.infraestructure.persistence.EnderecoRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;

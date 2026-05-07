@@ -2,7 +2,6 @@ package geo.track.jornada.domain.entrada;
 
 import geo.track.gestao.veiculo.domain.VeiculoService;
 import geo.track.jornada.application.CadastrarOrdemServicoUseCase;
-import geo.track.jornada.domain.entrada.Agendamento;
 import geo.track.jornada.infraestructure.persistence.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

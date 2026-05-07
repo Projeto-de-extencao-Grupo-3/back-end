@@ -1,6 +1,5 @@
 package geo.track.gestao.cliente.domain;
 
-import geo.track.gestao.cliente.domain.AtualizarCliente;
 import geo.track.gestao.cliente.infraestructure.persistence.ClienteRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;

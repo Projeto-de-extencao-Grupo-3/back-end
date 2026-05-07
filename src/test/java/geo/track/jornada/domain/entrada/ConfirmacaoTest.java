@@ -2,7 +2,6 @@ package geo.track.jornada.domain.entrada;
 
 import geo.track.jornada.application.CadastrarEntradaUseCase;
 import geo.track.jornada.domain.RegistroEntradaService;
-import geo.track.jornada.domain.entrada.Confirmacao;
 import geo.track.jornada.infraestructure.persistence.OrdemDeServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

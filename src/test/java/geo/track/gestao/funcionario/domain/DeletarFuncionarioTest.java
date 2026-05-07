@@ -1,6 +1,5 @@
 package geo.track.gestao.funcionario.domain;
 
-import geo.track.gestao.funcionario.domain.DeletarFuncionario;
 import geo.track.gestao.funcionario.infraestructure.persistence.FuncionarioRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;

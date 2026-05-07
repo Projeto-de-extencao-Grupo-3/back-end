@@ -1,6 +1,5 @@
 package geo.track.jornada.domain;
 
-import geo.track.jornada.domain.CadastrarEntrada;
 import geo.track.jornada.infraestructure.persistence.RegistroEntradaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

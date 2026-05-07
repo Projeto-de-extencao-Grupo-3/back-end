@@ -1,6 +1,5 @@
 package geo.track.catalogo.item_servico.domain;
 
-import geo.track.catalogo.item_servico.domain.AdicionarItemServico;
 import geo.track.catalogo.item_servico.infraestructure.persistence.ItemServicoRepository;
 import geo.track.infraestructure.log.Log;
 import geo.track.jornada.domain.OrdemDeServicoService;

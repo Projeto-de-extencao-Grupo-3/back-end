@@ -1,6 +1,5 @@
 package geo.track.catalogo.produto.domain;
 
-import geo.track.catalogo.produto.domain.CadastrarProduto;
 import geo.track.catalogo.produto.infraestructure.persistence.ProdutoRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;

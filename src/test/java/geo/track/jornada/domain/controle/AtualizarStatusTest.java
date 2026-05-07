@@ -1,7 +1,6 @@
 package geo.track.jornada.domain.controle;
 
 import geo.track.jornada.domain.OrdemDeServicoService;
-import geo.track.jornada.domain.controle.AtualizarStatus;
 import geo.track.jornada.infraestructure.persistence.OrdemDeServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

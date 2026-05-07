@@ -1,7 +1,6 @@
 package geo.track.gestao.cliente.domain.contato;
 
 import geo.track.gestao.cliente.domain.ClienteService;
-import geo.track.gestao.cliente.domain.contato.CadastrarContato;
 import geo.track.gestao.cliente.infraestructure.persistence.ContatoRepository;
 import geo.track.infraestructure.log.Log;
 import org.junit.jupiter.api.BeforeEach;
