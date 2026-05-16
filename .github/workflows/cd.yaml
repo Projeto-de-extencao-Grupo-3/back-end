@@ -1,4 +1,4 @@
-name: Deploy Backend
+name: Deploy to EC2 via SSH
 
 on:
   push:
@@ -126,20 +126,20 @@ jobs:
 
       steps:
         - name: Deploy para EC2
-          uses: easingthemes/ssh-deploy@v2.1.5
-          with:
-            ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-            remote-user: ubuntu
-            server-ip: ${{ secrets.REMOTE_HOST_FRONT }}
-            remote-path: /home/gro-track
-        - run: |
-            mkdir -p ~/.ssh
-            echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
-            chmod 600 ~/.ssh/ec2_key
+          run: |
+                mkdir -p ~/.ssh
+                echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
+                chmod 600 ~/.ssh/ec2_key
 
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key ubuntu@${{ secrets.REMOTE_HOST_FRONT }} << 'EOF'
-            cd /home/gro-track
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key ubuntu@${{ secrets.REMOTE_HOST_BACK }} << 'EOF'
-            cd /home/gro-track/docker
-            sudo bash -c 'docker compose -f backend.yml down -v && docker compose -f backend.yml pull && docker compose -f backend.yml up -d'
-            EOF
+                ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key \
+                    ubuntu@${{ secrets.REMOTE_HOST_FRONT }} \
+                    "EC2_KEY='${{ secrets.EC2_SSH_KEY }}' REMOTE_HOST_BACK='${{ secrets.REMOTE_HOST_BACK }}'" << 'OUTER'
+                echo "$EC2_KEY" > /tmp/ec2_key
+                chmod 600 /tmp/ec2_key
+                ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key ubuntu@$REMOTE_HOST_BACK << 'INNER'
+                sudo docker compose -f /home/gro-track/docker/backend.yml down -v
+                sudo docker compose -f /home/gro-track/docker/backend.yml pull
+                sudo docker compose -f /home/gro-track/docker/backend.yml up -d
+                INNER
+                rm -f /tmp/ec2_key
+                OUTER
