@@ -1,9 +1,8 @@
-name:
+name: Deploy Backend
 
 on:
   push:
-    branches:
-      - "main"
+    branches: [ "main" ]
 
 jobs:
   quality-sonarqube:
@@ -121,3 +120,26 @@ jobs:
         run: |
           echo "### ❌ Falha no Build ou Push" >> $GITHUB_STEP_SUMMARY
           echo "Não foi possível gerar ou enviar a imagem Docker. Verifique os logs do passo **Build and push** para entender o que quebrou." >> $GITHUB_STEP_SUMMARY
+
+  deploy-to-ec2:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Deploy para EC2
+          uses: easingthemes/ssh-deploy@v2.1.5
+          with:
+            ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+            remote-user: ubuntu
+            server-ip: ${{ secrets.REMOTE_HOST_FRONT }}
+            remote-path: /home/gro-track
+        - run: |
+            mkdir -p ~/.ssh
+            echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key
+            chmod 600 ~/.ssh/ec2_key
+
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key ubuntu@${{ secrets.REMOTE_HOST_FRONT }} << 'EOF'
+            cd /home/gro-track
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2_key ubuntu@${{ secrets.REMOTE_HOST_BACK }} << 'EOF'
+            cd /home/gro-track/docker
+            sudo bash -c 'docker compose -f backend.yml down -v && docker compose -f backend.yml pull && docker compose -f backend.yml up -d'
+            EOF
