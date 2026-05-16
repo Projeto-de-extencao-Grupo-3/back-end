@@ -43,7 +43,7 @@ public class CadastrarCliente implements CadastrarClienteUseCase {
 
         Cliente finalCliente = CLIENTE_REPOSITORY.save(cliente);
         body.getContatos().forEach(contato -> CADASTRAR_CONTATO_USE_CASE.execute(finalCliente.getIdCliente(), contato));
-        CADASTRAR_ENDERECO_USE_CASE.execute(body.getEndereco(), cliente.getIdCliente());
+        CADASTRAR_ENDERECO_USE_CASE.execute(body.getEndereco(), finalCliente.getIdCliente());
 
         log.info("Cliente criado com sucesso para a oficina ID: {}", body.getFkOficina());
         return CLIENTE_SERVICE.buscarClientePorId(finalCliente.getIdCliente());

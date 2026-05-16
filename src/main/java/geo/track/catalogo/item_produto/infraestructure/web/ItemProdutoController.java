@@ -64,8 +64,12 @@ public class ItemProdutoController implements ItemProdutoSwagger {
     }
 
     @PatchMapping("/baixa-estoque/{id}")
-    public ResponseEntity<ItemProdutoResponse> patchBaixaEstoque(@PathVariable Integer id) {
-        REALIZAR_BAIXA_ESTOQUE_ITEM_PRODUTO_USECASE.execute(id);
+    public ResponseEntity<ItemProdutoResponse> patchBaixaEstoque(
+            @PathVariable Integer id,
+            @RequestParam(required = false) Integer quantidade,
+            @RequestParam(required = false) Integer tela
+    ) {
+        REALIZAR_BAIXA_ESTOQUE_ITEM_PRODUTO_USECASE.execute(id, quantidade, tela);
         return ResponseEntity.status(200).body(null);
     }
 }

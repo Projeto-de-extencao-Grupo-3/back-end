@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
@@ -162,16 +163,19 @@ public class ArquivoService {
         }
     }
 
-    public List<Arquivo> listarArquivosOS(Integer idOrdem) {
-        return ARQUIVO_REPOSITORY.findAllByFkOrdemServico(idOrdem.toString());
-    }
-
     public List<Arquivo> listarArquivosOSPorCategoria(Integer idOrdem, Categoria categoria) {
         return ARQUIVO_REPOSITORY.findAllByFkOrdemServicoAndCategoria(idOrdem.toString(), categoria);
     }
 
     public void deletarArquivoPorId(Integer id) {
         boolean b = ARQUIVO_REPOSITORY.existsById(id);
+
+        Arquivo arquivo = ARQUIVO_REPOSITORY.findById(id).orElseThrow(()-> new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO));
+
+        s3Client.deleteObject(DeleteObjectRequest.builder()
+                        .bucket(BUCKET_NAME)
+                        .key(arquivo.getNome())
+                        .build());
 
         if (!b) throw new DataNotFoundException(ArquivoExceptionMessages.ARQUIVO_NAO_ENCONTRADO_ID, Domains.ARQUIVO);
         ARQUIVO_REPOSITORY.deleteById(id);

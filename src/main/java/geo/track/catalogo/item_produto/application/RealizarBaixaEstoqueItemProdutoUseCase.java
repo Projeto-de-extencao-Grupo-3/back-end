@@ -1,6 +1,6 @@
 package geo.track.catalogo.item_produto.application;
 
 public interface RealizarBaixaEstoqueItemProdutoUseCase {
-    Boolean execute(Integer id);
+    Boolean execute(Integer id, Integer quantidade, Integer tela);
 }
 
