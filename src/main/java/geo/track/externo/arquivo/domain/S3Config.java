@@ -33,26 +33,18 @@ public class S3Config {
     private String endpoint;
 
     @Bean
-    @Profile("dev")
     public S3Client localStackS3Client() {
         S3ClientBuilder builder = S3Client.builder()
-                .region(Region.of(region))
-                .credentialsProvider(resolveStaticCredentials());
+                .region(Region.of(region));
 
         if (endpoint != null && !endpoint.isBlank()) {
+            builder.credentialsProvider(resolveStaticCredentials());
             builder.endpointOverride(URI.create(endpoint)).forcePathStyle(true);
+        } else {
+            builder.credentialsProvider(DefaultCredentialsProvider.create());
         }
 
         return builder.build();
-    }
-
-    @Bean
-    @Profile("!dev")
-    public S3Client awsS3Client() {
-        return S3Client.builder()
-                .region(Region.of(region))
-                .credentialsProvider(DefaultCredentialsProvider.create())
-                .build();
     }
 
     private StaticCredentialsProvider resolveStaticCredentials() {
