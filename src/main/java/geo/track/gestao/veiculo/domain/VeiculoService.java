@@ -1,12 +1,15 @@
 package geo.track.gestao.veiculo.domain;
 
+import geo.track.gestao.veiculo.infraestructure.VeiculoMapper;
 import geo.track.gestao.veiculo.infraestructure.persistence.entity.Veiculo;
+import geo.track.gestao.veiculo.infraestructure.response.VeiculoResponse;
 import geo.track.infraestructure.exception.DataNotFoundException;
 import geo.track.infraestructure.exception.constraint.message.Domains;
 import geo.track.infraestructure.exception.constraint.message.VeiculoExceptionMessages;
 import geo.track.infraestructure.log.Log;
 import geo.track.gestao.veiculo.infraestructure.persistence.VeiculoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -18,9 +21,14 @@ public class VeiculoService {
     private final VeiculoRepository VEICULO_REPOSITORY;
     private final Log log;
 
-    public List<Veiculo> listarVeiculos(){
-        log.info("Listando todos os veículos");
-        return VEICULO_REPOSITORY.findAll();
+    @Cacheable(cacheNames = "veiculosLista", key = "'all'")
+    public List<VeiculoResponse> listarVeiculosCache() {
+        List<Veiculo> lista = VEICULO_REPOSITORY.findAll();
+        return VeiculoMapper.toResponse(lista);
+    }
+
+    public List<VeiculoResponse> listarVeiculos() {
+        return listarVeiculosCache();
     }
 
     public Veiculo buscarVeiculoPeloId(@PathVariable Integer id){
@@ -38,8 +46,12 @@ public class VeiculoService {
         return VEICULO_REPOSITORY.findAllByPlacaStartsWithIgnoreCase(placa);
     }
 
-
-    public List<Veiculo> buscarVeiculoPeloIdCliente(Integer idCliente) {
-        return VEICULO_REPOSITORY.findAllByIdCliente(idCliente);
+    @Cacheable(cacheNames = "veiculosPorCliente", key = "#idCliente")
+    public List<VeiculoResponse> buscarVeiculoPeloIdClienteCache(Integer idCliente) {
+        List<Veiculo> lista = VEICULO_REPOSITORY.findAllByIdCliente(idCliente);
+        return VeiculoMapper.toResponse(lista);
+    }
+    public List<VeiculoResponse> buscarVeiculoPeloIdCliente(Integer idCliente) {
+        return buscarVeiculoPeloIdClienteCache(idCliente);
     }
 }

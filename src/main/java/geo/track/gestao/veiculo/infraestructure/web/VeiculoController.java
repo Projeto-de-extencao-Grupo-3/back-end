@@ -39,13 +39,13 @@ public class VeiculoController implements VeiculoSwagger {
     @Override
     @GetMapping
     public ResponseEntity<List<VeiculoResponse>> listar(){
-        List<Veiculo> listaVeiculos = VEICULO_SERVICE.listarVeiculos();
+        List<VeiculoResponse> listaVeiculos = VEICULO_SERVICE.listarVeiculos();
 
         if(listaVeiculos.isEmpty()){
             return ResponseEntity.status(204).build();
         }
 
-        return ResponseEntity.status(200).body(VeiculoMapper.toResponse(listaVeiculos));
+        return ResponseEntity.status(200).body(listaVeiculos);
     }
 
     @Override
@@ -70,13 +70,13 @@ public class VeiculoController implements VeiculoSwagger {
     @GetMapping("/cliente/{id}")
     @Override
     public ResponseEntity<List<VeiculoResponse>> findVeiculoByClienteId(@PathVariable Integer id){
-        List<Veiculo> veiculos = VEICULO_SERVICE.buscarVeiculoPeloIdCliente(id);
+        List<VeiculoResponse> veiculos = VEICULO_SERVICE.buscarVeiculoPeloIdCliente(id);
 
         if(veiculos.isEmpty()){
             return ResponseEntity.status(204).build();
         }
 
-        return ResponseEntity.status(200).body(veiculos.stream().map(VeiculoMapper::toResponse).toList());
+        return ResponseEntity.status(200).body(veiculos.stream().toList());
     }
 
     @Override
