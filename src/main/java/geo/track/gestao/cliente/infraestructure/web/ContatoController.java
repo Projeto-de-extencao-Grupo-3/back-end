@@ -17,24 +17,27 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/clientes/{idCliente}/contatos")
 @RequiredArgsConstructor
-public class ContatoController {
+public class ContatoController implements ContatoSwagger {
     private final ContatoService CONTATO_SERVICE;
     private final CadastrarContatoUseCase CADASTRAR_CONTATO_USECASE;
     private final AtualizarContatoUseCase ATUALIZAR_CONTATO_USECASE;
     private final DeletarContatoUseCase DELETAR_CONTATO_USECASE;
 
+    @Override
     @GetMapping("/{idContato}")
     public ResponseEntity<ContatoResponse> getContatoById(@PathVariable Integer idCliente, @PathVariable Integer idContato) {
         Contato contato = CONTATO_SERVICE.buscarContatoPorId(idCliente, idContato);
         return ResponseEntity.status(200).body(ContatoMapper.toResponse(contato));
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<ContatoResponse> postContato(@PathVariable Integer idCliente, @RequestBody @Valid RequestPostContato body) {
         Contato contato = CADASTRAR_CONTATO_USECASE.execute(idCliente, body);
         return ResponseEntity.status(201).body(ContatoMapper.toResponse(contato));
     }
 
+    @Override
     @PutMapping("/{idContato}")
     public ResponseEntity<ContatoResponse> putContato(
             @PathVariable Integer idCliente,
@@ -45,10 +48,10 @@ public class ContatoController {
         return ResponseEntity.status(200).body(ContatoMapper.toResponse(contato));
     }
 
+    @Override
     @DeleteMapping("/{idContato}")
     public ResponseEntity<Void> deleteContato(@PathVariable Integer idCliente, @PathVariable Integer idContato) {
         DELETAR_CONTATO_USECASE.execute(idCliente, idContato);
         return ResponseEntity.status(204).build();
     }
 }
-

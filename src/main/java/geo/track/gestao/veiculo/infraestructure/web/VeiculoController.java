@@ -100,6 +100,7 @@ public class VeiculoController implements VeiculoSwagger {
         return ResponseEntity.status(200).body(VeiculoMapper.toResponse(veic));
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVeiculoById(@PathVariable Integer id){
         DELETAR_VEICULO_USECASE.execute(id);

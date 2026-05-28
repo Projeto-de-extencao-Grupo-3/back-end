@@ -42,6 +42,7 @@ public class FuncionarioController implements FuncionarioSwagger {
         return ResponseEntity.status(200).body(FuncionarioMapper.toResponse(lista));
     }
 
+    @Override
     @GetMapping("/busca/nome")
     public ResponseEntity<Page<FuncionarioResponse>> listarFuncionariosPorNomePaginado(
             @PageableDefault(size = 8, sort = "idFuncionario") Pageable pageable,
@@ -56,6 +57,7 @@ public class FuncionarioController implements FuncionarioSwagger {
         return ResponseEntity.status(200).body(response);
     }
 
+    @Override
     @GetMapping("/funcionarios-paginados")
     public ResponseEntity<Page<FuncionarioResponse>> listarFuncionariosPaginados(
             @PageableDefault(size = 8, sort = "idFuncionario") Pageable pageable){

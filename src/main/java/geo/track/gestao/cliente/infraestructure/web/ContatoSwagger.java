@@ -6,6 +6,7 @@ import geo.track.gestao.cliente.infraestructure.response.contato.ContatoResponse
 import geo.track.infraestructure.exception.ExceptionBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -29,6 +30,11 @@ public interface ContatoSwagger {
             @ApiResponse(
                     responseCode = "404",
                     description = "Contato não encontrado",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Não autenticado",
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
     })
@@ -57,9 +63,21 @@ public interface ContatoSwagger {
                     responseCode = "404",
                     description = "Cliente não encontrado",
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Email ou telefone já cadastrado para o cliente",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
     })
     @PostMapping
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = RequestPostContato.class),
+                    examples = @ExampleObject(value = "{\"telefone\":\"11999990000\",\"email\":\"contato@cliente.com\",\"nomeContato\":\"Ana\",\"departamentoContato\":\"Financeiro\"}")
+            )
+    )
     ResponseEntity<ContatoResponse> postContato(
             @PathVariable Integer idCliente,
             @RequestBody @Valid RequestPostContato body
@@ -84,9 +102,21 @@ public interface ContatoSwagger {
                     responseCode = "404",
                     description = "Cliente ou contato não encontrado",
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Email ou telefone já cadastrado para o cliente",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
     })
     @PutMapping("/{idContato}")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            content = @Content(
+                    schema = @Schema(implementation = RequestPutContato.class),
+                    examples = @ExampleObject(value = "{\"telefone\":\"11988887777\",\"email\":\"novo.contato@cliente.com\",\"nomeContato\":\"Ana Souza\",\"departamentoContato\":\"Compras\"}")
+            )
+    )
     ResponseEntity<ContatoResponse> putContato(
             @PathVariable Integer idCliente,
             @PathVariable Integer idContato,
@@ -104,6 +134,11 @@ public interface ContatoSwagger {
                     responseCode = "404",
                     description = "Cliente ou contato não encontrado",
                     content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Não autenticado",
+                    content = {@Content(schema = @Schema(implementation = ExceptionBody.class))}
             )
     })
     @DeleteMapping("/{idContato}")
@@ -112,4 +147,3 @@ public interface ContatoSwagger {
             @PathVariable Integer idContato
     );
 }
-

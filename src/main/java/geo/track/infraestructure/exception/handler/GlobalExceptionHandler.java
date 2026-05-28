@@ -7,6 +7,8 @@ import geo.track.infraestructure.log.Log;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -147,6 +149,34 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ExceptionBody> usernameNotFoundException(UsernameNotFoundException e) {
         String mensagem = "Usuário ou senha estão incorretos";
+        log.error("Erro {} - ({}) {}", 401, "Autenticação", mensagem);
+        return ResponseEntity.status(401).body(
+                ExceptionBody.builder()
+                        .codigo(HttpStatus.UNAUTHORIZED.value())
+                        .mensagem(mensagem)
+                        .excecao(e.getClass().getSimpleName())
+                        .momento(LocalDateTime.now())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ExceptionBody> badCredentialsException(BadCredentialsException e) {
+        String mensagem = "Usuário ou senha estão incorretos";
+        log.error("Erro {} - ({}) {}", 401, "Autenticação", mensagem);
+        return ResponseEntity.status(401).body(
+                ExceptionBody.builder()
+                        .codigo(HttpStatus.UNAUTHORIZED.value())
+                        .mensagem(mensagem)
+                        .excecao(e.getClass().getSimpleName())
+                        .momento(LocalDateTime.now())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<ExceptionBody> authenticationCredentialsNotFoundException(AuthenticationCredentialsNotFoundException e) {
+        String mensagem = "Credenciais de autenticação ausentes ou inválidas";
         log.error("Erro {} - ({}) {}", 401, "Autenticação", mensagem);
         return ResponseEntity.status(401).body(
                 ExceptionBody.builder()
