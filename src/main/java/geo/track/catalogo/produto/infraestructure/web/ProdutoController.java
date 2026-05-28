@@ -92,7 +92,7 @@ public class ProdutoController implements ProdutoSwagger {
         return ResponseEntity.status(200).body(response);
     }
 
-    @RequestMapping(value = "/tipos_servico", method = RequestMethod.OPTIONS)
+    @RequestMapping(value = "/tipos_servico", method = RequestMethod.GET)
     public ResponseEntity<List<Servico>> listarTiposServicos() {
         return ResponseEntity.ok(List.of(Servico.values()));
     }
